@@ -4,8 +4,8 @@
 **Status:** Draft
 **Created:** 2026-10-24
 **Input:** This feature is a vehicle management to view, add, update, and delete vehicles
-**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth)
-**Related:** `features/references...`, [ADR-NNNN](../docs/adr/NNNN-title.md) <-- optional
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD)
+**Related:** `features/feature-5-Maintenance-Info-CRUD`
 
 ---
 
@@ -143,60 +143,67 @@
 
 ## Assumptions
 
-- What already exists (eg. Feature 1 auth is on `dev`)
-- What you are deliberately not building yet
+- **What already exists**: 
+  - `feature-1-User-Auth-&-Session-Management`
+  - `feature-2-Google-Auth`
+  - `feature-3-Department-CRUD`
+  - `MenuBar.vue`
+- **What you are deliberately not building yet**
+  - `feature-5-Maintenance-Info-CRUD`
+  - `Maintenance.vue`
+  - `feature-8-Requests-CRUD`: Assume that it will be added later, for data model see `features/references/data-model.md`
 
 ## Edge Cases
 
-- Empty required field → …
-- Cross-user access → …
-- Duplicate / invalid input → …
+- **Empty required field**
+  - `Text Fields`: `</v-alert>` to notify user that a empty field is required to be filled
+  - `Radio Buttons` : `</v-alert>` to notify user that a selection needs to be made
+  - `Date Picker`: `</v-alert>` to notify user that a correct date must be picked
+- **Duplicate Inputs**
+  - Throw `400` restapi error and send a `</v-alert>` to notify user that the input is invalid or already exists
 
 ## Success Criteria
 
 - **SC-001**: Every Gherkin scenario has at least one automated test before merge
-- **SC-002**: <measurable outcome for this feature>
+- **SC-002**: Every functional requirement is met
+- **SC-003**: Frontend, Vehicle.vue is the only .vue created for this feature doc
+- **SC-004**: Backend, all routes, models, and controllers are created and configured correctly with authorization 
 
 ---
 
 ## Data Ownership & Isolation (foundation)
 
-Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
+Feature 1 and 2 establishes identity
 
-- Each user account is a separate tenant boundary for todo lists and items.
+- Vehicles are not owned by anyone
 - No API in this feature returns another user's profile or session.
-- Later features must never expose lists or todos across users — not in list responses, detail views, or error messages that confirm another user's resource exists.
+- Later features must never expose vehicles to unauthorized users.
 
 ---
 
 ## Key Entities
 
-- **User**: registered account (name, email, username, role); owns future lists and todos.
+- **User**: registered account (name, email, username, role)
 - **Session**: server-side record tying a JWT token to a user; expires after 24 hours.
+- **Vehicles**: server-side record of all vehicles in the database
 
 ---
 
-
-
 ## Data Model Requirements
-### Look under ./backend/app/models/(file name).js
-- This shows the table you will need to model
-
-## VVV Example table (Change or Delete) VVV
-### `users` table
-
-
-| Field      | Type        | Rules                              |
-| ---------- | ----------- | ---------------------------------- |
-| `id`       | INTEGER PK  | Auto-increment                     |
-| `fName`    | STRING      | Required                           |
-| `lName`    | STRING      | Required                           |
-| `email`    | STRING      | Required, unique                   |
-| `username` | STRING(100) | Required, unique; stored lowercase |
-| `password` | STRING(255) | Required; bcrypt hash only         |
-| `role`     | STRING(20)  | Default `worker`                   |
-
-## ^^^ (Change or Delete) ^^^
+### `Vehicles` Table
+| Field                 | Type           | Rules                                                       |
+| --------------------- | -------------- | ----------------------------------------------------------- |
+| `vin`                 | INTEGER(17) PK | Primary Key, NOT NULLABLE, Unique, Must be 17 numbers (0-9) |
+| `make`                | VARCHAR(30)    | Required                                                    |
+| `model`               | VARCHAR(65)    | Required                                                    |
+| `year`                | SMALLINT(4)    | Required                                                    |
+| `purchased_date`      | DATE           | Required;                                                   |
+| `color`               | VARCHAR(20)    | NULLABLE;                                                   |
+| `license_plate_num`   | INTERGER(10)   | NULLABLE; Unique                                            |
+| `tag_exp_month`       | DATE           | Required                                                    |
+| `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE                                   |
+| `most_recent_dest_id` | INTEGER(10)    | NULLABLE;                                                   |
+| `available`           | BIT            | Required                                                    |
 
 ---
 
