@@ -66,23 +66,18 @@
 
 ## Requirements
 
-### Functional Requirements [PICK UP HERE WHEN RESUMING]
+### Functional Requirements [THINK OF MORE POSSIBLE FR'S LATER]
 
-**FR-001**: A student user can only view and interact with their `enrollment`s if they are authenticated and have a valid `session`
-**FR-002**: A student user's `enrollment`s **MUST** be shown based on a provided `semesterId`.
-**FR-003**: `enrollment`s **MUST NOT** be shown in a single, big list.
-**FR-004**: A student user **MUST** be able to navigate to different `semester` groups of `enrollment`s without changing views from `EnrollmentList.vue`
-**FR-005**: A student user's `enrollment`s with different `semesterId`s **MUST** be in separate list views on `EnrollmentList.vue`
-**FR-006**: A student user **MUST** be allowed to see the `enrollment`s it owns for a given semester on `EnrollmentList.vue`
-**FR-007**: A student user **MUST NOT** be allowed to see the `enrollment`s other student users own
-**FR-008**: A student user **MUST** be allowed to see the details of the `enrollment`s it owns
-**FR-009**: A student user **MUST NOT** be allowed to see the details of `enrollment`s other student users owns
-**FR-010**: A student user **MUST** be allowed to add `enrollment`s to its ownership
-**FR-011**: A student user **MUST** be allowed to remove `enrollment`s from its ownership
-**FR-012**: A student user **MUST NOT** be allowed to add `enrollment`s to other student users
-**FR-013**: A student user **MUST NOT** be allowed to remove `enrollment`s from other student users' ownership
-**FR-014**: Enrollment resources **MUST NOT** support `PUT` or in-place updates.
-**FR-015**: A student user **MUST** use `DELETE` and `POST` to remove and add enrollments instead of overwriting.
+**FR-001**: An authenticated admin user **MUST** be allowed to do CRUD operations on the `destination` table on `DestinationList.vue` or its relevant components
+**FR-002**: Other authenticated users or unauthenticated visitors **MUST NOT** be allowed to do update or delete operations on the `destination` table on `DestinationList.vue`
+**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `destination` table from relevant components
+**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `destination` table
+**FR-005**: `DestinationList.vue` **MUST** show a list of `destination` table entries.
+**FR-006**: Authenticated admin users **MUST** be able to search list entries by city, state, zip, and/or name.
+**FR-007**: Authenticated admin users **MUST** be able to sort list entries by city, state, zip, and/or name in both ascending and descending order.
+**FR-008**: Authenticated admin users **MUST** be able to see the details of list entries in rows
+**FR-009**: The list of `destination` entries **MUST NOT** be displayed across more than one page
+**FR-010**: Each `destination` entry **MUST** display the end-date of the most recent `request` made including it, ignore future requests including it.
 
 ---
 
@@ -92,11 +87,11 @@
 
 ## Edge Cases
 
-- Fetch another user's `enrollment`s -> `404`
-- POST `enrollment` with the same `semesterId`, `sectionId`, AND `universityId` -> `409`
-- PUT in general. Enrollments are not overwritten and should not use PUT -> `405`
+- POST `destination`s with the same `city`, `state`, `zip`, and `address` (combined) -> `409`
+- GET `destination` that hasn't been visited yet -> shows "not visited"
+- no `request`s made but `destination`s exist -> don't show "last visited on:"
 
-## Success Criteria
+## Success Criteria [RESUME HERE WHEN RETURNING]
 
 **SC-001**: Every Gherkin scenario has at least one automated test before merge
 **SC-002**: Student user can Create, Read, and Delete their own `enrollment`s
