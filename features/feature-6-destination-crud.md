@@ -4,8 +4,9 @@
 **Branch pattern:** `feature/6-destination-CRUD`
 **Status:** Draft
 **Created:** 2026-10-24
+**Updated:** 2026-10-26
 **Input:** Application must support the creation, reading, updating, and deleting of frequently-visited locations/destinations vehicle reservation requests are headed to.
-**Depends on:** [Feature 1 -- User Management](feature-1-User-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md)
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md)
 **Related:** `frontend/src/views/DestinationList.vue`, `frontend/src/views/DestinationForm.vue`, `backend/app/routes/destination.routes.js`, `backend/app/routes/users.routes.js`
 
 ---
@@ -15,11 +16,11 @@
 ### US-6.1: View Current Destinations
 
 **As a** authenticated user with administrator role
-**I want to** see a list of all `destination`s
-**So that** I know which `destination`s exist.
+**I want to** see a list of all `destinations`
+**So that** I know which `destinations` exist.
 
 **Priority:** P1
-**Independent test:** `DestinationList.vue` shows a list of `destination`s with one per row and their details.
+**Independent test:** `DestinationList.vue` shows a list of `destinations` with one per row and their details.
 **Acceptance scenarios:** see ### US-6.1 under Acceptance Criteria
 
 ### US-6.2: Destination Details
@@ -29,7 +30,7 @@
 **So that** I can know all its information.
 
 **Priority:** P1
-**Independent test:** `destination` row in the list has a button which, when pressed, opens a `Details` modal containing a destination's information and current/future reservations headed to that area
+**Independent test:** `destinations` row in the list has a button which, when pressed, opens a `Details` modal containing a destination's information and current/future reservations headed to that area
 **Acceptance scenarios:** see ### US-6.2 under Acceptance Criteria
 
 ### US-6.3: Add Destination
@@ -45,7 +46,7 @@
 ### US-6.4: Remove Destination
 
 **As a** authenticated user with administrator role
-**I want to** remove `destination`s to my `destination`s list
+**I want to** remove `destinations` to my `destinations` list
 **So that** I can manage relevant information and list size.
 
 **Priority:** P2
@@ -56,7 +57,7 @@
 
 **As a** authenticated user with administrator role
 **I want to** search for destinations by name or by address
-**So that** I don't have to scroll or paginate to find the `destination` I want.
+**So that** I don't have to scroll or paginate to find the `destinations` I want.
 
 **Priority:** P2
 **Independent test:** pressing `Previous` button shows the enrollments for the previous semester, pressing the `Next` button shows the enrollments for the next semester
@@ -68,16 +69,20 @@
 
 ### Functional Requirements [THINK OF MORE POSSIBLE FR'S LATER]
 
-**FR-001**: An authenticated admin user **MUST** be allowed to do CRUD operations on the `destination` table on `DestinationList.vue` or its relevant components
-**FR-002**: Other authenticated users or unauthenticated visitors **MUST NOT** be allowed to do update or delete operations on the `destination` table on `DestinationList.vue`
-**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `destination` table from relevant components
-**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `destination` table
-**FR-005**: `DestinationList.vue` **MUST** show a list of `destination` table entries.
+**FR-001**: An authenticated admin user **MUST** be allowed to do CRUD operations on the `destinations` table on `DestinationList.vue` or its relevant components
+**FR-002**: Other authenticated users or unauthenticated visitors **MUST NOT** be allowed to do update or delete operations on the `destinations` table on `DestinationList.vue`
+**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `destinations` table from relevant components.
+**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `destinations` table.
+**FR-005**: `DestinationList.vue` **MUST** show a list of `destinations` table entries.
 **FR-006**: Authenticated admin users **MUST** be able to search list entries by city, state, zip, and/or name.
 **FR-007**: Authenticated admin users **MUST** be able to sort list entries by city, state, zip, and/or name in both ascending and descending order.
-**FR-008**: Authenticated admin users **MUST** be able to see the details of list entries in rows
-**FR-009**: The list of `destination` entries **MUST NOT** be displayed across more than one page
-**FR-010**: Each `destination` entry **MUST** display the end-date of the most recent `request` made including it, ignore future requests including it.
+**FR-008**: Authenticated admin users **MUST** be able to see the details of list entries in rows.
+**FR-009**: The list of `destinations` entries **MUST NOT** be displayed across more than one page.
+**FR-010**: Each `destinations` entry **MUST** display the end-date of the most recent `request` made including it, ignore future requests including it.
+**FR-011**: Trying to add or save edits to a `destinations` entry with any empty fields besides `Address Line 2` **MUST** cancel the add or save (but not close the dialog) and return an error saying `Missing fields: ` along with the empty fields.
+**FR-012**: Trying to add or save edits to a `destinations` entry with a `zip` formatted other than ##### or #####-#### (where # is a digit from 0-9) **MUST** return a `400` error saying `Zip code must be formatted like ##### or #####-####`.
+**FR-013**: Displaying an error inside a create, update, or delete dialog **MUST NOT** close the dialog.
+**FR-014**: Encountering a field/form/dialog error **MUST NOT** send the query to the `destinations` table.
 
 ---
 
@@ -87,35 +92,35 @@
 
 ## Edge Cases
 
-- POST `destination`s with the same `city`, `state`, `zip`, and `address` (combined) -> `409`
-- GET `destination` that hasn't been visited yet -> shows "not visited"
-- no `request`s made but `destination`s exist -> don't show "last visited on:"
+- POST `destinations` with the same `city`, `state`, `zip`, and `address` (combined) -> `409`
+- no `request`s exist but `destinations` exist -> don't render anything relating to requests
+- GET `destinations` that hasn't been visited yet -> shows "not visited"
 
-## Success Criteria [RESUME HERE WHEN RETURNING]
+## Success Criteria
 
 **SC-001**: Every Gherkin scenario has at least one automated test before merge
-**SC-002**: Student user can Create, Read, and Delete their own `enrollment`s
-**SC-003**: Student user can **NOT** Create, Read, Update, or Delete from/to any other student user's `enrollment`s
-**SC-004**: npm test passes for `frontend/tests/enrollments.test.js` and for `backend/tests/EnrollmentList.test.js`
+**SC-002**: Administrator user can Create, Read, Update, or Delete from `destinations`
+**SC-003**: User, Driver, and Maintenance users can Create and Read (but not Update or Delete) from `destinations`
+**SC-004**: npm test passes for `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js`, and `frontend/tests/DestinationForm.test.js`
 
 ---
 
 ## Data Ownership & Isolation
 
-Each user owns their enrollments. Enrollments belong to one user, and a user can have many enrollments.
+Destinations are not owned by anything or anyone.
 
-| Rule                  | Requirement                                                                                                                                                                                            |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Read scope**        | For student users only, the semester page loads a list of enrollments by route id (`GET /course-t3/enrollments/:universityId/:semesterId`)                                                             |
-| **Write scope**       | Enrollments cannot be manually edited since they consist of only foreign keys. They should be created and removed instead                                                                              |
-| **Create scope**      | `POST /course-t3/enrollments/:universityId/*` succeeds only when the row does not already exist and `:universityId === req.user.universityId`.                                                         |
-| **Cross-user access** | Another user’s enrollment on read/create/delete → `404` `{ "message": "Cannot find Enrollment with universityId=${universityId}." }` (not `403`). Missing/invalid Bearer token on routes → `401`.      |
-| **UI scope**          | `EnrollmentList.vue` shows the enrollments for `:universityId`. Navigation to `EnrollmentList.vue` comes from signing into the application as a student.                                               |
-| **Implementation**    | Enrollment operations already check for auth (`req.user.universityId`). Prefer a shared helper in `app/authorization/` for enrollment ownership rather than duplicating the check in every controller. |
+| Rule                  | Requirement                                                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Read scope**        | For all authenticated users (`GET /vehicle-t3/destinations`)                                                                           |
+| **Write scope**       | Only authenticated admins can overwrite/update `destinations` (`PUT /vehicle-t3/destinations/:destinationId`)                          |
+| **Create scope**      | `POST /vehicle-t3/destinations/:destinationId*` succeeds only when the row does not already exist and `:universityId === req.user.id`. |
+| **Cross-user access** | No user data should be included in responses from `destinations`                                                                       |
+| **UI scope**          | `DestinationList.vue` shows data from the `destinations` on a single page which can be sorted and searched.                            |
+| **Later features**    | `DestinationList.vue` will include recently-visited data from the `request` which most recently included it                            |
 
 ---
 
-## Key Entities
+## Key Entities [RESUME FROM HERE WHEN RETURNING]
 
 **User**: registered account (name, universityId, role, email, password); owns enrollments.
 **Enrollment**: Entity collecting `semester.semesterId`, `section.sectionId`, and `user.universityId`; shows users what sections they're signed up for and when
@@ -189,6 +194,14 @@ Duplicate combination of all three → `409` conflict.
 
 **Server error:** `500` `{ "message": "…" }`.
 
+Quoted messages that tests must match:
+
+| Situation            | Status | `message`               |
+| -------------------- | ------ | ----------------------- |
+| Unknown email        | 401    | `User not found!`       |
+| Wrong password       | 401    | `Invalid password!`     |
+| Email already in use | 409    | `Email already in use!` |
+
 ---
 
 ## Screen Requirements
@@ -231,20 +244,21 @@ This feature uses a `destinations` table where each entry has an `id` used by ot
 
 ### `destinations` table
 
-| Field        | Type                    | Rules                                          |
-| ------------ | ----------------------- | ---------------------------------------------- |
-| `id`         | INTEGER; AUTO-INCREMENT | Primary Key                                    |
-| `zip`        | VARCHAR(10)             | Required (some ZIPs are #####-#### or similar) |
-| `city`       | VARCHAR(255)            | Required                                       |
-| `adr_line_1` | VARCHAR(255)            | Required                                       |
-| `adr_line_2` | VARCHAR(255)            | Nullable                                       |
-| `dest_name`  | VARCHAR(255)            | Required                                       |
+| Field              | Type                    | Rules                                          |
+| ------------------ | ----------------------- | ---------------------------------------------- |
+| `id`               | INTEGER; AUTO-INCREMENT | Primary Key                                    |
+| `zip`              | VARCHAR(10)             | Required (some ZIPs are #####-#### or similar) |
+| `city`             | VARCHAR(255)            | Required                                       |
+| `adr_line_1`       | VARCHAR(255)            | Required                                       |
+| `adr_line_2`       | VARCHAR(255)            | Nullable                                       |
+| `dest_name`        | VARCHAR(255)            | Required                                       |
+| `recently_visited` | DATE                    | Nullable                                       |
 
 ### Associations
 
 (_The ERD is wrong in this. Requests can only have one destination, but a destination can have multiple vehicle requests going to it at once_.)
 
-- `destination` hasMany `request`s
+- `destinations` hasMany `request`s
 - `request` belongsTo `destination`
 
 ---
