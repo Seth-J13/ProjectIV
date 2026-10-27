@@ -29,15 +29,16 @@ Update this file when a feature that defines schema merges to `dev`.
 
 ### `destinations` table
 
-| Field              | Type                    | Rules                                          |
-| ------------------ | ----------------------- | ---------------------------------------------- |
-| `id`               | INTEGER; AUTO-INCREMENT | Primary Key                                    |
-| `zip`              | VARCHAR(10)             | Required (some ZIPs are #####-#### or similar) |
-| `city`             | VARCHAR(255)            | Required                                       |
-| `adr_line_1`       | VARCHAR(255)            | Required                                       |
-| `adr_line_2`       | VARCHAR(255)            | Nullable                                       |
-| `dest_name`        | VARCHAR(255)            | Required                                       |
-| `recently_visited` | DATE                    | Nullable                                       |
+| Field             | Type                    | Rules                               |
+| ----------------- | ----------------------- | ----------------------------------- |
+| `id`              | INTEGER; AUTO-INCREMENT | Primary Key                         |
+| `zip`             | VARCHAR(10)             | Required (some ZIPs are #####-####) |
+| `city`            | VARCHAR(255)            | Required                            |
+| `state`           | VARCHAR(255)            | Required                            |
+| `addr_line_1`     | VARCHAR(255)            | Required                            |
+| `addr_line_2`     | VARCHAR(255)            | Nullable                            |
+| `dest_name`       | VARCHAR(255)            | Required                            |
+| `last_visited_on` | DATE                    | Nullable                            |
 
 ## Associations
 
