@@ -109,102 +109,116 @@
 
 Destinations are not owned by anything or anyone.
 
-| Rule                  | Requirement                                                                                                                            |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Read scope**        | For all authenticated users (`GET /vehicle-t3/destinations`)                                                                           |
-| **Write scope**       | Only authenticated admins can overwrite/update `destinations` (`PUT /vehicle-t3/destinations/:destinationId`)                          |
-| **Create scope**      | `POST /vehicle-t3/destinations/:destinationId*` succeeds only when the row does not already exist and `:universityId === req.user.id`. |
-| **Cross-user access** | No user data should be included in responses from `destinations`                                                                       |
-| **UI scope**          | `DestinationList.vue` shows data from the `destinations` on a single page which can be sorted and searched.                            |
-| **Later features**    | `DestinationList.vue` will include recently-visited data from the `request` which most recently included it                            |
+| Rule                  | Requirement                                                                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Read scope**        | For all authenticated users (`GET /vehicle-t3/destinations` and `GET /vehicle-t3/destinations/:destinationId`)                          |
+| **Write scope**       | Only authenticated admins can overwrite/update `destinations` (`PUT /vehicle-t3/destinations/:destinationId`)                           |
+| **Create scope**      | `POST /vehicle-t3/destinations/:destinationId*` succeeds only when the row does not already exist and `:destinationId === req.user.id`. |
+| **Cross-user access** | No user data should be included in responses from `destinations`                                                                        |
+| **UI scope**          | `DestinationList.vue` shows data from the `destinations` on a single page which can be sorted and searched.                             |
+| **Later features**    | `DestinationList.vue` will include recently-visited data from the `request` which most recently included it                             |
 
 ---
 
-## Key Entities [RESUME FROM HERE WHEN RETURNING]
+## Key Entities
 
-**User**: registered account (name, universityId, role, email, password); owns enrollments.
-**Enrollment**: Entity collecting `semester.semesterId`, `section.sectionId`, and `user.universityId`; shows users what sections they're signed up for and when
+**User**: registered account (email, password, role, etc); has permission levels pertaining to `destination` CRUD.
+**Destination**: Entity containing information used to relate a `request` to a real world location.
 
 ---
 
 ## API Requirements
 
-Mount prefix: `/course-t3`. Flat JSON (no `{ success, data }` envelope). Errors: `{ "message": "Human-readable explanation." }`. Authenticated writes send `Authorization: Bearer <token>`.
+Mount prefix: `/vehicle-t3`. Flat JSON (no `{ success, data }` envelope). Errors: `{ "message": "Human-readable explanation." }`. Authenticated writes send `Authorization: Bearer <token>`.
 
-This feature uses the `enrollment`s endpoints below (CUD sections and CUD semesters stay in other features).
+This feature uses the `destinations` endpoints below.
 
-| Method   | Endpoint                                                      | Auth | Purpose                                                                           |
-| -------- | ------------------------------------------------------------- | ---- | --------------------------------------------------------------------------------- |
-| `GET`    | `/course-t3/enrollments/:universityId/`                       | Yes  | List the enrollments for the user where `:universityId === req.user.universityId` |
-| `POST`   | `/course-t3/enrollments/:universityId/`                       | Yes  | Add an `enrollment` to the user where `:universityId === req.user.universityId`   |
-| `GET`    | `/course-t3/enrollments/:universityId/:semesterId`            | Yes  | List only the enrollments the user `:universityId === req.user.universityId`      |
-| `GET`    | `/course-t3/enrollments/:universityId/:semesterId/:sectionId` | Yes  | List details of the enrollment specified by the route parameters                  |
-| `DELETE` | `/course-t3/enrollments/:universityId/:semesterId/:sectionId` | Yes  | Remove the enrollment specified by the route parameters                           |
+| Method   | Endpoint                                  | Auth       | Purpose                                                                 |
+| -------- | ----------------------------------------- | ---------- | ----------------------------------------------------------------------- |
+| `GET`    | `/vehicle-t3/destinations`                | Yes        | List all destinations                                                   |
+| `POST`   | `/vehicle-t3/destinations/`               | Yes        | Add a `destination`                                                     |
+| `GET`    | `/vehicle-t3/destinations/:destinationId` | Yes        | List the details of the `destination` with the id `:destinationId`      |
+| `PUT`    | `/vehicle-t3/destinations/:destinationId` | Yes, Admin | Overwrite the details of the `destination` with the id `:destinationId` |
+| `DELETE` | `/vehicle-t3/destinations/:destinationId` | Yes, Admin | Remove the `destination` with the id `:destinationId`                   |
 
-**Unauthenticated write:** `401` `{ "message": "Unauthorized! No Auth Header" }` (or expired-token message).
+**Unauthenticated write:** `401` login error
+**Unauthorized write:** `403` forbidden
 
-### Load enrollments (`GET /course-t3/enrollments/:universityId`)
+### Load destinations (`GET /vehicle-t3/destinations`)
 
-**Success** (`200`): array with all enrollments for that user (frontend uses index `0`)
+**Success** (`200`): array with all destinations
 
 ```json
 [
   {
-    "semesterId": 2,
-    "sectionId": "CMSC-2011-91",
-    "universityId": 42
+    "id": 1,
+    "zip": "12345-0001",
+    "city": "Omaha",
+    "state": "Nebraska",
+    "addr_line_1": "69420 Appleberry Lane",
+    "addr_line_2": null,
+    "dest_name": "ur mom's house",
+    "last_visited": "2026-10-25"
   },
   {
-    "semesterId": 3,
-    "sectionId": "CMSC-3023-02",
-    "universityId": 42
-  }
+    "id": 2,
+    "zip": "54321-9999",
+    "city": "Orlando",
+    "state": "California",
+    "addr_line_1": "11111 Still-Appleberry Lane",
+    "addr_line_2": "P.O. Box 351",
+    "dest_name": "ur dad's house",
+    "last_visited": "2026-9-25"
+  },
+  ...
 ]
 ```
 
 **Server error:** `500` `{ "message": "…" }`.
 
-### Add enrollment (`POST /course-t3/enrollments/:universityId`)
+### Add enrollment (`POST /vehicle-t3/destinations`)
 
 **Request body** (fields the add request sends):
 
 ```json
 {
-  "semesterId": 2,
-  "sectionId": "CMSC-2011-91"
+  "zip": "12345-0001",
+  "city": "Omaha",
+  "state": "Nebraska",
+  "addr_line_1": "69420 Appleberry Lane",
+  "addr_line_2": null,
+  "dest_name": "ur mom's house"
 }
 ```
 
-Missing `semesterId`, `sectionId` → `400` bad request.
-Duplicate combination of all three → `409` conflict.
+Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` → `400` bad request.
+Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `409` conflict.
 
-**Success** (`200`): created `enrollment` row (includes `semesterId`, `sectionId`, and `recipeId`).
-
+**Success** (`201`)
 **Server error:** `500` `{ "message": "…" }`.
 
-### Remove Enrollment (`DELETE /course-t3/enrollments/:universityId/:semesterId/:sectionId`)
+### Remove Enrollment (`DELETE /vehicle-t3/destinations/:destinationId)
 
 **Success** (`204`)
-
-**Not found/Not owned:** `404`
-
-```json
-{ "message": "Cannot find enrollment for universityId=1." }
-```
-
+**Not found:** `404`
 **Server error:** `500` `{ "message": "…" }`.
 
 Quoted messages that tests must match:
 
-| Situation            | Status | `message`               |
-| -------------------- | ------ | ----------------------- |
-| Unknown email        | 401    | `User not found!`       |
-| Wrong password       | 401    | `Invalid password!`     |
-| Email already in use | 409    | `Email already in use!` |
+| Situation        | Status | `message`                                                                           |
+| ---------------- | ------ | ----------------------------------------------------------------------------------- |
+| `GET` success    | 200    | <response from GET>                                                                 |
+| `POST` success   | 201    | `New destination created with id=<id>`                                              |
+| `DELETE` success | 204    | <empty response>                                                                    |
+| Bad Request      | 400    | `Malformed request. Please make sure everything in the form is properly formatted!` |
+| Login Error      | 401    | `Please sign in. If you think this is a mistake, contact your system administrator` |
+| Forbidden        | 403    | `Please contact a system administrator for assistance.`                             |
+| Not Found        | 404    | `No destination was found for id=<id>`                                              |
+| Conflict         | 409    | `Destination with this address already exists!`                                     |
 
 ---
 
-## Screen Requirements
+## Screen Requirements [CONTINUE FROM HERE WHEN RETURNING]
 
 Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labeled actions use class `oc-cta`. Icon-only row actions need `aria-label`s.
 
@@ -244,15 +258,16 @@ This feature uses a `destinations` table where each entry has an `id` used by ot
 
 ### `destinations` table
 
-| Field              | Type                    | Rules                                          |
-| ------------------ | ----------------------- | ---------------------------------------------- |
-| `id`               | INTEGER; AUTO-INCREMENT | Primary Key                                    |
-| `zip`              | VARCHAR(10)             | Required (some ZIPs are #####-#### or similar) |
-| `city`             | VARCHAR(255)            | Required                                       |
-| `adr_line_1`       | VARCHAR(255)            | Required                                       |
-| `adr_line_2`       | VARCHAR(255)            | Nullable                                       |
-| `dest_name`        | VARCHAR(255)            | Required                                       |
-| `recently_visited` | DATE                    | Nullable                                       |
+| Field             | Type                    | Rules                               |
+| ----------------- | ----------------------- | ----------------------------------- |
+| `id`              | INTEGER; AUTO-INCREMENT | Primary Key                         |
+| `zip`             | VARCHAR(10)             | Required (some ZIPs are #####-####) |
+| `city`            | VARCHAR(255)            | Required                            |
+| `state`           | VARCHAR(255)            | Required                            |
+| `addr_line_1`     | VARCHAR(255)            | Required                            |
+| `addr_line_2`     | VARCHAR(255)            | Nullable                            |
+| `dest_name`       | VARCHAR(255)            | Required                            |
+| `last_visited_on` | DATE                    | Nullable                            |
 
 ### Associations
 
@@ -494,34 +509,34 @@ This feature uses a `destinations` table where each entry has an `id` used by ot
 
 Each scenario above must map to at least one automated test. `it` names must match the Gherkin **Scenario** titles exactly.
 
-| Story  | Scenario                                        | Test file                                                                    | Test name                                         |
-| ------ | ----------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------- |
-| US-6.1 | view enrollment list with no enrollments        | `frontend/tests/EnrollmentList.test.js`                                      | `view enrollment list with no enrollments`        |
-| US-6.1 | view enrollment list with enrollments           | `backend/tests/enrollments.test.js`, `frontend/tests/EnrollmentList.test.js` | `view enrollment list with enrollments`           |
-| US-6.1 | view only enrollments matching semesterId       | `backend/tests/enrollments.test.js`, `frontend/tests/EnrollmentList.test.js` | `view only enrollments matching semesterId`       |
-| US-6.1 | student cannot fetch another user's enrollments | `backend/tests/enrollments.test.js`, `frontend/tests/EnrollmentList.test.js` | `student cannot fetch another user's enrollments` |
-| US-6.2 | view enrollment details                         | `frontend/tests/EnrollmentList.test.js`                                      | `view enrollment details`                         |
-| US-6.3 | Open add enrollment modal                       | `frontend/tests/EnrollmentList.test.js`                                      | `Open add enrollment modal`                       |
-| US-6.3 | Use course combobox                             | `frontend/tests/EnrollmentList.test.js`                                      | `Use course combobox`                             |
-| US-6.3 | Confirm course combobox                         | `frontend/tests/EnrollmentList.test.js`                                      | `Confirm course combobox`                         |
-| US-6.3 | Use section combobox                            | `frontend/tests/EnrollmentList.test.js`                                      | `Use section combobox`                            |
-| US-6.3 | Confirm section combobox                        | `frontend/tests/EnrollmentList.test.js`                                      | `Confirm section combobox`                        |
-| US-6.3 | Create valid enrollment                         | `backend/tests/enrollments.test.js`, `frontend/tests/EnrollmentList.test.js` | `Create valid enrollment`                         |
-| US-6.3 | Create an enrollment with an empty course       | `frontend/tests/EnrollmentList.test.js`                                      | `Create an enrollment with an empty course`       |
-| US-6.3 | Create an enrollment with an empty section      | `frontend/tests/EnrollmentList.test.js`                                      | `Create an enrollment with an empty section`      |
-| US-6.3 | Create an enrollment with duplicate data        | `frontend/tests/EnrollmentList.test.js`                                      | `Create an enrollment with duplicate data`        |
-| US-6.3 | Create enrollment with improper course ID       | `frontend/tests/EnrollmentList.test.js`                                      | `Create enrollment with improper course ID`       |
-| US-6.3 | Create enrollment with improper section ID      | `frontend/tests/EnrollmentList.test.js`                                      | `Create enrollment with improper section ID`      |
-| US-6.4 | Select enrollment delete icon                   | `frontend/tests/EnrollmentList.test.js`                                      | `Select enrollment delete icon`                   |
-| US-6.4 | Confirm delete icon                             | `backend/tests/enrollments.test.js`, `frontend/tests/EnrollmentList.test.js` | `Confirm delete icon`                             |
-| US-6.4 | Cancel delete                                   | `frontend/tests/EnrollmentList.test.js`                                      | `Cancel delete`                                   |
-| US-6.5 | EnrollmentList First Landing                    | `backend/tests/enrollments.test.js`, `frontend/tests/EnrollmentList.test.js` | `EnrollmentList First Landing`                    |
-| US-6.5 | EnrollmentList Return Landing                   | `frontend/tests/EnrollmentList.test.js`                                      | `EnrollmentList Return Landing`                   |
-| US-6.5 | Navigate Semesters order forward                | `frontend/tests/EnrollmentList.test.js`                                      | `Navigate Semesters order forward`                |
-| US-6.5 | Navigate Semesters order backward               | `frontend/tests/EnrollmentList.test.js`                                      | `Navigate Semesters order backward`               |
-| US-6.5 | Navigate Semesters combobox typing              | `frontend/tests/EnrollmentList.test.js`                                      | `Navigate Semesters combobox typing`              |
-| US-6.5 | Navigate Semesters combobox select              | `frontend/tests/EnrollmentList.test.js`                                      | `Navigate Semesters combobox select`              |
-| US-6.6 | PUT to enrollments is rejected                  | `backend/tests/enrollments.test.js`                                          | `PUT to enrollments is rejected`                  |
+| Story  | Scenario                                        | Test file                                                                     | Test name                                         |
+| ------ | ----------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------- |
+| US-6.1 | view enrollment list with no enrollments        | `frontend/tests/EnrollmentList.test.js`                                       | `view enrollment list with no enrollments`        |
+| US-6.1 | view enrollment list with enrollments           | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `view enrollment list with enrollments`           |
+| US-6.1 | view only enrollments matching semesterId       | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `view only enrollments matching semesterId`       |
+| US-6.1 | student cannot fetch another user's enrollments | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `student cannot fetch another user's enrollments` |
+| US-6.2 | view enrollment details                         | `frontend/tests/EnrollmentList.test.js`                                       | `view enrollment details`                         |
+| US-6.3 | Open add enrollment modal                       | `frontend/tests/EnrollmentList.test.js`                                       | `Open add enrollment modal`                       |
+| US-6.3 | Use course combobox                             | `frontend/tests/EnrollmentList.test.js`                                       | `Use course combobox`                             |
+| US-6.3 | Confirm course combobox                         | `frontend/tests/EnrollmentList.test.js`                                       | `Confirm course combobox`                         |
+| US-6.3 | Use section combobox                            | `frontend/tests/EnrollmentList.test.js`                                       | `Use section combobox`                            |
+| US-6.3 | Confirm section combobox                        | `frontend/tests/EnrollmentList.test.js`                                       | `Confirm section combobox`                        |
+| US-6.3 | Create valid enrollment                         | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `Create valid enrollment`                         |
+| US-6.3 | Create an enrollment with an empty course       | `frontend/tests/EnrollmentList.test.js`                                       | `Create an enrollment with an empty course`       |
+| US-6.3 | Create an enrollment with an empty section      | `frontend/tests/EnrollmentList.test.js`                                       | `Create an enrollment with an empty section`      |
+| US-6.3 | Create an enrollment with duplicate data        | `frontend/tests/EnrollmentList.test.js`                                       | `Create an enrollment with duplicate data`        |
+| US-6.3 | Create enrollment with improper course ID       | `frontend/tests/EnrollmentList.test.js`                                       | `Create enrollment with improper course ID`       |
+| US-6.3 | Create enrollment with improper section ID      | `frontend/tests/EnrollmentList.test.js`                                       | `Create enrollment with improper section ID`      |
+| US-6.4 | Select enrollment delete icon                   | `frontend/tests/EnrollmentList.test.js`                                       | `Select enrollment delete icon`                   |
+| US-6.4 | Confirm delete icon                             | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `Confirm delete icon`                             |
+| US-6.4 | Cancel delete                                   | `frontend/tests/EnrollmentList.test.js`                                       | `Cancel delete`                                   |
+| US-6.5 | EnrollmentList First Landing                    | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `EnrollmentList First Landing`                    |
+| US-6.5 | EnrollmentList Return Landing                   | `frontend/tests/EnrollmentList.test.js`                                       | `EnrollmentList Return Landing`                   |
+| US-6.5 | Navigate Semesters order forward                | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters order forward`                |
+| US-6.5 | Navigate Semesters order backward               | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters order backward`               |
+| US-6.5 | Navigate Semesters combobox typing              | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters combobox typing`              |
+| US-6.5 | Navigate Semesters combobox select              | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters combobox select`              |
+| US-6.6 | PUT to enrollments is rejected                  | `backend/tests/destinations.test.js`                                          | `PUT to enrollments is rejected`                  |
 
 ---
 
@@ -557,8 +572,8 @@ Do not implement behavior not in this spec.
 
 ## Out of Scope
 
-- Edit/rename UI
-- Admin modifying student enrollments
+-
+-
 
 ---
 
