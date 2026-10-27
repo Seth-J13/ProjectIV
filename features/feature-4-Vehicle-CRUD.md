@@ -4,7 +4,7 @@
 **Status:** Draft
 **Created:** 2026-10-24
 **Input:** This feature is a vehicle management to view, add, update, and delete vehicles
-**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD)
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD), [Feature 11 -- Images](feature-11-Images)
 **Related:** `features/feature-5-Maintenance-Info-CRUD`
 
 ---
@@ -123,6 +123,24 @@
 **Independent test:** I click the maintenance button and I am redirected to the maintenance page with the selected vehicle pulled up to view
 **Acceptance scenarios:** see ### US-4.12 under Acceptance Criteria
 
+### US-4.13: View vehicle image as a `admin`
+**As a** admin
+**I want to** hover over vehicle
+**So that** I can view the vehicle's image if one exists
+
+**Priority:** P3
+**Independent test:** I hover over a vehicle and the image is displayed
+**Acceptance scenarios:** see ### US-4.13 under Acceptance Criteria
+
+### US-4.14: View vehicle image as a `maintenance`
+**As a** maintenance
+**I want to** hover over vehicle
+**So that** I can view the vehicle's image if one exists
+
+**Priority:** P3
+**Independent test:** I hover over a vehicle and the image is displayed
+**Acceptance scenarios:** see ### US-4.14 under Acceptance Criteria
+
 ---
 
 ## Requirements
@@ -138,6 +156,7 @@
 - **FR-007**: System **MUST NOT** allow any roles other than `admin` and `maintenance` to access this page
 - **FR-008**: System **Must** send user to the Maintenance page with the selected vehicle's details pulled up
 - **FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Department` for each vehicle
+- **FR-010**: System **MUST** display a vehicle image if one is available from the `Images` table
 
 ---
 
@@ -151,7 +170,10 @@
 - **What you are deliberately not building yet**
   - `feature-5-Maintenance-Info-CRUD`
   - `Maintenance.vue`
-  - `feature-8-Requests-CRUD`: Assume that it will be added later, for data model see `features/references/data-model.md`
+  - `feature-8-Requests-CRUD`: Assume that requests will be added later, for data model see `features/references/data-model.md`
+  - `Requests.vue`
+  - `feature-11-Images`: Assume that images will be added later, for data model see `features/references/data-model.md`
+  - `Images.vue`
 
 ## Edge Cases
 
@@ -204,6 +226,87 @@ Feature 1 and 2 establishes identity
 | `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE                                   |
 | `most_recent_dest_id` | INTEGER(10)    | NULLABLE;                                                   |
 | `available`           | BIT            | Required                                                    |
+
+---
+
+## API Requirements
+
+All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` from Feature 1. Every route below requires either a `admin` or `maintenance` session
+
+| Method   | Endpoinnt                             | Purpose                                                         |
+| -------- | ------------------------------------- | --------------------------------------------------------------- |
+| `GET`    | `/vehicles-t3/vehicles/`              | Get all vehicles in the database                                |
+| `GET`    | `/vehicles-t3/vehicles/:vin`          | Get a vehicle with the designated vin number                    |
+| `PUT`    | `/vehicles-t3/vehicles/`              | Create a new vehicle                                            |
+| `POST`   | `/vehicles-t3/vehicles/:vin`          | Update a vehicle in the database with the designated vin number |
+| `DELETE` | `/vehicles-t3/vehicles/:vin`          | Delete a vehicle with the designated vin number                 |
+ 
+ **Create / Update Request Body**
+ ```json
+ {
+    "vin": "12345671234567123",
+    "make": "Honda",
+    "model": "Accord",
+    "year": 2014,
+    "purchased_date": "2015/12/16",
+    "color": "White",
+    "license_plate_num": "ABC344",
+    "tag_exp_month": "2016/5/25",
+    "department": "Engineering",
+    "most_recent_dest_id": null,
+    "available": 1
+ }
+ ```
+ **Success — create (**`201`**) and update (**`200`**):**
+
+ **Error response:** `{"message": "..."}`
+ | Status | When                                                 | Message                                             |
+ | ------ | ---------------------------------------------------- | --------------------------------------------------- | 
+ | `400`  | Missing field                                        | `(attribute) is required` (same pattern for `make`, `model`, `year`, `purchased_date`, `tag_exp_mont`, `department`, and `available`)
+ | `400`  | Two vehicles share the same license plate number     | `A vehicle already has license number (AAA-###)`    |
+ | `400`  | Year is less than 1900 and greater than current year | `Select a year between 1900-Today`                  |
+ | `401`  | A user who's role is not `admin` or `maintenance` tries to view the page | `Unauthorized user`             |
+
+---
+
+## Screen Requirements
+
+### View: Vehicle.vue -- route name `vehicleManagement`
+- Path: `/vehicles`
+- Heading: **Vehicle Management**
+- Visible in the nav only when the stored user `role` is `admin` or `maintenance`
+
+**Filters**
+- Fields: 
+  - `Year`: Drop down with values from 1900 to present year
+  - `Make`: Text field
+  - `Model`: Text field
+  - `Color`: Text field
+  - `Department`: Dropd own with all departments
+  - `License`: Text field
+  - `From Purchase Date`: Calendar Picker
+  - `Before Purchase Date`: Calendar Picker
+
+**Table**
+- Headers: `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department`, `Actions`
+- Actions: `Maintenance Icon Button` - Wrench, `Edit Icon Button` - Pencil, `Delete Icon Button` - Trashcan
+
+**Add / Edit Modal**
+- **Add Vehicle** button opens the add dialog (`oc-cta`), **Edit Icon Button** - Pencil opens the edit dialog (`oc-cta`) 
+  - Fields: 
+    - `License`- Text field
+    - `Make`- Text field
+    - `Model`- Text field
+    - `Year`- Drop down with values from 1900 to present year
+    - `Color`- Text field
+    - `Department`- Drop down with all departments
+    - `Purchase Date` - Calendar Picker
+    - `Tag Expiration Month` - Calendar Picker
+
+**Image** 
+  - Vehicle Image should be displayed discretely but be obvious to find
+  - The image **SHOULD NOT** be in the vehicle list
+  - The image **SHOULD NOT** be next to the filters
 
 ---
 
@@ -290,6 +393,7 @@ Feature 1 and 2 establishes identity
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** click the `Edit` icon button
 - **Then** a edit vehicle modal pops up
+- **And** all form values are filled out with vehicle information 
 - **And** no API request is sent
 
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal
@@ -327,6 +431,7 @@ Feature 1 and 2 establishes identity
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** click the `Edit` icon button
 - **Then** a edit vehicle modal pops up
+- **And** all form values are filled out with vehicle information 
 - **And** no API request is sent
 
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal
@@ -679,13 +784,31 @@ Feature 1 and 2 establishes identity
 
 ---
 
-### US-4.12 — cle maintenance as a `maintenance`
+### US-4.12 — Vehicle maintenance as a `maintenance`
 
 #### Scenario: User clicks the `Maintenance` icon button
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I click the `Maintenance` icon button 
 - **Then** I am taken to `Maintenance.vue`
+- **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
+
+### US-4.13 — View vehicle image as a `admin`
+
+#### Scenario: User hovers over a vehicle list item as `admin`
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I hover over a vehicle in the table 
+- **Then** I view a image of the vehicle if one is available in the `Images` table
+- **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
+
+### US-4.14 — View vehicle image as a `maintenance`
+
+#### Scenario: User hovers over a vehicle list item as `maintenance`
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I hover over a vehicle in the table 
+- **Then** I view a image of the vehicle if one is available in the `Images` table
 - **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
 ---
