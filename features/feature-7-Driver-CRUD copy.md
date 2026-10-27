@@ -86,31 +86,30 @@
 ## Edge Cases
 
 - Empty or whitespace-only course name → client block and/or `400`.
-- course Id longer than 9 characters → `400`.
-- Invalid `courseId` → `400`; unowned course → `404`.
-- Unauthenticated `Courses.vue` or `GET /course-t3/semesters` → redirect or `401`.
+- Invalid `driver_id` → `400`; unowned driver → `404`.
+- Unauthenticated `Drivers.vue` → redirect or `401`.
 
 ## Success Criteria
 
 - **SC-001**: Every Gherkin scenario has at least one automated test before merge.
-- **SC-002**: Signed-in admin can create, view, rename, and delete courses on one screen.
-- **SC-003**: Signed-in student cannot access this view
-- **SC-004**: `npm test` passes for course API and courses-view behavior.
+- **SC-002**: Signed-in admin can create, view, rename, and delete drivers on one screen.
+- **SC-003**: Signed-in non-admin users cannot access this view
+- **SC-004**: `npm test` passes for driver API and drivers-view behavior.
 
 ---
 
 ## Data Ownership & Isolation
 
-Courses are not owned by anybody; however, only administrator-role users are authorized to write/create on `courses`
+Drivers are not owned by anybody; however, only administrator-role users are authorized to write/create on `drivers`
 
 | Rule                  | Requirement                                                                                                                                   |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Read scope**        | `GET /course-t3` returns only courses.                                                                                                          |
-| **Write scope**       | `PUT` and `DELETE` apply only when the course row matches both `id` and `req.user.id`.                                                        |
-| **Create scope**      | New courses owned by nobody.                                                                                                                  |
-| **Cross-user access** | If an unauthorized user tries to `PUT`, `DELETE`, or `POST` courses, respond with `403`.                                                      |
-| **UI scope**          | The courses view shows only courses returned by `GET /course-t3` for the signed-in admin.                                                       |
-| **Implementation**    | Use a shared helper (e.g. `getAccessibleCoursesOrNull(req, courseId)`) in `app/authorization/` — do not duplicate scope logic in controllers. |
+| **Read scope**        | `GET /driver-t3` returns only drivers.                                                                                                          |
+| **Write scope**       | `PUT` and `DELETE` apply only when the driver row matches both `id` and `req.user.id`.                                                        |
+| **Create scope**      | New drivers owned by nobody.                                                                                                                  |
+| **Cross-user access** | If an unauthorized user tries to `PUT`, `DELETE`, or `POST` drivers, respond with `403`.                                                      |
+| **UI scope**          | The drivers view shows only drivers returned by `GET /driver-t3` for the signed-in admin.                                                       |
+| **Implementation**    | Use a shared helper (e.g. `getAccessibleCoursesOrNull(req, driver_id)`) in `app/authorization/` — do not duplicate scope logic in controllers. |
 
 ---
 
@@ -118,39 +117,33 @@ Courses are not owned by anybody; however, only administrator-role users are aut
 
 | Method   | Endpoint             | Auth       | Purpose             |
 | -------- | -------------------- | ---------- | ------------------- |
-| `GET`    | `/course-t3`           | Yes        | Fetch all courses   |
-| `GET`    | `/course-t3/:courseId` | Yes        | Show course details |
-| `POST`   | `/course-t3`           | Yes, admin | Create a new course |
-| `PUT`    | `/course-t3/:courseId` | Yes, admin | Update a course     |
-| `DELETE` | `/course-t3/:courseId` | Yes, admin | Delete a course     |
+| `GET`    | `/driver-t3`           | Yes        | Fetch all drivers   |
+| `GET`    | `/driver-t3/:driver_id` | Yes        | Show driver details |
+| `POST`   | `/driver-t3`           | Yes, admin | Create a new driver |
+| `PUT`    | `/driver-t3/:driver_id` | Yes, admin | Update a driver     |
+| `DELETE` | `/driver-t3/:driver_id` | Yes, admin | Delete a driver     |
 
 All endpoints except `GET` require **an administrator-role user** to access/operate. Non-admin user access returns `403`.
 
-**Create course request body:**
+**Create driver request body:**
 
 ```json
 {
-  "courseId": "CMSC-4321",
-  "semester_offered": "FA",
-  "name": "Software Engineering 4",
-  "description": "Make students suffer through speckits"
-  "sections": [
-    {"sectionId": "CMSC-4321-01"}
-  ]
+  "driver_id": "1",
+  "license_status": "active",
+  "license_exp_date": "08/2028",
+  "availability": "any time"
 }
 ```
 
-**courses success response** (`200` / `201`):
+**drivers success response** (`200` / `201`):
 
 ```json
 {
-  "courseId": "CMSC-4321",
-  "semester_offered": "FA",
-  "name": "Software Engineering 4",
-  "description": "Make students suffer through speckits"
-  "sections": [
-    {"sectionId": "CMSC-4321-01"}
-  ]
+  "driver_id": "1",
+  "license_status": "active",
+  "license_exp_date": "08/2028",
+  "availability": "any time"
 }
 ```
 
@@ -161,37 +154,34 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 **Put course request body:**
 
 ```json
-  {
-      "courseId": "CMSC-4321",
-      "semester_offered": "FA",
-      "name": "Software Engineering 4",
-      "description": "Make students suffer through speckits"
-      "sections": [
-        {"sectionId": "CMSC-4321-01"}
-      ]
-  }
+{
+  "driver_id": "1",
+  "license_status": "active",
+  "license_exp_date": "08/2028",
+  "availability": "any time"
+}
 ```
 
 ## Screen Requirements
 
-### [View: Courses] — route name `courses`
+### [View: Drivers] — route name `drivers`
 
-**Single Vue view** (`Courses.vue`) — no sidebar / main-panel split.
+**Single Vue view** (`Drivers.vue`) — no sidebar / main-panel split.
 
-**courses view (this feature)**
+**drivers view (this feature)**
 
-- Heading: **Courses**
-- Primary action: **+ New course** opens a `<v-dialog>` with a name `<v-text-field>` and **Create** / **Cancel**. Use class `oc-cta` on **Create** and **+ New course** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Heading: **Drivers**
+- Primary action: **+ New driver** opens a `<v-dialog>` with a name `<v-text-field>` and **Create** / **Cancel**. Use class `oc-cta` on **Create** and **+ New driver** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
 - Display interactive search bar named `Find` above any lists
-- Display courses as rows (e.g. `<v-list>` or table): each row shows the **course name** and icon actions:
+- Display drivers as rows (e.g. `<v-list>` or table): each row shows the **driver name** and icon actions:
   - **Edit** icon — opens rename `<v-dialog>` pre-filled with current name; **Save** / **Cancel**
   - **Delete** icon — opens confirmation `<v-dialog>`
-- Icon-only row actions use `size="small"` and accessible `aria-label`s (**Edit course**, **Delete course**).
-- **Empty state:** **"No courses yet. Create a course."** when no courses exist in the database.
-- **Loading state:** skeleton or progress indicator while courses are fetching.
+- Icon-only row actions use `size="small"` and accessible `aria-label`s (**Edit driver**, **Delete driver**).
+- **Empty state:** **"No drivers yet. Create a driver."** when no drivers exist in the database.
+- **Loading state:** skeleton or progress indicator while drivers are fetching.
 - **Error state:** `<v-alert type="error">` for API failures.
 
-**Implementation note:** one route/view for courses; course CRUD dialogs are child components or inline `<v-dialog>` blocks in `Courses.vue` unless the team splits presentational dialogs later.
+**Implementation note:** one route/view for drivers; course CRUD dialogs are child components or inline `<v-dialog>` blocks in `Drivers.vue` unless the team splits presentational dialogs later.
 
 **App chrome**
 
@@ -201,42 +191,40 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 ## Key Entities
 
-- **course**: named item.
-- **admin**: authenticated administrator user permitted to access all course routes.
-- **student**: authenticated student user permitted to only access `GET` course routes.
+- **driver**: named item.
+- **admin**: authenticated administrator user permitted to access all driver routes.
+- **requester**: authenticated user permitted to only access `GET` driver routes.
 
 ---
 
 ## Data Model Requirements
 
-### `courses` table
+### `drivers` table
 
 | Field               | Type      | Rules                                                  |
 | ------------------- | --------- | ------------------------------------------------------ |
-| `courseId`          | STRING PK | Required; Unique; exactly 9 chars                      |
-| `courseName`        | STRING    | Required                                               |
-| `semesterOffered`   | ENUM      | Required; `FA`, `WI`, `SP`, `SU`                       |
-| `offeringFrequency` | ENUM      | Required; `none`, `everyYear`, `oddYears`, `evenYears` |
-| `description`       | STRING    | NULLABLE                                               |
+| `driver_id`          | INT PK | Required; Unique;                   |
+| `license_status`        | ENUM    | Required; `expired`, `active`, `suspended`, |
+| `license_exp_date`   | date      | Required; |
+| `availability` | ENUM      | Required; `yes`, `no` |
 
 ---
 
 ## Acceptance Criteria (Gherkin)
 
-### US-3.1 — Create courses
+### US-8.1 — Create drivers
 
-#### Scenario: Admin creates a new course
+#### Scenario: Admin creates a new driver
 
-- **Given** I am signed in as an admin on the course view
-- **When** I click **+ New course**
-- **And** I enter course Id `CMSC-4324`
-- **And** I enter description `XXXXXX`
-- **And** I enter course name `SE4`
-- **And** I add a semesterOffered `FA`
+- **Given** I am signed in as an admin on the driver view
+- **When** I click **+ New driver**
+- **And** I enter license status `active`
+- **And** I enter expiration date `05/2026`
+- **And** I add availability `yes`
 - **And** I confirm the dialog
-- **Then** the API returns `201` with a course object containing `courseId`, `courseName`, `description` and `semesters`
-- **And** `CMSC-4324` appears in the courses view
-- **And** the add-course dialog closes
+- **Then** the API returns `201` with a driver object containing `driver_id`, `license_status`, `license_exp_date` and `availability`
+- **And** driver_id, license_status, license_exp_date, and availability appears in the drivers view
+- **And** the add-driver dialog closes
 
 #### Scenario: Admin creates a course with an empty name
 
