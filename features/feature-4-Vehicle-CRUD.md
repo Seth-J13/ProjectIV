@@ -279,8 +279,8 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 **Filters**
 - Fields: 
   - `Year`: Drop down with values from 1900 to present year
-  - `Make`: Text field
-  - `Model`: Text field
+  - `Make`: Combobox (Values should show all distinct `makes` in system or add a new make)
+  - `Model`: Combobox (Values should show all distinct `models` in system or add a new model)
   - `Color`: Text field
   - `Department`: Dropd own with all departments
   - `License`: Text field
@@ -295,13 +295,17 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 - **Add Vehicle** button opens the add dialog (`oc-cta`), **Edit Icon Button** - Pencil opens the edit dialog (`oc-cta`) 
   - Fields: 
     - `License`- Text field
-    - `Make`- Text field
-    - `Model`- Text field
+    - `Make`- Combo box
+    - `Model`- Combo box
     - `Year`- Drop down with values from 1900 to present year
     - `Color`- Text field
     - `Department`- Drop down with all departments
     - `Purchase Date` - Calendar Picker
     - `Tag Expiration Month` - Calendar Picker
+    - `Fuel Type` - Combo box
+    - `Fuel Capacity` - Stepper
+    - `Recommended Tire PSI` - Stepper
+    - `Manufactuer` - Text field
 
 **Image** 
   - Vehicle Image should be displayed discretely but be obvious to find
