@@ -92,7 +92,7 @@
 **So that** I can view all vehicles that match the filters
 
 **Priority:** P2
-**Independent test:** I can see all filters `year`, `make`, `model`, `color`, `department`, `license`, `From Date`, `Before Date` as a `admin`
+**Independent test:** I can see all filters `year`, `make`, `model`, `color`, `department`, `license`, `From Purchase Date`, `Before Purchase Date` as a `admin`
 **Acceptance scenarios:** see ### US-4.9 under Acceptance Criteria
 
 ### US-4.10: Filter vehicle list as `maintenance` role
@@ -101,7 +101,7 @@
 **So that** I can view all vehicles that match the filters
 
 **Priority:** P2
-**Independent test:** I can see all filters `year`, `make`, `model`, `color`, `department`, `license`, `From Date`, `Before Date` as a `maintenance`
+**Independent test:** I can see all filters `year`, `make`, `model`, `color`, `department`, `license`, `From Purchase Date`, `Before Purchase Date` as a `maintenance`
 **Acceptance scenarios:** see ### US-4.10 under Acceptance Criteria
 
 
@@ -199,7 +199,7 @@ Feature 1 and 2 establishes identity
 | `year`                | SMALLINT(4)    | Required                                                    |
 | `purchased_date`      | DATE           | Required;                                                   |
 | `color`               | VARCHAR(20)    | NULLABLE;                                                   |
-| `license_plate_num`   | INTERGER(10)   | NULLABLE; Unique                                            |
+| `license_plate_num`   | VARCHAR(10)    | NULLABLE; Unique                                            |
 | `tag_exp_month`       | DATE           | Required                                                    |
 | `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE                                   |
 | `most_recent_dest_id` | INTEGER(10)    | NULLABLE;                                                   |
@@ -209,53 +209,483 @@ Feature 1 and 2 establishes identity
 
 ## Acceptance Criteria (Gherkin)
 
+### US-4.1 — Add a new vehicle as a `admin` role
 
+#### Scenario: User clicks the add button
 
-### US-1.1 — {Related Functional Requirement}
-
-
-
-#### Scenario: {What is happening or has happend}
-
-- **Given** {Where are you on the website?}
-- **When** {Main action?}
-- **And** {What additional action did you take?}
-- **Then** {Website response}
-- **And** {additional response}
-- **And** 
-- **etc...** 
-
-
-## VVV Example AC (Change or Delete) VVV
-#### Scenario: User submits registration with missing email
-
-- **Given** I am on the registration page
-- **When** I leave the email field empty
-- **And** I submit the form
-- **Then** inline validation blocks the request
-- **And** I see the message **"Email is required."**
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** click the `Add` button
+- **Then** a add vehicle modal pops up
 - **And** no API request is sent
-## ^^^ (Change or Delete) ^^^
+
+#### Scenario: User inputs valid information into the `Add Vehicle` modal
+
+- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Add Vehicle` button
+- **Then** the `Add Vehicle` modal closes
+- **And** a `PUT` API request is sent to the server
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
+#### Scenario: User inputs invalid information into `Add Vehicle` modal
+
+- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+- **And** I have incorrectly inputted values into the form
+- **When** I click the `Add Vehicle` button
+- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+- **And** a no API request is sent
+ 
+#### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
+
+- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Add Vehicle` button
+- **Then** the `Add Vehicle` modal closes
+- **And** a `PUT` API request is sent to the server
+- **And** returns a value of `409` with a payload containing a `human readable error message`
 
 ---
 
+### US-4.2 — Add a new vehicle as a `maintenance` role
 
+#### Scenario: User clicks the add button
 
-### US-N.2 — {Related Functional Requirement}
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** click the `Add` button
+- **Then** a add vehicle modal pops up
+- **And** no API request is sent
 
+#### Scenario: User inputs valid information into the `Add Vehicle` modal
 
+- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Add Vehicle` button
+- **Then** the `Add Vehicle` modal closes
+- **And** a `PUT` API request is sent to the server
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
-#### Scenario: 
+#### Scenario: User inputs invalid information into `Add Vehicle` modal
 
-- **Given** 
-- **And** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-- **And**
-- **And** 
+- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+- **And** I have incorrectly inputted values into the form
+- **When** I click the `Add Vehicle` button
+- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+- **And** a no API request is sent
+ 
+#### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
+
+- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Add Vehicle` button
+- **Then** the `Add Vehicle` modal closes
+- **And** a `PUT` API request is sent to the server
+- **And** returns a value of `409` with a payload containing a `human readable error message`
+ 
+---
+
+### US-4.3 — Edit a vehicle as a `admin` role
+
+#### Scenario: User clicks the edit icon button
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** click the `Edit` icon button
+- **Then** a edit vehicle modal pops up
+- **And** no API request is sent
+
+#### Scenario: User inputs valid information into the `Edit Vehicle` modal
+
+- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Edit Vehicle` button
+- **Then** the `Update Vehicle` modal closes
+- **And** a `POST` API request is sent to the server
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully updated vehicle."}`
+
+#### Scenario: User inputs invalid information into `Edit Vehicle` modal
+
+- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+- **And** I have incorrectly inputted values into the form
+- **When** I click the `Update Vehicle` button
+- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+- **And** a no API request is sent
+ 
+#### Scenario: User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number
+
+- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Update Vehicle` button
+- **Then** the `Edit Vehicle` modal closes
+- **And** a `POST` API request is sent to the server
+- **And** returns a value of `409` with a payload containing a `human readable error message`
 
 ---
 
-### etc...
+### US-4.4 — Edit a vehicle as a `maintenance` role
+
+#### Scenario: User clicks the edit icon button
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** click the `Edit` icon button
+- **Then** a edit vehicle modal pops up
+- **And** no API request is sent
+
+#### Scenario: User inputs valid information into the `Edit Vehicle` modal
+
+- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Edit Vehicle` button
+- **Then** the `Update Vehicle` modal closes
+- **And** a `POST` API request is sent to the server
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully updated vehicle."}`
+
+#### Scenario: User inputs invalid information into `Edit Vehicle` modal
+
+- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+- **And** I have incorrectly inputted values into the form
+- **When** I click the `Update Vehicle` button
+- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+- **And** a no API request is sent
+ 
+#### Scenario: User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number
+
+- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+- **And** I have correctly inputted values into the form
+- **When** I click the `Update Vehicle` button
+- **Then** the `Edit Vehicle` modal closes
+- **And** a `POST` API request is sent to the server
+- **And** returns a value of `409` with a payload containing a `human readable error message`
+
+---
+
+### US-4.5 — Delete a vehicle as a `admin` role
+
+#### Scenario: User clicks the delete icon button
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** click the `Delete` icon button
+- **Then** a `DELETE` API request is sent to the server
+- **And** removes the selected vehicle with matching VIN
+
+#### Scenario: User clicks the delete icon button but no vehicle exists in the database
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** click the `Delete` icon button
+- **Then** a `DELETE` API request is sent to the server
+- **And** returns a `500` error with payload containing `{"message": "human readable error"}`
+
+---
+
+### US-4.6 — Delete a vehicle as a `maintenance` role
+
+#### Scenario: User clicks the delete icon button
+
+- **Given** I am on the Vehicles.vue as a `maintainence`
+- **When** click the `Delete` icon button
+- **Then** a `DELETE` API request is sent to the server
+- **And** removes the selected vehicle with matching VIN
+
+#### Scenario: User clicks the delete icon button but no vehicle exists in the database
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** click the `Delete` icon button
+- **Then** a `DELETE` API request is sent to the server
+- **And** returns a `500` error with payload containing `{"message": "human readable error"}`
+
+---
+
+### US-4.7 — View all vehicles as a `admin` role
+
+#### Scenario: There no vehicles to display in the vehicle list
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I load the page
+- **And** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** there are not vechiles to display
+- **Then** the list will display the headers of the list table with no vehicles in the list
+- **And** a `</v-alert>` pops up saying `No vehicles to display`
+
+#### Scenario: User first loads the Vehicle page
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I first view the page
+- **Then** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** list of all vehicles in the database are shown
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+
+#### Scenario: User adds a new vehicle 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I add a new vehicle
+- **Then** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** the frontend re-retreives all vehicles in the database 
+- **And** lists out all retreived vehicles in a list
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+
+#### Scenario: User edits a vehicle in the list
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I edit a selected vehicle
+- **Then** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** the frontend re-retreives all vehicles in the database 
+- **And** lists out all retreived vehicles in a list
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+
+#### Scenario: Vehicle does not have a color value
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **And** a vehicle does not have a color value
+- **When** the list loads the vehicle list item
+- **Then** the value for null will be replaced with `No Color`
+- **And**  no API request is sent
+
+#### Scenario: Vehicle does not have a license plate number value
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **And** a vehicle does not have a license plate number value
+- **When** the list loads the vehicle list item
+- **Then** the value for null will be replaced with `No License Plate`
+- **And**  no API request is sent
+
+---
+
+### US-4.8 — View all vehicles as a `maintenance` role
+
+#### Scenario: There no vehicles to display in the vehicle list
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I load the page
+- **And** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** there are not vechiles to display
+- **Then** the list will display the headers of the list table with no vehicles in the list
+- **And** a `</v-alert>` pops up saying `No vehicles to display`
+
+#### Scenario: User first loads the Vehicle page
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I first view the page
+- **Then** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** a list of all vehicles in the database are shown
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+
+#### Scenario: User adds a new vehicle 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I add a new vehicle
+- **Then** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** the frontend re-retreives all vehicles in the database 
+- **And** lists out all retreived vehicles in a list
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+
+#### Scenario: User edits a vehicle in the list
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I edit a selected vehicle
+- **Then** a `GET` API request is sent to the server
+- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+- **And** the frontend re-retreives all vehicles in the database 
+- **And** lists out all retreived vehicles in a list
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+
+#### Scenario: Vehicle does not have a color value
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **And** a vehicle does not have a color value
+- **When** the list loads the vehicle list item
+- **Then** the value for null will be replaced with `No Color`
+- **And**  no API request is sent
+
+#### Scenario: Vehicle does not have a license plate number value
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **And** a vehicle does not have a license plate number value
+- **When** the list loads the vehicle list item
+- **Then** the value for null will be replaced with `No License Plate`
+- **And**  no API request is sent
+
+---
+### US-4.9 — Filter vehicle list as `admin` role
+
+#### Scenario: User chooses from the year drop down filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I select a value from the year drop down filter
+- **Then** the drop down field shows the selected value
+- **And** the frontend shows only the vehicles with that year
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User chooses from the department drop down filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I select a value from the department drop down filter
+- **Then** the drop down field shows the selected value
+- **And** the frontend shows only the vehicles with that department 
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `Make` filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I begin to type in the `Make` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `Model` filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I begin to type in the `Model` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `Color` filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I begin to type in the `Color` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `License` filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I begin to type in the `License` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User chooses from the `From Purchase Date` date filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I select a date from the `From Purchase Date` date filter
+- **Then** the selected date shows in the field
+- **And** the frontend shows only the vehicles purchased after or on the selected date to that current day
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User chooses from the `Before Purchase Date` date filter 
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I select a date from the `Before Purchase Date` date filter
+- **Then** the selected date shows in the field
+- **And** the frontend shows only the vehicles purchased before or on the selected date
+- **And** still applying all other filters
+- **And** no API request is sent
+
+---
+
+### US-4.10 — Filter vehicle list as `maintenance` role
+
+#### Scenario: User chooses from the year drop down filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I select a value from the year drop down filter
+- **Then** the drop down field shows the selected value
+- **And** the frontend shows only the vehicles with that year
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User chooses from the department drop down filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I select a value from the department drop down filter
+- **Then** the drop down field shows the selected value
+- **And** the frontend shows only the vehicles with that department 
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `Make` filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I begin to type in the `Make` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `Model` filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I begin to type in the `Model` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `Color` filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I begin to type in the `Color` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User begins to type in the `License` filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I begin to type in the `License` filter text field
+- **Then** the frontend shows only the matching vehicles
+- **And** continues to update the list as I type in the field
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User chooses from the `From Purchase Date` date filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I select a date from the `From Purchase Date` date filter
+- **Then** the selected date shows in the field
+- **And** the frontend shows only the vehicles purchased after or on the selected date to that current day
+- **And** still applying all other filters
+- **And** no API request is sent
+
+#### Scenario: User chooses from the `Before Purchase Date` date filter 
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I select a date from the `Before Purchase Date` date filter
+- **Then** the selected date shows in the field
+- **And** the frontend shows only the vehicles purchased before or on the selected date
+- **And** still applying all other filters
+- **And** no API request is sent
+
+---
+
+### US-4.11 — Vehicle maintenance as a `admin`
+
+#### Scenario: User clicks the `Maintenance` icon button
+
+- **Given** I am on the Vehicles.vue as a `admin`
+- **When** I click the `Maintenance` icon button 
+- **Then** I am taken to `Maintenance.vue`
+- **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
+
+---
+
+### US-4.12 — cle maintenance as a `maintenance`
+
+#### Scenario: User clicks the `Maintenance` icon button
+
+- **Given** I am on the Vehicles.vue as a `maintenance`
+- **When** I click the `Maintenance` icon button 
+- **Then** I am taken to `Maintenance.vue`
+- **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
+
+---
