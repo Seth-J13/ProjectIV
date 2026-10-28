@@ -215,16 +215,16 @@ Feature 1 and 2 establishes identity
 ### `Vehicles` Table
 | Field                 | Type           | Rules                                                       |
 | --------------------- | -------------- | ----------------------------------------------------------- |
-| `vin`                 | INTEGER(17) PK | Primary Key, NOT NULLABLE, Unique, Must be 17 numbers (0-9) |
+| `vin`                 | INTEGER     PK | Primary Key, Must be 17 numbers (0-9)                       |
 | `make`                | VARCHAR(30)    | Required                                                    |
 | `model`               | VARCHAR(65)    | Required                                                    |
-| `year`                | SMALLINT(4)    | Required                                                    |
-| `purchased_date`      | DATE           | Required;                                                   |
+| `year`                | INTEGER        | Required                                                    |
+| `purchased_date`      | DATE           | Required; Cannot be in the future                           |
 | `color`               | VARCHAR(20)    | NULLABLE;                                                   |
-| `license_plate_num`   | VARCHAR(10)    | NULLABLE; Unique                                            |
+| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                                            |
 | `tag_exp_month`       | DATE           | Required                                                    |
 | `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE                                   |
-| `most_recent_dest_id` | INTEGER(10)    | NULLABLE;                                                   |
+| `most_recent_dest_id` | INTEGER        | NULLABLE;                                                   |
 | `available`           | BIT            | Required                                                    |
 
 ---
@@ -237,24 +237,39 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 | -------- | ------------------------------------- | --------------------------------------------------------------- |
 | `GET`    | `/vehicles-t3/vehicles/`              | Get all vehicles in the database                                |
 | `GET`    | `/vehicles-t3/vehicles/:vin`          | Get a vehicle with the designated vin number                    |
+| `GET`    | `/vehicles-t3/maintenance-info?make=&model=&year=` | Check to see if a vehicle of `year`, `make`, `model` has maintenance info already |
 | `PUT`    | `/vehicles-t3/vehicles/`              | Create a new vehicle                                            |
+| `PUT`    | `/vehicles-t3/maintenance-info?make=&model=&year=` | Create a new maintenance info for a vehicle of `year`, `make`, `model` |
 | `POST`   | `/vehicles-t3/vehicles/:vin`          | Update a vehicle in the database with the designated vin number |
 | `DELETE` | `/vehicles-t3/vehicles/:vin`          | Delete a vehicle with the designated vin number                 |
  
- **Create / Update Request Body**
- ```json
+**Create / Update Request Body (Vehicle Table)**
+```json
+{
+  "vin": "12345671234567123",
+  "make": "Honda",
+  "model": "Accord",
+  "year": 2014,
+  "purchased_date": "2015/12/16",
+  "color": "White",
+  "license_plate_num": "ABC344",
+  "tag_exp_month": "2016/5/25",
+  "department": "Engineering",
+  "most_recent_dest_id": null,
+  "available": 1
+}
+```
+**Create Request Body (Maintenance-Info Table)**
+```json
  {
-    "vin": "12345671234567123",
     "make": "Honda",
     "model": "Accord",
     "year": 2014,
-    "purchased_date": "2015/12/16",
-    "color": "White",
-    "license_plate_num": "ABC344",
-    "tag_exp_month": "2016/5/25",
-    "department": "Engineering",
-    "most_recent_dest_id": null,
-    "available": 1
+    "fuel_type_id": 2,
+    "fuel_capacity": 30,
+    "recommended_tire_psi": 35,
+    "tire_type": "P205/55R16 95H"
+    "mileage": 0
  }
  ```
  **Success — create (**`201`**) and update (**`200`**):**
@@ -305,7 +320,6 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
     - `Fuel Type` - Combo box
     - `Fuel Capacity` - Stepper
     - `Recommended Tire PSI` - Stepper
-    - `Manufactuer` - Text field
 
 **Image** 
   - Vehicle Image should be displayed discretely but be obvious to find
@@ -625,6 +639,7 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 - **And**  no API request is sent
 
 ---
+
 ### US-4.9 — Filter vehicle list as `admin` role
 
 #### Scenario: User chooses from the year drop down filter 
@@ -648,7 +663,7 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 #### Scenario: User begins to type in the `Make` filter 
 
 - **Given** I am on the Vehicles.vue as a `admin`
-- **When** I begin to type in the `Make` filter text field
+- **When** I begin to type in the `Make` filter combo box
 - **Then** the frontend shows only the matching vehicles
 - **And** continues to update the list as I type in the field
 - **And** still applying all other filters
@@ -657,7 +672,7 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 #### Scenario: User begins to type in the `Model` filter 
 
 - **Given** I am on the Vehicles.vue as a `admin`
-- **When** I begin to type in the `Model` filter text field
+- **When** I begin to type in the `Model` filter combo box
 - **Then** the frontend shows only the matching vehicles
 - **And** continues to update the list as I type in the field
 - **And** still applying all other filters
@@ -724,7 +739,7 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 #### Scenario: User begins to type in the `Make` filter 
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
-- **When** I begin to type in the `Make` filter text field
+- **When** I begin to type in the `Make` filter combo box
 - **Then** the frontend shows only the matching vehicles
 - **And** continues to update the list as I type in the field
 - **And** still applying all other filters
@@ -733,7 +748,7 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
 #### Scenario: User begins to type in the `Model` filter 
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
-- **When** I begin to type in the `Model` filter text field
+- **When** I begin to type in the `Model` filter combo box
 - **Then** the frontend shows only the matching vehicles
 - **And** continues to update the list as I type in the field
 - **And** still applying all other filters

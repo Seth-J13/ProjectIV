@@ -4,17 +4,17 @@
 **Status:** Draft
 **Created:** 2026-10-27
 **Input:** This feature is a maintenance view page
-**Depends on:** [Feature X -- ...](feature-X-...md)
+**Depends on:** [Feature 4 -- Vehicle-CRUD](feature-4-Vehicle-CRUD.md)
 
 ---
 
 ## User Stories
 
-### US-5.1: 
+### US-5.1: User views a vehicle's maintenance page
 
-**As a** <role>
-**I want to** <capability>
-**So that** <benefit>
+**As a** (`admin` or `maintenance`)
+**I want to** view a vehicle's maintenance information consisting of `Maintenance Notes` and `Vehicle Information`
+**So that** I can see basic information about the vehicle and what needs to be worked on
 
 **Priority:** PN (eg. P1 for most important)  
 **Independent test:** <how to verify this story alone, in one sentence> (eg. Submit valid registration and land on protected home with `user` in `localStorage`)
@@ -82,27 +82,25 @@ Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
 
 ---
 
-
-
 ## Data Model Requirements
-### Look under ./backend/app/models/(file name).js
-- This shows the table you will need to model
 
-## VVV Example table (Change or Delete) VVV
-### `users` table
+### `Maintenance_Info` Table
+| Field                 | Type           | Rules                                                       |
+| --------------------- | -------------- | ----------------------------------------------------------- |
+| `make`                | VARCHAR(30) PK | Primary Key, Required                                       |
+| `model`               | VARCHAR(65) PK | Primary Key, Required                                       |
+| `year`                | INTEGER     PK | Primary Key, Required                                       |
+| `fuel_type_id`        | INTEGER     FK | Required                                                    |
+| `fuel_capacity`       | INTEGER        | Required, Non-negative                                      |
+| `recommended_tire_psi`| DECIMAL(5, 2)  | Required, Non-negative                                      |
+| `tire_type`           | VARCHAR(17)    | Required                                                    |
+| `mileage`             | INTEGER        | Required, Non-negative                                      |
 
-
-| Field      | Type        | Rules                              |
-| ---------- | ----------- | ---------------------------------- |
-| `id`       | INTEGER PK  | Auto-increment                     |
-| `fName`    | STRING      | Required                           |
-| `lName`    | STRING      | Required                           |
-| `email`    | STRING      | Required, unique                   |
-| `username` | STRING(100) | Required, unique; stored lowercase |
-| `password` | STRING(255) | Required; bcrypt hash only         |
-| `role`     | STRING(20)  | Default `worker`                   |
-
-## ^^^ (Change or Delete) ^^^
+### `Fuel_Type` Table
+| Field                 | Type           | Rules                                                       |
+| --------------------- | -------------- | ----------------------------------------------------------- |
+| `fuel_id`             | INTEGER     PK | Primary Key                                                 |
+| `fuel_type`           | VARCHAR(50)    | Required                                                    |
 
 ---
 
