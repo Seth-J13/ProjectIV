@@ -16,27 +16,27 @@
 ### US-6.1: View Current Destinations
 
 **As a** authenticated user with administrator role
-**I want to** see a list of all `destinations`
-**So that** I know which `destinations` exist.
+**I want to** see a list of all destinations
+**So that** I know which destinations exist.
 
 **Priority:** P1
-**Independent test:** `DestinationList.vue` shows a list of `destinations` with one per row and their details.
+**Independent test:** `DestinationList.vue` shows a list of destinations with one per row and their details.
 **Acceptance scenarios:** see ### US-6.1 under Acceptance Criteria
 
 ### US-6.2: Destination Details
 
 **As a** authenticated user with administrator role
-**I want to** see the details of a selected `destination`
+**I want to** see the details of a selected destinations
 **So that** I can know all its information.
 
 **Priority:** P1
-**Independent test:** `destinations` row in the list has a button which, when pressed, opens a `Details` modal containing a destination's information and current/future reservations headed to that area
+**Independent test:** destinations row in the list has a button which, when pressed, opens a `Details` modal containing a destination's information and current/future reservations headed to that area
 **Acceptance scenarios:** see ### US-6.2 under Acceptance Criteria
 
 ### US-6.3: Add Destination
 
 **As a** authenticated user with administrator role
-**I want to** add `destinations`s to my `destinations`s list
+**I want to** add destinations to my `Destinations` list
 **So that** I can use it for stuff later.
 
 **Priority:** P1
@@ -46,7 +46,7 @@
 ### US-6.4: Remove Destination
 
 **As a** authenticated user with administrator role
-**I want to** remove `destinations` to my `destinations` list
+**I want to** remove destinations to my `Destinations` list
 **So that** I can manage relevant information and list size.
 
 **Priority:** P2
@@ -57,7 +57,7 @@
 
 **As a** authenticated user with administrator role
 **I want to** search for destinations by name or by address
-**So that** I don't have to scroll or paginate to find the `destinations` I want.
+**So that** I don't have to scroll or paginate to find the destinations I want.
 
 **Priority:** P2
 **Independent test:** pressing `Previous` button shows the enrollments for the previous semester, pressing the `Next` button shows the enrollments for the next semester
@@ -69,20 +69,20 @@
 
 ### Functional Requirements [THINK OF MORE POSSIBLE FR'S LATER]
 
-**FR-001**: An authenticated admin user **MUST** be allowed to do CRUD operations on the `destinations` table on `DestinationList.vue` or its relevant components
-**FR-002**: Other authenticated users or unauthenticated visitors **MUST NOT** be allowed to do update or delete operations on the `destinations` table on `DestinationList.vue`
-**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `destinations` table from relevant components.
-**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `destinations` table.
-**FR-005**: `DestinationList.vue` **MUST** show a list of `destinations` table entries.
+**FR-001**: An authenticated admin user **MUST** be allowed to do CRUD operations on the `Destinations` table on `DestinationList.vue` or its relevant components
+**FR-002**: Other authenticated users or unauthenticated visitors **MUST NOT** be allowed to do update or delete operations on the `Destinations` table on `DestinationList.vue`
+**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `Destinations` table from relevant components.
+**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `Destinations` table.
+**FR-005**: `DestinationList.vue` **MUST** show a list of `Destinations` table entries.
 **FR-006**: Authenticated admin users **MUST** be able to search list entries by city, state, zip, and/or name.
 **FR-007**: Authenticated admin users **MUST** be able to sort list entries by city, state, zip, and/or name in both ascending and descending order.
 **FR-008**: Authenticated admin users **MUST** be able to see the details of list entries in rows.
-**FR-009**: The list of `destinations` entries **MUST NOT** be displayed across more than one page.
-**FR-010**: Each `destinations` entry **MUST** display the end-date of the most recent `request` made including it, ignore future requests including it.
-**FR-011**: Trying to add or save edits to a `destinations` entry with any empty fields besides `Address Line 2` **MUST** cancel the add or save (but not close the dialog) and return an error saying `Missing fields: ` along with the empty fields.
-**FR-012**: Trying to add or save edits to a `destinations` entry with a `zip` formatted other than ##### or #####-#### (where # is a digit from 0-9) **MUST** return a `400` error saying `Zip code must be formatted like ##### or #####-####`.
+**FR-009**: The list of `Destinations` entries **MUST NOT** be displayed across more than one page.
+**FR-010**: Each `Destinations` entry **MUST** display the end-date of the most recent `request` made including it, ignore future requests including it.
+**FR-011**: Trying to add or save edits to a `Destinations` entry with any empty fields besides `Address Line 2` **MUST** cancel the add or save (but not close the dialog) and return an error saying `Missing fields: ` along with the empty fields.
+**FR-012**: Trying to add or save edits to a `Destinations` entry with a `zip` formatted other than ##### or #####-#### (where # is a digit from 0-9) **MUST** return a `400` error saying `Zip code must be formatted like ##### or #####-####`.
 **FR-013**: Displaying an error inside a create, update, or delete dialog **MUST NOT** close the dialog.
-**FR-014**: Encountering a field/form/dialog error **MUST NOT** send the query to the `destinations` table.
+**FR-014**: Encountering a field/form/dialog error **MUST NOT** send the query to the `Destinations` table.
 
 ---
 
@@ -92,15 +92,15 @@
 
 ## Edge Cases
 
-- POST `destinations` with the same `city`, `state`, `zip`, and `address` (combined) -> `409`
-- no `request`s exist but `destinations` exist -> don't render anything relating to requests
-- GET `destinations` that hasn't been visited yet -> shows "not visited"
+- POST `Destinations` with the same `city`, `state`, `zip`, and `address` (combined) -> `409`
+- no `Requests` exist but destinations exist -> don't render anything relating to requests
+- GET `Destinations` that hasn't been visited yet -> shows "not visited"
 
 ## Success Criteria
 
 **SC-001**: Every Gherkin scenario has at least one automated test before merge
-**SC-002**: Administrator user can Create, Read, Update, or Delete from `destinations`
-**SC-003**: User, Driver, and Maintenance users can Create and Read (but not Update or Delete) from `destinations`
+**SC-002**: Administrator user can Create, Read, Update, or Delete from `Destinations`
+**SC-003**: User, Driver, and Maintenance users can Create and Read (but not Update or Delete) from `Destinations`
 **SC-004**: npm test passes for `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js`, and `frontend/tests/DestinationForm.test.js`
 
 ---
@@ -112,17 +112,17 @@ Destinations are not owned by anything or anyone.
 | Rule                  | Requirement                                                                                                                             |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | **Read scope**        | For all authenticated users (`GET /vehicle-t3/destinations` and `GET /vehicle-t3/destinations/:destinationId`)                          |
-| **Write scope**       | Only authenticated admins can overwrite/update `destinations` (`PUT /vehicle-t3/destinations/:destinationId`)                           |
+| **Write scope**       | Only authenticated admins can overwrite/update `Destinations` (`PUT /vehicle-t3/destinations/:destinationId`)                           |
 | **Create scope**      | `POST /vehicle-t3/destinations/:destinationId*` succeeds only when the row does not already exist and `:destinationId === req.user.id`. |
-| **Cross-user access** | No user data should be included in responses from `destinations`                                                                        |
-| **UI scope**          | `DestinationList.vue` shows data from the `destinations` on a single page which can be sorted and searched.                             |
+| **Cross-user access** | No user data should be included in responses from `Destinations`                                                                        |
+| **UI scope**          | `DestinationList.vue` shows data from `Destinations` on a single page which can be sorted and searched.                                 |
 | **Later features**    | `DestinationList.vue` will include recently-visited data from the `request` which most recently included it                             |
 
 ---
 
 ## Key Entities
 
-**User**: registered account (email, password, role, etc); has permission levels pertaining to `destination` CRUD.
+**User**: registered account (email, password, role, etc); has permission levels pertaining to `Destinations` CRUD.
 **Destination**: Entity containing information used to relate a `request` to a real world location.
 
 ---
@@ -131,20 +131,20 @@ Destinations are not owned by anything or anyone.
 
 Mount prefix: `/vehicle-t3`. Flat JSON (no `{ success, data }` envelope). Errors: `{ "message": "Human-readable explanation." }`. Authenticated writes send `Authorization: Bearer <token>`.
 
-This feature uses the `destinations` endpoints below.
+This feature uses the `Destinations` endpoints below.
 
-| Method   | Endpoint                                  | Auth       | Purpose                                                                 |
-| -------- | ----------------------------------------- | ---------- | ----------------------------------------------------------------------- |
-| `GET`    | `/vehicle-t3/destinations`                | Yes        | List all destinations                                                   |
-| `POST`   | `/vehicle-t3/destinations/`               | Yes        | Add a `destination`                                                     |
-| `GET`    | `/vehicle-t3/destinations/:destinationId` | Yes        | List the details of the `destination` with the id `:destinationId`      |
-| `PUT`    | `/vehicle-t3/destinations/:destinationId` | Yes, Admin | Overwrite the details of the `destination` with the id `:destinationId` |
-| `DELETE` | `/vehicle-t3/destinations/:destinationId` | Yes, Admin | Remove the `destination` with the id `:destinationId`                   |
+| Method   | Endpoint                                  | Auth       | Purpose                                                               |
+| -------- | ----------------------------------------- | ---------- | --------------------------------------------------------------------- |
+| `GET`    | `/vehicle-t3/destinations`                | Yes        | List all destinations                                                 |
+| `POST`   | `/vehicle-t3/destinations/`               | Yes        | Add a destination                                                     |
+| `GET`    | `/vehicle-t3/destinations/:destinationId` | Yes        | List the details of the destination with the id `:destinationId`      |
+| `PUT`    | `/vehicle-t3/destinations/:destinationId` | Yes, Admin | Overwrite the details of the destination with the id `:destinationId` |
+| `DELETE` | `/vehicle-t3/destinations/:destinationId` | Yes, Admin | Remove the destination with the id `:destinationId`                   |
 
 **Unauthenticated write:** `401` login error
 **Unauthorized write:** `403` forbidden
 
-### Load destinations (`GET /vehicle-t3/destinations`)
+### Read Destinations (`GET /vehicle-t3/destinations`)
 
 **Success** (`200`): array with all destinations
 
@@ -176,7 +176,7 @@ This feature uses the `destinations` endpoints below.
 
 **Server error:** `500` `{ "message": "…" }`.
 
-### Add enrollment (`POST /vehicle-t3/destinations`)
+### Add Destination (`POST /vehicle-t3/destinations`)
 
 **Request body** (fields the add request sends):
 
@@ -197,7 +197,7 @@ Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `
 **Success** (`201`)
 **Server error:** `500` `{ "message": "…" }`.
 
-### Remove Enrollment (`DELETE /vehicle-t3/destinations/:destinationId)
+### Remove Destination (`DELETE /vehicle-t3/destinations/:destinationId)
 
 **Success** (`204`)
 **Not found:** `404`
@@ -222,29 +222,48 @@ Quoted messages that tests must match:
 
 Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labeled actions use class `oc-cta`. Icon-only row actions need `aria-label`s.
 
-**enrollments view (this feature)**
+### Destinations view
 
-- Heading: **My Enrollments**
-- Primary action: **+ New enrollment** opens a `<v-dialog>` with a **Course** field `<v-combobox>`, a conditionally-visible **Section** field `<v-combobox>`, and **Create** / **Cancel** buttons. Use class `oc-cta` on **Create** and **+ New enrollment** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Display interactive search bar named `Find` above any lists
-- Display enrollments as rows (e.g. `<v-list>` or table). The following columns should be in the list:
-  **SectionId** -- `XXXX-####-##` unique identifier code (e.g. `CMSC-1113`)
-  **Name** -- The name of the course the section belongs to (e.g. `Programming I`)
-  **Days** -- Which days of the week the section meets on (e.g. `M W F` or `T Th`)
-  **Time** -- Start Time to End Time (e.g. `12:40pm - 1:30pm`)
-  **Room** -- The room code a section meets in (e.g. `PEC-233`)
-  **Instructor** -- The name of the `faculty` in the `section` (e.g. `David North`).
-  - Each row contains a **Delete** icon — opens confirmation `<v-dialog>`
-- Icon-only row action uses `size="small"` and accessible `aria-label` (**Drop Class**).
-  **Empty state:** **"No enrollments yet. Add an enrollment."** when no enrollments exist in the database.
+- Heading: **Manage Destinations**
+- Primary action: **+ New Destination** opens a `<DestinationForm>` component named **Destination Form** Use class `oc-cta` on **Create**, **+ New Destination**, and **Destination Form** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Display interactive search bar named `Search` above any lists
+- Display destinations as rows (e.g. `<v-list>` or table). The following columns should be in the list:
+  **Name** -- The name of the address (`dest_name`)
+  **Street Address** -- The address typed into map applications (`addr_line_1`)
+  **Address Line 2** -- Address line 2 (`addr_line_2`); render empty if left null
+  **City** -- The city the destination is in (`city`)
+  **State** -- The state the destination is in (or country if not in US) (`state`)
+  **Zip Code** -- Destination Zip Code (`zip`)
+  **Visited** -- The date of the most recent `request` containing this destination id
+  - Each row contains **Edit** and **Delete** icons — opens confirmation `<v-dialog>`
+- Icon-only row action uses `size="small"` and accessible `aria-label` (**Edit**) and (**Delete**).
+  **Empty state:** **"No destinations yet. Add a destination."** when no destinations exist in the database.
   **Loading state:** skeleton or progress indicator while enrollments are fetching.
   **Error state:** `<v-alert type="error">` for API failures.
 
-[start destination form draft]
-`Name` (required), `City` (required), `State` (required), `Address`
-[end destination form draft]
+### Destination Form Component
 
-**Implementation note:** one route/view for `enrollment`s; `enrollment` CRD dialogs are child components or inline `<v-dialog>` blocks in `EnrollmentList.vue` unless the team splits presentational dialogs later.
+Primary Action: Fill out a form with the following fields:
+**Name** -- accepts string of length 254 or less; trim whitespaces in beginning/end
+**Street Address** -- accepts a string of length 254 or less; trim whitespaces in beginning/end
+**Address Line 2** -- accepts a string of length 254 or less; trim whitespaces in beginning/end; nullable
+**City** -- accepts string of length 254 or less; trim whitespaces in beginning/end
+**State** -- accepts string of length 254 or less; trim whitespaces in beginning/end
+**Zip Code** -- accepts numeric string of exactly length 5 or 10 in format ##### or, if more than 5 numbers typed in, add - automatically so format becomes #####-####
+
+**Edit State**
+
+- Header: **Edit Destination**
+- **Cancel** button clears all fields in the current form and closes the component
+- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
+
+**Add State**
+
+- Header: **Add Destination**
+- **Cancel** button clears all fields in the current form and closes the component
+- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
+
+**Implementation note:** one route/view for `Destinations`; `Destinations` dialogs are child components or inline `<v-dialog>` blocks in `DestinationList.vue` unless the team splits presentational dialogs later.
 
 **App chrome**
 
@@ -254,9 +273,9 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 
 ## Data Model Requirements
 
-This feature uses a `destinations` table where each entry has an `id` used by other tables as a foreign key. Sequelize also stores `createdAt` / `updatedAt`.
+This feature uses a `Destinations` table where each entry has an `id` used by other tables as a foreign key. Sequelize also stores `createdAt` / `updatedAt`.
 
-### `destinations` table
+### `Destinations` table
 
 | Field             | Type                    | Rules                               |
 | ----------------- | ----------------------- | ----------------------------------- |
@@ -273,231 +292,56 @@ This feature uses a `destinations` table where each entry has an `id` used by ot
 
 (_The ERD is wrong in this. Requests can only have one destination, but a destination can have multiple vehicle requests going to it at once_.)
 
-- `destinations` hasMany `request`s
-- `request` belongsTo `destination`
+- `Destinations` hasMany `request`s
+- `request` belongsTo `Destinations`
 
 ---
 
 ## Acceptance Criteria (Gherkin)
 
-### US-6.1: View Current Enrollments
+### US-6.1: View Current Destinations
 
-#### Scenario: view enrollment list with no enrollments
+#### Scenario: Admin views DestinationList
 
-**Given** I am a signed in student user
-**When** I view the `EnrollmentList` view
-**And** I have no `enrollment`s
-**Then** I see "No enrollments yet. Add an enrollment."
-**And** no enrollments show up
+**Given** I am an authenticated admin user
+**When** I navigate to `DestinationList.vue`
+**Then** I am allowed to see the **Manage Destinations** list described in Screen Requirements with everything on it
 
-#### Scenario: view enrollment list with enrollments
+### US-6.2: Destination Details
 
-**Given** I am a signed in student user
-**When** I view the `EnrollmentList` view
-**And** I have an `enrollment` for the `sectionId` `CMSC-1113-01` for the `semesterId` `105`
-**Then** I see a row containing the details of `sectionId` `CMSC-1113-01`
-**And** each row has a **Delete** icon
-**And** I see a `Previous` button
-**And** I see a `Next` button
+#### Scenario: PUT to Destinations is rejected
 
-#### Scenario: view only enrollments matching semesterId
+**Given** I am signed in as a student
+**When** I send any `PUT` request
+**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
 
-**Given** I am a signed in student user
-**When** I view the `EnrollmentList` view
-**And** I have an `enrollment` for the `sectionId` `CMSC-1113-01` for the `semesterId` `105`
-**And** I have an `enrollment` for the `sectionId` `CMSC-2213-01` for the `semesterId` `105`
-**And** I have an `enrollment` for the `sectionId` `ENGL-5243-02` for the `semesterId` `106`
-**And** I am viewing my `enrollment` list for `semesterId` `105`
-**Then** I see a header above the `enrollment` list with the name of `semesterId` `105`
-**And** I see a row containing the `section` name of `sectionId` `CMSC-1113-01`
-**And** I see a row containing the `section` name of `sectionId` `CMSC-2213-01`
+### US-6.3: Add Destination
 
-#### Scenario: Enforce Admin Authorization on Destinations View
+#### Scenario: PUT to Destinations is rejected
 
-**Given** I am an authenticated user without the administrator role
-**When** I navigate to the URI route which shows `DestinationList.vue`
-**Then** I am automatically redirected to my correct landing page
+**Given** I am signed in as a student
+**When** I send any `PUT` request
+**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
 
-### US-6.2: Enrollment Details
+### US-6.4: Remove Destination
 
-#### Scenario: view enrollment details
+#### Scenario: PUT to Destinations is rejected
 
-**Given** I am a signed in student user
-**When** I view the `EnrollmentList` view
-**And** I have an enrollment
-**Then** I see the enrollment's details that fulfill the Screen Requirements
+**Given** I am signed in as a student
+**When** I send any `PUT` request
+**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
 
-### US-6.3: Add Enrollment
+### US-6.5: Destinations Search Bar
 
-#### Scenario: Open add enrollment modal
+#### Scenario: PUT to Destinations is rejected
 
-**Given** I am viewing the `EnrollmentList` view
-**When** I click **+ New enrollment**
-**Then** I see a combobox for `Courses`
-**And** I see a `Cancel` and `Confirm` buttons
-
-#### Scenario: Use course combobox
-
-**Given** I am viewing the `Add Enrollment` modal
-**When** I type in the `Course` combobox
-**Then** I see the course codes for this semester that contain my typing as a substring
-
-#### Scenario: Confirm course combobox
-
-**Given** I am viewing the `Add Enrollment` modal
-**When** I select a `course` in the `Course` combobox
-**Then** I see a combobox for `Section` containing all the `sections` for that course
-
-#### Scenario: Use section combobox
-
-**Given** I am viewing the `Add Enrollment` modal
-**And** I have selected a `course` already in the `Course` combobox
-**When** I type in the `Section` combobox
-**Then** I see the section codes that contain my typing as a substring
-
-#### Scenario: Confirm section combobox
-
-**Given** I am viewing the `Add Enrollment` modal
-**And** I have selected a `course` already in the `Course` combobox
-**When** I select a `section` in the `Section` combobox
-**Then** I see the correct `section`'s details beneath the combobox
-
-#### Scenario: Create valid enrollment
-
-**Given** I am viewing the `Add Enrollment` modal
-**And** I have selected a valid `course` already in the `Course` combobox
-**And** I have selected a valid `section` in the `Section` combobox
-**When** I select the **Create** button
-**Then** the API sends a `200` response along with the created object
-**And** the `enrollment` list updates with the newly created `enrollment`
-**And** the `Add Enrollment` modal closes.
-
-#### Scenario: Create an enrollment with an empty course
-
-**Given** I am viewing the `Add Enrollment` modal
-**When** I leave the `Course` combobox in its default state or empty
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"Course and Section are both required."**
-**And** no API request is sent
-
-#### Scenario: Create an enrollment with an empty section
-
-**Given** I am viewing the `Add Enrollment` modal
-**And** I have selected a `course` already in the `Course` combobox
-**When** I leave the `Section` combobox in its default state or empty
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"Section is required."**
-**And** no API request is sent
-
-#### Scenario: Create an enrollment with duplicate data
-
-**Given** I am viewing the `Add Enrollment` modal
-**And** I have an existing `enrollment`
-**When** I select a `course` and `section` that both match an existing `enrollment`
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"Can't enroll in the same section twice in one semester."**
-**And** no API request is sent
-
-#### Scenario: Create enrollment with improper course ID
-
-**Given** I am viewing the `Add Enrollment` modal
-**When** I input a `courseId` in the `Course` combobox that does not exist or the `courseId` I inputted is not offered this semester
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"Please select a course offered this semester"**
-**And** no API request is sent
-**And** no `Section` combo box appears
-
-#### Scenario: Create enrollment with improper section ID
-
-**Given** I am viewing the `Add Enrollment` modal
-**And** I have selected a valid `courseId` in the `course` combobox
-**When** I input a `sectionId` in the `Section` combobox that does not belong to the selected `course`
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"Please select a valid section from this course"**
-**And** no API request is sent
-**And** no `section` details appear beneath the `Section` combobox
-
-### US-6.4: Remove Enrollment
-
-#### Scenario: Select enrollment delete icon
-
-**Given** I am viewing the `EnrollmentList` view
-**When** I select the **Delete** icon on an `enrollment`
-**Then** I see a **Drop this class?** modal with **Drop** and **Cancel** buttons
-
-#### Scenario: Confirm delete icon
-
-**Given** I am viewing the **Drop this class?** modal
-**When** I select **Drop**
-**Then** the API returns `204`
-**And** the selected `enrollment` is no longer in the `EnrollmentList`
-**And** the **Drop this class?** modal closes
-
-#### Scenario: Cancel delete
-
-**Given** I am viewing the **Drop this class?** modal
-**When** I select **Cancel**
-**Then** no API request is sent
-**And** the **Drop this class?** modal closes
-**And** the selected `enrollment` is still in the `EnrollmentList`
-
-### US-6.5: Seek semesters pagination
-
-#### Scenario: EnrollmentList First Landing
-
-**Given** I am viewing the **EnrollmentList** view
-**When** the view loads for the first time this `session`
-**Then** I see a list of my `enrollment`s for the current `semester`
-**And** I do not see my `enrollment`s for any other `semester`
-
-#### Scenario: EnrollmentList Return Landing
-
-**Given** I am viewing the **EnrollmentList** view
-**When** I navigate away from the **EnrollmentList** view
-**And** I navigate back to the **EnrollmentList** view
-**Then** I see my `enrollment`s for the `semester` I most recently looked at
-
-#### Scenario: Navigate Semesters order forward
-
-**Given** I am viewing the **EnrollmentList** view
-**And** I am viewing my `enrollment`s for the `FA2026` `semester`
-**When** I press the **Next** button four times
-**Then** I see my `enrollment`s for the `WI2026` `semester`
-**Then** I see my `enrollment`s for the `SP2027` `semester`
-**Then** I see my `enrollment`s for the `SU2027` `semester`
-**Then** I see my `enrollment`s for the `FA2027` `semester`
-
-#### Scenario: Navigate Semesters order backward
-
-**Given** I am viewing the **EnrollmentList** view
-**And** I am viewing my `enrollment`s for the `FA2026` `semester`
-**When** I press the **Previous** button four times
-**Then** I see my `enrollment`s for the `SU2026` `semester`
-**Then** I see my `enrollment`s for the `SP2026` `semester`
-**Then** I see my `enrollment`s for the `WI2025` `semester`
-**Then** I see my `enrollment`s for the `FA2025` `semester`
-
-#### Scenario: Navigate Semesters combobox typing
-
-**Given** I am viewing the **EnrollmentList** view
-**When** I type anything into the `Semester` combobox without confirming
-**Then** I see all `semester`s in the dropdown with the combobox content as a substring
-
-#### Scenario: Navigate Semesters combobox select
-
-**Given** I am viewing the **EnrollmentList** view
-**When** I select a `semester` from the `Semester` combobox
-**Then** I see all my `enrollment`s for that selected `semester` only
-**And** pressing the **Previous** or **Next** navigate `semester`s with the current one as a new starting position
+**Given** I am signed in as a student
+**When** I send any `PUT` request
+**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
 
 ### US-6.6: No editing enrollments
 
-#### Scenario: PUT to enrollments is rejected
+#### Scenario: PUT to Destinations is rejected
 
 **Given** I am signed in as a student
 **When** I send any `PUT` request
@@ -536,7 +380,7 @@ Each scenario above must map to at least one automated test. `it` names must mat
 | US-6.5 | Navigate Semesters order backward               | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters order backward`               |
 | US-6.5 | Navigate Semesters combobox typing              | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters combobox typing`              |
 | US-6.5 | Navigate Semesters combobox select              | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters combobox select`              |
-| US-6.6 | PUT to enrollments is rejected                  | `backend/tests/destinations.test.js`                                          | `PUT to enrollments is rejected`                  |
+| US-6.6 | PUT to Destinations is rejected                 | `backend/tests/destinations.test.js`                                          | `PUT to Destinations is rejected`                 |
 
 ---
 
@@ -573,9 +417,7 @@ Do not implement behavior not in this spec.
 ## Out of Scope
 
 -
--
-
----
+- ***
 
 ## Defer to Feature 7
 
