@@ -21,7 +21,7 @@
 **So that** I can give admins a list of drivers to assign
 
 **Priority:** P1  
-**Independent test:** Open add-course dialog, create a driver; it appears in the drivers view  
+**Independent test:** Open add-driver dialog, create a driver; it appears in the drivers view  
 **Acceptance scenarios:** see ### US-7.1 under Acceptance Criteria
 
 ### US-7.2: View my drivers
@@ -54,11 +54,11 @@
 **Independent test:** Rename and delete an owned driver from row actions; drivers view updates  
 **Acceptance scenarios:** see ### US-7.4 under Acceptance Criteria
 
-### US-7.5: Search Courses
+### US-7.5: Search drivers
 
 **As a** signed-in admin user  
 **I want** to search for drivers containing certain key characters
-**So that** I can quickly find which course I'm looking for
+**So that** I can quickly find which driver I'm looking for
 
 **Priority:** P2  
 **Independent test:**
@@ -73,7 +73,7 @@
 - **FR-001**: All driver endpoints MUST require a valid session (`authenticate` middleware).
 - **FR-002**: driver names MUST be trimmed before save; empty strings MUST be rejected.
 - **FR-003**: This feature MUST deliver driver CRUD and a **single-view** drivers UI in `Drivers.vue` (dialog-based add/edit/delete). No sidebar/main split.
-- **FR-004**: typing in the on-screen course search bar updates the driver list with only drivers containing the search bar's content as a substring.
+- **FR-004**: typing in the on-screen driver search bar updates the driver list with only drivers containing the search bar's content as a substring.
 - **FR-005**: signed-out users MUST NOT have access to any `/vehicle-t3` routes
 
 ---
@@ -85,7 +85,7 @@
 
 ## Edge Cases
 
-- Empty or whitespace-only course name → client block and/or `400`.
+- Empty or whitespace-only driver name → client block and/or `400`.
 - Invalid `driver_id` → `400`; unowned driver → `404`.
 - Unauthenticated `Drivers.vue` → redirect or `401`.
 
@@ -104,12 +104,12 @@ Drivers are not owned by anybody; however, only administrator-role users are aut
 
 | Rule                  | Requirement                                                                                                                                   |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Read scope**        | `GET /driver-t3` returns only drivers.                                                                                                          |
+| **Read scope**        | `GET /vehicle-t3` returns only drivers.                                                                                                          |
 | **Write scope**       | `PUT` and `DELETE` apply only when the driver row matches both `id` and `req.user.id`.                                                        |
 | **Create scope**      | New drivers owned by nobody.                                                                                                                  |
 | **Cross-user access** | If an unauthorized user tries to `PUT`, `DELETE`, or `POST` drivers, respond with `403`.                                                      |
-| **UI scope**          | The drivers view shows only drivers returned by `GET /driver-t3` for the signed-in admin.                                                       |
-| **Implementation**    | Use a shared helper (e.g. `getAccessibleCoursesOrNull(req, driver_id)`) in `app/authorization/` — do not duplicate scope logic in controllers. |
+| **UI scope**          | The drivers view shows only drivers returned by `GET /vehicle-t3` for the signed-in admin.                                                       |
+| **Implementation**    | Use a shared helper (e.g. `getAccessibleDriversOrNull(req, driver_id)`) in `app/authorization/` — do not duplicate scope logic in controllers. |
 
 ---
 
@@ -117,11 +117,11 @@ Drivers are not owned by anybody; however, only administrator-role users are aut
 
 | Method   | Endpoint             | Auth       | Purpose             |
 | -------- | -------------------- | ---------- | ------------------- |
-| `GET`    | `/driver-t3`           | Yes        | Fetch all drivers   |
-| `GET`    | `/driver-t3/:driver_id` | Yes        | Show driver details |
-| `POST`   | `/driver-t3`           | Yes, admin | Create a new driver |
-| `PUT`    | `/driver-t3/:driver_id` | Yes, admin | Update a driver     |
-| `DELETE` | `/driver-t3/:driver_id` | Yes, admin | Delete a driver     |
+| `GET`    | `/vehicle-t3`           | Yes        | Fetch all drivers   |
+| `GET`    | `/vehicle-t3/:driver_id` | Yes        | Show driver details |
+| `POST`   | `/vehicle-t3`           | Yes, admin | Create a new driver |
+| `PUT`    | `/vehicle-t3/:driver_id` | Yes, admin | Update a driver     |
+| `DELETE` | `/vehicle-t3/:driver_id` | Yes, admin | Delete a driver     |
 
 All endpoints except `GET` require **an administrator-role user** to access/operate. Non-admin user access returns `403`.
 
@@ -132,7 +132,7 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
   "driver_id": "1",
   "license_status": "active",
   "license_exp_date": "08/2028",
-  "availability": "any time"
+  "availability": "available"
 }
 ```
 
@@ -143,7 +143,7 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
   "driver_id": "1",
   "license_status": "active",
   "license_exp_date": "08/2028",
-  "availability": "any time"
+  "availability": "available"
 }
 ```
 
@@ -151,14 +151,14 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 **Not found:** `404`.
 **Invalid Request:** `400`.
 **Server/Connection Error:** `500`.
-**Put course request body:**
+**Put driver request body:**
 
 ```json
 {
   "driver_id": "1",
   "license_status": "active",
   "license_exp_date": "08/2028",
-  "availability": "any time"
+  "availability": "available"
 }
 ```
 
@@ -181,7 +181,7 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 - **Loading state:** skeleton or progress indicator while drivers are fetching.
 - **Error state:** `<v-alert type="error">` for API failures.
 
-**Implementation note:** one route/view for drivers; course CRUD dialogs are child components or inline `<v-dialog>` blocks in `Drivers.vue` unless the team splits presentational dialogs later.
+**Implementation note:** one route/view for drivers; driver CRUD dialogs are child components or inline `<v-dialog>` blocks in `Drivers.vue` unless the team splits presentational dialogs later.
 
 **App chrome**
 
@@ -206,7 +206,7 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 | `driver_id`          | INT PK | Required; Unique;                   |
 | `license_status`        | ENUM    | Required; `expired`, `active`, `suspended`, |
 | `license_exp_date`   | date      | Required; |
-| `availability` | ENUM      | Required; `yes`, `no` |
+| `availability` | ENUM      | Required; `available`, `not available`, `on call` |
 
 ---
 
@@ -220,9 +220,9 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 - **When** I click **+ New driver**
 - **And** I enter license status `active`
 - **And** I enter expiration date `05/2026`
-- **And** I add availability `yes`
+- **And** I add availability `available`
 - **And** I confirm the dialog
-- **Then** the API returns `201` with a driver object containing `driver_id`, `license_status`, `license_exp_date` and `availability`
+- **Then** the API returns `201` with a driver object containing `driver_id`, `license_status:'active'`, `license_exp_date:'05/2026'` and `availability:'available'`
 - **And** driver_id, license_status, license_exp_date, and availability appears in the drivers view
 - **And** the add-driver dialog closes
 
@@ -287,7 +287,7 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 - **Given** I am signed in as an admin
 - **And** the driver `1` exists
-- **When** I view the courses view
+- **When** I view the drivers view
 - **Then** the `1` row shows an **Edit driver** icon action
 - **And** the `1` row shows a **Delete driver** icon action
 
@@ -361,7 +361,7 @@ and `4, active` exist
 #### Scenario: Unauthenticated API request to drivers
 
 - **Given** I have no valid session token
-- **When** I request `GET /driver-t3`
+- **When** I request `GET /vehicle-t3`
 - **Then** the API returns `401` with an unauthorized message
 
 ---
@@ -370,23 +370,23 @@ and `4, active` exist
 
 | Story  | Scenario                                                       | Test file                                                         | Test name                                                        |
 | ------ | -------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
-| US-7.1 | Admin creates a new driver                                     | `backend/tests/driver-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a new driver`                                     |
+| US-7.1 | Admin creates a new driver                                     | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a new driver`                                     |
 | US-7.1 | Admin creates a driver with an empty name                      | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver with an empty name`                      |
 | US-7.1 | Admin creates a driver with an empty license status               | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver with an empty license status`               |
 | US-7.1 | Admin creates a driver without license expiration date                      | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver without license expiration`                        |
-| US-7.1 | Admin creates a driver without availability          | `backend/tests/driver-t3.test.js`, `frontend/tests/Driver.test.js` | `Admin creates a driver without availability`            |
-| US-7.1 | Admin creates a course with an id that is improperly formatted | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a course with an id that is improperly formatted` |
-| US-7.2 | Course view loads with existing semesters                      | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Course view loads with existing semesters`                      |
-| US-7.2 | No courses exist                                               | `frontend/tests/Courses.test.js`                                  | `No courses exist`                                               |
-| US-7.3 | course rows show edit and delete actions                       | `frontend/tests/Courses.test.js`                                  | `course rows show edit and delete actions`                       |
-| US-7.4 | Admin edits a course                                           | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin edits a course`                                           |
-| US-7.4 | Admin deletes a course                                         | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin deletes a course`                                         |
-| US-7.5 | Search bar appears with courses                                | `frontend/tests/Courses.test.js`                                  | `Search bar appears with courses`                                |
-| US-7.5 | No search bar appears with no courses                          | `frontend/tests/Courses.test.js`                                  | `No search bar appears with no courses`                          |
-| US-7.5 | Admin types in course search bar                               | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar`                               |
-| US-7.5 | Admin types in course search bar 2                             | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar 2`                             |
-| US-7.5 | Unauthenticated user accesses the courses view                 | `frontend/tests/Courses.test.js`                                  | `Unauthenticated user accesses the courses view`                 |
-| US-7.5 | Unauthenticated API request to courses                         | `backend/tests/course-t3.test.js`                                   | `Unauthenticated API request to courses`                         |
+| US-7.1 | Admin creates a driver without availability          | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Driver.test.js` | `Admin creates a driver without availability`            |
+| US-7.1 | Admin creates a driver with an id that is improperly formatted | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a driver with an id that is improperly formatted` |
+| US-7.2 | Driver view loads with existing semesters                      | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Driver view loads with existing semesters`                      |
+| US-7.2 | No drivers exist                                               | `frontend/tests/Drivers.test.js`                                  | `No drivers exist`                                               |
+| US-7.3 | driver rows show edit and delete actions                       | `frontend/tests/Drivers.test.js`                                  | `driver rows show edit and delete actions`                       |
+| US-7.4 | Admin edits a driver                                           | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin edits a driver`                                           |
+| US-7.4 | Admin deletes a driver                                         | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin deletes a driver`                                         |
+| US-7.5 | Search bar appears with drivers                                | `frontend/tests/Drivers.test.js`                                  | `Search bar appears with drivers`                                |
+| US-7.5 | No search bar appears with no drivers                          | `frontend/tests/Drivers.test.js`                                  | `No search bar appears with no drivers`                          |
+| US-7.5 | Admin types in driver search bar                               | `frontend/tests/Drivers.test.js`                                  | `Admin types in driver search bar`                               |
+| US-7.5 | Admin types in driver search bar 2                             | `frontend/tests/Drivers.test.js`                                  | `Admin types in driver search bar 2`                             |
+| US-7.5 | Unauthenticated user accesses the drivers view                 | `frontend/tests/Drivers.test.js`                                  | `Unauthenticated user accesses the drivers view`                 |
+| US-7.5 | Unauthenticated API request to drivers                         | `backend/tests/vehicle-t3.test.js`                                   | `Unauthenticated API request to drivers`                         |
 
 ---
 
@@ -395,7 +395,7 @@ and `4, active` exist
 Copy when asking Cursor to implement this feature (`@` this file):
 
 ```text
-Implement Feature 3 from @features/feature-3-course-management.md on branch `feature/3-course-management`.
+Implement Feature 7 from @features/feature-7-driver-management.md on branch `feature/7-driver-management`.
 
 Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
@@ -424,14 +424,9 @@ Do not implement behavior not in this spec.
 
 - Faculty items (see `features/feature-4-faculty-management.md`)
 - `MenuBar` beyond basic sign-out (full nav deferred if not needed)
-- Drag-and-drop course reordering
-- Sharing courses with other users
-- `POST`/`GET`/`PUT`/`DELETE` anywhere that's not `/course-t3/course-t3` or `/course-t3/:courseId`
+- Drag-and-drop driver reordering
+- Sharing drivers with other users
+- `POST`/`GET`/`PUT`/`DELETE` anywhere that's not `/vehicle-t3/vehicle-t3` or `/vehicle-t3/:driver_id`
 
 ---
 
-## Delivered to Feature 5
-
-The following are intentionally deferred to the next feature spec:
-
-- `sections` table and associations
