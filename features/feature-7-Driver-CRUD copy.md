@@ -14,7 +14,7 @@
 
 ## User Stories
 
-### US-8.1: Create drivers
+### US-7.1: Create drivers
 
 **As a** signed-in admin user  
 **I want to** create named drivers 
@@ -22,9 +22,9 @@
 
 **Priority:** P1  
 **Independent test:** Open add-course dialog, create a driver; it appears in the drivers view  
-**Acceptance scenarios:** see ### US-8.1 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-7.1 under Acceptance Criteria
 
-### US-8.2: View my drivers
+### US-7.2: View my drivers
 
 **As a** signed-in admin user  
 **I want to** see all of my drivers on one screen  
@@ -32,9 +32,9 @@
 
 **Priority:** P1  
 **Independent test:** Drivers loads a single driver of owned drivers (no sidebar split)  
-**Acceptance scenarios:** see ### US-8.2 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-7.2 under Acceptance Criteria
 
-### US-8.3: Manage driver rows
+### US-7.3: Manage driver rows
 
 **As a** signed-in admin user  
 **I want** each driver row to show **edit** and **delete** actions  
@@ -42,9 +42,9 @@
 
 **Priority:** P1  
 **Independent test:** Each driver row exposes edit and delete icon actions, interact to open respective modals
-**Acceptance scenarios:** see ### US-8.3 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-7.3 under Acceptance Criteria
 
-### US-8.4: Rename and delete drivers
+### US-7.4: Rename and delete drivers
 
 **As a** signed-in admin user  
 **I want to** rename or delete a driver  
@@ -52,9 +52,9 @@
 
 **Priority:** P2  
 **Independent test:** Rename and delete an owned driver from row actions; drivers view updates  
-**Acceptance scenarios:** see ### US-8.4 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-7.4 under Acceptance Criteria
 
-### US-8.5: Search Courses
+### US-7.5: Search Courses
 
 **As a** signed-in admin user  
 **I want** to search for drivers containing certain key characters
@@ -62,7 +62,7 @@
 
 **Priority:** P2  
 **Independent test:**
-**Acceptance scenarios:** see ### US-8.5 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-7.5 under Acceptance Criteria
 
 ---
 
@@ -212,7 +212,7 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 ## Acceptance Criteria (Gherkin)
 
-### US-8.1 — Create drivers
+### US-7.1 — Create drivers
 
 #### Scenario: Admin creates a new driver
 
@@ -226,150 +226,142 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 - **And** driver_id, license_status, license_exp_date, and availability appears in the drivers view
 - **And** the add-driver dialog closes
 
-#### Scenario: Admin creates a course with an empty name
+#### Scenario: Admin creates a driver with an empty name
 
-- **Given** I am signed in as an admin on the course view
-- **When** I open the new course dialog
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
 - **And** I leave the name field empty or whitespace only
 - **And** I attempt to confirm
 - **Then** inline validation blocks the request
-- **And** I see the message **"course name is required."**
+- **And** I see the message **"Driver name is required."**
 - **And** no API request is sent
 
-#### Scenario: Admin creates a course with an empty description
+#### Scenario: Admin creates a driver with an empty license status
 
-- **Given** I am signed in as an admin on the course view
-- **When** I open the new course dialog
-- **And** I leave the description field empty or whitespace only
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
+- **And** I leave the license status field empty or whitespace only
 - **And** I attempt to confirm
 - **Then** inline validation blocks the request
-- **And** I see the message **"description is required."**
+- **And** I see the message **"license status is required."**
 - **And** no API request is sent
 
-#### Scenario: Admin creates a course without semester
+#### Scenario: Admin creates a driver without license expiration date
 
-- **Given** I am signed in as an admin on the course view
-- **When** I open the new course dialog
-- **And** I leave the semester empty or whitespace only
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
+- **And** I leave the license expiration date empty or whitespace only
 - **And** I attempt to confirm
 - **Then** inline validation blocks the request
-- **And** I see the message **"semester is required."**
+- **And** I see the message **"license expiration date is required."**
 - **And** no API request is sent
 
-#### Scenario: Admin creates a course with a name that is too long
+#### Scenario: Admin creates a driver without availability
 
-- **Given** I am signed in as an admin on the course view
-- **When** I submit a course id longer than 9 characters
-- **Then** the API returns `400` with `{ "message": "course name must be 9 characters." }`
-- **And** the error is displayed in a `<v-alert type="error">`
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
+- **And** I leave the availability empty or whitespace only
+- **And** I attempt to confirm
+- **Then** inline validation blocks the request
+- **And** I see the message **"availability is required."**
+- **And** no API request is sent
 
-#### Scenario: Admin creates a course with an id that is improperly formatted
-
-- **Given** I am signed in as an admin on the course view
-- **When** I submit a course name that does not follow the XXXX-#### convention (XXXX being a 4-letter department title) and #### being 4 integers
-- **Then** the API returns `400` with `{ "message": "course name must be of the form XXXX-#### (e.g. CMSC-4321)." }`
-- **And** the error is displayed in a `<v-alert type="error">`
 
 ---
 
-### US-3.2 — View all courses
+### US-7.2 — View all drivers
 
-#### Scenario: Course view loads with existing semesters
 
-- **Given** I am signed in as an admin
-- **And** the courses `CMSC-4321` and `ARTS-3214` exist
-- **When** I navigate to the courses view
-- **Then** both courses appear in the courses view
-- **And** each row shows the course name with edit and delete icon actions
-
-#### Scenario: No courses exist
+#### Scenario: No drivers exist
 
 - **Given** I am signed in as an admin
-- **And** no courses exist
-- **When** I navigate to the course view
-- **Then** I see **"No courses yet. Create a course."**
+- **And** no drivers exist
+- **When** I navigate to the driver view
+- **Then** I see **"No drivers yet. Create a driver."**
 
 ---
 
-### US-3.3 — Manage course rows
+### US-7.3 — Manage driver rows
 
-#### Scenario: course rows show edit and delete actions
+#### Scenario: driver rows show edit and delete actions
 
 - **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
+- **And** the driver `1` exists
 - **When** I view the courses view
-- **Then** the `CMSC-4321` row shows an **Edit course** icon action
-- **And** the `CMSC-4321` row shows a **Delete course** icon action
+- **Then** the `1` row shows an **Edit driver** icon action
+- **And** the `1` row shows a **Delete driver** icon action
 
 ---
 
-### US-3.4 — Edit and delete courses
+### US-7.4 — Edit and delete drivers
 
-#### Scenario: Admin edits a course
+#### Scenario: Admin edits a driver
 
 - **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I click the edit icon on the `CMSC-4321` row
-- **And** I change the name to `ARTS-4321` in the rename dialog
+- **And** the driver `1` exists
+- **When** I click the edit icon on the `1` row with the license status `suspended`
+- **And** I change the license status to `active` in the rename dialog
 - **And** I confirm
-- **Then** the API returns `200` with the updated course object
-- **And** the courses view shows `ARTS-4321` instead of `CMSC-4321`
+- **Then** the API returns `200` with the updated driver object
+- **And** the drivers view shows `active` instead of `suspended`
 
-#### Scenario: Admin deletes a course
+#### Scenario: Admin deletes a driver
 
 - **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I click the delete icon on the `CMSC-4321` row
+- **And** the driver `1` exists
+- **When** I click the delete icon on the `1` row
 - **And** I confirm the delete dialog
 - **Then** the API returns `204`
-- **And** the course is removed from the courses view
+- **And** the driver is removed from the drivers view
 
 ---
 
-### US-3.5 — Search courses
+### US-7.5 — Search drivers
 
-#### Scenario: Search bar appears with courses
+#### Scenario: Search bar appears with drivers
 
 - **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I view the courses view
-- **Then** I see a search bar named `Find` above the courses list
+- **And** the driver `1` exists
+- **When** I view the drivers view
+- **Then** I see a search bar named `Find` above the drivers list
   returns
 
-#### Scenario: No search bar appears with no courses
+#### Scenario: No search bar appears with no drivers
 
 - **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I view the courses view
-- **Then** I see **"No courses yet. Create a course."**
+- **And** the driver `1` exists
+- **When** I view the drivers view
+- **Then** I see **"No drivers yet. Create a driver."**
 - **And** I see no search bars in the view
 
-#### Scenario: Admin types in course search bar
+#### Scenario: Admin types in driver search bar
 
 - **Given** I am signed in as an admin
-- **And** I am viewing the courses view
-- **And** the courses `CMSC-4321`, `ARTS-3214`, `BIBL-3421`, and `CMSC-1324` exist
-- **When** I type `CMSC` in the `Find` search bar
-- **Then** the course list updates to contain only the courses `CMSC-4321` and `CMSC-1324`
+- **And** I am viewing the drivers view
+- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`, 
+and `4, active` exist
+- **When** I type `active` in the `Find` search bar
+- **Then** the driver list updates to contain only the drivers `1` and `4`
 
-#### Scenario: Admin types in course search bar 2
+#### Scenario: Admin types in driver search bar 2
 
 - **Given** I am signed in as an admin
-- **And** I am viewing the courses view
-- **And** the courses `CMSC-4321`, `ARTS-3214`, `BIBL-4321`, and `CMSC-1324` exist
-- **When** I type `4321` in the `Find` search bar
-- **Then** the course list updates to contain only the courses `CMSC-4321` and `BIBL-4321`
+- **And** I am viewing the drivera view
+- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`, 
+and `4, active` exist
+- **When** I type `suspended` in the `Find` search bar
+- **Then** the driver list updates to contain only the driver `2`
 
-#### Scenario: Unauthenticated user accesses the courses view
+#### Scenario: Unauthenticated user accesses the drivers view
 
 - **Given** I have no session in `localStorage`
-- **When** I navigate to the courses view
+- **When** I navigate to the drivers view
 - **Then** I am redirected to the login page
 
-#### Scenario: Unauthenticated API request to courses
+#### Scenario: Unauthenticated API request to drivers
 
 - **Given** I have no valid session token
-- **When** I request `GET /course-t3`
+- **When** I request `GET /driver-t3`
 - **Then** the API returns `401` with an unauthorized message
 
 ---
@@ -378,23 +370,23 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 | Story  | Scenario                                                       | Test file                                                         | Test name                                                        |
 | ------ | -------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
-| US-3.1 | Admin creates a new course                                     | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a new course`                                     |
-| US-3.1 | Admin creates a course with an empty name                      | `frontend/tests/Courses.test.js`                                  | `Admin creates a course with an empty name`                      |
-| US-3.1 | Admin creates a course with an empty description               | `frontend/tests/Courses.test.js`                                  | `Admin creates a course with an empty description`               |
-| US-3.1 | Admin creates a course without semester                        | `frontend/tests/Courses.test.js`                                  | `Admin creates a course without semester`                        |
-| US-3.1 | Admin creates a course with a name that is too long            | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a course with a name that is too long`            |
-| US-3.1 | Admin creates a course with an id that is improperly formatted | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a course with an id that is improperly formatted` |
-| US-3.2 | Course view loads with existing semesters                      | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Course view loads with existing semesters`                      |
-| US-3.2 | No courses exist                                               | `frontend/tests/Courses.test.js`                                  | `No courses exist`                                               |
-| US-3.3 | course rows show edit and delete actions                       | `frontend/tests/Courses.test.js`                                  | `course rows show edit and delete actions`                       |
-| US-3.4 | Admin edits a course                                           | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin edits a course`                                           |
-| US-3.4 | Admin deletes a course                                         | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin deletes a course`                                         |
-| US-3.5 | Search bar appears with courses                                | `frontend/tests/Courses.test.js`                                  | `Search bar appears with courses`                                |
-| US-3.5 | No search bar appears with no courses                          | `frontend/tests/Courses.test.js`                                  | `No search bar appears with no courses`                          |
-| US-3.5 | Admin types in course search bar                               | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar`                               |
-| US-3.5 | Admin types in course search bar 2                             | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar 2`                             |
-| US-3.5 | Unauthenticated user accesses the courses view                 | `frontend/tests/Courses.test.js`                                  | `Unauthenticated user accesses the courses view`                 |
-| US-3.5 | Unauthenticated API request to courses                         | `backend/tests/course-t3.test.js`                                   | `Unauthenticated API request to courses`                         |
+| US-7.1 | Admin creates a new driver                                     | `backend/tests/driver-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a new driver`                                     |
+| US-7.1 | Admin creates a driver with an empty name                      | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver with an empty name`                      |
+| US-7.1 | Admin creates a driver with an empty license status               | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver with an empty license status`               |
+| US-7.1 | Admin creates a driver without license expiration date                      | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver without license expiration`                        |
+| US-7.1 | Admin creates a driver without availability          | `backend/tests/driver-t3.test.js`, `frontend/tests/Driver.test.js` | `Admin creates a driver without availability`            |
+| US-7.1 | Admin creates a course with an id that is improperly formatted | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a course with an id that is improperly formatted` |
+| US-7.2 | Course view loads with existing semesters                      | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Course view loads with existing semesters`                      |
+| US-7.2 | No courses exist                                               | `frontend/tests/Courses.test.js`                                  | `No courses exist`                                               |
+| US-7.3 | course rows show edit and delete actions                       | `frontend/tests/Courses.test.js`                                  | `course rows show edit and delete actions`                       |
+| US-7.4 | Admin edits a course                                           | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin edits a course`                                           |
+| US-7.4 | Admin deletes a course                                         | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin deletes a course`                                         |
+| US-7.5 | Search bar appears with courses                                | `frontend/tests/Courses.test.js`                                  | `Search bar appears with courses`                                |
+| US-7.5 | No search bar appears with no courses                          | `frontend/tests/Courses.test.js`                                  | `No search bar appears with no courses`                          |
+| US-7.5 | Admin types in course search bar                               | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar`                               |
+| US-7.5 | Admin types in course search bar 2                             | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar 2`                             |
+| US-7.5 | Unauthenticated user accesses the courses view                 | `frontend/tests/Courses.test.js`                                  | `Unauthenticated user accesses the courses view`                 |
+| US-7.5 | Unauthenticated API request to courses                         | `backend/tests/course-t3.test.js`                                   | `Unauthenticated API request to courses`                         |
 
 ---
 
