@@ -63,11 +63,21 @@
 **Independent test:** pressing `Previous` button shows the enrollments for the previous semester, pressing the `Next` button shows the enrollments for the next semester
 **Acceptance scenarios:** see ### US-6.5 under Acceptance Criteria
 
+### US-6.6: Edit Destination
+
+**As a** authenticated user with administrator role
+**I want to** edit destinations from my `Destinations` list
+**So that** I can correct incorrect information.
+
+**Priority:** P1
+**Independent test:** Click **Edit** icon in a `Destinations` list entry, 'Update Destination' modal opens containing some fields which have proper form validation as defined under ## Screen Requirements
+**Acceptance scenarios:** see ### US-6.6 under Acceptance Criteria
+
 ---
 
 ## Requirements
 
-### Functional Requirements [THINK OF MORE POSSIBLE FR'S LATER]
+### Functional Requirements
 
 **FR-001**: An authenticated admin user **MUST** be allowed to do CRUD operations on the `Destinations` table on `DestinationList.vue` or its relevant components
 **FR-002**: Other authenticated users or unauthenticated visitors **MUST NOT** be allowed to do update or delete operations on the `Destinations` table on `DestinationList.vue`
@@ -83,6 +93,7 @@
 **FR-012**: Trying to add or save edits to a `Destinations` entry with a `zip` formatted other than ##### or #####-#### (where # is a digit from 0-9) **MUST** return a `400` error saying `Zip code must be formatted like ##### or #####-####`.
 **FR-013**: Displaying an error inside a create, update, or delete dialog **MUST NOT** close the dialog.
 **FR-014**: Encountering a field/form/dialog error **MUST NOT** send the query to the `Destinations` table.
+**FR-015**: The list of `Destinations` entries **MUST** be retrieved in batches of _at most_ `5` when arriving at the bottom of the page, or less if the final batch does not have `5` entries left to retrieve.
 
 ---
 
@@ -218,7 +229,7 @@ Quoted messages that tests must match:
 
 ---
 
-## Screen Requirements [CONTINUE FROM HERE WHEN RETURNING]
+## Screen Requirements
 
 Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labeled actions use class `oc-cta`. Icon-only row actions need `aria-label`s.
 
@@ -226,7 +237,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 
 - Heading: **Manage Destinations**
 - Primary action: **+ New Destination** opens a `<DestinationForm>` component named **Destination Form** Use class `oc-cta` on **Create**, **+ New Destination**, and **Destination Form** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Display interactive search bar named `Search` above any lists
+- Display interactive search bar named `Search` above any lists with a clearable `<v-select>` beside it to switch between destination search attributes as defined by the list columns below
 - Display destinations as rows (e.g. `<v-list>` or table). The following columns should be in the list:
   **Name** -- The name of the address (`dest_name`)
   **Street Address** -- The address typed into map applications (`addr_line_1`)
@@ -235,11 +246,15 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
   **State** -- The state the destination is in (or country if not in US) (`state`)
   **Zip Code** -- Destination Zip Code (`zip`)
   **Visited** -- The date of the most recent `request` containing this destination id
-  - Each row contains **Edit** and **Delete** icons — opens confirmation `<v-dialog>`
+- Each row contains **Edit** and **Delete** icons — opens confirmation `<v-dialog>`
 - Icon-only row action uses `size="small"` and accessible `aria-label` (**Edit**) and (**Delete**).
-  **Empty state:** **"No destinations yet. Add a destination."** when no destinations exist in the database.
-  **Loading state:** skeleton or progress indicator while enrollments are fetching.
-  **Error state:** `<v-alert type="error">` for API failures.
+- Rows are displayed in the list in batches of `5` at a time. Scrolling down loads the next batch beneath the current one.
+- List entries are, by default, sorted by the most recent `last_visited_on` (excluding future)
+- **Top ↑** displayed upon arriving at the bottom of the page. Pressing this button scrolls to the top but does not clear the destinations list
+
+- Empty state: **"No destinations yet. Add a destination to view its details."** when no destinations exist in the database.
+- Loading state: skeleton or progress indicator while enrollments are fetching.
+- Error state: `<v-alert type="error">` for API failures.
 
 ### Destination Form Component
 
@@ -249,7 +264,7 @@ Primary Action: Fill out a form with the following fields:
 **Address Line 2** -- accepts a string of length 254 or less; trim whitespaces in beginning/end; nullable
 **City** -- accepts string of length 254 or less; trim whitespaces in beginning/end
 **State** -- accepts string of length 254 or less; trim whitespaces in beginning/end
-**Zip Code** -- accepts numeric string of exactly length 5 or 10 in format ##### or, if more than 5 numbers typed in, add - automatically so format becomes #####-####
+**Zip Code** -- accepts numeric string of exactly length 5 or 10 in format ##### or, if more than 5 numbers typed in, add hyphen automatically so format becomes #####-####. Typing anything other than numbers will not updated the input field
 
 **Edit State**
 
@@ -305,47 +320,201 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 
 **Given** I am an authenticated admin user
 **When** I navigate to `DestinationList.vue`
-**Then** I am allowed to see the **Manage Destinations** list described in Screen Requirements with everything on it
+**Then** I am allowed to see the **Manage Destinations** list described in Screen Requirements with everything on it.
+
+#### Scenario: Other role views DestinationList
+
+**Given** I am an authenticated user with a role other than `admin`
+**When** I navigate to `DestinationList.vue`
+**Then** I am immediately redirected to the landing page.
 
 ### US-6.2: Destination Details
 
-#### Scenario: PUT to Destinations is rejected
+#### Scenario: No entries exist in Destinations table
 
-**Given** I am signed in as a student
-**When** I send any `PUT` request
-**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
+**Given** I am viewing the **Manage Destinations** list
+**When** the `Destinations` table is empty
+**Then** I see text inside the **Manage Destinations** list saying `"No destinations yet. Add a destination to view its details."`
+
+#### Scenario: Less than 5 entries exist in Destinations table
+
+**Given** I am viewing the **Manage Destinations** list
+**When** there exist between `1` and `5` (inclusive) entries in the `Destinations` table
+**Then** I can see every existing row and its details as per the Screen Requirements.
+
+#### Scenario: More than 5 entries exist in Destinations table
+
+**Given** I am viewing the **Manage Destinations** list
+**When** there exist more than `5` entries in the `Destinations` table
+**Then** I can see the first `5` entries of the `Destinations` table and their details listed
+**And** I can scroll to the bottom of the page to automatically load the next `5` entries of the `Destinations` table into the list.
+
+#### Scenario: Back to Top button hidden when at top of page
+
+**Given** I am viewing the **Manage Destinations** list
+**When** I am viewing the top of the page
+**Then** I cannot see the **Top ↑** button.
+
+#### Scenario: Back to Top button shown when scrolling down
+
+**Given** I am viewing the **Manage Destinations** list
+**When** I scroll down on the view
+**Then** I can see the **Top ↑** button.
+
+#### Scenario: Press Back to Top button
+
+**Given** I am viewing the **Manage Destinations** list
+**When** I press the **Top ↑** button
+**Then** I scroll to the top of the page
+**And** the **Manage Destinations** list is entirely unaffected.
 
 ### US-6.3: Add Destination
 
-#### Scenario: PUT to Destinations is rejected
+#### Scenario: Press New Destination
 
-**Given** I am signed in as a student
-**When** I send any `PUT` request
-**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
+**Given** I am viewing the **Manage Destinations** list
+**When** I press the **+ New Destination**
+**Then** I see the `DestinationForm` component open in Add mode
+
+#### Scenario: Press outside DestinationForm component (add)
+
+**Given** I am viewing the `DestinationForm` component in Add mode
+**When** I press anywhere outside the `DestinationForm` component
+**Then** the fields within the `DestinationForm` component are cleared
+**And** I no longer see the `DestinationForm` component on screen
+
+#### Scenario: Send add request with invalid form data
+
+**Given** I have filled out any field in the `DestinationForm` component in Add mode with invalid form data as per the Screen Requirements
+**When** I press the **Add** button
+**Then** beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+**And** no request is sent
+
+#### Scenario: Send add request with a missing required field
+
+**Given** I have filled out all the fields in the `DestinationForm` component in Add mode except for **Zip**
+**When** I press the **Add** button
+**Then** I see an error beneath **Zip** that says `Required`
+**And** no request is sent
+
+#### Scenario: Send add request with valid form data
+
+**Given** I have filled out all the fields in the `DestinationForm` component in Add mode except for **Address Line 2** with valid form data as per the Screen Requirements
+**When** I press the **Add** button
+**Then** I receive a `201` response code
+**And** a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+**And** the message box gets destroyed automatically after `3` seconds
+**And** the **Manage Destinations** list reloads without requiring a page reload
+
+#### Scenario: Signed out user makes add request
+
+**Given** I am an unauthenticated user
+**When** I send a `POST` request to the `Destinations` table with or without valid data
+**Then** I receive a `401` response code and message
 
 ### US-6.4: Remove Destination
 
-#### Scenario: PUT to Destinations is rejected
+#### Scenario: Press Delete icon
 
-**Given** I am signed in as a student
-**When** I send any `PUT` request
-**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
+**Given** I am viewing the **Manage Destinations** list
+**When** I press the **Delete** icon
+**Then** a **Delete Destination** dialog appears
+
+#### Scenario: Press outside Delete confirmation dialog
+
+**Given** I am viewing the **Delete Destination** dialog
+**When** I press anywhere outside the **Delete Destination** dialog
+**Then** the **Delete Destination** dialog closes
+**And** no request is sent
+
+#### Scenario: Press Cancel inside Delete confirmation dialog
+
+**Given** I am viewing the **Delete Destination** dialog
+**When** I press the **Cancel** button
+**Then** the **Delete Destination** dialog closes
+**And** no request is sent
+
+#### Scenario: Press Delete inside Delete confirmation dialog
+
+**Given** I am viewing the **Delete Destination** dialog
+**When** I press the **Delete** button
+**Then** the **Delete Destination** dialog closes
+**And** the selected destination no longer exists in the table
+**And** I receive a `204` status code
+**And** a success message appears in a small, closable, elevated `div` at the bottom of the screen saying `"Successfully deleted Destination!"`
+**And** the message box gets destroyed automatically after `3` seconds
+**And** the **Manage Destinations** list reloads without requiring a page reload
 
 ### US-6.5: Destinations Search Bar
 
-#### Scenario: PUT to Destinations is rejected
+#### Scenario: No rendering Search Bar when no destinations exist
 
-**Given** I am signed in as a student
-**When** I send any `PUT` request
-**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
+**Given** I am viewing the **Manage Destination** list
+**When** no entries exist in the `Destinations` table
+**Then** I do not see a search bar in the view
 
-### US-6.6: No editing enrollments
+#### Scenario: Search Bar rendering when destinations exist
 
-#### Scenario: PUT to Destinations is rejected
+**Given** I am viewing the **Manage Destination** list
+**When** entries exist in the `Destinations` table
+**Then** I see a search bar in the view
 
-**Given** I am signed in as a student
-**When** I send any `PUT` request
-**Then** the API returns 405 with `{ "message": "Enrollments are dropped, not edited" }`
+#### Scenario: No search attribute selected
+
+**Given** I leave the search-attribute selection of the search bar empty
+**When** I type in the search bar
+**Then** the **Manage Destination** list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' **Name**.
+
+#### Scenario: Search attribute selected
+
+**Given** I select **City** in the search-attribute selection of the search bar
+**When** I type in the search bar
+**Then** the **Manage Destination** list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' **City** attribute.
+
+### US-6.6: Edit Destination
+
+#### Scenario: Press Edit icon
+
+**Given** I am viewing the **Manage Destinations** list
+**When** I press the **Edit** icon on a destination
+**Then** I see the `DestinationForm` component open in Edit mode
+**And** the input fields of the `DestinationForm` component contain the correct details of the selected destination
+
+#### Scenario: Press outside DestinationForm component (edit)
+
+**Given** I am viewing the `DestinationForm` component in Edit mode
+**When** I press anywhere outside the `DestinationForm` component
+**Then** the fields within the `DestinationForm` component are cleared
+**And** I no longer see the `DestinationForm` component on screen
+
+#### Scenario: Send edit request with invalid form data
+
+**Given** I have filled out any field in the `DestinationForm` component in Edit mode with invalid form data as per the Screen Requirements
+**When** I press the **Save** button
+**Then** beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+**And** no request is sent
+
+#### Scenario: Send edit request with a missing required field
+
+**Given** I have filled out all the fields in the `DestinationForm` component in Edit mode except for **Zip**
+**When** I press the **Save** button
+**Then** I see an error beneath **Zip** that says `Required`
+**And** no request is sent
+
+#### Scenario: Send edit request with valid form data
+
+**Given** I have filled out all the fields in the `DestinationForm` component in Add mode except for **Address Line 2** with valid form data as per the Screen Requirements
+**When** I press the **Save** button
+**Then** I receive a `201` response code
+**And** a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+**And** the message box gets destroyed automatically after `3` seconds
+**And** the **Manage Destinations** list reloads without requiring a page reload
+
+#### Scenario: Non-admin user makes update request
+
+**Given** I am any authenticated non-admin user
+**When** I send a `PUT` request to the `Destinations` table with or without valid data
+**Then** I receive a `403` response code and message
 
 ---
 
@@ -353,34 +522,36 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 
 Each scenario above must map to at least one automated test. `it` names must match the Gherkin **Scenario** titles exactly.
 
-| Story  | Scenario                                        | Test file                                                                     | Test name                                         |
-| ------ | ----------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------- |
-| US-6.1 | view enrollment list with no enrollments        | `frontend/tests/EnrollmentList.test.js`                                       | `view enrollment list with no enrollments`        |
-| US-6.1 | view enrollment list with enrollments           | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `view enrollment list with enrollments`           |
-| US-6.1 | view only enrollments matching semesterId       | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `view only enrollments matching semesterId`       |
-| US-6.1 | student cannot fetch another user's enrollments | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `student cannot fetch another user's enrollments` |
-| US-6.2 | view enrollment details                         | `frontend/tests/EnrollmentList.test.js`                                       | `view enrollment details`                         |
-| US-6.3 | Open add enrollment modal                       | `frontend/tests/EnrollmentList.test.js`                                       | `Open add enrollment modal`                       |
-| US-6.3 | Use course combobox                             | `frontend/tests/EnrollmentList.test.js`                                       | `Use course combobox`                             |
-| US-6.3 | Confirm course combobox                         | `frontend/tests/EnrollmentList.test.js`                                       | `Confirm course combobox`                         |
-| US-6.3 | Use section combobox                            | `frontend/tests/EnrollmentList.test.js`                                       | `Use section combobox`                            |
-| US-6.3 | Confirm section combobox                        | `frontend/tests/EnrollmentList.test.js`                                       | `Confirm section combobox`                        |
-| US-6.3 | Create valid enrollment                         | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `Create valid enrollment`                         |
-| US-6.3 | Create an enrollment with an empty course       | `frontend/tests/EnrollmentList.test.js`                                       | `Create an enrollment with an empty course`       |
-| US-6.3 | Create an enrollment with an empty section      | `frontend/tests/EnrollmentList.test.js`                                       | `Create an enrollment with an empty section`      |
-| US-6.3 | Create an enrollment with duplicate data        | `frontend/tests/EnrollmentList.test.js`                                       | `Create an enrollment with duplicate data`        |
-| US-6.3 | Create enrollment with improper course ID       | `frontend/tests/EnrollmentList.test.js`                                       | `Create enrollment with improper course ID`       |
-| US-6.3 | Create enrollment with improper section ID      | `frontend/tests/EnrollmentList.test.js`                                       | `Create enrollment with improper section ID`      |
-| US-6.4 | Select enrollment delete icon                   | `frontend/tests/EnrollmentList.test.js`                                       | `Select enrollment delete icon`                   |
-| US-6.4 | Confirm delete icon                             | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `Confirm delete icon`                             |
-| US-6.4 | Cancel delete                                   | `frontend/tests/EnrollmentList.test.js`                                       | `Cancel delete`                                   |
-| US-6.5 | EnrollmentList First Landing                    | `backend/tests/destinations.test.js`, `frontend/tests/EnrollmentList.test.js` | `EnrollmentList First Landing`                    |
-| US-6.5 | EnrollmentList Return Landing                   | `frontend/tests/EnrollmentList.test.js`                                       | `EnrollmentList Return Landing`                   |
-| US-6.5 | Navigate Semesters order forward                | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters order forward`                |
-| US-6.5 | Navigate Semesters order backward               | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters order backward`               |
-| US-6.5 | Navigate Semesters combobox typing              | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters combobox typing`              |
-| US-6.5 | Navigate Semesters combobox select              | `frontend/tests/EnrollmentList.test.js`                                       | `Navigate Semesters combobox select`              |
-| US-6.6 | PUT to Destinations is rejected                 | `backend/tests/destinations.test.js`                                          | `PUT to Destinations is rejected`                 |
+| Story  | Scenario                                           | Test file                                                                      | Test name                                            |
+| ------ | -------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| US-6.1 | Admin views DestinationList                        | `frontend/tests/DestinationList.test.js`                                       | `Admin views DestinationList`                        |
+| US-6.1 | Other role views DestinationList                   | `frontend/tests/DestinationList.test.js`                                       | `Other role views DestinationList`                   |
+| US-6.2 | No entries exist in Destinations table             | `frontend/tests/DestinationList.test.js`                                       | `No entries exist in Destinations table`             |
+| US-6.2 | Less than 5 entries exist in Destinations table    | `frontend/tests/DestinationList.test.js`                                       | `Less than 5 entries exist in Destinations table`    |
+| US-6.2 | More than 5 entries exist in Destinations table    | `frontend/tests/DestinationList.test.js`                                       | `More than 5 entries exist in Destinations table`    |
+| US-6.2 | Back to Top button hidden when at top of page      | `frontend/tests/DestinationList.test.js`                                       | `Back to Top button hidden when at top of page`      |
+| US-6.2 | Back to Top button shown when scrolling down       | `frontend/tests/DestinationList.test.js`                                       | `Back to Top button shown when scrolling down`       |
+| US-6.2 | Press Back to Top button                           | `frontend/tests/DestinationList.test.js`                                       | `Press Back to Top button`                           |
+| US-6.3 | Press New Destination                              | `frontend/tests/DestinationList.test.js`                                       | `Press New Destination`                              |
+| US-6.3 | Press outside DestinationForm component (add)      | `frontend/tests/DestinationForm.test.js`                                       | `Press outside DestinationForm component (add)`      |
+| US-6.3 | Send add request with invalid form data            | `frontend/tests/DestinationForm.test.js`                                       | `Send add request with invalid form data`            |
+| US-6.3 | Send add request with a missing required field     | `frontend/tests/DestinationForm.test.js`                                       | `Send add request with a missing required field`     |
+| US-6.3 | Send add request with valid form data              | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Send add request with valid form data`              |
+| US-6.3 | Signed out user makes add request                  | `backend/tests/destinations.test.js`                                           | `Signed out user makes add request`                  |
+| US-6.4 | Press Delete icon                                  | `frontend/tests/DestinationList.test.js`                                       | `Press Delete icon`                                  |
+| US-6.4 | Press outside Delete confirmation dialog           | `frontend/tests/DestinationList.test.js`                                       | `Press outside Delete confirmation dialog`           |
+| US-6.4 | Press Cancel inside Delete confirmation dialog     | `frontend/tests/DestinationList.test.js`                                       | `Press Cancel inside Delete confirmation dialog`     |
+| US-6.4 | Press Delete inside Delete confirmation dialog     | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Press Delete inside Delete confirmation dialog`     |
+| US-6.5 | No rendering Search Bar when no destinations exist | `frontend/tests/DestinationList.test.js`                                       | `No rendering Search Bar when no destinations exist` |
+| US-6.5 | Search Bar rendering when destinations exist       | `frontend/tests/DestinationList.test.js`                                       | `Search Bar rendering when destinations exist`       |
+| US-6.5 | No search attribute selected                       | `frontend/tests/DestinationList.test.js`                                       | `No search attribute selected`                       |
+| US-6.5 | Search attribute selected                          | `frontend/tests/DestinationList.test.js`                                       | `Search attribute selected`                          |
+| US-6.6 | Press Edit icon                                    | `frontend/tests/DestinationList.test.js`                                       | `Press Edit icon`                                    |
+| US-6.6 | Press outside DestinationForm component (edit)     | `frontend/tests/DestinationForm.test.js`                                       | `Press outside DestinationForm component (edit)`     |
+| US-6.6 | Send edit request with invalid form data           | `frontend/tests/DestinationForm.test.js`                                       | `Send edit request with invalid form data`           |
+| US-6.6 | Send edit request with a missing required field    | `frontend/tests/DestinationForm.test.js`                                       | `Send edit request with a missing required field`    |
+| US-6.6 | Send edit request with valid form data             | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Send edit request with valid form data`             |
+| US-6.6 | Non-admin user makes update request                | `backend/tests/destinations.test.js`                                           | `Non-admin user makes update request`                |
 
 ---
 
@@ -389,7 +560,7 @@ Each scenario above must map to at least one automated test. `it` names must mat
 Copy when asking Cursor to implement this feature (`@` this file):
 
 ```text
-Implement Feature 6 from @features/feature-6-enrollment-management.md on branch `feature/6-enrollment-management`.
+Implement Feature 6 from @features/feature-6-destination-crud.md on branch `feature/6-destination-crud`.
 
 Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
@@ -416,15 +587,16 @@ Do not implement behavior not in this spec.
 
 ## Out of Scope
 
--
-- ***
-
-## Defer to Feature 7
-
-Student course listing (management, `REST`, `API`'s, views, components, student course catalog/browse)
+- User role management (only read the role in this feature)
 
 ---
 
 ## Defer to Feature 8
 
-Student section listing (management, `REST`, `API`'s, views, components, browse/list sections as a student)
+- `Requests` table Create, Update, and Delete, files, operations, etc
+- `Requests` table and the files needed for it
+- `DestinationForm` integration into `Requests` creation/edit form
+
+## Defer to Feature 11
+
+- Destination Images
