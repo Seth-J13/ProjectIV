@@ -7,28 +7,27 @@
 **Input:** signed in admin users CRUD semesters.
 **Depends on:** [Feature 1 -- User Auth & Sessions](feature-1-user-auth-session-management.md),
 [Feature 7 -- Driver CRUD](feature-7-Driver-CRUD.md),
-[Feature 9 -- Note CRUD](feature-4-Note-CRUD.md),
 [Feature 4 -- Vehicle CRUD](feature-4-Vehicle-CRUD.md),
 [Feature 13 -- User Management](feature-13-User-Management.md),
 [Feature 6 -- Destination CRUD](feature-6-Destination-CRUD.md),
-**Related:** `frontend/src/views/Requests.vue`, `backend/app/routes/users.routes.js`, `backend/app/routes/Request.routes.js`, `backend/app/routes/Note.routes.js`,
+**Related:** `frontend/src/views/Requests.vue`, `backend/app/routes/users.routes.js`, `backend/app/routes/Request.routes.js`, 
 `backend/app/routes/Vehicle.routes.js`, `backend/app/routes/Destination.routes.js`
 
 ---
 
 ## User Stories
 
-### US-3.1: Create courses
+### US-8.1: Create Requests
 
 **As a** signed-in admin user  
-**I want to** create named courses (e.g. "CMSC-4302", "ARTS-3453")  
-**So that** I can give students a list of courses to enroll for
+**I want to** create requests  
+**So that** I can give drivers a list of requests to sign up for
 
 **Priority:** P1  
-**Independent test:** Open add-course dialog, create a course; it appears in the courses view  
-**Acceptance scenarios:** see ### US-3.1 under Acceptance Criteria
+**Independent test:** Open add-request dialog, create a request; it appears in the requests view  
+**Acceptance scenarios:** see ### US-8.1 under Acceptance Criteria
 
-### US-3.2: View my courses
+### US-8.2: View my requests
 
 **As a** signed-in admin user  
 **I want to** see all of my courses on one screen  
