@@ -10,67 +10,67 @@
 
 ---
 
-## User Stories
+## User Stories [INDEPENDENT TESTS BASED ON FIGMA UI]
 
-### US-6.1: View Current Destinations
+### US-9.1: See Notes
 
-**As a** authenticated user with administrator role
-**I want to** see a list of all destinations
-**So that** I know which destinations exist.
-
-**Priority:** P1
-**Independent test:** `DestinationList.vue` shows a list of destinations with one per row and their details.
-**Acceptance scenarios:** see ### US-6.1 under Acceptance Criteria
-
-### US-6.2: Destination Details
-
-**As a** authenticated user with administrator role
-**I want to** see the details of a selected destinations
-**So that** I can know all its information.
+**As a** authenticated user
+**I want to** see every `note` attached to a `request` inside the request itself
+**So that** I get more information about a vehicle reservation.
 
 **Priority:** P1
-**Independent test:** destinations row in the list has a button which, when pressed, opens a `Details` modal containing a destination's information and current/future reservations headed to that area
-**Acceptance scenarios:** see ### US-6.2 under Acceptance Criteria
+**Independent test:** .
+**Acceptance scenarios:** see ### US-9.1 under Acceptance Criteria
 
-### US-6.3: Add Destination
+### US-9.2: Remove Notes on Requests I own
 
-**As a** authenticated user with administrator role
-**I want to** add destinations to my `Destinations` list
-**So that** I can use it for stuff later.
+**As a** authenticated user
+**I want to** remove `notes` attached to `requests` I own
+**So that** I can manage how much extra information is included on a `request`.
 
 **Priority:** P1
-**Independent test:** Click **+ New Destination**, 'Create Destination' modal opens containing some fields which have proper form validation as defined under ## Screen Requirements
-**Acceptance scenarios:** see ### US-6.3 under Acceptance Criteria
+**Independent test:** .
+**Acceptance scenarios:** see ### US-9.2 under Acceptance Criteria
 
-### US-6.4: Remove Destination
+### US-9.3: Create Notes on Requests I own
 
-**As a** authenticated user with administrator role
-**I want to** remove destinations to my `Destinations` list
-**So that** I can manage relevant information and list size.
+**As a** authenticated user  
+**I want to** add more than one `note` to a `request` I own
+**So that** I can add extra information to a `request`.
+
+**Priority:** P1
+**Independent test:** .
+**Acceptance scenarios:** see ### US-9.3 under Acceptance Criteria
+
+### US-9.4: Maintenance Requests
+
+**As a** authenticated user
+**I want to** create a `note` with a maintenance option turned on that automatically notified maintenance users
+**So that** they can service vehicles swiftly.
 
 **Priority:** P2
-**Independent test:** click trash-can icon in a given row in the Destinations list, modal with heading **Confirm Delete?** opens, clicking **Delete** button removes correct destination from list, destination in question no longer appears in the list
-**Acceptance scenarios:** see ### US-6.4 under Acceptance Criteria
+**Independent test:** .
+**Acceptance scenarios:** see ### US-9.4 under Acceptance Criteria
 
-### US-6.5: Destinations Search Bar
+### US-9.5: Cross-User Note Management
 
-**As a** authenticated user with administrator role
-**I want to** search for destinations by name or by address
-**So that** I don't have to scroll or paginate to find the destinations I want.
+**As a** authenticated user with a `user` or `driver` role
+**I want to** be able to read `notes` on `requests` I don't own
+**So that** I can learn about other vehicle requests.
 
 **Priority:** P2
-**Independent test:** pressing `Previous` button shows the enrollments for the previous semester, pressing the `Next` button shows the enrollments for the next semester
-**Acceptance scenarios:** see ### US-6.5 under Acceptance Criteria
+**Independent test:** .
+**Acceptance scenarios:** see ### US-9.5 under Acceptance Criteria
 
-### US-6.6: Edit Destination
+### US-9.6: Edit Notes on Requests I own
 
-**As a** authenticated user with administrator role
-**I want to** edit destinations from my `Destinations` list
+**As a** authenticated user
+**I want to** edit the `notes` on `requests` I own
 **So that** I can correct incorrect information.
 
 **Priority:** P1
-**Independent test:** Click **Edit** icon in a `Destinations` list entry, 'Update Destination' modal opens containing some fields which have proper form validation as defined under ## Screen Requirements
-**Acceptance scenarios:** see ### US-6.6 under Acceptance Criteria
+**Independent test:** .
+**Acceptance scenarios:** see ### US-9.6 under Acceptance Criteria
 
 ---
 
@@ -313,7 +313,7 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 
 ## Acceptance Criteria (Gherkin)
 
-### US-6.1: View Current Destinations
+### US-9.1: View Current Destinations
 
 #### Scenario: Admin views DestinationList
 
@@ -327,7 +327,7 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 **When** I navigate to `DestinationList.vue`
 **Then** I am immediately redirected to the landing page.
 
-### US-6.2: Destination Details
+### US-9.2: Destination Details
 
 #### Scenario: No entries exist in Destinations table
 
@@ -367,7 +367,7 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 **Then** I scroll to the top of the page
 **And** the **Manage Destinations** list is entirely unaffected.
 
-### US-6.3: Add Destination
+### US-9.3: Add Destination
 
 #### Scenario: Press New Destination
 
@@ -411,7 +411,7 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 **When** I send a `POST` request to the `Destinations` table with or without valid data
 **Then** I receive a `401` response code and message
 
-### US-6.4: Remove Destination
+### US-9.4: Remove Destination
 
 #### Scenario: Press Delete icon
 
@@ -444,7 +444,7 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 **And** the message box gets destroyed automatically after `3` seconds
 **And** the **Manage Destinations** list reloads without requiring a page reload
 
-### US-6.5: Destinations Search Bar
+### US-9.5: Destinations Search Bar
 
 #### Scenario: No rendering Search Bar when no destinations exist
 
@@ -470,7 +470,7 @@ This feature uses a `Destinations` table where each entry has an `id` used by ot
 **When** I type in the search bar
 **Then** the **Manage Destination** list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' **City** attribute.
 
-### US-6.6: Edit Destination
+### US-9.6: Edit Destination
 
 #### Scenario: Press Edit icon
 
@@ -523,34 +523,34 @@ Each scenario above must map to at least one automated test. `it` names must mat
 
 | Story  | Scenario                                           | Test file                                                                      | Test name                                            |
 | ------ | -------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------- |
-| US-6.1 | Admin views DestinationList                        | `frontend/tests/DestinationList.test.js`                                       | `Admin views DestinationList`                        |
-| US-6.1 | Other role views DestinationList                   | `frontend/tests/DestinationList.test.js`                                       | `Other role views DestinationList`                   |
-| US-6.2 | No entries exist in Destinations table             | `frontend/tests/DestinationList.test.js`                                       | `No entries exist in Destinations table`             |
-| US-6.2 | Less than 5 entries exist in Destinations table    | `frontend/tests/DestinationList.test.js`                                       | `Less than 5 entries exist in Destinations table`    |
-| US-6.2 | More than 5 entries exist in Destinations table    | `frontend/tests/DestinationList.test.js`                                       | `More than 5 entries exist in Destinations table`    |
-| US-6.2 | Back to Top button hidden when at top of page      | `frontend/tests/DestinationList.test.js`                                       | `Back to Top button hidden when at top of page`      |
-| US-6.2 | Back to Top button shown when scrolling down       | `frontend/tests/DestinationList.test.js`                                       | `Back to Top button shown when scrolling down`       |
-| US-6.2 | Press Back to Top button                           | `frontend/tests/DestinationList.test.js`                                       | `Press Back to Top button`                           |
-| US-6.3 | Press New Destination                              | `frontend/tests/DestinationList.test.js`                                       | `Press New Destination`                              |
-| US-6.3 | Press outside DestinationForm component (add)      | `frontend/tests/DestinationForm.test.js`                                       | `Press outside DestinationForm component (add)`      |
-| US-6.3 | Send add request with invalid form data            | `frontend/tests/DestinationForm.test.js`                                       | `Send add request with invalid form data`            |
-| US-6.3 | Send add request with a missing required field     | `frontend/tests/DestinationForm.test.js`                                       | `Send add request with a missing required field`     |
-| US-6.3 | Send add request with valid form data              | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Send add request with valid form data`              |
-| US-6.3 | Signed out user makes add request                  | `backend/tests/destinations.test.js`                                           | `Signed out user makes add request`                  |
-| US-6.4 | Press Delete icon                                  | `frontend/tests/DestinationList.test.js`                                       | `Press Delete icon`                                  |
-| US-6.4 | Press outside Delete confirmation dialog           | `frontend/tests/DestinationList.test.js`                                       | `Press outside Delete confirmation dialog`           |
-| US-6.4 | Press Cancel inside Delete confirmation dialog     | `frontend/tests/DestinationList.test.js`                                       | `Press Cancel inside Delete confirmation dialog`     |
-| US-6.4 | Press Delete inside Delete confirmation dialog     | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Press Delete inside Delete confirmation dialog`     |
-| US-6.5 | No rendering Search Bar when no destinations exist | `frontend/tests/DestinationList.test.js`                                       | `No rendering Search Bar when no destinations exist` |
-| US-6.5 | Search Bar rendering when destinations exist       | `frontend/tests/DestinationList.test.js`                                       | `Search Bar rendering when destinations exist`       |
-| US-6.5 | No search attribute selected                       | `frontend/tests/DestinationList.test.js`                                       | `No search attribute selected`                       |
-| US-6.5 | Search attribute selected                          | `frontend/tests/DestinationList.test.js`                                       | `Search attribute selected`                          |
-| US-6.6 | Press Edit icon                                    | `frontend/tests/DestinationList.test.js`                                       | `Press Edit icon`                                    |
-| US-6.6 | Press outside DestinationForm component (edit)     | `frontend/tests/DestinationForm.test.js`                                       | `Press outside DestinationForm component (edit)`     |
-| US-6.6 | Send edit request with invalid form data           | `frontend/tests/DestinationForm.test.js`                                       | `Send edit request with invalid form data`           |
-| US-6.6 | Send edit request with a missing required field    | `frontend/tests/DestinationForm.test.js`                                       | `Send edit request with a missing required field`    |
-| US-6.6 | Send edit request with valid form data             | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Send edit request with valid form data`             |
-| US-6.6 | Non-admin user makes update request                | `backend/tests/destinations.test.js`                                           | `Non-admin user makes update request`                |
+| US-9.1 | Admin views DestinationList                        | `frontend/tests/DestinationList.test.js`                                       | `Admin views DestinationList`                        |
+| US-9.1 | Other role views DestinationList                   | `frontend/tests/DestinationList.test.js`                                       | `Other role views DestinationList`                   |
+| US-9.2 | No entries exist in Destinations table             | `frontend/tests/DestinationList.test.js`                                       | `No entries exist in Destinations table`             |
+| US-9.2 | Less than 5 entries exist in Destinations table    | `frontend/tests/DestinationList.test.js`                                       | `Less than 5 entries exist in Destinations table`    |
+| US-9.2 | More than 5 entries exist in Destinations table    | `frontend/tests/DestinationList.test.js`                                       | `More than 5 entries exist in Destinations table`    |
+| US-9.2 | Back to Top button hidden when at top of page      | `frontend/tests/DestinationList.test.js`                                       | `Back to Top button hidden when at top of page`      |
+| US-9.2 | Back to Top button shown when scrolling down       | `frontend/tests/DestinationList.test.js`                                       | `Back to Top button shown when scrolling down`       |
+| US-9.2 | Press Back to Top button                           | `frontend/tests/DestinationList.test.js`                                       | `Press Back to Top button`                           |
+| US-9.3 | Press New Destination                              | `frontend/tests/DestinationList.test.js`                                       | `Press New Destination`                              |
+| US-9.3 | Press outside DestinationForm component (add)      | `frontend/tests/DestinationForm.test.js`                                       | `Press outside DestinationForm component (add)`      |
+| US-9.3 | Send add request with invalid form data            | `frontend/tests/DestinationForm.test.js`                                       | `Send add request with invalid form data`            |
+| US-9.3 | Send add request with a missing required field     | `frontend/tests/DestinationForm.test.js`                                       | `Send add request with a missing required field`     |
+| US-9.3 | Send add request with valid form data              | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Send add request with valid form data`              |
+| US-9.3 | Signed out user makes add request                  | `backend/tests/destinations.test.js`                                           | `Signed out user makes add request`                  |
+| US-9.4 | Press Delete icon                                  | `frontend/tests/DestinationList.test.js`                                       | `Press Delete icon`                                  |
+| US-9.4 | Press outside Delete confirmation dialog           | `frontend/tests/DestinationList.test.js`                                       | `Press outside Delete confirmation dialog`           |
+| US-9.4 | Press Cancel inside Delete confirmation dialog     | `frontend/tests/DestinationList.test.js`                                       | `Press Cancel inside Delete confirmation dialog`     |
+| US-9.4 | Press Delete inside Delete confirmation dialog     | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Press Delete inside Delete confirmation dialog`     |
+| US-9.5 | No rendering Search Bar when no destinations exist | `frontend/tests/DestinationList.test.js`                                       | `No rendering Search Bar when no destinations exist` |
+| US-9.5 | Search Bar rendering when destinations exist       | `frontend/tests/DestinationList.test.js`                                       | `Search Bar rendering when destinations exist`       |
+| US-9.5 | No search attribute selected                       | `frontend/tests/DestinationList.test.js`                                       | `No search attribute selected`                       |
+| US-9.5 | Search attribute selected                          | `frontend/tests/DestinationList.test.js`                                       | `Search attribute selected`                          |
+| US-9.6 | Press Edit icon                                    | `frontend/tests/DestinationList.test.js`                                       | `Press Edit icon`                                    |
+| US-9.6 | Press outside DestinationForm component (edit)     | `frontend/tests/DestinationForm.test.js`                                       | `Press outside DestinationForm component (edit)`     |
+| US-9.6 | Send edit request with invalid form data           | `frontend/tests/DestinationForm.test.js`                                       | `Send edit request with invalid form data`           |
+| US-9.6 | Send edit request with a missing required field    | `frontend/tests/DestinationForm.test.js`                                       | `Send edit request with a missing required field`    |
+| US-9.6 | Send edit request with valid form data             | `backend/tests/destinations.test.js`, `frontend/tests/DestinationList.test.js` | `Send edit request with valid form data`             |
+| US-9.6 | Non-admin user makes update request                | `backend/tests/destinations.test.js`                                           | `Non-admin user makes update request`                |
 
 ---
 
