@@ -4,8 +4,8 @@
 **Status:** Draft
 **Created:** 2026-10-24
 **Input:** This feature is a vehicle management to view, add, update, and delete vehicles
-**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD), [Feature 11 -- Images](feature-11-Images)
-**Related:** `features/feature-5-Maintenance-Info-CRUD`
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth),
+**Required for future use:** [Feature 5 -- Maintenance Info CRUD](feature-5-Maintenance-Info-CRUD), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD), [Feature 11 -- Images](feature-11-Images)
 
 ---
 
@@ -226,6 +226,7 @@ Feature 1 and 2 establishes identity
 | `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE                                   |
 | `most_recent_dest_id` | INTEGER        | NULLABLE;                                                   |
 | `available`           | BIT            | Required                                                    |
+| `mileage`             | INTEGER        | NULLABLE, Non-negative                                      |
 
 ---
 
@@ -256,7 +257,8 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
   "tag_exp_month": "2016/5/25",
   "department": "Engineering",
   "most_recent_dest_id": null,
-  "available": 1
+  "available": 1,
+  "mileage": 0
 }
 ```
 **Create Request Body (Maintenance-Info Table)**
@@ -269,7 +271,6 @@ All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` f
     "fuel_capacity": 30,
     "recommended_tire_psi": 35,
     "tire_type": "P205/55R16 95H"
-    "mileage": 0
  }
  ```
  **Success — create (**`201`**) and update (**`200`**):**

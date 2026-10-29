@@ -20,6 +20,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE                                   |
 | `most_recent_dest_id` | INTEGER        | NULLABLE;                                                   |
 | `available`           | BIT            | Required                                                    |
+| `mileage`             | INTEGER        | Required, Non-negative                                      |
 
 ### `Maintenance_Info` Table
 | Field                 | Type           | Rules                                                       |
@@ -31,7 +32,6 @@ Update this file when a feature that defines schema merges to `dev`.
 | `fuel_capacity`       | INTEGER        | Required, Non-negative                                      |
 | `recommended_tire_psi`| DECIMAL(5, 2)  | Required, Non-negative                                      |
 | `tire_type`           | VARCHAR(17)    | Required                                                    |
-| `mileage`             | INTEGER        | Required, Non-negative                                      |
 
 ### `Fuel_Type` Table
 | Field                 | Type           | Rules                                                       |

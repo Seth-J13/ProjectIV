@@ -4,7 +4,8 @@
 **Status:** Draft
 **Created:** 2026-10-27
 **Input:** This feature is a maintenance view page
-**Depends on:** [Feature 4 -- Vehicle-CRUD](feature-4-Vehicle-CRUD.md)
+**Depends on:** [Feature 4 -- Vehicle-CRUD](feature-4-Vehicle-CRUD.md),  
+**Required for future use:** [Feature 9 -- Note-CRUD](feature-9-note-crud.md), [Feature 10 -- Vehicle-Service-Log](feature-10-Vehicle-Service-Log)
 
 ---
 
@@ -17,17 +18,54 @@
 **So that** I can see basic information about the vehicle and what needs to be worked on
 
 **Priority:** P1
-**Independent test:** 
+**Independent test:** I view a vehicle's maintenance notes and can view the basic vehicle info `Make`, `Model`, `Year`, `Fuel Type`, `Recommended Tire PSI`, `Oil Viscosity`, `Fuel Capacity`, `Tire Type`, and `Last Updated Mileage`
 **Acceptance scenarios:** see ### US-5.1 under Acceptance Criteria
 
-### US-1.2: ...
+### US-5.2:  
 **As a**
 **I want to**
 **So that**
 
-**Priority:** PN
+**Priority:** P
 **Independent test:**
 **Acceptance scenarios:**
+
+### US-5.: 
+**As a**
+**I want to**
+**So that**
+
+**Priority:** P
+**Independent test:**
+**Acceptance scenarios:**
+
+### US-5.: 
+**As a**
+**I want to**
+**So that**
+
+**Priority:** P
+**Independent test:**
+**Acceptance scenarios:**
+
+### US-5.: 
+**As a**
+**I want to**
+**So that**
+
+**Priority:** P
+**Independent test:**
+**Acceptance scenarios:**
+
+### US-5.: 
+**As a**
+**I want to**
+**So that**
+
+**Priority:** P
+**Independent test:**
+**Acceptance scenarios:**
+
 
 ---
 
