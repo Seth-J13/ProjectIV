@@ -4,9 +4,10 @@
 **Branch pattern:** `feature/9-note-crud`
 **Status:** Draft
 **Created:** 2026-10-28
+**Updated:** 2026-10-29
 **Input:** Application must support the creation, reading, updating, and deleting of many request notes that can be attached to requests to denote different statuses of a future, active, or returned vehicle reservation.
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md)
-**Related:**
+**Related:** `frontend/RequestDetails.vue`, `frontend/Maintenance.vue`, `frontend/components/NoteDetails.vue`,
 
 ---
 
@@ -78,14 +79,13 @@
 
 ### Functional Requirements
 
-**FR-001**: An authenticated admin user **MUST** be allowed to do CRUD operations on the `Destinations` table on `DestinationList.vue` or its relevant components
-**FR-002**: Other authenticated users or unauthenticated visitors **MUST NOT** be allowed to do update or delete operations on the `Destinations` table on `DestinationList.vue`
+**FR-001**: Any authenticated user **MUST** be allowed to do CRUD operations on notes belonging to `requests` whose `requester_id` matches the user's `id`
+**FR-002**: Authenticated admin users **MUST** be allowed to do CRUD operations on all notes.
 **FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `Destinations` table from relevant components.
 **FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `Destinations` table.
-**FR-005**: `DestinationList.vue` **MUST** show a list of `Destinations` table entries.
-**FR-006**: Authenticated admin users **MUST** be able to search list entries by city, state, zip, and/or name.
-**FR-007**: Authenticated admin users **MUST** be able to sort list entries by city, state, zip, and/or name in both ascending and descending order.
-**FR-008**: Authenticated admin users **MUST** be able to see the details of list entries in rows.
+**FR-005**: The **Request Details** view **MUST** show a list of notes beneath the rest of the `request`'s information.
+**FR-008**: Authenticated maintenance users **MUST** be able to see a list of notes whose `maintenance_request` bool is toggled on.
+
 **FR-009**: The list of `Destinations` entries **MUST NOT** be displayed across more than one page.
 **FR-010**: Each `Destinations` entry **MUST** display the end-date of the most recent `request` made including it, ignore future requests including it.
 **FR-011**: Trying to add or save edits to a `Destinations` entry with any empty fields besides `Address Line 2` **MUST** cancel the add or save (but not close the dialog) and return an error saying `Missing fields: ` along with the empty fields.
