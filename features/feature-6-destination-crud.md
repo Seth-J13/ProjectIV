@@ -1,7 +1,7 @@
 # Feature: Destination CRUD
 
 **Feature ID:** 6
-**Branch pattern:** `feature/6-destination-CRUD`
+**Branch pattern:** `feature/6-destination-crud`
 **Status:** Ready
 **Created:** 2026-10-24
 **Updated:** 2026-10-28
