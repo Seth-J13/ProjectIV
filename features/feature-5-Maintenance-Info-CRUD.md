@@ -16,9 +16,9 @@
 **I want to** view a vehicle's maintenance information consisting of `Maintenance Notes` and `Vehicle Information`
 **So that** I can see basic information about the vehicle and what needs to be worked on
 
-**Priority:** PN (eg. P1 for most important)  
-**Independent test:** <how to verify this story alone, in one sentence> (eg. Submit valid registration and land on protected home with `user` in `localStorage`)
-**Acceptance scenarios:** see ### US-N.N (eg. ### US-1.1) under Acceptance Criteria
+**Priority:** P1
+**Independent test:** 
+**Acceptance scenarios:** see ### US-5.1 under Acceptance Criteria
 
 ### US-1.2: ...
 **As a**
