@@ -18,53 +18,93 @@
 **So that** I can see basic information about the vehicle and what needs to be worked on
 
 **Priority:** P1
-**Independent test:** I view a vehicle's maintenance notes and can view the basic vehicle info `Make`, `Model`, `Year`, `Fuel Type`, `Recommended Tire PSI`, `Oil Viscosity`, `Fuel Capacity`, `Tire Type`, and `Last Updated Mileage`
+**Independent test:** I view a vehicle's maintenance notes and can view the basic vehicle info (`Make`, `Model`, `Year`, `Fuel Type`, `Recommended Tire PSI`, `Oil Viscosity`, `Fuel Capacity`, `Tire Type`, and `Last Updated Mileage`) and maintenance note's related to that vehicle.
 **Acceptance scenarios:** see ### US-5.1 under Acceptance Criteria
 
-### US-5.2:  
-**As a**
-**I want to**
-**So that**
+### US-5.2: User adds a maintenance note
+**As a** (`admin` or `maintenance`)
+**I want to** add a maintenance note to a vehicle
+**So that** I can add to the service requests for the vehicle
 
-**Priority:** P
-**Independent test:**
-**Acceptance scenarios:**
+**Priority:** P1
+**Independent test:** I add a note service request and it shows up in the note service list 
+**Acceptance scenarios:** see ### US-5.2 under Acceptance Criteria
+
+### US-5.3: User edits a maintenance note
+**As a** (`admin` or `maintenance`)
+**I want to** edit a maintenance note
+**So that** I can change add, change, or delete any information on the service note
+
+**Priority:** P1
+**Independent test:** I can click the edit icon button and a edit modal pops up so I can change the information
+**Acceptance scenarios:** see ### US-5.3 under Acceptance Criteria
+
+### US-5.4: User deletes a maintenance note 
+**As a** (`admin` or `maintenance`)
+**I want to** delete completed service requests
+**So that** I can remove todo service requests from the `Service Request List`
+
+**Priority:** P1
+**Independent test:** I click the delete button and the service note is removed from the `Service Request List` and a `Maintencance Log` is created
+**Acceptance scenarios:** see ### US-5.4 under Acceptance Criteria
+
+### US-5.5: User updates the car's mileage
+**As a** (`admin` or `maintenance`)
+**I want to** update the mileage of the car
+**So that** the system has a accurate mileage for the vehicle I am viewing
+
+**Priority:** P1
+**Independent test:** I click on the `Update Mileage` button and a modal pops up allowing me to input numbers to update the mileage
+**Acceptance scenarios:** see ### US-5.5 under Acceptance Criteria
 
 ### US-5.: 
-**As a**
+**As a** (`admin` or `maintenance`)
 **I want to**
 **So that**
 
 **Priority:** P
 **Independent test:**
-**Acceptance scenarios:**
+**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
 
 ### US-5.: 
-**As a**
+**As a** (`admin` or `maintenance`)
 **I want to**
 **So that**
 
 **Priority:** P
 **Independent test:**
-**Acceptance scenarios:**
+**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
 
 ### US-5.: 
-**As a**
+**As a** (`admin` or `maintenance`)
 **I want to**
 **So that**
 
 **Priority:** P
 **Independent test:**
-**Acceptance scenarios:**
+**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
 
 ### US-5.: 
-**As a**
+**As a** (`admin` or `maintenance`)
 **I want to**
 **So that**
 
 **Priority:** P
 **Independent test:**
-**Acceptance scenarios:**
+**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
+
+### US-5.: 
+**As a** (`admin` or `maintenance`)
+**I want to**
+**So that**
+
+**Priority:** P
+**Independent test:**
+**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
+
+
+
+
 
 
 ---
