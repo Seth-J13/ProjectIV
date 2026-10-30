@@ -57,55 +57,32 @@
 **Independent test:** I click on the `Update Mileage` button and a modal pops up allowing me to input numbers to update the mileage
 **Acceptance scenarios:** see ### US-5.5 under Acceptance Criteria
 
-### US-5.: 
+### US-5.6: User selects a service note
 **As a** (`admin` or `maintenance`)
-**I want to**
-**So that**
+**I want to** click a service note and view a modal with that note's information
+**So that** I can see specific details about the maintenance request to do better work on the vehicle
 
-**Priority:** P
-**Independent test:**
-**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
+**Priority:** P1
+**Independent test:** I click on a `Service Request` and a modal pops up with the service note details
+**Acceptance scenarios:** see ### US-5.6 under Acceptance Criteria
 
-### US-5.: 
+### US-5.7: User clicks the `View Service Logs` button
 **As a** (`admin` or `maintenance`)
-**I want to**
-**So that**
+**I want to** view the service logs for this vehicle
+**So that** I can see the logs created for this vehicle
 
-**Priority:** P
-**Independent test:**
-**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
+**Priority:** P2
+**Independent test:** I click on `View Service Logs` and I am taken to the Service Logs page
+**Acceptance scenarios:** see ### US-5.7 under Acceptance Criteria
 
-### US-5.: 
+### US-5.8: User clicks the `Back` button
 **As a** (`admin` or `maintenance`)
-**I want to**
-**So that**
+**I want to** return to the Vehicle.vue page
+**So that** I can browse the other vehicles
 
-**Priority:** P
-**Independent test:**
-**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
-
-### US-5.: 
-**As a** (`admin` or `maintenance`)
-**I want to**
-**So that**
-
-**Priority:** P
-**Independent test:**
-**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
-
-### US-5.: 
-**As a** (`admin` or `maintenance`)
-**I want to**
-**So that**
-
-**Priority:** P
-**Independent test:**
-**Acceptance scenarios:** see ### US-5. under Acceptance Criteria
-
-
-
-
-
+**Priority:** P2
+**Independent test:** I click the back button and I am returned to the Vehicles.vue page
+**Acceptance scenarios:** see ### US-5.8 under Acceptance Criteria
 
 ---
 
@@ -113,43 +90,61 @@
 
 ### Functional Requirements
 
-#### eg. (**FR-001**: Users MUST authenticate with **username** + **password** (not email-only login).)
-#### The specifics on what it is supposed to do
-
-- **FR-001**: <System MUST>
-- **FR-002**: <Users MUST be able to ...>
-- **FR-003**: <... MUST NOT ...>
-- etc...
+- **FR-001**: System **MUST** list all the maintenance request notes for the selected vehicle
+- **FR-002**: System **MUST** allow user to edit each maintenance note
+- **FR-003**: System **MUST** create a service log when deleting a maintenance note
+- **FR-004**: System **MUST** allow the user to update the mileage of the car
+- **FR-005**: System **MUST** take user to the `Vehicle-Service-Log.vue` when clicking the `View Service Logs` button
+- **FR-006**: System **MUST** return user to `Vehicle.vue` when clicking the `Back` button
+- **FR-007**: System **MUST** have a view, add, and edit `Maintenance Note` modal
+- **FR-008**: System **MUST** confirm user wants to `delete` a maintenance note with a `Completion` modal
+- **FR-009**: System **MUST NOT** allow non `admin` or non `maintenance` users view the `Maintenance.vue`
+- **FR-010**: System **MUST** display the basic vehicle information `year`, `make`, `model`, `fuel type`, `recommended tire psi`, `oil viscosity`, `fuel capacity`, `tire type`, and `last updated mileage`(for the selected vehicle)
 
 ---
 
-
-
 ## Assumptions
 
-- What already exists (eg. Feature 1 auth is on `dev`)
-- What you are deliberately not building yet
-
+- **What already exists**
+ - `feature-1-User-Auth-&-Session-Management`
+ - `feature-2-Google-Auth`
+ - `feature-3-Department-CRUD`
+ - `feature-4-Vehicle-CRUD`
+- **What you are deliberately not building yet**
+ - `feature-8-Requests-CRUD`
+ - `feature-9-Note-CRUD`
+ - `feature-10-Vehicle-Service-Log-CRUD`
+ 
 ## Edge Cases
 
-- Empty required field → …
-- Cross-user access → …
-- Duplicate / invalid input → …
+- **Empty required field:**
+  - `Text Fields`: `</v-alert>` to notify user that a empty field is required to be filled
+  - `Radio Buttons`: `</v-alert>` to notify user that a selection needs to be made
+- **Duplicate / invalid input**
+ - Throw `400` restapi error and send a `</v-alert>` to notify user that the input is invalid or already exists
 
 ## Success Criteria
 
 - **SC-001**: Every Gherkin scenario has at least one automated test before merge
-- **SC-002**: <measurable outcome for this feature>
+- **SC-002**: Every functional requirement is met
+- **SC-003**: Frontend, `Maintenance.vue` is the only created .vue for this feature doc
+- **SC-004**: Backend, all routes, models, and controllers are created and configured correctly with authorization
+- **SC-005**: User can successfully add a maintenance note 
+- **SC-006**: User can successfully edit a maintenance note
+- **SC-007**: User can successfully delete a maintenance note which causes a service log to be created
+- **SC-008**: User can successfully update the mileage for the vehicle being viewed
+- **SC-009**: User can be routed to `Vehicle-Service-Logs.vue` when clicking the `View Service Logs` button
+- **SC-010**: User is returned to the `Vehicle.vue` when clicking the `Back` button
 
 ---
 
 ## Data Ownership & Isolation (foundation)
 
-Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
+Feature 1 and 2 establishes identity
 
-- Each user account is a separate tenant boundary for todo lists and items.
+- Maintenance info is not owned by any user 
 - No API in this feature returns another user's profile or session.
-- Later features must never expose lists or todos across users — not in list responses, detail views, or error messages that confirm another user's resource exists.
+- Later features must never expose maintenance notes to unauthorized users.
 
 ---
 
@@ -157,6 +152,9 @@ Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
 
 - **User**: registered account (name, email, username, role); owns future lists and todos.
 - **Session**: server-side record tying a JWT token to a user; expires after 24 hours.
+- **Vehicle**: server-side record of a vehicle
+- **Maintenance Info**: server-side record of a `make`,`model`, and `year` vehicle
+- **Request**: server-side record of all requests
 
 ---
 
@@ -184,11 +182,7 @@ Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
 
 ## Acceptance Criteria (Gherkin)
 
-
-
 ### US-1.1 — {Related Functional Requirement}
-
-
 
 #### Scenario: {What is happening or has happend}
 

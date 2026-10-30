@@ -179,8 +179,10 @@
 
 - **Empty required field**
   - `Text Fields`: `</v-alert>` to notify user that a empty field is required to be filled
-  - `Radio Buttons` : `</v-alert>` to notify user that a selection needs to be made
+  - `Radio Buttons`: `</v-alert>` to notify user that a selection needs to be made
   - `Date Picker`: `</v-alert>` to notify user that a correct date must be picked
+  - `Combo Box`: `</v-alert>` to notify user that a selection needs to be made
+
 - **Duplicate Inputs**
   - Throw `400` restapi error and send a `</v-alert>` to notify user that the input is invalid or already exists
 
@@ -188,7 +190,7 @@
 
 - **SC-001**: Every Gherkin scenario has at least one automated test before merge
 - **SC-002**: Every functional requirement is met
-- **SC-003**: Frontend, Vehicle.vue is the only .vue created for this feature doc
+- **SC-003**: Frontend, `Vehicle.vue` is the only .vue created for this feature doc
 - **SC-004**: Backend, all routes, models, and controllers are created and configured correctly with authorization 
 
 ---
@@ -197,7 +199,7 @@
 
 Feature 1 and 2 establishes identity
 
-- Vehicles are not owned by anyone
+- Vehicles are not owned by any user
 - No API in this feature returns another user's profile or session.
 - Later features must never expose vehicles to unauthorized users.
 
