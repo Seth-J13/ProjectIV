@@ -84,6 +84,15 @@
 **Independent test:** I click the back button and I am returned to the Vehicles.vue page
 **Acceptance scenarios:** see ### US-5.8 under Acceptance Criteria
 
+### US-5.9: User clicks the `Edit Maintenance Info` button
+**As a** (`admin` or `maintenance`)
+**I want to** edit the maintenance info for this type of vehicle
+**So that** I correct mistakes or update for new information
+
+**Priority:** P2
+**Independent test:** I click the `Edit Maintenance Info` button and a edit modal pops up
+**Acceptance scenarios:** see ### US-5.9 under Acceptance Criteria
+
 ---
 
 ## Requirements
@@ -148,6 +157,74 @@ Feature 1 and 2 establishes identity
 
 ---
 
+## API Requirements
+
+All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` from Feature 1. Every route below requires either a `admin` or `maintenance` session
+
+| Method   | Endpoinnt                                         | Purpose                                                   |
+| -------- | ------------------------------------------------- | --------------------------------------------------------- | 
+| `GET`    | `/vehicle-t3/maintenance-infos?make=&model=&year=`| Retrieve the maintenance information for the specified `make`,`model`, and `year` | 
+| `GET`    | `/vehicle-t3/requests/:vehicle_id`                | Retrieve the requests tied to this vehicle                | 
+| `GET`    | `/vehicle-t3/notes/:request_id`                   | Retrieve all the notes from the specified request_id      |
+| `POST`   | `/vehicle-t3/notes/`                              | Create a new maintenance note                             | 
+| `PUT`    | `/vehicle-t3/notes/:note_id`                      | Update a specified note                                   | 
+| `PUT`    | `/vehicle-t3/vehicles/:vin`                       | Update a vehicle's mileage                                |
+| `PUT`    | `/vehicle-t3/maintenance-infos?make=&model=&year=`| Update a maintenance info for a specified `make`, `model`, and `year` |
+| `DELETE` | `/vehicle-t3/notes/:note_id`                      | Delete the specified                                      | 
+
+**Create / Update Note success response**
+```json
+{
+  "submitted_when": "Morning",
+  "type": "Maintenance",
+  "maintenance_request": true,
+  "request_id": 5,
+  "name": John Doe,
+  "date": "2026-10-29",
+  "text": "Increased the tire pressure and fixed the steering."
+}
+```
+
+**Update Vehicle success response**
+```json
+{
+  "make": Honda,
+  "model": Accord,
+  "year": 2014,
+  "purchased_date": "2015/12/16",
+  "color": "White",
+  "license_plate_num": "ABC344",
+  "tag_exp_month": "2016/5/25",
+  "department": "Engineering",
+  "most_recent_dest_id": null,
+  "available": 1,
+  "mileage": 5320
+}
+```
+
+**Update Maintenance info success response**
+```json
+{
+    "make": "Honda",
+    "model": "Accord",
+    "year": 2014,
+    "fuel_type_id": 2,
+    "fuel_capacity": 30,
+    "recommended_tire_psi": 35,
+    "tire_type": "P205/55R16 95H"
+}
+```
+
+**Error response:** `{"message": "human readable explanation"}` with approriate HTTP status
+
+---
+
+## Screen Requirements
+
+
+
+---
+
 ## Key Entities
 
 - **User**: registered account (name, email, username, role); owns future lists and todos.
@@ -170,7 +247,6 @@ Feature 1 and 2 establishes identity
 | `fuel_capacity`       | INTEGER        | Required, Non-negative                                      |
 | `recommended_tire_psi`| DECIMAL(5, 2)  | Required, Non-negative                                      |
 | `tire_type`           | VARCHAR(17)    | Required                                                    |
-| `mileage`             | INTEGER        | Required, Non-negative                                      |
 
 ### `Fuel_Type` Table
 | Field                 | Type           | Rules                                                       |
@@ -182,49 +258,66 @@ Feature 1 and 2 establishes identity
 
 ## Acceptance Criteria (Gherkin)
 
-### US-1.1 — {Related Functional Requirement}
-
-#### Scenario: {What is happening or has happend}
-
-- **Given** {Where are you on the website?}
-- **When** {Main action?}
-- **And** {What additional action did you take?}
-- **Then** {Website response}
-- **And** {additional response}
-- **And** 
-- **etc...** 
-
-
-## VVV Example AC (Change or Delete) VVV
-#### Scenario: User submits registration with missing email
-
-- **Given** I am on the registration page
-- **When** I leave the email field empty
-- **And** I submit the form
-- **Then** inline validation blocks the request
-- **And** I see the message **"Email is required."**
-- **And** no API request is sent
-## ^^^ (Change or Delete) ^^^
-
----
-
-
-
-### US-N.2 — {Related Functional Requirement}
-
-
+### US-5.1 — 
 
 #### Scenario: 
 
 - **Given** 
-- **And** 
 - **When** 
-- **And** 
 - **Then** 
 - **And** 
-- **And**
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
 - **And** 
 
 ---
 
-### etc...
+### US-5. — 
+
+#### Scenario: 
+
+- **Given**  
+- **When** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** 
+
+---

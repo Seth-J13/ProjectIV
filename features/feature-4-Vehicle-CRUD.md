@@ -234,17 +234,17 @@ Feature 1 and 2 establishes identity
 
 ## API Requirements
 
-All routes mount under `/vehicles-t3`, Auth is `Authorization: Bearer <token>` from Feature 1. Every route below requires either a `admin` or `maintenance` session
+All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` from Feature 1. Every route below requires either a `admin` or `maintenance` session
 
 | Method   | Endpoinnt                             | Purpose                                                         |
 | -------- | ------------------------------------- | --------------------------------------------------------------- |
-| `GET`    | `/vehicles-t3/vehicles/`              | Get all vehicles in the database                                |
-| `GET`    | `/vehicles-t3/vehicles/:vin`          | Get a vehicle with the designated vin number                    |
-| `GET`    | `/vehicles-t3/maintenance-info?make=&model=&year=` | Check to see if a vehicle of `year`, `make`, `model` has maintenance info already |
-| `PUT`    | `/vehicles-t3/vehicles/`              | Create a new vehicle                                            |
-| `PUT`    | `/vehicles-t3/maintenance-info?make=&model=&year=` | Create a new maintenance info for a vehicle of `year`, `make`, `model` |
-| `POST`   | `/vehicles-t3/vehicles/:vin`          | Update a vehicle in the database with the designated vin number |
-| `DELETE` | `/vehicles-t3/vehicles/:vin`          | Delete a vehicle with the designated vin number                 |
+| `GET`    | `/vehicle-t3/vehicles/`              | Get all vehicles in the database                                |
+| `GET`    | `/vehicle-t3/vehicles/:vin`          | Get a vehicle with the designated vin number                    |
+| `GET`    | `/vehicle-t3/maintenance-info?make=&model=&year=` | Check to see if a vehicle of `year`, `make`, `model` has maintenance info already |
+| `PUT`    | `/vehicle-t3/vehicles/`              | Create a new vehicle                                            |
+| `PUT`    | `/vehicle-t3/maintenance-info?make=&model=&year=` | Create a new maintenance info for a vehicle of `year`, `make`, `model` |
+| `POST`   | `/vehicle-t3/vehicles/:vin`          | Update a vehicle in the database with the designated vin number |
+| `DELETE` | `/vehicle-t3/vehicles/:vin`          | Delete a vehicle with the designated vin number                 |
  
 **Create / Update Request Body (Vehicle Table)**
 ```json
