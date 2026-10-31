@@ -257,40 +257,50 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - `Edit Maintenance Info` button
 - `Update Mileage` button
 - `Manage Fuels` button
+  - **Maintenance Info**
+    - `Year`
+    - `Make`
+    - `Model`
+    - `Fuel Type`
+    - `Recommended Tire PSI`
+    - `Oil Viscocity` 
+    - `Fuel Capacity`
+    - `Tire Type`
+    - `Last Updated Mileage`
 
-**Maintenance Info**
-- `Year`
-- `Make`
-- `Model`
-- `Fuel Type`
-- `Recommended Tire PSI`
-- `Oil Viscocity` 
-- 
-
-**Maintenance Notes Table**
--
+  - **Maintenance Notes Table**
+    - Header
+      - `Subject`, `Actions`
+    - Table Item
+      - `Subject`, `Edit Icon Button`(Opens `Edit Maintenance Note` modal), `Delete Icon Button` (Opens `Complete Note` modal)
 
 **Modals**
-- `View` / `Add` / `Edit` maintenance notes
+- **`View` / `Add` / `Edit` maintenance notes**
   - `View`: Shows non-editable `subject`, `description`, and `close` button for the maintenance note
   - `Add`: Shows blank editable `subject`, `description`, `add` button, and `cancel` button
   - `Edit`: Shows filled out editable fields with the current note's `subject`, `description`, `update` button, and `cancel` button
-- Update Mileage
+- **Update Mileage**
   - Non-editable field showing the current mileage
   - Editable field only allowing integers 
   - `cancel` button
   - `add` button
-- Complete Note
+- **Complete Note**
   - Header: `Complete`
   - Text: `Confirm Completion?`
   - `cancel` button
   - `confirm` button
-- `Edit` Maintenance Info
+- **`Edit` Maintenance Info**
   - `Year`: Drop down with values from 1900 to present year
   - `Make`: Combobox (Values should show all distinct `makes` in system or add a new make)
   - `Model`: Combobox (Values should show all distinct `models` in system or add a new model)
   - `Fuel Type`: Combobox (Values should show all distinct `fuels` in system or add a new fuel)
-- `View` Fuel Management
+  - `Fuel Capacity`: Text field
+  - `Recommended Tire PSI`: Stepper input
+  - `Oil Viscosity`: Text field
+  - `Tire Type`: Text field
+  - `cancel` button
+  - `update` button
+- **`View` Fuel Management**
   - Header: `Fuel Management`
   - Table:
     - Headers: `Fuel Type`, `Actions`
@@ -298,7 +308,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
       - Text: Fuel Type Name
       - Actions: `Edit Icon Button`,`Delete Icon Button`
   - `Add New Fuel` button
-- `Add` / `Edit` Fuel Management
+- **`Add` / `Edit` Fuel Management**
   - Fuel Text Field
   - `cancel` button
   - `add` / `update` button
@@ -339,7 +349,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ## Acceptance Criteria (Gherkin)
 
-### US-5.1 — 
+### US-5.1 — User views a vehicle's maintenance page
 
 #### Scenario: 
 
@@ -400,5 +410,23 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **Then** 
 - **And** 
+
+---
+
+## Agent implementation request
+
+Copy when asking Cursor to implement this feature (`@` this file):
+
+```text
+Implement Feature 1 from @features/feature-1-user-auth.md on branch `feature/1-user-auth`.
+
+Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
+If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
+Complete Definition of Done and the merge checklist in @features/framework.md.
+Do not implement behavior not in this spec.
+```
+
+**Reference updates for this feature:** `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`
 
 ---
