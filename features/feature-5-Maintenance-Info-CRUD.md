@@ -178,6 +178,8 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 | `GET`    | `/vehicle-t3/fuels/`                              | Retrieve all fuel types                                   |  
 | `POST`   | `/vehicle-t3/fuels/`                              | Create a new fuel type                                    | 
 | `POST`   | `/vehicle-t3/notes/`                              | Create a new maintenance note                             |
+| `POST`   | `/vehicle-t3/vehicle-service-logs/`               | Create a new vehicle service log                          | 
+| `POST`   | `/vehicle-t3/maintenance-info/`                   | Create a new maintenance info for a specified `make`, `model`, and `year` |
 | `PUT`    | `/vehicle-t3/fuels/:fuel_id`                      | Update a specified fuel type                              | 
 | `PUT`    | `/vehicle-t3/notes/:note_id`                      | Update a specified note                                   | 
 | `PUT`    | `/vehicle-t3/vehicles/:vin`                       | Update a vehicle's mileage                                |
@@ -225,6 +227,16 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
     "fuel_capacity": 30,
     "recommended_tire_psi": 35,
     "tire_type": "P205/55R16 95H"
+}
+```
+
+**Create Vehicle Service Log success response**
+```json
+{
+    "vehicle_id": 12345671234567123,
+    "date": "2026-10-31",
+    "type": "maintenance",
+    "value": "Vehicle needs new tires"
 }
 ```
 
@@ -314,6 +326,9 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
   - `cancel` button
   - `add` / `update` button
 
+- **`</v-alert>`s**
+  - **Should not** permenantly stay on page
+  - **Should** disappear after 3 seconds
 ---
 
 ## Key Entities
@@ -375,42 +390,6 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a `Add Note` Button near the top of the table
 - **And** no API request is sent
 
-#### Scenario: User clicks the `Back` button
-
-- **Given** the user is on the `Maintenance.vue`
-- **When** they click the `Back` button
-- **Then** they are returned to the `Vehicles.vue`
-- **And** no API request is sent
-
-#### Scenario: User clicks the `view service logs` button
-
-- **Given** the user is on the `Maintenance.vue`
-- **When** they click the `view service logs` button
-- **Then** they are sent to `Vehicle-Service-Logs.vue` 
-- **And** `vehicle_id` is sent as a param
-- **And** no API request is sent 
-
-#### Scenario: User clicks `edit maintenance info` button
-
-- **Given** the user is on the `Maintenance.vue`
-- **When** they click the `edit maintenance info` button
-- **Then** the `Edit Maintenance Info` modal opens
-- **And** no API request is sent
-
-#### Scenario: User clicks `update mileage` button
-
-- **Given** the user is on the `Maintenance.vue` 
-- **When** they click the `update mileage` button
-- **Then** the `Update Mileage` modal opens
-- **And** no API request is sent
-
-#### Scenario: User clicks the `manage fuels` button
-
-- **Given** the user is on the `Maintenance.vue`
-- **When** they clcik the `manage fuels` button
-- **Then** the `View Fuel Management` modal opens
-- **And** no API request is sent
-
 ---
 
 ### US-5.2 —  User adds a maintenance note
@@ -438,12 +417,21 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a `</v-alert>` pops up in red, saying `"Subject is required."`
 - **And** no API request is sent
 
-#### Scenario: User inputs text into the description field
+#### Scenario: User inputs valid text into the description field
 
 - **Given** the user is viewing the `Add Maintenance Note` modal
 - **When** they enter text into the description field
 - **Then** the text field displays what they type
 - **And** the amount of characters available decreases
+- **And** no API request is sent
+
+#### Scenario: User inputs invalid text into the description field
+
+- **Given** the user is viewing the `Add Maintenance Note` modal
+- **When** they do not enter text into the description field
+- **And** the `Add Note` button is clicked
+- **Then** the text field is highligted red
+- **And** a `</v-alert>` pops up in red, saying `"Description is required."`
 - **And** no API request is sent
 
 #### Scenario: User inputs too many characters into the description field
@@ -491,18 +479,27 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** the `Edit Maintenance Note` modal opens
 - **And** no API request is sent
 
-#### Scenario: User inputs text into the subject text field
+#### Scenario: `Edit Maintenance Note` modal opens
 
 - **Given** the user is viewing the `Edit Maintenance Note` modal
 - **When** they first view the `Edit Maintenance Note` modal
 - **Then** the text fields for `subject` and `description` displays what the selected maintenance note had for its `subject` and `description`
 - **And** no API request is sent
 
-#### Scenario: User inputs text into the subject text field
+#### Scenario: User inputs valid text into the subject text field
 
-- **Given** the user is viewing the `Edit Maintenance Note` modal
+- **Given** the user is viewing the `Add Maintenance Note` modal
 - **When** they enter text into the subject field
 - **Then** the text field displays what they type
+- **And** no API request is sent
+
+#### Scenario: User deletes previous input and does not input any text into the subject text field
+
+- **Given** the user is viewing the `Add Maintenance Note` modal
+- **When** no text is entered into the subject field
+- **And** the `Update Note` button is clicked
+- **Then** the text field is highlighted red
+- **And** a `</v-alert>` pops up in red, saying `"Subject is required."`
 - **And** no API request is sent
 
 #### Scenario: User inputs text into the description field
@@ -511,6 +508,16 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** they enter text into the description field
 - **Then** the text field displays what they type
 - **And** the amount of characters available decreases
+- **And** no API request is sent
+
+#### Scenario: User inputs invalid text into the description field
+
+- **Given** the user is viewing the `Edit Maintenance Note` modal
+- **And** the user deleted all the previous description information from the selected maintenance note
+- **When** they do not enter text into the description field
+- **And** the `Add Note` button is clicked
+- **Then** the text field is highligted red
+- **And** a `</v-alert>` pops up in red, saying `"Description is required."`
 - **And** no API request is sent
 
 #### Scenario: User inputs too many characters into the description field
@@ -532,74 +539,177 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User inputs valid input into the `Edit Maintenance Note` modal
 
-- **Given** the user is viewing the `Add Maintenance Note` modal and have valid inputs in the form
-- **When** they click the `Add Note` button
-- **Then** a `POST` API request is sent
+- **Given** the user is viewing the `Edit Maintenance Note` modal and have valid inputs in the form
+- **When** they click the `Update Note` button
+- **Then** a `PUT` API request is sent
 - **And** returns a `201` with a payload of `{"message": "human readable message"}`
 - **And** the modal closes
-- **And** a `</v-alert>` pops up in green, saying `Successfully created maintenance note.`
+- **And** a `</v-alert>` pops up in green, saying `Successfully updated maintenance note.`
 
-#### Scenario: User inputs invalid input into the `Add Maintenance Note` modal
+#### Scenario: User inputs invalid input into the `Edit Maintenance Note` modal
 
-- **Given** the user is viewing the `Add Maintenance Note` modal and has invalid inputs in the form
-- **When** they click the `Add Note` button
-- **Then** a `POST` API request is sent
+- **Given** the user is viewing the `Edit Maintenance Note` modal and has invalid inputs in the form
+- **When** they click the `Update Note` button
+- **Then** a `PUT` API request is sent
 - **And** returns a `404` with a payload of `{"message": "human readable explanation"}`
 - **And** a `</v-alert>` pops up in red, saying `Could not create maintenance note.`
 
 ---
 
-### US-5. — 
+### US-5.4 — User deletes a maintenance note
 
-#### Scenario: 
+#### Scenario: User clicks the `Delete Note` icon button
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is viewing the `Maintenance Note` table
+- **When** the user clicks the `Delete Note` icon button for a specific table item 
+- **Then** the `Complete Note` modal opens
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User clicks `cancel` button
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is viewing the `Complete Note` modal
+- **When** the user clicks the `cancel` button
+- **Then** the modal closes
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User clicks `confirm` button
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is viewing the `Complete Note` modal
+- **When** the user clicks the `confirm` button
+- **Then** a `POST` request is sent to the server to create a service log
+- **And** returns a `201` with a payload containing `{"message": "human readable message"}`
+- **And** a `DELETE` request is sent to delete the note
+- **And** returns a `200` with a payload containing `{"message": "Successfully deleted (note_id)"}`
+
+---
+
+### US-5.5 — User updates the car's mileage
+
+#### Scenario: User clicks `update mileage` button
+
+- **Given** the user is on the `Maintenance.vue` 
+- **When** they click the `update mileage` button
+- **Then** the `Update Mileage` modal opens
+- **And** no API request is sent
+
+#### Scenario: `Update Mileage` modal opens 
+
+- **Given** the user is viewing the `Update Mileage` modal
+- **When** the modal opens 
+- **Then** the `current mileage` is viewable as a non-editable text field 
+- **And** a blank text field to add a updated mileage is viewable
+- **And** a `cancel` and `confirm` buttons at the bottom
+- **And** no API request is sent
+
+#### Scenario: User inputs a `NaN` mileage
+
+- **Given** the user is viewing the `Update Mileage` modal
+- **When** the user inputs a `NaN` into the `update mileage` field
+- **And** the `confirm` button is clicked
+- **Then** the `update mileage` text field is highlighted red
+- **And** a `</v-alert>` pops up in red, saying `Mileage must be a whole number.`
+- **And** no API request is sent
+
+#### Scenario: User inputs a low mileage
+
+- **Given** the user is viewing the `Update Mileage` modal
+- **When** the user inputs a mileage lower or equal to the current mileage
+- **And** the `confirm` button is clicked
+- **Then** the `update mileage` text field is highlighted red
+- **And** a `</v-alert>` pops up in red, saying `New mileage must be greater than the old mileage.`
+- **And** no API request is sent
+
+#### Scenario: User clicks the `cancel` button
+
+- **Given** the user is viewing the `Update Mileage` modal
+- **When** the user clicks the `cancel` button
+- **Then** all input is cleared
+- **And** the modal is closed
+- **And** no API request is sent
+
+#### Scenario: User clicks the `confirm` button
+
+- **Given** the user is viewing the `Update Mileage` modal
+- **When** the user clicks the `confirm` button
+- **Then** a `PUT` request is sent
+- **And** returns `200` with a payload saying `{"message": "human readable message"}`
+- **And** a `</v-alert>` pops up in greed, saying `Updated vehicle mileage.`
+
+---
+
+### US-5.6 — User selects a service note
+
+#### Scenario: User selects a service note
+
+- **Given** the user is viewing the `Maintenance Notes` table
+- **When** the user selects a specific note
+- **Then** the `View Maintenance Note` modal opens
 - **And** no API request is sent
 
 ---
 
-### US-5. — 
+### US-5.7 — User clicks the `View Service Logs` button
 
-#### Scenario: 
+#### Scenario: User clicks the `view service logs` button
 
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
+- **Given** the user is on the `Maintenance.vue`
+- **When** they click the `view service logs` button
+- **Then** they are sent to `Vehicle-Service-Logs.vue` 
+- **And** `vehicle_id` is sent as a param
+- **And** no API request is sent 
 
-#### Scenario: 
+---
 
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
+### US-5.8 — User clicks the `Back` button
 
-#### Scenario: 
+#### Scenario: User clicks the `Back` button
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is on the `Maintenance.vue`
+- **When** they click the `Back` button
+- **Then** they are returned to the `Vehicles.vue`
 - **And** no API request is sent
 
 ---
 
-### US-5. — 
+### US-5.9 — User clicks the `Edit Maintenance Info` button
+
+#### Scenario: User clicks `edit maintenance info` button
+
+- **Given** the user is on the `Maintenance.vue`
+- **When** they click the `edit maintenance info` button
+- **Then** the `Edit Maintenance Info` modal opens
+- **And** no API request is sent
+
+#### Scenario: `Edit Maintenance Info` modal opens
+
+- **Given** the user clicked the `edit maintenance info button`
+- **When** the modal opens
+- **Then** all the inputs are filled out for current vehicle being viewed (`make`, `model`, `year`, `fuel type`, `fuel capacity`, `oil viscosity`, `recommended tire psi`, and `tire type`)
+- **And** no API request is sent
+
+#### Scenario: User enters valid input for all fields
+
+- **Given** the user enters valid inputs for all fields
+- **When** the user clicks the `Update Maintenance Info` button
+- **Then** a `PUT` request is sent
+- **And** returns `200` with a payload containing `{"message": "human readable message"}`
+
+#### Scenario: User inputs a `make`, `model`, and `year` that don't exist in the database
+
+- **Given** the inputted `make`, `model`, and `year` don't exist
+- **When** the `Update Maintenance Info` button is clicked
+- **Then** a `POST` request is sent to create a new maintenance info
+- **And** returns `201` with a payload containing `{"message": "human readable message"}`
+- **And** a `PUT` request is sent to update the vehicle's `make`, `model`, and `year`
+- **And** returns a `200` with a payload containing `{"message": "human readable message"}`
+
+#### Scenario: User deletes previous input for any input field and does not add new input
+
+- **Given** any input field for the `Edit Maintenance Info` form is empty
+- **When** the `Update Maintenance Info` button is clicked
+- **Then** each input field left blank is highlighted red
+- **And** no API request is sent
+
 
 #### Scenario: 
 
@@ -622,84 +732,22 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** 
 - **And** no API request is sent
 
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
 ---
 
-### US-5. — 
+### US-5.10 — User clicks the `Manage Fuels` button
 
-#### Scenario: 
+#### Scenario: User clicks the `manage fuels` button
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is on the `Maintenance.vue`
+- **When** they clcik the `manage fuels` button
+- **Then** the `View Fuel Management` modal opens
 - **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
----
-
-### US-5. — 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
----
-
-### US-5. — 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **Then** 
-- **And** no API request is sent
-
----
-
-### US-5. — Last
 
 #### Scenario: 
 
