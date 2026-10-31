@@ -344,6 +344,40 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** a add vehicle modal pops up
 - **And** no API request is sent
 
+#### Scenario: User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes
+
+- **Given** I have searched for a `make`, `model`, `year`, and `fuel type`
+- **And** the inputted `make`, `model`, and `year` do not exist in the database
+- **And** the inputted `fuel type` does not exist in the database
+- **When** I click `Add Vehicle` a new vehicle
+- **Then** a `POST` API request is sent to the server 
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server
+- **And** returns a value of `201` witha  payload containing `{"message": "Successfully fuel type."}`
+- **And** a `POST`API request is sent to the server
+- **And** returns a value of `201` witha  payload containing `{"message": "Successfully created vehicle."}`
+
+#### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
+
+- **Given** I have searched for a `make`, `model`, and `year`
+- **And** the inputted `make`, `model`, and `year` do not exist in the database
+- **When** I click `Add Vehicle` a new vehicle
+- **Then** a `POST` API request is sent to the server 
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server
+- **And** returns a value of `201` witha  payload containing `{"message": "Successfully created vehicle."}`
+
+
+#### Scenario: User inputs a `fuel type` into the combobox that doesn't exist
+
+- **Given** I have searched for a `fuel type`
+- **And** the inputted `fuel type` does not exist in the database
+- **When** I click `Add Vehicle` a new vehicle
+- **Then** a `POST` API request is sent to the server 
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel-type."}`
+- **And** a `POST`API request is sent to the server
+- **And** returns a value of `201` with a  payload containing `{"message": "Successfully created vehicle."}`
+
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
 - **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
@@ -352,6 +386,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** the `Add Vehicle` modal closes
 - **And** a `PUT` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
 
 #### Scenario: User inputs invalid information into `Add Vehicle` modal
 
@@ -380,6 +415,17 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** click the `Add` button
 - **Then** a add vehicle modal pops up
 - **And** no API request is sent
+
+#### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
+
+- **Given** I have searched for a `make`, `model`, and `year`
+- **And** the inputted `make`, `model`, and `year` do not exist in the database
+- **When** I click `Add Vehicle` a new vehicle
+- **Then** a `POST` API request is sent to the server 
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server
+- **And** returns a value of `201` witha  payload containing `{"message": "Successfully created vehicle."}`
+
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
@@ -419,11 +465,22 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** all form values are filled out with vehicle information 
 - **And** no API request is sent
 
+#### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
+
+- **Given** I have searched for a `make`, `model`, and `year`
+- **And** the inputted `make`, `model`, and `year` do not exist in the database
+- **When** I click `Update Vehicle` a new vehicle
+- **Then** a `POST` API request is sent to the server 
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server
+- **And** returns a value of `201` witha  payload containing `{"message": "Successfully updated vehicle."}`
+
+
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal
 
 - **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
 - **And** I have correctly inputted values into the form
-- **When** I click the `Edit Vehicle` button
+- **When** I click the `Update Vehicle` button
 - **Then** the `Update Vehicle` modal closes
 - **And** a `POST` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully updated vehicle."}`
@@ -457,11 +514,22 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** all form values are filled out with vehicle information 
 - **And** no API request is sent
 
+#### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
+
+- **Given** I have searched for a `make`, `model`, and `year`
+- **And** the inputted `make`, `model`, and `year` do not exist in the database
+- **When** I click `Update Vehicle` a new vehicle
+- **Then** a `POST` API request is sent to the server 
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server
+- **And** returns a value of `201` witha  payload containing `{"message": "Successfully updated vehicle."}`
+
+
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal
 
 - **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
 - **And** I have correctly inputted values into the form
-- **When** I click the `Edit Vehicle` button
+- **When** I click the `Update Vehicle` button
 - **Then** the `Update Vehicle` modal closes
 - **And** a `POST` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully updated vehicle."}`

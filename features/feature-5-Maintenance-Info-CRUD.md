@@ -278,12 +278,13 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **`View` / `Add` / `Edit` maintenance notes**
   - `View`: Shows non-editable `subject`, `description`, and `close` button for the maintenance note
   - `Add`: Shows blank editable `subject`, `description`, `add` button, and `cancel` button
+  - `Description`: Just below the description text box is a available character ammount
   - `Edit`: Shows filled out editable fields with the current note's `subject`, `description`, `update` button, and `cancel` button
 - **Update Mileage**
   - Non-editable field showing the current mileage
   - Editable field only allowing integers 
   - `cancel` button
-  - `add` button
+  - `update` button
 - **Complete Note**
   - Header: `Complete`
   - Text: `Confirm Completion?`
@@ -317,7 +318,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ## Key Entities
 
-- **User**: registered account (name, email, username, role); owns future lists and todos.
+- **User**: registered account (name, email, username, role).
 - **Session**: server-side record tying a JWT token to a user; expires after 24 hours.
 - **Vehicle**: server-side record of a vehicle
 - **Maintenance Info**: server-side record of a `make`,`model`, and `year` vehicle
@@ -351,33 +352,200 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ### US-5.1 — User views a vehicle's maintenance page
 
-#### Scenario: 
+#### Scenario: User has just loaded the `Maintenance.vue`
 
-- **Given** 
-- **When** 
-- **Then** 
-- **And** 
+- **Given** the user has just opened the `Maintenance.vue`
+- **When** they look at the top of the page
+- **Then** they will see the main action buttons (`back`, `view service logs`, `edit maintenance info`, `update mileage`, `manage fuels`)
+- **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User has just viewed the action buttons
 
-- **Given** 
-- **When** 
-- **Then** 
-- **And** 
+- **Given** the user has just looked at the action buttons at the top of the `Maintenance.vue`
+- **When** they look just below the buttons
+- **Then** they see the maintenance info (`make`, `model`, `year`, `fuel type`, `fuel capacity`, `oil viscosity`, `Recommended Tire PSi`, `tire type`, and `last updated mileage`) for the vehicle displayed at the top of the page
+- **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User has just viewed the maintenance info for the vehicle
 
-- **Given** 
-- **When** 
-- **Then** 
-- **And** 
+- **Given** the user has just looked at the maintenance info for the vehicle
+- **When** they look below the maintenance info
+- **Then** they will see a table with headers (`Subject`, `Actions`)
+- **And** a list of maintenance notes associated with the vehicle's requests
+- **And** a `Add Note` Button near the top of the table
+- **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User clicks the `Back` button
 
-- **Given** 
-- **When** 
-- **Then** 
-- **And** 
+- **Given** the user is on the `Maintenance.vue`
+- **When** they click the `Back` button
+- **Then** they are returned to the `Vehicles.vue`
+- **And** no API request is sent
+
+#### Scenario: User clicks the `view service logs` button
+
+- **Given** the user is on the `Maintenance.vue`
+- **When** they click the `view service logs` button
+- **Then** they are sent to `Vehicle-Service-Logs.vue` 
+- **And** `vehicle_id` is sent as a param
+- **And** no API request is sent 
+
+#### Scenario: User clicks `edit maintenance info` button
+
+- **Given** the user is on the `Maintenance.vue`
+- **When** they click the `edit maintenance info` button
+- **Then** the `Edit Maintenance Info` modal opens
+- **And** no API request is sent
+
+#### Scenario: User clicks `update mileage` button
+
+- **Given** the user is on the `Maintenance.vue` 
+- **When** they click the `update mileage` button
+- **Then** the `Update Mileage` modal opens
+- **And** no API request is sent
+
+#### Scenario: User clicks the `manage fuels` button
+
+- **Given** the user is on the `Maintenance.vue`
+- **When** they clcik the `manage fuels` button
+- **Then** the `View Fuel Management` modal opens
+- **And** no API request is sent
+
+---
+
+### US-5.2 —  User adds a maintenance note
+
+#### Scenario: User clicks the `Add Note` button
+
+- **Given** the user is viewing the `Maintenance Notes` table
+- **When** they click the `Add Note` button 
+- **Then** the `Add Maintenance Note` modal opens
+- **And** no API request is sent
+
+#### Scenario: User inputs valid text into the subject text field
+
+- **Given** the user is viewing the `Add Maintenance Note` modal
+- **When** they enter text into the subject field
+- **Then** the text field displays what they type
+- **And** no API request is sent
+
+#### Scenario: User inputs no text into the subject text field
+
+- **Given** the user is viewing the `Add Maintenance Note` modal
+- **When** no text is entered into the subject field
+- **And** the `Add Note` button is clicked
+- **Then** the text field is highlighted red
+- **And** a `</v-alert>` pops up in red, saying `"Subject is required."`
+- **And** no API request is sent
+
+#### Scenario: User inputs text into the description field
+
+- **Given** the user is viewing the `Add Maintenance Note` modal
+- **When** they enter text into the description field
+- **Then** the text field displays what they type
+- **And** the amount of characters available decreases
+- **And** no API request is sent
+
+#### Scenario: User inputs too many characters into the description field
+
+- **Given** the user is viewing the `Add Maintenance Note` modal
+- **When** they enter more than `255` characters into the description field
+- **Then** the text field is highligted red
+- **And** a note appears over the text field saying `Too many inputted characters`
+- **And** the amount of characters available goes red and into the negatives
+- **And** no API request is sent
+
+#### Scenario: User clicks the `Cancel` button
+
+- **Given** the useer is viewing the `Add Maintenance Note` modal
+- **When** they click the `Cancel` button
+- **Then** the modal closes
+- **And** all inputted information is cleared
+- **And** no API request is sent
+
+#### Scenario: User inputs valid input into the `Add Maintenance Note` modal
+
+- **Given** the user is viewing the `Add Maintenance Note` modal and has valid inputs in the form
+- **When** they click the `Add Note` button
+- **Then** a `POST` API request is sent
+- **And** returns a `201` with a payload of `{"message": "human readable message"}`
+- **And** the modal closes
+- **And** a `</v-alert>` pops up in green, saying `Successfully created maintenance note.`
+
+#### Scenario: User inputs invalid input into the `Add Maintenance Note` modal
+
+- **Given** the user is viewing the `Add Maintenance Note` modal and has invalid inputs in the form
+- **When** they click the `Add Note` button
+- **Then** a `POST` API request is sent
+- **And** returns a `404` with a payload of `{"message": "human readable explanation"}`
+- **And** a `</v-alert>` pops up in red, saying `Could not create maintenance note.`
+
+---
+
+### US-5.3 — User edits a maintenance note
+
+#### Scenario: User clicks the `Edit Note` icon button
+
+- **Given** the user is viewing the `Maintenance Notes` table
+- **When** they click the `Edit Note` icon button for a specific table item 
+- **Then** the `Edit Maintenance Note` modal opens
+- **And** no API request is sent
+
+#### Scenario: User inputs text into the subject text field
+
+- **Given** the user is viewing the `Edit Maintenance Note` modal
+- **When** they first view the `Edit Maintenance Note` modal
+- **Then** the text fields for `subject` and `description` displays what the selected maintenance note had for its `subject` and `description`
+- **And** no API request is sent
+
+#### Scenario: User inputs text into the subject text field
+
+- **Given** the user is viewing the `Edit Maintenance Note` modal
+- **When** they enter text into the subject field
+- **Then** the text field displays what they type
+- **And** no API request is sent
+
+#### Scenario: User inputs text into the description field
+
+- **Given** the user is viewing the `Edit Maintenance Note` modal
+- **When** they enter text into the description field
+- **Then** the text field displays what they type
+- **And** the amount of characters available decreases
+- **And** no API request is sent
+
+#### Scenario: User inputs too many characters into the description field
+
+- **Given** the user is viewing the `Add Maintenance Note` modal
+- **When** they enter more than `255` characters into the description field
+- **Then** the text field is highligted red
+- **And** a note appears over the text field saying `Too many inputted characters`
+- **And** the amount of characters available goes red and into the negatives
+- **And** no API request is sent
+
+#### Scenario: User clicks the `Cancel` button
+
+- **Given** the useer is viewing the `Edit Maintenance Note` modal
+- **When** they click the `Cancel` button
+- **Then** the modal closes
+- **And** all inputted information is cleared
+- **And** no API request is sent
+
+#### Scenario: User inputs valid input into the `Edit Maintenance Note` modal
+
+- **Given** the user is viewing the `Add Maintenance Note` modal and have valid inputs in the form
+- **When** they click the `Add Note` button
+- **Then** a `POST` API request is sent
+- **And** returns a `201` with a payload of `{"message": "human readable message"}`
+- **And** the modal closes
+- **And** a `</v-alert>` pops up in green, saying `Successfully created maintenance note.`
+
+#### Scenario: User inputs invalid input into the `Add Maintenance Note` modal
+
+- **Given** the user is viewing the `Add Maintenance Note` modal and has invalid inputs in the form
+- **When** they click the `Add Note` button
+- **Then** a `POST` API request is sent
+- **And** returns a `404` with a payload of `{"message": "human readable explanation"}`
+- **And** a `</v-alert>` pops up in red, saying `Could not create maintenance note.`
 
 ---
 
@@ -385,31 +553,174 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: 
 
-- **Given**  
+- **Given** 
 - **When** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
 - **Given** 
 - **When** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
 - **Given** 
 - **When** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
+
+---
+
+### US-5. — 
 
 #### Scenario: 
 
 - **Given** 
 - **When** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+---
+
+### US-5. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+---
+
+### US-5. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+---
+
+### US-5. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+---
+
+### US-5. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+---
+
+### US-5. — Last
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **Then** 
+- **And** no API request is sent
 
 ---
 
