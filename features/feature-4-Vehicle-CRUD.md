@@ -141,6 +141,41 @@
 **Independent test:** I hover over a vehicle and the image is displayed
 **Acceptance scenarios:** see ### US-4.14 under Acceptance Criteria
 
+### US-4.15: Confirm create new `maintenance-info` as a admin
+**As a** admin
+**I want to** be able to confirm if I want to make a new maintenance info
+**So that** I can prevent uncessary creations of maintenance info
+
+**Priority:** P1
+**Independent test:** I try to add a vehicle with a `make`, `model`, and `year` not in the database and the `Confirm Create New Maintenance Info` modal opens
+**Acceptance scenarios:** see ### US-4.15 under Acceptance Criteria
+
+### US-4.16: Confirm create new `maintenance-info` as a maintenace
+**As a** maintenance
+**I want to** be able to confirm if I want to make a new maintenance info
+**So that** I can prevent uncessary creations of maintenance info
+
+**Priority:** P1
+**Independent test:** I try to add a vehicle with a `make`, `model`, and `year` not in the database and the `Confirm Create New Maintenance Info` modal opens
+**Acceptance scenarios:** see ### US-4.16 under Acceptance Criteria
+
+### US-4.17: Confirm create new `fuel type` as a admin
+**As a** admin
+**I want to** be able to confirm if I want to make a new fuel type
+**So that** I can prevent uncessary creations of fuel types
+
+**Priority:** P2
+**Independent test:** I try to add a vehicle with a `fuel type` not in the database and the `Confirm Create New Fuel Type` modal opens
+**Acceptance scenarios:** see ### US-4.17 under Acceptance Criteria
+
+### US-4.18: Confirm create new `fuel type` as a maintenance
+**As a** maintenance
+**I want to** be able to confirm if I want to make a new fuel type
+**So that** I can prevent uncessary creations of fuel types
+
+**Priority:** P2
+**Independent test:** I try to add a vehicle with a `fuel type` not in the database and the `Confirm Create New Fuel Type` modal opens
+**Acceptance scenarios:** see ### US-4.17 under Acceptance Criteria
 ---
 
 ## Requirements
@@ -157,6 +192,8 @@
 - **FR-008**: System **Must** send user to the Maintenance page with the selected vehicle's details pulled up
 - **FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Department` for each vehicle
 - **FR-010**: System **MUST** display a vehicle image if one is available from the `Images` table
+- **FR-011**: System **MUST** use `Confirm Create New Maintenance Info` component
+- **FR-012**: System **MUST** use `Confirm Create New Fuel Type` component
 
 ---
 
@@ -331,6 +368,20 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
   - The image **SHOULD NOT** be in the vehicle list
   - The image **SHOULD NOT** be next to the filters
 
+**Confirm Add New Maintenance Info Modal Component**
+ - Header: `Confirm Add New Maintenance Info?`
+ - Display: `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
+ - Buttons
+   - `cancel` button
+   - `confirm` button
+
+**Confirm Add New Maintenance Info Modal Component**
+ - Header: `Confirm Add New Maintenance Info?`
+ - Display: `Do you want to create a new fuel type of {fuel_type}?`
+ - Buttons
+   - `cancel` button
+   - `confirm` button
+
 ---
 
 ## Acceptance Criteria (Gherkin)
@@ -421,11 +472,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I have searched for a `make`, `model`, and `year`
 - **And** the inputted `make`, `model`, and `year` do not exist in the database
 - **When** I click `Add Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server 
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
-- **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha  payload containing `{"message": "Successfully created vehicle."}`
-
+- **Then** the `Confirm Create New Maintenance Info` modal opens
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
@@ -902,6 +949,162 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I hover over a vehicle in the table 
 - **Then** I view a image of the vehicle if one is available in the `Images` table
 - **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
+
+### US-4.15 — Confirm create new `maintenance-info` as a admin
+
+#### Scenario: `Confirm Create New Maintenance Info` modal opens
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **When** I view the `Display` question
+- **Then** I see in the question `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
+- **And** no API request is sent
+
+#### Scenario: User clicks the `cancel` button
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **When** I click the `cancel` button 
+- **Then** the modal closes
+- **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
+- **And** no API request is sent
+
+#### Scenario: User clicks the `confirm` button
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **And** the `Confirm Create New Fuel Type` modal is closed
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+- **And** a `POST` API request is sent to the server to create a new maintenance info
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server to create a new vehicle
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
+#### Scenario: User clicks the `confirm` button
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **And** the `Confirm Create New Fuel Type` modal is open
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+- **And** a `POST` API request is sent to the server to create a new maintenance info
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server to create a fuel type
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
+- **And** a `POST`API request is sent to the server to create a new vehicle
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
+### US-4.16 — Confirm create new `maintenance-info` as a maintenace
+
+#### Scenario: `Confirm Create New Maintenance Info` modal opens
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **When** I view the `Display` question
+- **Then** I see in the question `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
+- **And** no API request is sent
+
+#### Scenario: User clicks the `cancel` button
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **When** I click the `cancel` button 
+- **Then** the modal closes
+- **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
+- **And** no API request is sent
+
+#### Scenario: User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **And** the `Confirm Create New Fuel Type` modal is closed
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+- **And** a `POST` API request is sent to the server to create a new maintenance info
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server to create a new vehicle
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
+#### Scenario: User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open
+
+- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
+- **And** the `Confirm Create New Fuel Type` modal is open
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+- **And** a `POST` API request is sent to the server to create a new maintenance info
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+- **And** a `POST`API request is sent to the server to create a fuel type
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
+- **And** a `POST`API request is sent to the server to create a new vehicle
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
+### US-4.17 — Confirm create new `fuel type` as a admin
+
+#### Scenario: `Confirm Create New Fuel Type` modal opens
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **When** I view the `Display` question
+- **Then** I see in the question `Do you want to create a new fuel type of {fuel_type}?`
+- **And** no API request is sent
+
+#### Scenario: User clicks the `cancel` button
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **When** I click the `cancel` button 
+- **Then** the modal closes
+- **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
+- **And** no API request is sent
+
+#### Scenario: User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **And** the `Confirm Create New Maintenance Info` is not open
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Fuel Type` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+- **And** a `POST` API request is sent to the server to create a new maintenance info
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
+- **And** a `POST`API request is sent to the server to create a new vehicle
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
+#### Scenario: User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **And** the `Confirm Create New Maintenance Info` is open
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Fuel Type` closes 
+- **And** the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
+- **And** no API request is sent
+
+### US-4.18 — Confirm create new `fuel type` as a maintenance
+
+#### Scenario: `Confirm Create New Fuel Type` modal opens
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **When** I view the `Display` question
+- **Then** I see in the question `Do you want to create a new fuel type of {fuel_type}?`
+- **And** no API request is sent
+
+#### Scenario: User clicks the `cancel` button
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **When** I click the `cancel` button 
+- **Then** the modal closes
+- **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
+- **And** no API request is sent
+
+#### Scenario: User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **And** the `Confirm Create New Maintenance Info` is not open
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Fuel Type` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+- **And** a `POST` API request is sent to the server to create a new maintenance info
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
+- **And** a `POST`API request is sent to the server to create a new vehicle
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+
+#### Scenario: User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open
+
+- **Given** I am viewing the `Confirm Create New Fuel Type` modal
+- **And** the `Confirm Create New Maintenance Info` is open
+- **When** I click the `confirm` button
+- **Then** the `Confirm Create New Fuel Type` closes 
+- **And** the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
+- **And** no API request is sent
 
 ---
 

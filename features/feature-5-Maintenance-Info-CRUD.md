@@ -118,6 +118,8 @@
 - **FR-008**: System **MUST** confirm user wants to `delete` a maintenance note with a `Completion` modal
 - **FR-009**: System **MUST NOT** allow non `admin` or non `maintenance` users view the `Maintenance.vue`
 - **FR-010**: System **MUST** display the basic vehicle information `year`, `make`, `model`, `fuel type`, `recommended tire psi`, `oil viscosity`, `fuel capacity`, `tire type`, and `last updated mileage`(for the selected vehicle)
+- **FR-011**: System **MUST** use `Confirm Create New Maintenance Info` component
+- **FR-012**: System **MUST** use `Confirm Create New Fuel Type` component
 
 ---
 
@@ -698,10 +700,8 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 - **Given** the inputted `make`, `model`, and `year` don't exist
 - **When** the `Update Maintenance Info` button is clicked
-- **Then** a `POST` request is sent to create a new maintenance info
-- **And** returns `201` with a payload containing `{"message": "human readable message"}`
-- **And** a `PUT` request is sent to update the vehicle's `make`, `model`, and `year`
-- **And** returns a `200` with a payload containing `{"message": "human readable message"}`
+- **Then** the values are held to be confirmed when the user clicks confirm
+- **And** no API request is sent
 
 #### Scenario: User deletes previous input for any input field and does not add new input
 
@@ -710,34 +710,123 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** each input field left blank is highlighted red
 - **And** no API request is sent
 
+#### Scenario: User inputs a fuel type that doesn't exist 
 
-#### Scenario: 
+- **Given** the user types into the fuel type combobox 
+- **When** the user types a fuel type that does not exist in the database
+- **Then** a `POST` request is sent 
+- **And** returns `201` with a payload of `{"message": "human readable message"}`
 
-- **Given** 
-- **When** 
-- **Then** 
+#### Scenario: User selects a fuel type `Electric`
+
+- **Given** the user chooses `Electric` fuel 
+- **When** the user clicks off the field
+- **Then** the fuel capacity is greyed out
+- **And** non-editable
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User inputs a fuel capacity that is `NaN`
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user enters a `NaN` into the fuel capacity stepper field
+- **When** the user clicks off the field
+- **Then** the field is highlighted red 
+- **And** a warning pops up just above the field saying `Must be a whole number`
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User inputs a `negative` number into fuel capacity
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user enters a `negative` number into the fuel capacity stepper field
+- **When** the user clicks off the field
+- **Then** the field is highlighted red 
+- **And** a warning pops up just above the field saying `Must be a positive number`
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User inputs a number greater than `300` 
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user enters a number greater than `300` into the fuel capacity stepper field
+- **When** the user clicks off the field
+- **Then** the field is highlighted red 
+- **And** a warning pops up just above the field saying `Must be below 300 or lower`
 - **And** no API request is sent
+
+
+#### Scenario: User enters oil viscosity
+
+- **Given** the user inputs valid oil viscosity
+- **When** the user clicks off
+- **Then** the text field reflects what the user entered
+- **And** no API request is sent
+
+#### Scenario: User enters a `NaN` into Recommended Tire PSI
+
+- **Given** the user inputs a `NaN` into recommended tire psi
+- **When** the user clicks off the field
+- **Then** the field is highlighted red
+- **And** a warning pops up just above the field saying `Must be a number (i.e. 10.00)`
+- **And** no API request is sent
+
+#### Scenario: User enters a number greater than `999.99` into Recommended Tire PSI
+
+- **Given** the user inputs a number greater than `999.99` into recommended tire psi
+- **When** the user clicks off the field
+- **Then** the field is highlighted red
+- **And** a warning pops up just above the field saying `Must be below 999.99`
+- **And** no API request is sent
+
+#### Scenario: User enters a `negative` number into Recommended Tire PSI
+
+- **Given** the user inputs a `negative` number into recommended tire psi
+- **When** the user clicks off the field
+- **Then** the field is highlighted red
+- **And** a warning pops up just above the field saying `Must be greater than 000.00`
+- **And** no API request is sent
+
+#### Scenario: User inputs into tire type
+
+- **Given** the user inputs text into tire type
+- **When** the user clicks off the field
+- **Then** the text field reflects what the user entered
+- **And** no API request is sent
+
+#### Scenario: User clicks the `Update` button and only the `make`, `year`, and `model` are not in the database
+
+- **Given** the user is on the `Edit Maintenance Info` modal form
+- **And** the only `make`, `year`, and `model` are not in the database
+- **When** the user clicks the `Update` button 
+- **Then** the `Confirm Create New Maintenance Info` modal component opens  
+- **And** no API request is sent
+
+#### Scenario: User clicks `Update` button and only the `fuel type` is not in the database
+
+- **Given** the user is on the `Edit Maintenance Info` modal form
+- **And** the `fuel type` only are not in the database
+- **When** the user clicks the `Update` button
+- **Then** the `Confirm Create New Fuel Type` modal component opens  
+- **And** no API request is sent
+
+#### Scenario: User clicks `Update` button and both the `fuel type` and `make`, `year`, and `model` are not in the database
+
+- **Given** the user is on the `Edit Maintenance Info` modal form
+- **And** the `fuel type` and `make`, `year`, and `model` are not in the database
+- **When** the user clicks the `Update` button
+- **Then** the `Confirm Create New Maintenance Info` modal component opens 
+- **And** the `Confirm Create New Fuel Type` modal component opens
+- **And** no API request is sent
+
+#### Scenario: User clicks confirms the `fuel type` and/or `make`, `year`, and `model`
+
+- **Given** the user is on the `Edit Maintenance Info` modal form
+- **And** the `fuel type` and/or `make`, `year`, and `model` are not in the database
+- **When** the user clicks the `confirm` button(s) on (`Confirm Create New Fuel Type` and/or `Confirm Create New Maintenance Info`)
+- **Then** a `POST` request is sent to create a new maintenance info
+- **And** returns `201` with a payload containing `{"message": "human readable message"}`
+- **And** a `POST` request is sent to create a new `make`, `model`, and `year` maintenance info
+- **And** returns a `200` with a payload containing `{"message": "human readable message"}`
+- **And** a `POST` request is sent to create a new `fuel type` maintenance info
+- **And** returns a `200` with a payload containing `{"message": "human readable message"}`
+- **And** a `POST` request is sent to update the vehicle's `make`, `model`, and `year`
+- **And** returns a `200` with a payload containing `{"message": "human readable message"}`
+
 ---
 
 ### US-5.10 — User clicks the `Manage Fuels` button
