@@ -93,6 +93,15 @@
 **Independent test:** I click the `Edit Maintenance Info` button and a edit modal pops up
 **Acceptance scenarios:** see ### US-5.9 under Acceptance Criteria
 
+### US-5.10: User clicks the `Manage Fuels` button
+**As a** (`admin` or `maintenance`)
+**I want to** manage the fuel types for vehicles
+**So that** I can add, edit, or delete fuels
+
+**Priority:** P3
+**Independent test:** I click the `Manage Fuels` button and a `manage` modal pops up
+**Acceptance scenarios:** see ### US-5.10 under Acceptance Criteria
+
 ---
 
 ## Requirements
@@ -166,11 +175,15 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 | `GET`    | `/vehicle-t3/maintenance-infos?make=&model=&year=`| Retrieve the maintenance information for the specified `make`,`model`, and `year` | 
 | `GET`    | `/vehicle-t3/requests/:vehicle_id`                | Retrieve the requests tied to this vehicle                | 
 | `GET`    | `/vehicle-t3/notes/:request_id`                   | Retrieve all the notes from the specified request_id      |
-| `POST`   | `/vehicle-t3/notes/`                              | Create a new maintenance note                             | 
+| `GET`    | `/vehicle-t3/fuels/`                              | Retrieve all fuel types                                   |  
+| `POST`   | `/vehicle-t3/fuels/`                              | Create a new fuel type                                    | 
+| `POST`   | `/vehicle-t3/notes/`                              | Create a new maintenance note                             |
+| `PUT`    | `/vehicle-t3/fuels/:fuel_id`                      | Update a specified fuel type                              | 
 | `PUT`    | `/vehicle-t3/notes/:note_id`                      | Update a specified note                                   | 
 | `PUT`    | `/vehicle-t3/vehicles/:vin`                       | Update a vehicle's mileage                                |
 | `PUT`    | `/vehicle-t3/maintenance-infos?make=&model=&year=`| Update a maintenance info for a specified `make`, `model`, and `year` |
-| `DELETE` | `/vehicle-t3/notes/:note_id`                      | Delete the specified                                      | 
+| `DELETE` | `/vehicle-t3/notes/:note_id`                      | Delete the specified note                                 |
+| `DELETE` | `/vehicle-t3/fuels/:fuel_id`                      | Delete the specified fuel                                 | 
 
 **Create / Update Note success response**
 ```json
@@ -215,13 +228,80 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 }
 ```
 
-**Error response:** `{"message": "human readable explanation"}` with approriate HTTP status
+**Get Request success response**
+```json
+{
+  "requester_id": 53,
+  "vehicle_id": 17
+}
+```
 
+**Error response:** `{"message": "human readable explanation"}` with approriate HTTP status
+ | Status | When                                                 | Message                                             |
+ | ------ | ---------------------------------------------------- | --------------------------------------------------- | 
+ | `400`  | Missing field                                        | `(attribute) is required`                           | 
+ | `401`  | A user who's role is not `admin` or `maintenance` tries to view the page | `Unauthorized user`             |
+ 
 ---
 
 ## Screen Requirements
 
+### [View: Maintenance] - route name `maintenance`
+- Path: `/maintenance-info`
+- Heading: **Maintenance Management**
+- Visible in the nav only when the stored user `role` is `admin` or `maintenance`
 
+**Main Page**
+- `back` button
+- `View Service Logs` button
+- `Edit Maintenance Info` button
+- `Update Mileage` button
+- `Manage Fuels` button
+
+**Maintenance Info**
+- `Year`
+- `Make`
+- `Model`
+- `Fuel Type`
+- `Recommended Tire PSI`
+- `Oil Viscocity` 
+- 
+
+**Maintenance Notes Table**
+-
+
+**Modals**
+- `View` / `Add` / `Edit` maintenance notes
+  - `View`: Shows non-editable `subject`, `description`, and `close` button for the maintenance note
+  - `Add`: Shows blank editable `subject`, `description`, `add` button, and `cancel` button
+  - `Edit`: Shows filled out editable fields with the current note's `subject`, `description`, `update` button, and `cancel` button
+- Update Mileage
+  - Non-editable field showing the current mileage
+  - Editable field only allowing integers 
+  - `cancel` button
+  - `add` button
+- Complete Note
+  - Header: `Complete`
+  - Text: `Confirm Completion?`
+  - `cancel` button
+  - `confirm` button
+- `Edit` Maintenance Info
+  - `Year`: Drop down with values from 1900 to present year
+  - `Make`: Combobox (Values should show all distinct `makes` in system or add a new make)
+  - `Model`: Combobox (Values should show all distinct `models` in system or add a new model)
+  - `Fuel Type`: Combobox (Values should show all distinct `fuels` in system or add a new fuel)
+- `View` Fuel Management
+  - Header: `Fuel Management`
+  - Table:
+    - Headers: `Fuel Type`, `Actions`
+    - Table Item:
+      - Text: Fuel Type Name
+      - Actions: `Edit Icon Button`,`Delete Icon Button`
+  - `Add New Fuel` button
+- `Add` / `Edit` Fuel Management
+  - Fuel Text Field
+  - `cancel` button
+  - `add` / `update` button
 
 ---
 
@@ -245,6 +325,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 | `year`                | INTEGER     PK | Primary Key, Required                                       |
 | `fuel_type_id`        | INTEGER     FK | Required                                                    |
 | `fuel_capacity`       | INTEGER        | Required, Non-negative                                      |
+| `oil_viscosity`       | CHAR(3)        | Required                                                    |
 | `recommended_tire_psi`| DECIMAL(5, 2)  | Required, Non-negative                                      |
 | `tire_type`           | VARCHAR(17)    | Required                                                    |
 

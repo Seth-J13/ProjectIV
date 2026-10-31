@@ -30,6 +30,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | `year`                | INTEGER     PK | Primary Key, Required                                       |
 | `fuel_type_id`        | INTEGER     FK | Required                                                    |
 | `fuel_capacity`       | INTEGER        | Required, Non-negative                                      |
+| `oil_viscosity`       | CHAR(3)        | Required                                                    |
 | `recommended_tire_psi`| DECIMAL(5, 2)  | Required, Non-negative                                      |
 | `tire_type`           | VARCHAR(17)    | Required                                                    |
 
