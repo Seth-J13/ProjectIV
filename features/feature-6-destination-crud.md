@@ -124,7 +124,7 @@ Destinations are not owned by anything or anyone.
 | --------------------- | -------------------------------------------------------------------------------------------------------------- |
 | **Read scope**        | For all authenticated users (`GET /vehicle-t3/destinations` and `GET /vehicle-t3/destinations/:destinationId`) |
 | **Write scope**       | Only authenticated admins can overwrite/update `Destinations` (`PUT /vehicle-t3/destinations/:destinationId`)  |
-| **Create scope**      | `POST /vehicle-t3/destinations/:destinationId*` succeeds only when the row does not already exist.             |
+| **Create scope**      | `POST /vehicle-t3/destinations/:destinationId` succeeds only when the row does not already exist.             |
 | **Cross-user access** | No user data should be included in responses from `Destinations`                                               |
 | **UI scope**          | `DestinationList.vue` shows data from `Destinations` on a single page which can be sorted and searched.        |
 | **Later features**    | `DestinationList.vue` will include recently-visited data from the `request` which most recently included it    |
