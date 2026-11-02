@@ -911,6 +911,13 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** a `DELETE` request is sent 
 - **And** returns a `200` with a payload containing `{"message": "human readable message"}`
 
+#### Scenario: User clicks the `Back` button on the `View Fuel Management` modal
+
+- **Given** the user is on the `View Fuel Management` modal
+- **When** the `Back` button is clicked
+- **Then** the `View Fuel Management` modal closes 
+- **And** no API request is sent
+
 ---
 
 ## Agent implementation request
