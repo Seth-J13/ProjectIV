@@ -81,8 +81,8 @@
 
 **FR-001**: Any authenticated user **MUST** be allowed to do CRUD operations on notes belonging to `requests` whose `requester_id` matches the user's `id`
 **FR-002**: Authenticated admin users **MUST** be allowed to do CRUD operations on all notes.
-**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `Destinations` table from relevant components.
-**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `Destinations` table.
+**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `Notes` table from relevant components.
+**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `Notes` table.
 **FR-005**: The **Request Details** view **MUST** show a list of notes beneath the rest of the `request`'s information.
 **FR-008**: Authenticated maintenance users **MUST** be able to see a list of notes whose `maintenance_request` bool is toggled on.
 
