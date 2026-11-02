@@ -920,12 +920,86 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ---
 
+## Test Coverage Map
+
+Each scenario above must map to at least one automated test.
+
+| Story | Scenario | Test file | Test name |
+|-------|----------|-----------|-----------|
+| US-5.1 | User has just loaded the `Maintenance.vue` | `frontend/tests/Maintenance.test.js` | `it("User has just loaded the `Maintenance.vue`")` |
+| US-5.1 | User has just viewed the action buttons | `frontend/tests/Maintenance.test.js` | `it("User has just viewed the action buttons")` |
+| US-5.1 | User has just viewed the maintenance info for the vehicle | `frontend/tests/Maintenance.test.js` | `it("User has just viewed the maintenance info for the vehicle")` |
+| US-5.2 | User clicks the `Add Note` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Add Note` button")` |
+| US-5.2 | User inputs valid text into the subject text field | `frontend/tests/Maintenance.test.js` | `it("User inputs valid text into the subject text field")` |
+| US-5.2 | User inputs no text into the subject text field | `frontend/tests/Maintenance.test.js` | `it("User inputs no text into the subject text field")` |
+| US-5.2 | User inputs valid text into the description field | `frontend/tests/Maintenance.test.js` | `it("User inputs valid text into the description field")` |
+| US-5.2 | User inputs invalid text into the description field | `frontend/tests/Maintenance.test.js` | `it("User inputs invalid text into the description field")` |
+| US-5.2 | User inputs too many characters into the description field | `frontend/tests/Maintenance.test.js` | `it("User inputs too many characters into the description field")` |
+| US-5.2 | User clicks the `Cancel` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Cancel` button")` |
+| US-5.2 | User inputs valid input into the `Add Maintenance Note` modal | `backend/tests/maintenance.test.js` | `it("User inputs valid input into the `Add Maintenance Note` modal")` |
+| US-5.2 | User inputs invalid input into the `Add Maintenance Note` modal | `backend/tests/maintenance.test.js` | `it("User inputs invalid input into the `Add Maintenance Note` modal")` |
+| US-5.3 | User clicks the `Edit Note` icon button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Edit Note` icon button")` |
+| US-5.3 | `Edit Maintenance Note` modal opens | `frontend/tests/Maintenance.test.js` | `it("\`Edit Maintenance Note\` modal opens")` |
+| US-5.3 | User inputs valid text into the subject text field | `frontend/tests/Maintenance.test.js` | `it("User inputs valid text into the subject text field")` |
+| US-5.3 | User deletes previous input and does not input any text into the subject text field | `frontend/tests/Maintenance.test.js` | `it("User deletes previous input and does not input any text into the subject text field")` |
+| US-5.3 | User inputs text into the description field | `frontend/tests/Maintenance.test.js` | `it("User inputs text into the description field")` |
+| US-5.3 | User inputs invalid text into the description field | `frontend/tests/Maintenance.test.js` | `it("User inputs invalid text into the description field")` |
+| US-5.3 | User inputs too many characters into the description field | `frontend/tests/Maintenance.test.js` | `it("User inputs too many characters into the description field")` |
+| US-5.3 | User clicks the `Cancel` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Cancel` button")` |
+| US-5.3 | User inputs valid input into the `Edit Maintenance Note` modal | `backend/tests/maintenance.test.js` | `it("User inputs valid input into the `Edit Maintenance Note` modal")` |
+| US-5.3 | User inputs invalid input into the `Edit Maintenance Note` modal | `backend/tests/maintenance.test.js` | `it("User inputs invalid input into the `Edit Maintenance Note` modal")` |
+| US-5.4 | User clicks the `Delete Note` icon button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Delete Note` icon button")` |
+| US-5.4 | User clicks `cancel` button | `frontend/tests/Maintenance.test.js` | `it("User clicks `cancel` button")` |
+| US-5.4 | User clicks `confirm` button | `backend/tests/maintenance.test.js` | `it("User clicks `confirm` button")` |
+| US-5.5 | User clicks `update mileage` button | `frontend/tests/Maintenance.test.js` | `it("User clicks `update mileage` button")` |
+| US-5.5 | `Update Mileage` modal opens | `frontend/tests/Maintenance.test.js` | `it("\`Update Mileage\` modal opens")` |
+| US-5.5 | User inputs a `NaN` mileage | `frontend/tests/Maintenance.test.js` | `it("User inputs a `NaN` mileage")` |
+| US-5.5 | User inputs a low mileage | `frontend/tests/Maintenance.test.js` | `it("User inputs a low mileage")` |
+| US-5.5 | User clicks the `cancel` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `cancel` button")` |
+| US-5.5 | User clicks the `confirm` button | `backend/tests/maintenance.test.js` | `it("User clicks the `confirm` button")` |
+| US-5.6 | User selects a service note | `frontend/tests/Maintenance.test.js` | `it("User selects a service note")` |
+| US-5.7 | User clicks the `view service logs` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `view service logs` button")` |
+| US-5.8 | User clicks the `Back` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Back` button")` |
+| US-5.9 | User clicks `edit maintenance info` button | `frontend/tests/Maintenance.test.js` | `it("User clicks `edit maintenance info` button")` |
+| US-5.9 | `Edit Maintenance Info` modal opens | `frontend/tests/Maintenance.test.js` | `it("\`Edit Maintenance Info\` modal opens")` |
+| US-5.9 | User enters valid input for all fields | `backend/tests/maintenance.test.js` | `it("User enters valid input for all fields")` |
+| US-5.9 | User inputs a `make`, `model`, and `year` that don't exist in the database | `frontend/tests/Maintenance.test.js` | `it("User inputs a `make`, `model`, and `year` that don't exist in the database")` |
+| US-5.9 | User deletes previous input for any input field and does not add new input | `frontend/tests/Maintenance.test.js` | `it("User deletes previous input for any input field and does not add new input")` |
+| US-5.9 | User inputs a fuel type that doesn't exist | `backend/tests/maintenance.test.js` | `it("User inputs a fuel type that doesn't exist")` |
+| US-5.9 | User selects a fuel type `Electric` | `frontend/tests/Maintenance.test.js` | `it("User selects a fuel type `Electric`")` |
+| US-5.9 | User inputs a fuel capacity that is `NaN` | `frontend/tests/Maintenance.test.js` | `it("User inputs a fuel capacity that is `NaN`")` |
+| US-5.9 | User inputs a `negative` number into fuel capacity | `frontend/tests/Maintenance.test.js` | `it("User inputs a `negative` number into fuel capacity")` |
+| US-5.9 | User inputs a number greater than `300` | `frontend/tests/Maintenance.test.js` | `it("User inputs a number greater than `300`")` |
+| US-5.9 | User enters oil viscosity | `frontend/tests/Maintenance.test.js` | `it("User enters oil viscosity")` |
+| US-5.9 | User enters a `NaN` into Recommended Tire PSI | `frontend/tests/Maintenance.test.js` | `it("User enters a `NaN` into Recommended Tire PSI")` |
+| US-5.9 | User enters a number greater than `999.99` into Recommended Tire PSI | `frontend/tests/Maintenance.test.js` | `it("User enters a number greater than `999.99` into Recommended Tire PSI")` |
+| US-5.9 | User enters a `negative` number into Recommended Tire PSI | `frontend/tests/Maintenance.test.js` | `it("User enters a `negative` number into Recommended Tire PSI")` |
+| US-5.9 | User inputs into tire type | `frontend/tests/Maintenance.test.js` | `it("User inputs into tire type")` |
+| US-5.9 | User clicks the `Update` button and only the `make`, `year`, and `model` are not in the database | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Update` button and only the `make`, `year`, and `model` are not in the database")` |
+| US-5.9 | User clicks `Update` button and only the `fuel type` is not in the database | `frontend/tests/Maintenance.test.js` | `it("User clicks `Update` button and only the `fuel type` is not in the database")` |
+| US-5.9 | User clicks `Update` button and both the `fuel type` and `make`, `year`, and `model` are not in the database | `frontend/tests/Maintenance.test.js` | `it("User clicks `Update` button and both the `fuel type` and `make`, `year`, and `model` are not in the database")` |
+| US-5.9 | User clicks confirms the `fuel type` and/or `make`, `year`, and `model` | `backend/tests/maintenance.test.js` | `it("User clicks confirms the `fuel type` and/or `make`, `year`, and `model`")` |
+| US-5.10 | User clicks the `manage fuels` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `manage fuels` button")` |
+| US-5.10 | User views the fuels table | `frontend/tests/Maintenance.test.js` | `it("User views the fuels table")` |
+| US-5.10 | User clicks the `edit` fuel icon button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `edit` fuel icon button")` |
+| US-5.10 | User clicks the `cancel` button on the `Edit Fuel` modal | `frontend/tests/Maintenance.test.js` | `it("User clicks the `cancel` button on the `Edit Fuel` modal")` |
+| US-5.10 | User modifies the `fuel type` text field on the `Edit Fuel` modal | `frontend/tests/Maintenance.test.js` | `it("User modifies the `fuel type` text field on the `Edit Fuel` modal")` |
+| US-5.10 | User clicks the `update` button on the `Edit Fuel` modal | `backend/tests/maintenance.test.js` | `it("User clicks the `update` button on the `Edit Fuel` modal")` |
+| US-5.10 | User clicks the `Add Fuel` button | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Add Fuel` button")` |
+| US-5.10 | User clicks the `cancel` button on the `Add Fuel` modal | `frontend/tests/Maintenance.test.js` | `it("User clicks the `cancel` button on the `Add Fuel` modal")` |
+| US-5.10 | User modifies the `fuel type` text field on the `Add Fuel` modal | `frontend/tests/Maintenance.test.js` | `it("User modifies the `fuel type` text field on the `Add Fuel` modal")` |
+| US-5.10 | User clicks the `Add` button on the `Add Fuel` modal | `backend/tests/maintenance.test.js` | `it("User clicks the `Add` button on the `Add Fuel` modal")` |
+| US-5.10 | User clicks the `Delete` button on the `View Fuel Management` modal | `backend/tests/maintenance.test.js` | `it("User clicks the `Delete` button on the `View Fuel Management` modal")` |
+| US-5.10 | User clicks the `Back` button on the `View Fuel Management` modal | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Back` button on the `View Fuel Management` modal")` |
+
+---
+
 ## Agent implementation request
 
 Copy when asking Cursor to implement this feature (`@` this file):
 
 ```text
-Implement Feature 1 from @features/feature-1-user-auth.md on branch `feature/5-Maintenance-Info-CRUD`.
+Implement Feature 5 from @features/feature-5-Maintenance-Info-CRUD.md on branch `feature/5-Maintenance-Info-CRUD`.
 
 Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
