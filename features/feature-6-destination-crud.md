@@ -4,7 +4,7 @@
 **Branch pattern:** `feature/6-destination-crud`
 **Status:** Ready
 **Created:** 2026-10-24
-**Updated:** 2026-10-28
+**Updated:** 2026-11-2
 **Input:** Application must support the creation, reading, updating, and deleting of frequently-visited locations/destinations vehicle reservation requests are headed to.
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md)
 **Related:** `frontend/src/views/DestinationList.vue`, `frontend/src/views/DestinationForm.vue`, `backend/app/routes/destination.routes.js`, `backend/app/routes/users.routes.js`
