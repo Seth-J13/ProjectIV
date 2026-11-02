@@ -838,26 +838,78 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** the `View Fuel Management` modal opens
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User views the fuels table
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is on the `View Fuel Management` modal
+- **When** the modal opens
+- **Then** a table is shown with all the fuels and each having a `delete` and `edit` icon buttons
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User clicks the `edit` fuel icon button
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is on the `View Fuel Management` modal
+- **When** the `edit` fuel icon button is clicked
+- **Then** the `Edit Fuel` modal opens
 - **And** no API request is sent
 
-#### Scenario: 
+#### Scenario: User clicks the `cancel` button on the `Edit Fuel` modal
 
-- **Given** 
-- **When** 
-- **Then** 
+- **Given** the user is on the `Edit Fuel` modal
+- **When** the `cancel` button is clicked
+- **Then** the `Edit Fuel` modal closes and returns the user to the `View Fuel Management` modal
 - **And** no API request is sent
+
+#### Scenario: User modifies the `fuel type` text field on the `Edit Fuel` modal
+
+- **Given** the user is on the `Edit Fuel` modal
+- **When** the modal opens the `fuel type` text field holds the current fuel name
+- **And** the user changes the fuel name
+- **Then** the `fuel type` text field reflects the inputted fuel type
+- **And** no API request is sent
+
+#### Scenario: User clicks the `update` button on the `Edit Fuel` modal
+
+- **Given** the user is on the `Edit Fuel` modal
+- **When** the `update` button is clicked
+- **Then** the `Edit Fuel` modal closes and returns the user to the `View Fuel Management` modal
+- **And** a `PUT` request is sent to update the selected fuel
+- **And** returns a `200` with a payload containing `{"message": "human readable message"}`
+
+#### Scenario: User clicks the `Add Fuel` button
+
+- **Given** the user is on the `View Fuel Management` modal
+- **When** the `Add Fuel` button is clicked
+- **Then** the `Add Fuel` modal opens
+- **And** no API request is sent
+
+#### Scenario: User clicks the `cancel` button on the `Add Fuel` modal
+
+- **Given** the user is on the `Add Fuel` modal
+- **When** the `cancel` button is clicked
+- **Then** the `Add Fuel` modal closes and returns the user to the `View Fuel Management` modal
+- **And** no API request is sent
+
+#### Scenario: User modifies the `fuel type` text field on the `Add Fuel` modal
+
+- **Given** the user is on the `Add Fuel` modal
+- **When** the user inputs text in the fuel name text field
+- **Then** the `fuel type` text field reflects the inputted fuel type
+- **And** no API request is sent
+
+#### Scenario: User clicks the `Add` button on the `Add Fuel` modal
+
+- **Given** the user is on the `Add Fuel` modal
+- **When** the `Add` button is clicked
+- **Then** the `Add Fuel` modal closes and returns the user to the `View Fuel Management` modal
+- **And** a `POST` request is sent to update the selected fuel
+- **And** returns a `201` with a payload containing `{"message": "human readable message"}`
+
+#### Scenario: User clicks the `Delete` button on the `View Fuel Management` modal
+
+- **Given** the user is on the `View Fuel Management` modal
+- **When** the `Delete` button is clicked
+- **Then** a `DELETE` request is sent 
+- **And** returns a `200` with a payload containing `{"message": "human readable message"}`
 
 ---
 
@@ -866,7 +918,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 Copy when asking Cursor to implement this feature (`@` this file):
 
 ```text
-Implement Feature 1 from @features/feature-1-user-auth.md on branch `feature/1-user-auth`.
+Implement Feature 1 from @features/feature-1-user-auth.md on branch `feature/5-Maintenance-Info-CRUD`.
 
 Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
