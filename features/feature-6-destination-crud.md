@@ -124,7 +124,7 @@ Destinations are not owned by anything or anyone.
 | --------------------- | -------------------------------------------------------------------------------------------------------------- |
 | **Read scope**        | For all authenticated users (`GET /vehicle-t3/destinations` and `GET /vehicle-t3/destinations/:destinationId`) |
 | **Write scope**       | Only authenticated admins can overwrite/update `Destinations` (`PUT /vehicle-t3/destinations/:destinationId`)  |
-| **Create scope**      | `POST /vehicle-t3/destinations/:destinationId` succeeds only when the row does not already exist.             |
+| **Create scope**      | `POST /vehicle-t3/destinations/` succeeds only when the row does not already exist.                            |
 | **Cross-user access** | No user data should be included in responses from `Destinations`                                               |
 | **UI scope**          | `DestinationList.vue` shows data from `Destinations` on a single page which can be sorted and searched.        |
 | **Later features**    | `DestinationList.vue` will include recently-visited data from the `request` which most recently included it    |
@@ -187,7 +187,7 @@ This feature uses the `Destinations` endpoints below.
 
 **Server error:** `500` `{ "message": "…" }`.
 
-### Add Destination (`POST /vehicle-t3/destinations`)
+### Add Destination (`POST /vehicle-t3/destinations/`)
 
 **Request body** (fields the add request sends):
 
@@ -208,6 +208,30 @@ Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `
 **Success** (`201`)
 **Server error:** `500` `{ "message": "…" }`.
 
+### Add Destination (`PUT /vehicle-t3/destinations/`)
+
+**Request body** (fields the add request sends):
+
+```json
+{
+  "id": 1
+  "zip": "12345-0001",
+  "city": "Omaha",
+  "state": "Nebraska",
+  "addr_line_1": "69420 Appleberry Lane",
+  "addr_line_2": null,
+  "dest_name": "ur mom's house"
+  "last_visited_on": "2026-11-1"
+}
+```
+
+Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` → `400` bad request.
+Malformed `zip`, `city`, `state`, `addr_line_1`, `dest_name`, `last_visited_on` → `400` bad request.
+Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `409` conflict.
+
+**Success** (`201`)
+**Server error:** `500` `{ "message": "…" }`.
+
 ### Remove Destination (`DELETE /vehicle-t3/destinations/:destinationId)
 
 **Success** (`204`)
@@ -219,6 +243,7 @@ Quoted messages that tests must match:
 | Situation        | Status | `message`                                                                           |
 | ---------------- | ------ | ----------------------------------------------------------------------------------- |
 | `GET` success    | 200    | <response from GET>                                                                 |
+| `PUT` success    | 200    | <response from POST>                                                                |
 | `POST` success   | 201    | `New destination created with id=<id>`                                              |
 | `DELETE` success | 204    | <empty response>                                                                    |
 | Bad Request      | 400    | `Malformed request. Please make sure everything in the form is properly formatted!` |
