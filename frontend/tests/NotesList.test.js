@@ -82,6 +82,19 @@ async function fill(wrapper, label, value) {
   await control.setValue(value);
 }
 
+function calledUrl(call) {
+  return String(call[0]);
+}
+
+function notesBatchUrl(url) {
+  const parsed = new URL(url, "http://localhost");
+  return parsed.pathname === "/vehicle-t3/notes" || parsed.pathname === "/vehicle-t3/notes/";
+}
+
+function offsetOf(url) {
+  return new URL(url, "http://localhost").searchParams.get("offset") ?? "0";
+}
+
 function noteBody(payload) {
   if (Array.isArray(payload)) {
     return payload.find((item) => item && Object.prototype.hasOwnProperty.call(item, "text")) ?? payload[0];
@@ -197,7 +210,7 @@ describe("Feature 9 — Note CRUD", () => {
       expect(pageText()).toContain("#1");
       expect(pageText()).toContain("R: 6");
       expect(pageText()).toContain("this is not a mainte...");
-      expect(String(apiClient.get.mock.calls.at(-1)[0])).toContain("6");
+      expect(calledUrl(apiClient.get.mock.calls.at(-1))).toMatch(/\/vehicle-t3\/notes\/request\/6$/);
     });
 
     it("Vehicle Maintenance Note List Embed", async () => {
@@ -228,46 +241,45 @@ describe("Feature 9 — Note CRUD", () => {
       const rows = Array.from({ length: 6 }, (_, index) =>
         note(index + 1, { reason: `Reason ${index + 1} is long enough`, text: `Batch text ${index + 1}` }),
       );
-      let calls = 0;
-      apiClient.get.mockImplementation(() => {
-        const data = calls === 0 ? rows.slice(0, 3) : rows.slice(3, 6);
-        calls += 1;
-        return Promise.resolve({ status: 200, data });
+      apiClient.get.mockImplementation((url) => {
+        expect(notesBatchUrl(String(url))).toBe(true);
+        const offset = Number(offsetOf(String(url)));
+        return Promise.resolve({ status: 200, data: rows.slice(offset, offset + 3) });
       });
 
-      await mountList({ mode: "list", title: "All Notes" });
+      await mountList({ mode: "list", title: "All Notes", requestId: null, scope: "all" });
 
       expect(activeWrapper.find(".v-list").exists()).toBe(true);
       expect(pageText()).toContain("Batch text 1");
       expect(pageText()).toContain("Batch text 3");
       expect(pageText()).not.toContain("Batch text 4");
+      expect(offsetOf(calledUrl(apiClient.get.mock.calls[0]))).toBe("0");
 
       await scrollList();
 
       expect(pageText()).toContain("Batch text 4");
       expect(pageText()).toContain("Batch text 6");
-      expect(calls).toBeGreaterThan(1);
+      expect(apiClient.get.mock.calls.map((call) => offsetOf(calledUrl(call)))).toEqual(["0", "3"]);
       expect(window.scrollY).toBe(0);
     });
 
     it("Less than 3 list items left to GET", async () => {
       const rows = Array.from({ length: 4 }, (_, index) => note(index + 1, { text: `Short batch ${index + 1}` }));
-      let calls = 0;
-      apiClient.get.mockImplementation(() => {
-        const data = calls === 0 ? rows.slice(0, 3) : rows.slice(3);
-        calls += 1;
-        return Promise.resolve({ status: 200, data });
+      apiClient.get.mockImplementation((url) => {
+        expect(notesBatchUrl(String(url))).toBe(true);
+        const offset = Number(offsetOf(String(url)));
+        return Promise.resolve({ status: 200, data: rows.slice(offset, offset + 3) });
       });
 
-      await mountList({ mode: "list", title: "All Notes" });
+      await mountList({ mode: "list", title: "All Notes", requestId: null, scope: "all" });
       await scrollList();
 
       expect(pageText()).toContain("Short batch 4");
-      const callsAfterShortBatch = calls;
+      expect(apiClient.get.mock.calls.map((call) => offsetOf(calledUrl(call)))).toEqual(["0", "3"]);
 
       await scrollList();
 
-      expect(calls).toBe(callsAfterShortBatch);
+      expect(apiClient.get.mock.calls.map((call) => offsetOf(calledUrl(call)))).toEqual(["0", "3"]);
     });
 
     it("Press on list item body", async () => {
@@ -373,7 +385,7 @@ describe("Feature 9 — Note CRUD", () => {
       await flushPromises();
 
       expect(apiClient.delete).toHaveBeenCalled();
-      expect(String(apiClient.delete.mock.calls[0][0])).toContain("1");
+      expect(calledUrl(apiClient.delete.mock.calls[0])).toMatch(/\/vehicle-t3\/notes\/note\/1$/);
       expect(pageText()).not.toContain("Going away");
       expect(pageText()).toContain("Next loaded note");
       expect(apiClient.get.mock.calls.length).toBeGreaterThan(getsBeforeDelete);
@@ -402,7 +414,7 @@ describe("Feature 9 — Note CRUD", () => {
       buttonByText("Delete").click();
       await flushPromises();
 
-      expect(apiClient.delete).toHaveBeenCalled();
+      expect(calledUrl(apiClient.delete.mock.calls[0])).toMatch(/\/vehicle-t3\/notes\/note\/8$/);
       expect(pageText()).not.toContain("Pads are worn");
       expect(pageText()).toContain("Next service note");
       expect(pageText()).toContain("Vehicle Maintenance Notes");
@@ -423,22 +435,6 @@ describe("Feature 9 — Note CRUD", () => {
       expect(maintenanceFlag(form)).toBe(false);
     });
 
-    it("Press Cancel from Request form (add)", async () => {
-      await mountList({ mode: "embed", maintenanceRequest: false, requestId: 6 });
-      buttonByText("+ New Note").click();
-      await flushPromises();
-      await fill(activeWrapper, "Subject", "Unique Subject");
-      await fill(activeWrapper, "Description", "Temporary description");
-
-      buttonByText("Cancel").click();
-      await flushPromises();
-
-      expect(pageText()).not.toContain("Add Note");
-      expect(pageText()).not.toContain("Unique Subject");
-      expect(pageText()).not.toContain("Temporary description");
-      expect(apiClient.post).not.toHaveBeenCalled();
-    });
-
     it("Press New Note from Maintenance Request form", async () => {
       signIn("maintenance");
       await mountList({
@@ -455,6 +451,22 @@ describe("Feature 9 — Note CRUD", () => {
       expect(pageText()).toContain("Add Note");
       expect(form.exists()).toBe(true);
       expect(maintenanceFlag(form)).toBe(true);
+    });
+
+    it("Press Cancel from Request form (add)", async () => {
+      await mountList({ mode: "embed", maintenanceRequest: false, requestId: 6 });
+      buttonByText("+ New Note").click();
+      await flushPromises();
+      await fill(activeWrapper, "Subject", "Unique Subject");
+      await fill(activeWrapper, "Description", "Temporary description");
+
+      buttonByText("Cancel").click();
+      await flushPromises();
+
+      expect(pageText()).not.toContain("Add Note");
+      expect(pageText()).not.toContain("Unique Subject");
+      expect(pageText()).not.toContain("Temporary description");
+      expect(apiClient.post).not.toHaveBeenCalled();
     });
 
     it("Send add request with valid form data", async () => {
@@ -544,6 +556,27 @@ describe("Feature 9 — Note CRUD", () => {
       expect(maintenanceFlag(form)).toBe(true);
     });
 
+    it("Press Cancel from Request form (edit)", async () => {
+      apiClient.get.mockResolvedValue({
+        status: 200,
+        data: [note(3, { reason: "Brake noise", text: "Grinding when stopping" })],
+      });
+      await mountList({ mode: "embed", maintenanceRequest: false, requestId: 6 });
+
+      document.querySelector('[aria-label="Edit"]').click();
+      await flushPromises();
+      await fill(activeWrapper, "Subject", "Changed subject");
+      await fill(activeWrapper, "Description", "Changed description");
+
+      buttonByText("Cancel").click();
+      await flushPromises();
+
+      expect(pageText()).not.toContain("Edit Note");
+      expect(pageText()).not.toContain("Changed subject");
+      expect(pageText()).not.toContain("Changed description");
+      expect(apiClient.put).not.toHaveBeenCalled();
+    });
+
     it("Send edit request with valid form data", async () => {
       vi.useFakeTimers();
       apiClient.get
@@ -561,7 +594,7 @@ describe("Feature 9 — Note CRUD", () => {
       await flushPromises();
 
       const [url, payload] = apiClient.put.mock.calls[0];
-      expect(String(url)).toContain("3");
+      expect(calledUrl([url])).toMatch(/\/vehicle-t3\/notes\/note\/3$/);
       expect(noteBody(payload)).toEqual(
         expect.objectContaining({
           reason: "Brake noise",
@@ -578,19 +611,28 @@ describe("Feature 9 — Note CRUD", () => {
     });
   });
 
-  describe("US-9.6: Admin Notes Management", () => {
+  describe("US-9.5: Admin Notes Management", () => {
     it("View Note Creation List for User Management", async () => {
       signIn("admin");
       apiClient.get.mockResolvedValue({
         status: 200,
-        data: [note(1, { reason: "Created subject", text: "Created by this user" })],
+        data: [
+          note(1, { created_by: 15, reason: "Created subject", text: "Created by this user" }),
+          note(2, { created_by: 99, reason: "Other subject", text: "Created by someone else" }),
+        ],
       });
-      await mountList({ mode: "embed", scope: "creator", userId: 15, title: "Notes" });
+      await mountList({
+        mode: "embed",
+        scope: "creator",
+        userId: 15,
+        title: "Notes",
+        requestId: null,
+        filter: (item) => item.created_by === 15,
+      });
 
-      const [url, config] = apiClient.get.mock.calls.at(-1);
-      expect(`${url} ${JSON.stringify(config ?? {})}`).toMatch(/15/);
-      expect(`${url} ${JSON.stringify(config ?? {})}`).toMatch(/creator/);
+      expect(notesBatchUrl(calledUrl(apiClient.get.mock.calls.at(-1)))).toBe(true);
       expect(pageText()).toContain("Created by this user");
+      expect(pageText()).not.toContain("Created by someone else");
     });
 
     it("View Note Contribution List for User Management", async () => {
@@ -599,11 +641,9 @@ describe("Feature 9 — Note CRUD", () => {
         status: 200,
         data: [note(2, { reason: "Contributed subject", text: "Contributed by this user" })],
       });
-      await mountList({ mode: "embed", scope: "contributor", userId: 15, title: "Notes" });
+      await mountList({ mode: "embed", scope: "contributor", userId: 15, title: "Notes", requestId: null });
 
-      const [url, config] = apiClient.get.mock.calls.at(-1);
-      expect(`${url} ${JSON.stringify(config ?? {})}`).toMatch(/15/);
-      expect(`${url} ${JSON.stringify(config ?? {})}`).toMatch(/contributor/);
+      expect(calledUrl(apiClient.get.mock.calls.at(-1))).toMatch(/\/vehicle-t3\/notes\/user\/15$/);
       expect(pageText()).toContain("Contributed by this user");
     });
 

@@ -17,6 +17,10 @@ const validNote = {
 };
 
 function createdId(response) {
+  if (response.body?.note_id != null) {
+    return response.body.note_id;
+  }
+
   if (response.body?.id != null) {
     return response.body.id;
   }
@@ -55,18 +59,25 @@ describe("Feature 9 — Note CRUD", () => {
 
       expect(created.status).toBe(201);
 
+      const id = createdId(created);
       const response = await request(app)
-        .delete(`${NOTES}/${createdId(created)}`)
+        .delete(`${NOTES}/note/${id}`)
         .set("Authorization", "Bearer user-token");
 
       expect(response.status).toBe(204);
       expect(response.text).toBe("");
 
-      const id = createdId(created);
-      const details = await request(app).get(`${NOTES}/${id}`).set("Authorization", "Bearer user-token");
+      const details = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer user-token");
 
       expect(details.status).toBe(404);
       expect(details.body).toEqual({ message: `No note was found for id=${id}` });
+
+      const contributions = await request(app)
+        .get(`${NOTES}/contributors/note/${id}`)
+        .set("Authorization", "Bearer user-token");
+
+      expect(contributions.status).toBe(404);
+      expect(contributions.body).toEqual({ message: `This note ${id} doesn't have any contributions` });
     });
 
     it("Maintenance deletes from Maintenance Requests Notes List", async () => {
@@ -81,12 +92,18 @@ describe("Feature 9 — Note CRUD", () => {
 
       expect(created.status).toBe(201);
 
+      const id = createdId(created);
       const response = await request(app)
-        .delete(`${NOTES}/${createdId(created)}`)
+        .delete(`${NOTES}/note/${id}`)
         .set("Authorization", "Bearer maintenance-token");
 
       expect(response.status).toBe(204);
       expect(response.text).toBe("");
+
+      const details = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer maintenance-token");
+
+      expect(details.status).toBe(404);
+      expect(details.body).toEqual({ message: `No note was found for id=${id}` });
     });
   });
 
@@ -101,9 +118,17 @@ describe("Feature 9 — Note CRUD", () => {
 
       const message = typeof response.body === "string" ? response.body : response.body?.message;
       expect(message).toMatch(/^New note created with id=\d+$/);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          note_id: createdId(response),
+          created_note: true,
+        }),
+      );
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
 
       const details = await request(app)
-        .get(`${NOTES}/${createdId(response)}`)
+        .get(`${NOTES}/note/${createdId(response)}`)
         .set("Authorization", "Bearer user-token");
 
       expect(details.status).toBe(200);
@@ -132,11 +157,11 @@ describe("Feature 9 — Note CRUD", () => {
 
       expect(created.status).toBe(201);
       const id = createdId(created);
-      const before = await request(app).get(`${NOTES}/${id}`).set("Authorization", "Bearer user-token");
+      const before = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer user-token");
       const beforeKeys = new Set((before.body.contributors ?? []).map(contributorKey));
 
       const response = await request(app)
-        .put(`${NOTES}/${id}`)
+        .put(`${NOTES}/note/${id}`)
         .set("Authorization", "Bearer user-token")
         .send({
           ...validNote,
@@ -145,9 +170,12 @@ describe("Feature 9 — Note CRUD", () => {
         });
 
       expect(response.status).toBe(200);
-      expect(JSON.stringify(response.body)).toContain("well well well...");
+      expect(String(response.body.note_id)).toBe(String(id));
+      expect(response.body.created_note).toBe(false);
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
 
-      const after = await request(app).get(`${NOTES}/${id}`).set("Authorization", "Bearer user-token");
+      const after = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer user-token");
       expect(JSON.stringify(after.body)).toContain("well well well...");
 
       const added = (after.body.contributors ?? []).filter((entry) => !beforeKeys.has(contributorKey(entry)));
@@ -158,14 +186,14 @@ describe("Feature 9 — Note CRUD", () => {
     });
 
     it("Signed out user makes edit request", async () => {
-      const response = await request(app).put(`${NOTES}/1`).send(validNote);
+      const response = await request(app).put(`${NOTES}/note/1`).send(validNote);
 
       expect(response.status).toBe(401);
       expect(response.body).toEqual({ message: LOGIN_MESSAGE });
     });
   });
 
-  describe("US-9.6: Admin Notes Management", () => {
+  describe("US-9.5: Admin Notes Management", () => {
     it("Admin super-permissions on any list", async () => {
       const created = await request(app)
         .post(`${NOTES}/`)
@@ -176,14 +204,18 @@ describe("Feature 9 — Note CRUD", () => {
       const id = createdId(created);
 
       const updated = await request(app)
-        .put(`${NOTES}/${id}`)
+        .put(`${NOTES}/note/${id}`)
         .set("Authorization", "Bearer admin-token")
         .send({ ...validNote, text: "Updated by an admin" });
 
       expect(updated.status).toBe(200);
-      expect(JSON.stringify(updated.body)).toContain("Updated by an admin");
+      expect(String(updated.body.note_id)).toBe(String(id));
+      expect(updated.body.created_note).toBe(false);
 
-      const removed = await request(app).delete(`${NOTES}/${id}`).set("Authorization", "Bearer admin-token");
+      const details = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer admin-token");
+      expect(JSON.stringify(details.body)).toContain("Updated by an admin");
+
+      const removed = await request(app).delete(`${NOTES}/note/${id}`).set("Authorization", "Bearer admin-token");
 
       expect(removed.status).toBe(204);
       expect(removed.text).toBe("");

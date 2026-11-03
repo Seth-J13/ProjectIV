@@ -138,22 +138,22 @@ Mount prefix: `/vehicle-t3`. Flat JSON (no `{ success, data }` envelope). Errors
 This feature uses the `Notes` endpoints below.
 Auth surrounded by [brackets] is dependent on whether the operation is performed on a `note` the executing user wrote.
 
-| Method   | Endpoint                                                      | Auth | Purpose                                                                  |
-| -------- | ------------------------------------------------------------- | ---- | ------------------------------------------------------------------------ |
-| `GET`    | `/vehicle-t3/notes`                                           | Yes  | List all `notes`                                                         |
-| `POST`   | `/vehicle-t3/notes/`                                          | Yes  | Add a `note`                                                             |
-| `GET`    | `/vehicle-t3/notes/note/:noteId`                              | Yes  | List the details of the `note` with the `id``:noteId`                    |
-| `GET`    | `/vehicle-t3/notes/request/:requestId`                        | Yes  | List all the `notes` attached to the `request` with the `id``:requestId` |
-| `GET`    | `/vehicle-t3/notes/user/:userId`                              | Yes  | List all `notes` contributed to by the `user` with the `id``:userId`     |
-| `PUT`    | `/vehicle-t3/notes/note/:noteId`                              | Yes  | Overwrite the details of the `note` with the `id``:noteId`               |
-| `DELETE` | `/vehicle-t3/notes/note/:noteId`                              | Yes  | Remove the `note` with the `id``:noteId`                                 |
-| `DELETE` | `/vehicle-t3/notes/request/:requestId`                        | Yes  | Remove all `notes` with the `request_id` `:requestId`                    |
-| `GET`    | `/vehicle-t3/notes/contributors`                              | Yes  | List all `note` `contributions`                                          |
-| `POST`   | `/vehicle-t3/notes/contributors`                              | Yes  | Add a `note` `contribution`                                              |
-| `GET`    | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes  | List the `contributions` for the `note` with the `id``:noteId`           |
-| `GET`    | `/vehicle-t3/notes/contributors/user/:userId`                 | Yes  | List all `contributions` created by the user with the `id``:userId`      |
-| `DELETE` | `/vehicle-t3/notes/contributors/contribution/:contributionId` | Yes  | Remove the `contribution` with the `id``:contributionId`                 |
-| `DELETE` | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes  | Remove all `contributions` with the `note_id` `:noteId`                  |
+| Method   | Endpoint                                                      | Auth | Purpose                                                                   |
+| -------- | ------------------------------------------------------------- | ---- | ------------------------------------------------------------------------- |
+| `GET`    | `/vehicle-t3/notes`                                           | Yes  | List all `notes`                                                          |
+| `POST`   | `/vehicle-t3/notes/`                                          | Yes  | Add a `note`                                                              |
+| `GET`    | `/vehicle-t3/notes/note/:noteId`                              | Yes  | List the details of the `note` with the `id` `:noteId`                    |
+| `GET`    | `/vehicle-t3/notes/request/:requestId`                        | Yes  | List all the `notes` attached to the `request` with the `id` `:requestId` |
+| `GET`    | `/vehicle-t3/notes/user/:userId`                              | Yes  | List all `notes` contributed to by the `user` with the `id` `:userId`     |
+| `PUT`    | `/vehicle-t3/notes/note/:noteId`                              | Yes  | Overwrite the details of the `note` with the `id` `:noteId`               |
+| `DELETE` | `/vehicle-t3/notes/note/:noteId`                              | Yes  | Remove the `note` with the `id` `:noteId`                                 |
+| `DELETE` | `/vehicle-t3/notes/request/:requestId`                        | Yes  | Remove all `notes` with the `request_id` `:requestId`                     |
+| `GET`    | `/vehicle-t3/notes/contributors`                              | Yes  | List all `note` `contributions`                                           |
+| `POST`   | `/vehicle-t3/notes/contributors`                              | Yes  | Add a `note` `contribution`                                               |
+| `GET`    | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes  | List the `contributions` for the `note` with the `id` `:noteId`           |
+| `GET`    | `/vehicle-t3/notes/contributors/user/:userId`                 | Yes  | List all `contributions` created by the user with the `id` `:userId`      |
+| `DELETE` | `/vehicle-t3/notes/contributors/contribution/:contributionId` | Yes  | Remove the `contribution` with the `id` `:contributionId`                 |
+| `DELETE` | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes  | Remove all `contributions` with the `note_id` `:noteId`                   |
 
 **Unauthenticated write:** (`401`) login error
 **Unauthorized write:** (`403`) forbidden
@@ -901,6 +901,7 @@ Each scenario above must map to at least one automated test. `it` names must mat
 | US-9.2 | Maintenance deletes from Maintenance Requests Notes List | `backend/tests/notes.test.js`, `frontend/tests/NotesList.test.js` | `Maintenance deletes from Maintenance Requests Notes List` |
 | US-9.3 | Press New Note from Request form                         | `frontend/tests/NotesList.test.js`                                | `Press New Note from Request form`                         |
 | US-9.3 | Press New Note from Maintenance Request form             | `frontend/tests/NotesList.test.js`                                | `Press New Note from Maintenance Request form`             |
+| US-9.3 | Press Cancel from Request form (add)                     | `frontend/tests/NotesList.test.js`                                | `Press Cancel from Request form (add)`                     |
 | US-9.3 | Press outside NoteForm component (add)                   | `frontend/tests/NoteForm.test.js`                                 | `Press outside NoteForm component (add)`                   |
 | US-9.3 | Send add request with invalid form data                  | `frontend/tests/NoteForm.test.js`                                 | `Send add request with invalid form data`                  |
 | US-9.3 | Send add request with a missing required field           | `frontend/tests/NoteForm.test.js`                                 | `Send add request with a missing required field`           |
@@ -908,14 +909,15 @@ Each scenario above must map to at least one automated test. `it` names must mat
 | US-9.3 | Signed out user makes add request                        | `backend/tests/notes.test.js`                                     | `Signed out user makes add request`                        |
 | US-9.4 | Press Edit icon on Notes List item                       | `frontend/tests/NotesList.test.js`                                | `Press Edit icon on Notes List item`                       |
 | US-9.4 | Press Edit icon from Maintenance Request list            | `frontend/tests/NotesList.test.js`                                | `Press Edit icon from Maintenance Request list`            |
+| US-9.4 | Press Cancel from Request form (edit)                    | `frontend/tests/NotesList.test.js`                                | `Press Cancel from Request form (edit)`                    |
 | US-9.4 | Press outside NoteForm component (edit)                  | `frontend/tests/NoteForm.test.js`                                 | `Press outside NoteForm component (edit)`                  |
 | US-9.4 | Send edit request with invalid form data                 | `frontend/tests/NoteForm.test.js`                                 | `Send edit request with invalid form data`                 |
 | US-9.4 | Send edit request with a missing required field          | `frontend/tests/NoteForm.test.js`                                 | `Send edit request with a missing required field`          |
 | US-9.4 | Send edit request with valid form data                   | `backend/tests/notes.test.js`, `frontend/tests/NotesList.test.js` | `Send edit request with valid form data`                   |
 | US-9.4 | Signed out user makes edit request                       | `backend/tests/notes.test.js`                                     | `Signed out user makes edit request`                       |
-| US-9.6 | View Note Creation List for User Management              | `frontend/tests/NotesList.test.js`                                | `View Note Creation List for User Management`              |
-| US-9.6 | View Note Contribution List for User Management          | `frontend/tests/NotesList.test.js`                                | `View Note Contribution List for User Management`          |
-| US-9.6 | Admin super-permissions on any list                      | `backend/tests/notes.test.js`, `frontend/tests/NotesList.test.js` | `Admin super-permissions on any list`                      |
+| US-9.5 | View Note Creation List for User Management              | `frontend/tests/NotesList.test.js`                                | `View Note Creation List for User Management`              |
+| US-9.5 | View Note Contribution List for User Management          | `frontend/tests/NotesList.test.js`                                | `View Note Contribution List for User Management`          |
+| US-9.5 | Admin super-permissions on any list                      | `backend/tests/notes.test.js`, `frontend/tests/NotesList.test.js` | `Admin super-permissions on any list`                      |
 
 ---
 
