@@ -1,71 +1,81 @@
-# Feature: Course Management
+# Feature: Request Management
 
 **Feature ID:** 8
 **Branch pattern:** `feature/8-Request-CRUD`
 **Status:** In Progress
 **Created:** 2026-10-29
-**Input:** signed in admin users CRUD semesters.
+**Input:** signed-in users CRUD vehicle requests (normal trip requests and maintenance requests).
 **Depends on:** [Feature 1 -- User Auth & Sessions](feature-1-user-auth-session-management.md),
-[Feature 7 -- Driver CRUD](feature-7-Driver-CRUD.md),
 [Feature 4 -- Vehicle CRUD](feature-4-Vehicle-CRUD.md),
-[Feature 13 -- User Management](feature-13-User-Management.md),
 [Feature 6 -- Destination CRUD](feature-6-Destination-CRUD.md),
-**Related:** `frontend/src/views/Requests.vue`, `backend/app/routes/users.routes.js`, `backend/app/routes/Request.routes.js`, 
-`backend/app/routes/Vehicle.routes.js`, `backend/app/routes/Destination.routes.js`
+[Feature 7 -- Driver CRUD](feature-7-Driver-CRUD.md),
+[Feature 13 -- User Management](feature-13-User-Management.md)
+**Related:** `frontend/src/views/Requests.vue`, `backend/app/routes/users.routes.js`, `backend/app/routes/Request.routes.js`,
+`backend/app/routes/Vehicle.routes.js`, `backend/app/routes/Destination.routes.js`, `backend/app/routes/Driver.routes.js`
 
 ---
 
 ## User Stories
 
-### US-8.1: Create Requests
+### US-8.1: Create a normal request
 
-**As a** signed-in admin user  
-**I want to** create requests  
-**So that** I can give drivers a list of requests to sign up for
+**As a** signed-in user
+**I want to** create a trip request by choosing a vehicle, driver, destination, dates/times, and number of riders
+**So that** a vehicle trip can be scheduled
 
-**Priority:** P1  
-**Independent test:** Open add-request dialog, create a request; it appears in the requests view  
+**Priority:** P1
+**Independent test:** Open the new-request dialog, choose **Trip**, fill the form, submit; the request appears in the requests view
 **Acceptance scenarios:** see ### US-8.1 under Acceptance Criteria
 
-### US-8.2: View my requests
+### US-8.2: Create a maintenance request
 
-**As a** signed-in admin user  
-**I want to** see all of my courses on one screen  
-**So that** I can see
+**As a** signed-in user
+**I want to** schedule maintenance for a vehicle by choosing a vehicle and a start date/time
+**So that** the vehicle is marked as unavailable for that time
 
-**Priority:** P1  
-**Independent test:** Courses loads a single course of owned courses (no sidebar split)  
-**Acceptance scenarios:** see ### US-3.2 under Acceptance Criteria
+**Priority:** P1
+**Independent test:** Open the new-request dialog, choose **Maintenance**, pick a vehicle and start date, submit; it appears in the requests view
+**Acceptance scenarios:** see ### US-8.2 under Acceptance Criteria
 
-### US-3.3: Manage course rows
+### US-8.3: View requests
 
-**As a** signed-in admin user  
-**I want** each course row to show **edit** and **delete** actions  
-**So that** I can manage courses without leaving the courses view
+**As a** signed-in user
+**I want to** see my requests on one screen (admins see all requests)
+**So that** I can track what has been scheduled
 
-**Priority:** P1  
-**Independent test:** Each course row exposes edit and delete icon actions, interact to open respective modals
-**Acceptance scenarios:** see ### US-3.3 under Acceptance Criteria
+**Priority:** P1
+**Independent test:** Requests view loads a single list of accessible requests (no sidebar split)
+**Acceptance scenarios:** see ### US-8.3 under Acceptance Criteria
 
-### US-3.4: Rename and delete courses
+### US-8.4: Manage request rows
 
-**As a** signed-in admin user  
-**I want to** rename or delete a course  
-**So that** I can keep my workspace organized
+**As a** signed-in user
+**I want** each request row to show **edit** and **delete** actions
+**So that** I can manage requests without leaving the requests view
 
-**Priority:** P2  
-**Independent test:** Rename and delete an owned course from row actions; courses view updates  
-**Acceptance scenarios:** see ### US-3.4 under Acceptance Criteria
+**Priority:** P1
+**Independent test:** Each row exposes edit and delete icon actions that open their respective dialogs
+**Acceptance scenarios:** see ### US-8.4 under Acceptance Criteria
 
-### US-3.5: Search Courses
+### US-8.5: Edit and delete requests
 
-**As a** signed-in admin user  
-**I want** to search for courses containing certain key characters
-**So that** I can quickly find which course I'm looking for
+**As a** signed-in user
+**I want to** edit or delete a request I own (admins: any request)
+**So that** I can fix mistakes or cancel a request
 
-**Priority:** P2  
-**Independent test:**
-**Acceptance scenarios:** see ### US-3.5 under Acceptance Criteria
+**Priority:** P2
+**Independent test:** Edit and delete an owned request from row actions; the requests view updates
+**Acceptance scenarios:** see ### US-8.5 under Acceptance Criteria
+
+### US-8.6: Filter requests
+
+**As a** signed-in user
+**I want to** filter requests by active/inactive and by request type
+**So that** I can quickly find the request I'm looking for
+
+**Priority:** P3
+**Independent test:** Toggle the active filter; only matching rows remain
+**Acceptance scenarios:** see ### US-8.6 under Acceptance Criteria
 
 ---
 
@@ -73,132 +83,168 @@
 
 ### Functional Requirements
 
-- **FR-001**: All course endpoints MUST require a valid session (`authenticate` middleware).
-- **FR-002**: course names MUST be trimmed before save; empty strings MUST be rejected.
-- **FR-003**: course Id's MUST follow the format `XXXX-####` where `XXXX` is a four-letter course code (`CMSC` for computer science, `ARTS` for an arts class, `BIBL` for a Bible class, `HIST` for history, etc.)
-- **FR-004**: course Id's MUST follow the format `XXXX-####` where `####` is a four-digit code for the course (The first digit stands for the difficulty. For example '1' is freshmen level, '2' is sophomore level, '3' is junior level, '4' is senior level, and '5' is graduate level. The second through fourth digits are mainly identifiers for which course is offered.)
-- **FR-005**: This feature MUST deliver course CRUD and a **single-view** courses UI in `Courses.vue` (dialog-based add/edit/delete). No sidebar/main split.
-- **FR-006**: typing in the on-screen course search bar updates the course list with only courses containing the search bar's content as a substring.
-- **FR-007**: signed-out users MUST NOT have access to any `/course-t3` routes
-- **FR-008**: signed-in students MUST NOT have access to any non-`GET` `/course-t3` routes
-- **FR-009**: courses MUST have a corresponding semester (FA, WI, SP, SU for fall, winter, spring, and summer semesters respectively)
+- **FR-001**: All request endpoints MUST require a valid session (`authenticate` middleware).
+- **FR-002**: Every request MUST have a `requestType` of `trip` or `maintenance`. Required fields depend on the type (see Request Types below).
+- **FR-003**: `requesterId` MUST be set server-side from `req.user.id`; it MUST NOT be accepted from the client body.
+- **FR-004**: `vehicleId`, `driverId`, and `destId` (when provided) MUST reference existing records; otherwise respond `400`.
+- **FR-005**: `endDate`/`endTime` MUST NOT be earlier than `startDate`/`startTime`; otherwise respond `400`.
+- **FR-006**: `numPeople` MUST be a positive integer for `trip` requests.
+- **FR-007**: This feature MUST deliver request CRUD and a **single-view** requests UI in `Requests.vue` (dialog-based add/edit/delete). No sidebar/main split.
+- **FR-008**: The vehicle's license, make, and model MUST be displayed in the form and rows, derived from `vehicleId` (not entered by the user, not stored on the request).
+- **FR-009**: Driver and destination MUST be chosen through dropdown menus populated from `GET /drivers` and `GET /destinations`.
+- **FR-010**: Date and time MUST be chosen through calendar/time pickers, not free-text.
+- **FR-011**: Signed-out users MUST NOT have access to any `/requests` routes.
+- **FR-012**: A user MUST NOT read, edit, or delete another user's request unless they are an administrator.
+- **FR-013**: `currentlyActive` MUST default to `true` on creation.
+
+### Request Types
+
+| Field         | `trip`                   | `maintenance`                         |
+| ------------- | ------------------------ | ------------------------------------- |
+| `vehicleId`   | Required                 | Required                              |
+| `driverId`    | Required                 | nullable, optional                    |
+| `destId`      | Required                 | Must be null / ignored                |
+| `startDate`   | Required                 | nullable, optional                    |
+| `startTime`   | Required                 | nullable, optional                    |
+| `endDate`     | Required                 | nullable, optional (defaults to `startDate`)|
+| `endTime`     | Required                 | nullable, optional                    |
+| `numPeople`   | Required (>= 1)          | Must be null / ignored                |
 
 ---
 
 ## Assumptions
 
 - Feature 1 auth and session handling MUST be merged to `dev` before implementing this feature.
-- semesters use **dialog-based** workflows (no split sidebar / main panel).
+- Features 4 (Vehicle), 6 (Destination), and 7 (Driver) expose list endpoints used to populate the dropdowns.
+- Requests use **dialog-based** workflows (no split sidebar / main panel).
+- Any signed-in user can create `trip` requests; only administrators can create `maintenance` requests. *(Confirm; see Open Questions.)*
+- Users see only their own requests; administrators see all requests.
 
 ## Edge Cases
 
-- Empty or whitespace-only course name → client block and/or `400`.
-- course Id longer than 9 characters → `400`.
-- Invalid `courseId` → `400`; unowned course → `404`.
-- Unauthenticated `Courses.vue` or `GET /course-t3/semesters` → redirect or `401`.
+- Missing required field for the chosen request type → client block and/or `400`.
+- `endDate`/`endTime` before start → `400`.
+- `numPeople` zero, negative, or non-integer → `400`.
+- Unknown `vehicleId`, `driverId`, or `destId` → `400`.
+- Invalid `requestId` → `400`; request not found or not accessible → `404`.
+- Non-admin attempts to create a `maintenance` request → `403`.
+- Unauthenticated `Requests.vue` or `GET /requests` → redirect or `401`.
+- Referenced vehicle, driver, or destination is later deleted → deletion behavior defined in Features 4/6/7; the Requests view MUST NOT crash on missing references.
 
 ## Success Criteria
 
 - **SC-001**: Every Gherkin scenario has at least one automated test before merge.
-- **SC-002**: Signed-in admin can create, view, rename, and delete courses on one screen.
-- **SC-003**: Signed-in student cannot access this view
-- **SC-004**: `npm test` passes for course API and courses-view behavior.
+- **SC-002**: A signed-in user can create (both types), view, edit, and delete requests on one screen.
+- **SC-003**: A user cannot see or modify another user's requests (unless admin).
+- **SC-004**: `npm test` passes for the request API and requests-view behavior.
 
 ---
 
 ## Data Ownership & Isolation
 
-Courses are not owned by anybody; however, only administrator-role users are authorized to write/create on `courses`
+Requests are owned by the user who created them (`requesterId`).
 
-| Rule                  | Requirement                                                                                                                                   |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Read scope**        | `GET /course-t3` returns only courses.                                                                                                          |
-| **Write scope**       | `PUT` and `DELETE` apply only when the course row matches both `id` and `req.user.id`.                                                        |
-| **Create scope**      | New courses owned by nobody.                                                                                                                  |
-| **Cross-user access** | If an unauthorized user tries to `PUT`, `DELETE`, or `POST` courses, respond with `403`.                                                      |
-| **UI scope**          | The courses view shows only courses returned by `GET /course-t3` for the signed-in admin.                                                       |
-| **Implementation**    | Use a shared helper (e.g. `getAccessibleCoursesOrNull(req, courseId)`) in `app/authorization/` — do not duplicate scope logic in controllers. |
+| Rule                  | Requirement                                                                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Read scope**        | `GET /requests` returns only requests where `requesterId = req.user.id`; administrators receive all requests.                                      |
+| **Write scope**       | `PUT` and `DELETE` apply only when the request matches both `requestId` and `req.user.id`, unless the user is an administrator.                    |
+| **Create scope**      | New requests are owned by `req.user.id`.                                                                                                           |
+| **Cross-user access** | A non-admin requesting another user's request by id receives `404`.                                                                                |
+| **Role restriction**  | A non-admin attempting to create a `maintenance` request receives `403`.                                                                           |
+| **UI scope**          | The requests view shows only requests returned by `GET /requests` for the signed-in user.                                                          |
+| **Implementation**    | Use a shared helper (e.g. `getAccessibleRequestOrNull(req, requestId)`) in `app/authorization/` — do not duplicate scope logic in controllers.     |
 
 ---
 
 ## API Requirements
 
-| Method   | Endpoint             | Auth       | Purpose             |
-| -------- | -------------------- | ---------- | ------------------- |
-| `GET`    | `/course-t3`           | Yes        | Fetch all courses   |
-| `GET`    | `/course-t3/:courseId` | Yes        | Show course details |
-| `POST`   | `/course-t3`           | Yes, admin | Create a new course |
-| `PUT`    | `/course-t3/:courseId` | Yes, admin | Update a course     |
-| `DELETE` | `/course-t3/:courseId` | Yes, admin | Delete a course     |
+| Method   | Endpoint               | Auth | Purpose                                  |
+| -------- | ---------------------- | ---- | ---------------------------------------- |
+| `GET`    | `/requests`            | Yes  | Fetch accessible requests                |
+| `GET`    | `/requests/:requestId` | Yes  | Show request details                     |
+| `POST`   | `/requests`            | Yes  | Create a request (`trip` or `maintenance`) |
+| `PUT`    | `/requests/:requestId` | Yes  | Update a request                         |
+| `DELETE` | `/requests/:requestId` | Yes  | Delete a request                         |
 
-All endpoints except `GET` require **an administrator-role user** to access/operate. Non-admin user access returns `403`.
-
-**Create course request body:**
+**Create trip request body:**
 
 ```json
 {
-  "courseId": "CMSC-4321",
-  "semester_offered": "FA",
-  "name": "Software Engineering 4",
-  "description": "Make students suffer through speckits"
-  "sections": [
-    {"sectionId": "CMSC-4321-01"}
-  ]
+  "requestType": "trip",
+  "vehicleId": 12,
+  "driverId": 3,
+  "destId": 7,
+  "startDate": "2026-11-10",
+  "startTime": "09:00",
+  "endDate": "2026-11-10",
+  "endTime": "17:00",
+  "numPeople": 6
 }
 ```
 
-**courses success response** (`200` / `201`):
+**Create maintenance request body:**
 
 ```json
 {
-  "courseId": "CMSC-4321",
-  "semester_offered": "FA",
-  "name": "Software Engineering 4",
-  "description": "Make students suffer through speckits"
-  "sections": [
-    {"sectionId": "CMSC-4321-01"}
-  ]
+  "requestType": "maintenance",
+  "vehicleId": 12,
+  "startDate": "2026-11-15",
+  "startTime": "08:00"
 }
 ```
 
-**Error response:** `{ "message": "Human-readable explanation." }` with appropriate HTTP status.  
+**Success response** (`200` / `201`):
+
+```json
+{
+  "requestId": 41,
+  "requestType": "trip",
+  "requesterId": 5,
+  "vehicle": { "vehicleId": 12, "license": "ABC-1234", "make": "Ford", "model": "Transit" },
+  "driver": { "driverId": 3, "name": "Jane Doe" },
+  "destination": { "destId": 7, "name": "State Capitol" },
+  "startDate": "2026-11-10",
+  "startTime": "09:00",
+  "endDate": "2026-11-10",
+  "endTime": "17:00",
+  "numPeople": 6,
+  "currentlyActive": true
+}
+```
+
+**Delete success:** `204` with no body.
+
+**Error response:** `{ "message": "Human-readable explanation." }` with appropriate HTTP status.
+**Unauthenticated:** `401`.
+**Forbidden:** `403`.
 **Not found:** `404`.
-**Invalid Request:** `400`.
-**Server/Connection Error:** `500`.
-**Put course request body:**
+**Invalid request:** `400`.
+**Server/connection error:** `500`.
 
-```json
-  {
-      "courseId": "CMSC-4321",
-      "semester_offered": "FA",
-      "name": "Software Engineering 4",
-      "description": "Make students suffer through speckits"
-      "sections": [
-        {"sectionId": "CMSC-4321-01"}
-      ]
-  }
-```
+**PUT request body:** same shape as create for the request's existing `requestType`. `requestType` and `requesterId` MUST NOT be changed by `PUT`.
+
+---
 
 ## Screen Requirements
 
-### [View: Courses] — route name `courses`
+### [View: Requests] — route name `requests`
 
-**Single Vue view** (`Courses.vue`) — no sidebar / main-panel split.
+**Single Vue view** (`Requests.vue`) — no sidebar / main-panel split.
 
-**courses view (this feature)**
-
-- Heading: **Courses**
-- Primary action: **+ New course** opens a `<v-dialog>` with a name `<v-text-field>` and **Create** / **Cancel**. Use class `oc-cta` on **Create** and **+ New course** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Display interactive search bar named `Find` above any lists
-- Display courses as rows (e.g. `<v-list>` or table): each row shows the **course name** and icon actions:
-  - **Edit** icon — opens rename `<v-dialog>` pre-filled with current name; **Save** / **Cancel**
+- Heading: **Requests**
+- Primary action: **+ New request** opens a `<v-dialog>`. The dialog starts with a request-type selector (**Trip** / **Maintenance**) and shows the matching form. **Create** / **Cancel** buttons. Use class `oc-cta` on **Create** and **+ New request** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- **Trip form fields:** vehicle dropdown (shows license, make, model), driver dropdown, destination dropdown, start date + time pickers, end date + time pickers, number of people.
+- **Maintenance form fields:** vehicle dropdown (shows license, make, model), start date + time picker. *(Maintenance has no driver, destination, or rider-count fields.)*
+- Display requests as rows (e.g. `<v-list>` or table): each row shows the **request type**, **vehicle** (license, make, model), **date range**, and, for trips, **destination** and **driver**. Rows have icon actions:
+  - **Edit** icon — opens edit `<v-dialog>` pre-filled with current values; **Save** / **Cancel**
   - **Delete** icon — opens confirmation `<v-dialog>`
-- Icon-only row actions use `size="small"` and accessible `aria-label`s (**Edit course**, **Delete course**).
-- **Empty state:** **"No courses yet. Create a course."** when no courses exist in the database.
-- **Loading state:** skeleton or progress indicator while courses are fetching.
+- Icon-only row actions use `size="small"` and accessible `aria-label`s (**Edit request**, **Delete request**).
+- **Filter controls:** an **Active only** toggle and a type selector (**All** / **Trip** / **Maintenance**) above the list.
+- **Empty state:** **"No requests yet. Create a request."** when no accessible requests exist.
+- **Loading state:** skeleton or progress indicator while requests, vehicles, drivers, and destinations are fetching.
 - **Error state:** `<v-alert type="error">` for API failures.
 
-**Implementation note:** one route/view for courses; course CRUD dialogs are child components or inline `<v-dialog>` blocks in `Courses.vue` unless the team splits presentational dialogs later.
+**Implementation note:** one route/view for requests; request CRUD dialogs are child components or inline `<v-dialog>` blocks in `Requests.vue` unless the team splits presentational dialogs later.
 
 **App chrome**
 
@@ -208,212 +254,282 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 ## Key Entities
 
-- **course**: named item.
-- **admin**: authenticated administrator user permitted to access all course routes.
-- **student**: authenticated student user permitted to only access `GET` course routes.
+- **request**: a scheduled vehicle use, either a `trip` or a `maintenance` block.
+- **requester**: the authenticated user who created the request.
+- **admin**: authenticated administrator permitted to view and modify all requests and create maintenance requests.
 
 ---
 
 ## Data Model Requirements
 
-### `courses` table
+### `requests` table
 
-| Field               | Type      | Rules                                                  |
-| ------------------- | --------- | ------------------------------------------------------ |
-| `courseId`          | STRING PK | Required; Unique; exactly 9 chars                      |
-| `courseName`        | STRING    | Required                                               |
-| `semesterOffered`   | ENUM      | Required; `FA`, `WI`, `SP`, `SU`                       |
-| `offeringFrequency` | ENUM      | Required; `none`, `everyYear`, `oddYears`, `evenYears` |
-| `description`       | STRING    | NULLABLE                                               |
+| Field             | Type            | Rules                                                              |
+| ----------------- | --------------- | ------------------------------------------------------------------ |
+| `requestId`       | INTEGER PK      | Auto-increment                                                     |
+| `requestType`     | ENUM            | Required; `trip`, `maintenance` *(new — not in original model)*    |
+| `requesterId`     | FK → `users`    | Required; set server-side                                          |
+| `vehicleId`       | FK → `vehicles` | Required (both types)                                              |
+| `driverId`        | FK → `drivers`  | Required for `trip`; NULLABLE overall                              |
+| `destId`          | FK → `destinations` | Required for `trip`; NULLABLE overall                          |
+| `startDate`       | DATE            | Required                                                           |
+| `startTime`       | TIME            | Required for `trip`; NULLABLE for `maintenance`                    |
+| `endDate`         | DATE            | Required for `trip`; NULLABLE for `maintenance` (defaults to start) |
+| `endTime`         | TIME            | Required for `trip`; NULLABLE for `maintenance`                    |
+| `numPeople`       | INTEGER         | Required (>= 1) for `trip`; NULLABLE for `maintenance`             |
+| `currentlyActive` | BOOLEAN         | Required; default `true`                                           |
+
+Type-dependent requirements are enforced in model/controller validation, not by database NOT NULL constraints.
 
 ---
 
 ## Acceptance Criteria (Gherkin)
 
-### US-3.1 — Create courses
+### US-8.1 — Create a normal request
 
-#### Scenario: Admin creates a new course
+#### Scenario: User creates a trip request
 
-- **Given** I am signed in as an admin on the course view
-- **When** I click **+ New course**
-- **And** I enter course Id `CMSC-4324`
-- **And** I enter description `XXXXXX`
-- **And** I enter course name `SE4`
-- **And** I add a semesterOffered `FA`
+- **Given** I am signed in
+- **And** a vehicle, a driver, and a destination exist
+- **When** I click **+ New request**
+- **And** I select the type **Trip**
+- **And** I choose a vehicle, a driver, and a destination from the dropdowns
+- **And** I pick a start date/time and an end date/time from the calendars
+- **And** I enter the number of people `6`
 - **And** I confirm the dialog
-- **Then** the API returns `201` with a course object containing `courseId`, `courseName`, `description` and `semesters`
-- **And** `CMSC-4324` appears in the courses view
-- **And** the add-course dialog closes
+- **Then** the API returns `201` with a request object containing `requestId`, `requestType`, `vehicle`, `driver`, `destination`, dates/times, and `numPeople`
+- **And** the new request appears in the requests view
+- **And** the add-request dialog closes
 
-#### Scenario: Admin creates a course with an empty name
+#### Scenario: Trip form shows vehicle details
 
-- **Given** I am signed in as an admin on the course view
-- **When** I open the new course dialog
-- **And** I leave the name field empty or whitespace only
+- **Given** I am signed in
+- **And** vehicle `ABC-1234` (Ford Transit) exists
+- **When** I select that vehicle in the trip form
+- **Then** I see its license, make, and model displayed
+
+#### Scenario: User creates a trip request with a missing required field
+
+- **Given** I am signed in
+- **When** I open the new request dialog with type **Trip**
+- **And** I leave the driver, destination, or any date empty
 - **And** I attempt to confirm
 - **Then** inline validation blocks the request
-- **And** I see the message **"course name is required."**
+- **And** I see the message **"<field> is required."**
 - **And** no API request is sent
 
-#### Scenario: Admin creates a course with an empty description
+#### Scenario: User creates a trip request with an end before the start
 
-- **Given** I am signed in as an admin on the course view
-- **When** I open the new course dialog
-- **And** I leave the description field empty or whitespace only
-- **And** I attempt to confirm
-- **Then** inline validation blocks the request
-- **And** I see the message **"description is required."**
-- **And** no API request is sent
-
-#### Scenario: Admin creates a course without semester
-
-- **Given** I am signed in as an admin on the course view
-- **When** I open the new course dialog
-- **And** I leave the semester empty or whitespace only
-- **And** I attempt to confirm
-- **Then** inline validation blocks the request
-- **And** I see the message **"semester is required."**
-- **And** no API request is sent
-
-#### Scenario: Admin creates a course with a name that is too long
-
-- **Given** I am signed in as an admin on the course view
-- **When** I submit a course id longer than 9 characters
-- **Then** the API returns `400` with `{ "message": "course name must be 9 characters." }`
+- **Given** I am signed in
+- **When** I submit a trip request whose end date/time is before its start date/time
+- **Then** the API returns `400` with `{ "message": "end must be after start." }`
 - **And** the error is displayed in a `<v-alert type="error">`
 
-#### Scenario: Admin creates a course with an id that is improperly formatted
+#### Scenario: User creates a trip request with an invalid number of people
 
-- **Given** I am signed in as an admin on the course view
-- **When** I submit a course name that does not follow the XXXX-#### convention (XXXX being a 4-letter department title) and #### being 4 integers
-- **Then** the API returns `400` with `{ "message": "course name must be of the form XXXX-#### (e.g. CMSC-4321)." }`
+- **Given** I am signed in
+- **When** I submit a trip request with `numPeople` of `0`
+- **Then** the API returns `400` with `{ "message": "number of people must be at least 1." }`
 - **And** the error is displayed in a `<v-alert type="error">`
 
----
+#### Scenario: User creates a request referencing a nonexistent vehicle
 
-### US-3.2 — View all courses
-
-#### Scenario: Course view loads with existing semesters
-
-- **Given** I am signed in as an admin
-- **And** the courses `CMSC-4321` and `ARTS-3214` exist
-- **When** I navigate to the courses view
-- **Then** both courses appear in the courses view
-- **And** each row shows the course name with edit and delete icon actions
-
-#### Scenario: No courses exist
-
-- **Given** I am signed in as an admin
-- **And** no courses exist
-- **When** I navigate to the course view
-- **Then** I see **"No courses yet. Create a course."**
+- **Given** I am signed in
+- **When** I `POST /requests` with a `vehicleId` that does not exist
+- **Then** the API returns `400` with `{ "message": "vehicle does not exist." }`
 
 ---
 
-### US-3.3 — Manage course rows
+### US-8.2 — Create a maintenance request
 
-#### Scenario: course rows show edit and delete actions
+#### Scenario: Admin creates a maintenance request
 
 - **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I view the courses view
-- **Then** the `CMSC-4321` row shows an **Edit course** icon action
-- **And** the `CMSC-4321` row shows a **Delete course** icon action
+- **And** vehicle `ABC-1234` exists
+- **When** I click **+ New request**
+- **And** I select the type **Maintenance**
+- **And** I choose vehicle `ABC-1234`
+- **And** I pick a start date from the calendar
+- **And** I confirm the dialog
+- **Then** the API returns `201` with a request object whose `requestType` is `maintenance`
+- **And** `driverId`, `destId`, and `numPeople` are null
+- **And** the request appears in the requests view
+
+#### Scenario: Maintenance form hides trip-only fields
+
+- **Given** I am signed in as an admin
+- **When** I select the type **Maintenance** in the new request dialog
+- **Then** I see the vehicle dropdown and the start date/time picker
+- **And** I do not see the driver, destination, or number-of-people fields
+
+#### Scenario: Maintenance request without a start date
+
+- **Given** I am signed in as an admin
+- **When** I open the dialog with type **Maintenance** and leave the start date empty
+- **And** I attempt to confirm
+- **Then** inline validation blocks the request
+- **And** I see the message **"start date is required."**
+- **And** no API request is sent
+
+#### Scenario: Non-admin cannot create a maintenance request
+
+- **Given** I am signed in as a non-admin user
+- **When** I `POST /requests` with `requestType` `maintenance`
+- **Then** the API returns `403` with an unauthorized message
 
 ---
 
-### US-3.4 — Edit and delete courses
+### US-8.3 — View requests
 
-#### Scenario: Admin edits a course
+#### Scenario: Requests view loads with existing requests
+
+- **Given** I am signed in
+- **And** I own two requests
+- **When** I navigate to the requests view
+- **Then** both requests appear in the requests view
+- **And** each row shows the request type, vehicle, and dates with edit and delete icon actions
+
+#### Scenario: User does not see other users' requests
+
+- **Given** I am signed in as a non-admin user
+- **And** another user owns a request
+- **When** I navigate to the requests view
+- **Then** I do not see the other user's request
+
+#### Scenario: Admin sees all requests
 
 - **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I click the edit icon on the `CMSC-4321` row
-- **And** I change the name to `ARTS-4321` in the rename dialog
+- **And** several users own requests
+- **When** I navigate to the requests view
+- **Then** I see every user's requests
+
+#### Scenario: No requests exist
+
+- **Given** I am signed in
+- **And** I have no requests
+- **When** I navigate to the requests view
+- **Then** I see **"No requests yet. Create a request."**
+
+---
+
+### US-8.4 — Manage request rows
+
+#### Scenario: Request rows show edit and delete actions
+
+- **Given** I am signed in
+- **And** I own a request
+- **When** I view the requests view
+- **Then** the row shows an **Edit request** icon action
+- **And** the row shows a **Delete request** icon action
+
+---
+
+### US-8.5 — Edit and delete requests
+
+#### Scenario: User edits a request
+
+- **Given** I am signed in
+- **And** I own a trip request with `numPeople` `6`
+- **When** I click the edit icon on that row
+- **And** I change `numPeople` to `4` in the edit dialog
 - **And** I confirm
-- **Then** the API returns `200` with the updated course object
-- **And** the courses view shows `ARTS-4321` instead of `CMSC-4321`
+- **Then** the API returns `200` with the updated request object
+- **And** the requests view shows `4` people for that request
 
-#### Scenario: Admin deletes a course
+#### Scenario: User deletes a request
 
-- **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I click the delete icon on the `CMSC-4321` row
+- **Given** I am signed in
+- **And** I own a request
+- **When** I click the delete icon on that row
 - **And** I confirm the delete dialog
 - **Then** the API returns `204`
-- **And** the course is removed from the courses view
+- **And** the request is removed from the requests view
+
+#### Scenario: User cannot edit another user's request
+
+- **Given** I am signed in as a non-admin user
+- **And** another user owns request `41`
+- **When** I `PUT /requests/41`
+- **Then** the API returns `404`
+
+#### Scenario: User cannot delete another user's request
+
+- **Given** I am signed in as a non-admin user
+- **And** another user owns request `41`
+- **When** I `DELETE /requests/41`
+- **Then** the API returns `404`
+
+#### Scenario: Admin edits any request
+
+- **Given** I am signed in as an admin
+- **And** another user owns request `41`
+- **When** I `PUT /requests/41` with valid changes
+- **Then** the API returns `200` with the updated request object
 
 ---
 
-### US-3.5 — Search courses
+### US-8.6 — Filter requests
 
-#### Scenario: Search bar appears with courses
+#### Scenario: Active-only filter
 
-- **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I view the courses view
-- **Then** I see a search bar named `Find` above the courses list
-  returns
+- **Given** I am signed in
+- **And** I own one active request and one inactive request
+- **When** I turn on the **Active only** toggle
+- **Then** the list contains only the active request
 
-#### Scenario: No search bar appears with no courses
-
-- **Given** I am signed in as an admin
-- **And** the course `CMSC-4321` exists
-- **When** I view the courses view
-- **Then** I see **"No courses yet. Create a course."**
-- **And** I see no search bars in the view
-
-#### Scenario: Admin types in course search bar
+#### Scenario: Request type filter
 
 - **Given** I am signed in as an admin
-- **And** I am viewing the courses view
-- **And** the courses `CMSC-4321`, `ARTS-3214`, `BIBL-3421`, and `CMSC-1324` exist
-- **When** I type `CMSC` in the `Find` search bar
-- **Then** the course list updates to contain only the courses `CMSC-4321` and `CMSC-1324`
+- **And** a trip request and a maintenance request exist
+- **When** I select **Maintenance** in the type selector
+- **Then** the list contains only the maintenance request
 
-#### Scenario: Admin types in course search bar 2
+---
 
-- **Given** I am signed in as an admin
-- **And** I am viewing the courses view
-- **And** the courses `CMSC-4321`, `ARTS-3214`, `BIBL-4321`, and `CMSC-1324` exist
-- **When** I type `4321` in the `Find` search bar
-- **Then** the course list updates to contain only the courses `CMSC-4321` and `BIBL-4321`
+### Authentication
 
-#### Scenario: Unauthenticated user accesses the courses view
+#### Scenario: Unauthenticated user accesses the requests view
 
 - **Given** I have no session in `localStorage`
-- **When** I navigate to the courses view
+- **When** I navigate to the requests view
 - **Then** I am redirected to the login page
 
-#### Scenario: Unauthenticated API request to courses
+#### Scenario: Unauthenticated API request to requests
 
 - **Given** I have no valid session token
-- **When** I request `GET /course-t3`
+- **When** I request `GET /requests`
 - **Then** the API returns `401` with an unauthorized message
 
 ---
 
 ## Test Coverage Map
 
-| Story  | Scenario                                                       | Test file                                                         | Test name                                                        |
-| ------ | -------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
-| US-3.1 | Admin creates a new course                                     | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a new course`                                     |
-| US-3.1 | Admin creates a course with an empty name                      | `frontend/tests/Courses.test.js`                                  | `Admin creates a course with an empty name`                      |
-| US-3.1 | Admin creates a course with an empty description               | `frontend/tests/Courses.test.js`                                  | `Admin creates a course with an empty description`               |
-| US-3.1 | Admin creates a course without semester                        | `frontend/tests/Courses.test.js`                                  | `Admin creates a course without semester`                        |
-| US-3.1 | Admin creates a course with a name that is too long            | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a course with a name that is too long`            |
-| US-3.1 | Admin creates a course with an id that is improperly formatted | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin creates a course with an id that is improperly formatted` |
-| US-3.2 | Course view loads with existing semesters                      | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Course view loads with existing semesters`                      |
-| US-3.2 | No courses exist                                               | `frontend/tests/Courses.test.js`                                  | `No courses exist`                                               |
-| US-3.3 | course rows show edit and delete actions                       | `frontend/tests/Courses.test.js`                                  | `course rows show edit and delete actions`                       |
-| US-3.4 | Admin edits a course                                           | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin edits a course`                                           |
-| US-3.4 | Admin deletes a course                                         | `backend/tests/course-t3.test.js`, `frontend/tests/Courses.test.js` | `Admin deletes a course`                                         |
-| US-3.5 | Search bar appears with courses                                | `frontend/tests/Courses.test.js`                                  | `Search bar appears with courses`                                |
-| US-3.5 | No search bar appears with no courses                          | `frontend/tests/Courses.test.js`                                  | `No search bar appears with no courses`                          |
-| US-3.5 | Admin types in course search bar                               | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar`                               |
-| US-3.5 | Admin types in course search bar 2                             | `frontend/tests/Courses.test.js`                                  | `Admin types in course search bar 2`                             |
-| US-3.5 | Unauthenticated user accesses the courses view                 | `frontend/tests/Courses.test.js`                                  | `Unauthenticated user accesses the courses view`                 |
-| US-3.5 | Unauthenticated API request to courses                         | `backend/tests/course-t3.test.js`                                   | `Unauthenticated API request to courses`                         |
+| Story  | Scenario                                                  | Test file                                                           | Test name                                                  |
+| ------ | --------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
+| US-8.1 | User creates a trip request                               | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `User creates a trip request`                              |
+| US-8.1 | Trip form shows vehicle details                           | `frontend/tests/Requests.test.js`                                   | `Trip form shows vehicle details`                          |
+| US-8.1 | User creates a trip request with a missing required field | `frontend/tests/Requests.test.js`                                   | `User creates a trip request with a missing required field` |
+| US-8.1 | User creates a trip request with an end before the start  | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `User creates a trip request with an end before the start` |
+| US-8.1 | User creates a trip request with an invalid number of people | `backend/tests/requests.test.js`                                 | `User creates a trip request with an invalid number of people` |
+| US-8.1 | User creates a request referencing a nonexistent vehicle  | `backend/tests/requests.test.js`                                    | `User creates a request referencing a nonexistent vehicle` |
+| US-8.2 | Admin creates a maintenance request                       | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `Admin creates a maintenance request`                      |
+| US-8.2 | Maintenance form hides trip-only fields                   | `frontend/tests/Requests.test.js`                                   | `Maintenance form hides trip-only fields`                  |
+| US-8.2 | Maintenance request without a start date                  | `frontend/tests/Requests.test.js`                                   | `Maintenance request without a start date`                 |
+| US-8.2 | Non-admin cannot create a maintenance request             | `backend/tests/requests.test.js`                                    | `Non-admin cannot create a maintenance request`            |
+| US-8.3 | Requests view loads with existing requests                | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `Requests view loads with existing requests`               |
+| US-8.3 | User does not see other users' requests                   | `backend/tests/requests.test.js`                                    | `User does not see other users' requests`                  |
+| US-8.3 | Admin sees all requests                                   | `backend/tests/requests.test.js`                                    | `Admin sees all requests`                                  |
+| US-8.3 | No requests exist                                         | `frontend/tests/Requests.test.js`                                   | `No requests exist`                                        |
+| US-8.4 | Request rows show edit and delete actions                 | `frontend/tests/Requests.test.js`                                   | `Request rows show edit and delete actions`                |
+| US-8.5 | User edits a request                                      | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `User edits a request`                                     |
+| US-8.5 | User deletes a request                                    | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `User deletes a request`                                   |
+| US-8.5 | User cannot edit another user's request                   | `backend/tests/requests.test.js`                                    | `User cannot edit another user's request`                  |
+| US-8.5 | User cannot delete another user's request                 | `backend/tests/requests.test.js`                                    | `User cannot delete another user's request`                |
+| US-8.5 | Admin edits any request                                   | `backend/tests/requests.test.js`                                    | `Admin edits any request`                                  |
+| US-8.6 | Active-only filter                                        | `frontend/tests/Requests.test.js`                                   | `Active-only filter`                                       |
+| US-8.6 | Request type filter                                       | `frontend/tests/Requests.test.js`                                   | `Request type filter`                                      |
+| Auth   | Unauthenticated user accesses the requests view           | `frontend/tests/Requests.test.js`                                   | `Unauthenticated user accesses the requests view`          |
+| Auth   | Unauthenticated API request to requests                   | `backend/tests/requests.test.js`                                    | `Unauthenticated API request to requests`                  |
 
 ---
 
@@ -422,12 +538,12 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 Copy when asking Cursor to implement this feature (`@` this file):
 
 ```text
-Implement Feature 3 from @features/feature-3-course-management.md on branch `feature/3-course-management`.
+Implement Feature 8 from @features/feature-8-Request-CRUD.md on branch `feature/8-Request-CRUD`.
 
 Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
-Complete Definition of Done and the merge checksemester in @features/framework.md.
+Complete Definition of Done and the merge checks in @features/framework.md.
 Do not implement behavior not in this spec.
 ```
 
@@ -449,16 +565,16 @@ Do not implement behavior not in this spec.
 
 ## Out of Scope
 
-- Faculty items (see `features/feature-4-faculty-management.md`)
-- `MenuBar` beyond basic sign-out (full nav deferred if not needed)
-- Drag-and-drop course reordering
-- Sharing courses with other users
-- `POST`/`GET`/`PUT`/`DELETE` anywhere that's not `/course-t3/course-t3` or `/course-t3/:courseId`
+- Vehicle, driver, destination, and user management (see Features 4, 7, 6, 13)
+- Approval / denial workflow for requests
+- Conflict detection for overlapping vehicle bookings (unless promoted from Open Questions)
+- Drivers signing up for or accepting requests
+- Recurring requests
+- Email or push notifications
+- `MenuBar` changes beyond basic sign-out
+- `POST`/`GET`/`PUT`/`DELETE` anywhere that's not `/requests` or `/requests/:requestId`
 
 ---
 
-## Delivered to Feature 5
+## Open Questions (resolve before implementation)
 
-The following are intentionally deferred to the next feature spec:
-
-- `sections` table and associations
