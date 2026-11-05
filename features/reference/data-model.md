@@ -20,10 +20,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | `googleSub` | STRING     | Nullable, unique when set. Google `sub` from the verified token. Required for accounts created by **Continue with Google**.                                          |
 
 
-
-
 ### `sessions` table
-
 
 | Field            | Type       | Rules                                          |
 | ---------------- | ---------- | ---------------------------------------------- |
@@ -34,10 +31,39 @@ Update this file when a feature that defines schema merges to `dev`.
 | `userId`         | INTEGER FK | Required; references `users.id`                |
 
 
+### `Vehicles` Table
 
+| Field                 | Type           | Rules                                 |
+| --------------------- | -------------- | ------------------------------------- |
+| `vin`                 | INTEGER PK     | Primary Key, Must be 17 numbers (0-9) |
+| `make`                | VARCHAR(30)    | Required                              |
+| `model`               | VARCHAR(65)    | Required                              |
+| `year`                | INTEGER        | Required                              |
+| `purchased_date`      | DATE           | Required; Cannot be in the future     |
+| `color`               | VARCHAR(20)    | NULLABLE;                             |
+| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
+| `tag_exp_month`       | DATE           | Required                              |
+| `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
+| `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
+| `available`           | BIT            | Required                              |
+| `mileage`             | INTEGER        | NULLABLE, Non-negative                |
+
+### `Drivers` table
+
+| Field               | Type      | Rules                                                  |
+| ------------------- | --------- | ------------------------------------------------------ |
+| `driver_id`          | INT PK | Required; Unique;                   |
+| `license_status`        | ENUM    | Required; `expired`, `active`, `suspended`, |
+| `license_exp_date`   | date      | Required; |
+| `availability` | ENUM      | Required; `available`, `not available`, `on call` |
 
 ## Associations
 
 - `User` hasMany `Session`
 - `Session` belongsTo `User`
 
+- `User` hasOne `Drivers`
+- `Drivers` belongsTo `User`
+
+- `Vehicles` hasMany `Requests`
+- `Requests` belongsTo `Vehicles`
