@@ -96,6 +96,7 @@
 - **FR-011**: Signed-out users MUST NOT have access to any `/requests` routes.
 - **FR-012**: A user MUST NOT read, edit, or delete another user's request unless they are an administrator.
 - **FR-013**: `currentlyActive` MUST default to `true` on creation.
+- **FR-014**: `requestor_id` MUST automatically default to the signed-in user.
 
 ### Request Types
 
@@ -160,6 +161,9 @@ Requests are owned by the user who created them (`requesterId`).
 
 | Method   | Endpoint               | Auth | Purpose                                  |
 | -------- | ---------------------- | ---- | ---------------------------------------- |
+| `GET`    | `/vehicles`            | Yes  | Fetch accessible vehicles 
+| `GET`    | `/drivers`            | Yes  | Fetch accessible driver
+| `GET`    | `/destinations`            | Yes  | Fetch accessible destintations  
 | `GET`    | `/requests`            | Yes  | Fetch accessible requests                |
 | `GET`    | `/requests/:requestId` | Yes  | Show request details                     |
 | `POST`   | `/requests`            | Yes  | Create a request (`trip` or `maintenance`) |
@@ -227,9 +231,9 @@ Requests are owned by the user who created them (`requesterId`).
 
 ## Screen Requirements
 
-### [View: Requests] — route name `requests`
+### [Form: Requests] — route name `requests`
 
-**Single Vue view** (`Requests.vue`) — no sidebar / main-panel split.
+**Single Vue form** (`Requests.form`) — no sidebar / main-panel split.
 
 - Heading: **Requests**
 - Primary action: **+ New request** opens a `<v-dialog>`. The dialog starts with a request-type selector (**Trip** / **Maintenance**) and shows the matching form. **Create** / **Cancel** buttons. Use class `oc-cta` on **Create** and **+ New request** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
@@ -244,7 +248,7 @@ Requests are owned by the user who created them (`requesterId`).
 - **Loading state:** skeleton or progress indicator while requests, vehicles, drivers, and destinations are fetching.
 - **Error state:** `<v-alert type="error">` for API failures.
 
-**Implementation note:** one route/view for requests; request CRUD dialogs are child components or inline `<v-dialog>` blocks in `Requests.vue` unless the team splits presentational dialogs later.
+**Implementation note:** one route/view for requests; request CRUD dialogs are child components or inline `<v-dialog>` blocks in `Requests.vue` unless the team splits presentational dialogs later. Trip request form will be added to the `User-Landing.vue`. Maintenance request form will be added to `Maintenacne-Landing.vue`. The admin will have a form that lists all requests and has a form slider. The slider will change the observable list from the Trip requests to the Maintenance requests that are in the database.
 
 **App chrome**
 
