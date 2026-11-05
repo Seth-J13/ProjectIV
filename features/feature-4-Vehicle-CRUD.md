@@ -1,4 +1,5 @@
 # Feature: Vehicle CRUD
+
 **Feature ID:** 4
 **Branch pattern:** `feature/4-Vehicle-CRUD`
 **Status:** Draft
@@ -7,7 +8,7 @@
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth),
 **Required for future use:** [Feature 5 -- Maintenance Info CRUD](feature-5-Maintenance-Info-CRUD), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD), [Feature 11 -- Images](feature-11-Images)
 
----
+---;
 
 ## User Stories
 
@@ -22,9 +23,10 @@
 **Acceptance scenarios:** see ### US-4.1 under Acceptance Criteria
 
 ### US-4.2: Add a new vehicle as a `maintence` role
+
 **As a** maintence
 **I want to** add a new vehicle
-**So that** a new vehicle can be reserved 
+**So that** a new vehicle can be reserved
 
 **Priority:** P1
 **Independent test:** Submit a valid request to backend as a `maintence` role and the new vehicle shows up
@@ -41,9 +43,10 @@
 **Acceptance scenarios:** see ### US-4.3 under Acceptance Criteria
 
 ### US-4.4: Edit a vehicle as a `maintence` role
+
 **As a** maintence
 **I want to** edit a vehicle
-**So that** a vehicle currently in the system can have different information 
+**So that** a vehicle currently in the system can have different information
 
 **Priority:** P1
 **Independent test:** Submit a valid request to backend as a `maintence` role and the selected vehicle is changed in the backend.
@@ -60,6 +63,7 @@
 **Acceptance scenarios:** see ### US-4.5 under Acceptance Criteria
 
 ### US-4.6: Delete a vehicle as a `maintence` role
+
 **As a** maintence
 **I want to** delete a vehicle
 **So that** a vehicle currently in the system will be removed from the system
@@ -69,6 +73,7 @@
 **Acceptance scenarios:** see ### US-4.6 under Acceptance Criteria
 
 ### US-4.7: View all vehicles as a `admin` role
+
 **As a** admin
 **I want to** view a list of all vehicles in the system
 **So that** I can manage all vehicles
@@ -78,6 +83,7 @@
 **Acceptance scenarios:** see ### US-4.7 under Acceptance Criteria
 
 ### US-4.8: View all vehicles as a `maintenance` role
+
 **As a** maintenance
 **I want to** view a list of all vehicles in the system
 **So that** I can manage all vehicles
@@ -87,6 +93,7 @@
 **Acceptance scenarios:** see ### US-4.8 under Acceptance Criteria
 
 ### US-4.9: Filter vehicle list as `admin` role
+
 **As a** admin
 **I want to** filter which vehicles are listed
 **So that** I can view all vehicles that match the filters
@@ -96,6 +103,7 @@
 **Acceptance scenarios:** see ### US-4.9 under Acceptance Criteria
 
 ### US-4.10: Filter vehicle list as `maintenance` role
+
 **As a** maintenace
 **I want to** filter which vehicles are listed
 **So that** I can view all vehicles that match the filters
@@ -104,8 +112,8 @@
 **Independent test:** I can see all filters `year`, `make`, `model`, `color`, `department`, `license`, `From Purchase Date`, `Before Purchase Date` as a `maintenance`
 **Acceptance scenarios:** see ### US-4.10 under Acceptance Criteria
 
-
 ### US-4.11: Vehicle maintenance as a `admin`
+
 **As a** admin
 **I want to** click a maintenance button
 **So that** I can be taken to the maintenance page to view the selected vehicle's maintenance needs
@@ -115,6 +123,7 @@
 **Acceptance scenarios:** see ### US-4.11 under Acceptance Criteria
 
 ### US-4.12: Vehicle maintenance as a `maintenance`
+
 **As a** maintenance
 **I want to** click a maintenance button
 **So that** I can be taken to the maintenance page to view the selected vehicle's maintenance needs
@@ -124,6 +133,7 @@
 **Acceptance scenarios:** see ### US-4.12 under Acceptance Criteria
 
 ### US-4.13: View vehicle image as a `admin`
+
 **As a** admin
 **I want to** hover over vehicle
 **So that** I can view the vehicle's image if one exists
@@ -133,6 +143,7 @@
 **Acceptance scenarios:** see ### US-4.13 under Acceptance Criteria
 
 ### US-4.14: View vehicle image as a `maintenance`
+
 **As a** maintenance
 **I want to** hover over vehicle
 **So that** I can view the vehicle's image if one exists
@@ -142,6 +153,7 @@
 **Acceptance scenarios:** see ### US-4.14 under Acceptance Criteria
 
 ### US-4.15: Confirm create new `maintenance-info` as a admin
+
 **As a** admin
 **I want to** be able to confirm if I want to make a new maintenance info
 **So that** I can prevent uncessary creations of maintenance info
@@ -151,6 +163,7 @@
 **Acceptance scenarios:** see ### US-4.15 under Acceptance Criteria
 
 ### US-4.16: Confirm create new `maintenance-info` as a maintenace
+
 **As a** maintenance
 **I want to** be able to confirm if I want to make a new maintenance info
 **So that** I can prevent uncessary creations of maintenance info
@@ -160,6 +173,7 @@
 **Acceptance scenarios:** see ### US-4.16 under Acceptance Criteria
 
 ### US-4.17: Confirm create new `fuel type` as a admin
+
 **As a** admin
 **I want to** be able to confirm if I want to make a new fuel type
 **So that** I can prevent uncessary creations of fuel types
@@ -169,6 +183,7 @@
 **Acceptance scenarios:** see ### US-4.17 under Acceptance Criteria
 
 ### US-4.18: Confirm create new `fuel type` as a maintenance
+
 **As a** maintenance
 **I want to** be able to confirm if I want to make a new fuel type
 **So that** I can prevent uncessary creations of fuel types
@@ -176,6 +191,7 @@
 **Priority:** P2
 **Independent test:** I try to add a vehicle with a `fuel type` not in the database and the `Confirm Create New Fuel Type` modal opens
 **Acceptance scenarios:** see ### US-4.17 under Acceptance Criteria
+
 ---
 
 ## Requirements
@@ -199,7 +215,7 @@
 
 ## Assumptions
 
-- **What already exists**: 
+- **What already exists**:
   - `feature-1-User-Auth-&-Session-Management`
   - `feature-2-Google-Auth`
   - `feature-3-Department-CRUD`
@@ -228,7 +244,7 @@
 - **SC-001**: Every Gherkin scenario has at least one automated test before merge
 - **SC-002**: Every functional requirement is met
 - **SC-003**: Frontend, `Vehicle.vue` is the only .vue created for this feature doc
-- **SC-004**: Backend, all routes, models, and controllers are created and configured correctly with authorization 
+- **SC-004**: Backend, all routes, models, and controllers are created and configured correctly with authorization
 
 ---
 
@@ -251,21 +267,23 @@ Feature 1 and 2 establishes identity
 ---
 
 ## Data Model Requirements
+
 ### `Vehicles` Table
-| Field                 | Type           | Rules                                                       |
-| --------------------- | -------------- | ----------------------------------------------------------- |
-| `vin`                 | INTEGER     PK | Primary Key, Must be 17 numbers (0-9)                       |
-| `make`                | VARCHAR(30)    | Required                                                    |
-| `model`               | VARCHAR(65)    | Required                                                    |
-| `year`                | INTEGER        | Required                                                    |
-| `purchased_date`      | DATE           | Required; Cannot be in the future                           |
-| `color`               | VARCHAR(20)    | NULLABLE;                                                   |
-| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                                            |
-| `tag_exp_month`       | DATE           | Required                                                    |
-| `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE                                   |
-| `most_recent_dest_id` | INTEGER        | NULLABLE;                                                   |
-| `available`           | BIT            | Required                                                    |
-| `mileage`             | INTEGER        | NULLABLE, Non-negative                                      |
+
+| Field                 | Type           | Rules                                 |
+| --------------------- | -------------- | ------------------------------------- |
+| `vin`                 | INTEGER PK     | Primary Key, Must be 17 numbers (0-9) |
+| `make`                | VARCHAR(30)    | Required                              |
+| `model`               | VARCHAR(65)    | Required                              |
+| `year`                | INTEGER        | Required                              |
+| `purchased_date`      | DATE           | Required; Cannot be in the future     |
+| `color`               | VARCHAR(20)    | NULLABLE;                             |
+| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
+| `tag_exp_month`       | DATE           | Required                              |
+| `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
+| `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
+| `available`           | BIT            | Required                              |
+| `mileage`             | INTEGER        | NULLABLE, Non-negative                |
 
 ---
 
@@ -273,19 +291,20 @@ Feature 1 and 2 establishes identity
 
 All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` from Feature 1. Every route below requires either a `admin` or `maintenance` session
 
-| Method   | Endpoinnt                             | Purpose                                                        |
-| -------- | ------------------------------------- | -------------------------------------------------------------- |
-| `GET`    | `/vehicle-t3/vehicles/`              | Get all vehicles in the database                                |
-| `GET`    | `/vehicle-t3/vehicles/:vin`          | Get a vehicle with the designated vin number                    |
+| Method   | Endpoinnt                                         | Purpose                                                                           |
+| -------- | ------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `GET`    | `/vehicle-t3/vehicles/`                           | Get all vehicles in the database                                                  |
+| `GET`    | `/vehicle-t3/vehicles/:vin`                       | Get a vehicle with the designated vin number                                      |
 | `GET`    | `/vehicle-t3/maintenance-info?make=&model=&year=` | Check to see if a vehicle of `year`, `make`, `model` has maintenance info already |
-| `GET`    | `/vehicle-t3/fuels/`                 | Get all fuels in the system                                     |
-| `POST`   | `/vehicle-t3/fuels/`                 | Create a new fuel type                                          |
-| `PUT`    | `/vehicle-t3/vehicles/`              | Create a new vehicle                                            |
-| `PUT`    | `/vehicle-t3/maintenance-info?make=&model=&year=` | Create a new maintenance info for a vehicle of `year`, `make`, `model` |
-| `POST`   | `/vehicle-t3/vehicles/:vin`          | Update a vehicle in the database with the designated vin number |
-| `DELETE` | `/vehicle-t3/vehicles/:vin`          | Delete a vehicle with the designated vin number                 |
- 
+| `GET`    | `/vehicle-t3/fuels/`                              | Get all fuels in the system                                                       |
+| `POST`   | `/vehicle-t3/fuels/`                              | Create a new fuel type                                                            |
+| `PUT`    | `/vehicle-t3/vehicles/`                           | Create a new vehicle                                                              |
+| `PUT`    | `/vehicle-t3/maintenance-info?make=&model=&year=` | Create a new maintenance info for a vehicle of `year`, `make`, `model`            |
+| `POST`   | `/vehicle-t3/vehicles/:vin`                       | Update a vehicle in the database with the designated vin number                   |
+| `DELETE` | `/vehicle-t3/vehicles/:vin`                       | Delete a vehicle with the designated vin number                                   |
+
 **Create / Update Request Body (Vehicle Table)**
+
 ```json
 {
   "vin": "12345671234567123",
@@ -302,39 +321,44 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
   "mileage": 0
 }
 ```
-**Create Request Body (Maintenance-Info Table)**
-```json
- {
-    "make": "Honda",
-    "model": "Accord",
-    "year": 2014,
-    "fuel_type_id": 2,
-    "fuel_capacity": 30,
-    "recommended_tire_psi": 35,
-    "tire_type": "P205/55R16 95H"
- }
- ```
- **Success — create (**`201`**) and update (**`200`**):**
 
- **Error response:** `{"message": "..."}`
- | Status | When                                                 | Message                                             |
- | ------ | ---------------------------------------------------- | --------------------------------------------------- | 
- | `400`  | Missing field                                        | `(attribute) is required` (same pattern for `make`, `model`, `year`, `purchased_date`, `tag_exp_mont`, `department`, and `available`)
- | `400`  | Two vehicles share the same license plate number     | `A vehicle already has license number (AAA-###)`    |
- | `400`  | Year is less than 1900 and greater than current year | `Select a year between 1900-Today`                  |
- | `401`  | A user who's role is not `admin` or `maintenance` tries to view the page | `Unauthorized user`             |
+**Create Request Body (Maintenance-Info Table)**
+
+```json
+{
+  "make": "Honda",
+  "model": "Accord",
+  "year": 2014,
+  "fuel_type_id": 2,
+  "fuel_capacity": 30,
+  "recommended_tire_psi": 35,
+  "tire_type": "P205/55R16 95H"
+}
+```
+
+**Success — create (**`201`**) and update (**`200`**):**
+
+**Error response:** `{"message": "..."}`
+| Status | When | Message |
+| ------ | ---------------------------------------------------- | --------------------------------------------------- |
+| `400` | Missing field | `(attribute) is required` (same pattern for `make`, `model`, `year`, `purchased_date`, `tag_exp_mont`, `department`, and `available`)
+| `400` | Two vehicles share the same license plate number | `A vehicle already has license number (AAA-###)` |
+| `400` | Year is less than 1900 and greater than current year | `Select a year between 1900-Today` |
+| `401` | A user who's role is not `admin` or `maintenance` tries to view the page | `Unauthorized user` |
 
 ---
 
 ## Screen Requirements
 
 ### [View: Vehicle.vue] -- route name `vehicleManagement`
+
 - Path: `/vehicles`
 - Heading: **Vehicle Management**
 - Visible in the nav only when the stored user `role` is `admin` or `maintenance`
 
 **Filters**
-- Fields: 
+
+- Fields:
   - `Year`: Drop down with values from 1900 to present year
   - `Make`: Combobox (Values should show all distinct `makes` in system or add a new make)
   - `Model`: Combobox (Values should show all distinct `models` in system or add a new model)
@@ -345,12 +369,14 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
   - `Before Purchase Date`: Calendar Picker
 
 **Table**
+
 - Headers: `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department`, `Actions`
 - Actions: `Maintenance Icon Button` - Wrench, `Edit Icon Button` - Pencil, `Delete Icon Button` - Trashcan
 
 **Add / Edit Modal**
-- **Add Vehicle** button opens the add dialog (`oc-cta`), **Edit Icon Button** - Pencil opens the edit dialog (`oc-cta`) 
-  - Fields: 
+
+- **Add Vehicle** button opens the add dialog (`oc-cta`), **Edit Icon Button** - Pencil opens the edit dialog (`oc-cta`)
+  - Fields:
     - `License`- Text field
     - `Make`- Combo box
     - `Model`- Combo box
@@ -363,24 +389,27 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
     - `Fuel Capacity` - Stepper
     - `Recommended Tire PSI` - Stepper
 
-**Image** 
-  - Vehicle Image should be displayed discretely but be obvious to find
-  - The image **SHOULD NOT** be in the vehicle list
-  - The image **SHOULD NOT** be next to the filters
+**Image**
+
+- Vehicle Image should be displayed discretely but be obvious to find
+- The image **SHOULD NOT** be in the vehicle list
+- The image **SHOULD NOT** be next to the filters
 
 **Confirm Add New Maintenance Info Modal Component**
- - Header: `Confirm Add New Maintenance Info?`
- - Display: `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
- - Buttons
-   - `cancel` button
-   - `confirm` button
+
+- Header: `Confirm Add New Maintenance Info?`
+- Display: `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
+- Buttons
+  - `cancel` button
+  - `confirm` button
 
 **Confirm Add New Maintenance Info Modal Component**
- - Header: `Confirm Add New Maintenance Info?`
- - Display: `Do you want to create a new fuel type of {fuel_type}?`
- - Buttons
-   - `cancel` button
-   - `confirm` button
+
+- Header: `Confirm Add New Maintenance Info?`
+- Display: `Do you want to create a new fuel type of {fuel_type}?`
+- Buttons
+  - `cancel` button
+  - `confirm` button
 
 ---
 
@@ -401,33 +430,32 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** the inputted `make`, `model`, and `year` do not exist in the database
 - **And** the inputted `fuel type` does not exist in the database
 - **When** I click `Add Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server 
+- **Then** a `POST` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
 - **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha  payload containing `{"message": "Successfully fuel type."}`
+- **And** returns a value of `201` witha payload containing `{"message": "Successfully fuel type."}`
 - **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha  payload containing `{"message": "Successfully created vehicle."}`
+- **And** returns a value of `201` witha payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
 
 - **Given** I have searched for a `make`, `model`, and `year`
 - **And** the inputted `make`, `model`, and `year` do not exist in the database
 - **When** I click `Add Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server 
+- **Then** a `POST` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
 - **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha  payload containing `{"message": "Successfully created vehicle."}`
-
+- **And** returns a value of `201` witha payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs a `fuel type` into the combobox that doesn't exist
 
 - **Given** I have searched for a `fuel type`
 - **And** the inputted `fuel type` does not exist in the database
 - **When** I click `Add Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server 
+- **Then** a `POST` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel-type."}`
 - **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` with a  payload containing `{"message": "Successfully created vehicle."}`
+- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
@@ -438,7 +466,6 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a `PUT` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
-
 #### Scenario: User inputs invalid information into `Add Vehicle` modal
 
 - **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
@@ -446,7 +473,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I click the `Add Vehicle` button
 - **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
 - **And** a no API request is sent
- 
+
 #### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
 
 - **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
@@ -490,7 +517,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I click the `Add Vehicle` button
 - **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
 - **And** a no API request is sent
- 
+
 #### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
 
 - **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
@@ -499,7 +526,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** the `Add Vehicle` modal closes
 - **And** a `PUT` API request is sent to the server
 - **And** returns a value of `409` with a payload containing a `human readable error message`
- 
+
 ---
 
 ### US-4.3 — Edit a vehicle as a `admin` role
@@ -509,7 +536,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** click the `Edit` icon button
 - **Then** a edit vehicle modal pops up
-- **And** all form values are filled out with vehicle information 
+- **And** all form values are filled out with vehicle information
 - **And** no API request is sent
 
 #### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
@@ -517,11 +544,10 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I have searched for a `make`, `model`, and `year`
 - **And** the inputted `make`, `model`, and `year` do not exist in the database
 - **When** I click `Update Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server 
+- **Then** a `POST` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
 - **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha  payload containing `{"message": "Successfully updated vehicle."}`
-
+- **And** returns a value of `201` witha payload containing `{"message": "Successfully updated vehicle."}`
 
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal
 
@@ -539,7 +565,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I click the `Update Vehicle` button
 - **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
 - **And** a no API request is sent
- 
+
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number
 
 - **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
@@ -558,7 +584,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** click the `Edit` icon button
 - **Then** a edit vehicle modal pops up
-- **And** all form values are filled out with vehicle information 
+- **And** all form values are filled out with vehicle information
 - **And** no API request is sent
 
 #### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
@@ -566,11 +592,10 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I have searched for a `make`, `model`, and `year`
 - **And** the inputted `make`, `model`, and `year` do not exist in the database
 - **When** I click `Update Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server 
+- **Then** a `POST` API request is sent to the server
 - **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
 - **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha  payload containing `{"message": "Successfully updated vehicle."}`
-
+- **And** returns a value of `201` witha payload containing `{"message": "Successfully updated vehicle."}`
 
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal
 
@@ -588,7 +613,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I click the `Update Vehicle` button
 - **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
 - **And** a no API request is sent
- 
+
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number
 
 - **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
@@ -658,13 +683,13 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
-#### Scenario: User adds a new vehicle 
+#### Scenario: User adds a new vehicle
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I add a new vehicle
 - **Then** a `GET` API request is sent to the server
 - **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** the frontend re-retreives all vehicles in the database 
+- **And** the frontend re-retreives all vehicles in the database
 - **And** lists out all retreived vehicles in a list
 - **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
@@ -675,7 +700,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I edit a selected vehicle
 - **Then** a `GET` API request is sent to the server
 - **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** the frontend re-retreives all vehicles in the database 
+- **And** the frontend re-retreives all vehicles in the database
 - **And** lists out all retreived vehicles in a list
 - **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
@@ -686,7 +711,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a vehicle does not have a color value
 - **When** the list loads the vehicle list item
 - **Then** the value for null will be replaced with `No Color`
-- **And**  no API request is sent
+- **And** no API request is sent
 
 #### Scenario: Vehicle does not have a license plate number value
 
@@ -694,7 +719,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a vehicle does not have a license plate number value
 - **When** the list loads the vehicle list item
 - **Then** the value for null will be replaced with `No License Plate`
-- **And**  no API request is sent
+- **And** no API request is sent
 
 ---
 
@@ -720,13 +745,13 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
-#### Scenario: User adds a new vehicle 
+#### Scenario: User adds a new vehicle
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I add a new vehicle
 - **Then** a `GET` API request is sent to the server
 - **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** the frontend re-retreives all vehicles in the database 
+- **And** the frontend re-retreives all vehicles in the database
 - **And** lists out all retreived vehicles in a list
 - **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
@@ -737,7 +762,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I edit a selected vehicle
 - **Then** a `GET` API request is sent to the server
 - **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** the frontend re-retreives all vehicles in the database 
+- **And** the frontend re-retreives all vehicles in the database
 - **And** lists out all retreived vehicles in a list
 - **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
@@ -748,7 +773,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a vehicle does not have a color value
 - **When** the list loads the vehicle list item
 - **Then** the value for null will be replaced with `No Color`
-- **And**  no API request is sent
+- **And** no API request is sent
 
 #### Scenario: Vehicle does not have a license plate number value
 
@@ -756,13 +781,13 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a vehicle does not have a license plate number value
 - **When** the list loads the vehicle list item
 - **Then** the value for null will be replaced with `No License Plate`
-- **And**  no API request is sent
+- **And** no API request is sent
 
 ---
 
 ### US-4.9 — Filter vehicle list as `admin` role
 
-#### Scenario: User chooses from the year drop down filter 
+#### Scenario: User chooses from the year drop down filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I select a value from the year drop down filter
@@ -771,16 +796,16 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User chooses from the department drop down filter 
+#### Scenario: User chooses from the department drop down filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I select a value from the department drop down filter
 - **Then** the drop down field shows the selected value
-- **And** the frontend shows only the vehicles with that department 
+- **And** the frontend shows only the vehicles with that department
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `Make` filter 
+#### Scenario: User begins to type in the `Make` filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I begin to type in the `Make` filter combo box
@@ -789,7 +814,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `Model` filter 
+#### Scenario: User begins to type in the `Model` filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I begin to type in the `Model` filter combo box
@@ -798,7 +823,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `Color` filter 
+#### Scenario: User begins to type in the `Color` filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I begin to type in the `Color` filter text field
@@ -807,7 +832,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `License` filter 
+#### Scenario: User begins to type in the `License` filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I begin to type in the `License` filter text field
@@ -816,7 +841,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User chooses from the `From Purchase Date` date filter 
+#### Scenario: User chooses from the `From Purchase Date` date filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I select a date from the `From Purchase Date` date filter
@@ -825,7 +850,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User chooses from the `Before Purchase Date` date filter 
+#### Scenario: User chooses from the `Before Purchase Date` date filter
 
 - **Given** I am on the Vehicles.vue as a `admin`
 - **When** I select a date from the `Before Purchase Date` date filter
@@ -838,7 +863,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ### US-4.10 — Filter vehicle list as `maintenance` role
 
-#### Scenario: User chooses from the year drop down filter 
+#### Scenario: User chooses from the year drop down filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I select a value from the year drop down filter
@@ -847,16 +872,16 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User chooses from the department drop down filter 
+#### Scenario: User chooses from the department drop down filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I select a value from the department drop down filter
 - **Then** the drop down field shows the selected value
-- **And** the frontend shows only the vehicles with that department 
+- **And** the frontend shows only the vehicles with that department
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `Make` filter 
+#### Scenario: User begins to type in the `Make` filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I begin to type in the `Make` filter combo box
@@ -865,7 +890,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `Model` filter 
+#### Scenario: User begins to type in the `Model` filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I begin to type in the `Model` filter combo box
@@ -874,7 +899,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `Color` filter 
+#### Scenario: User begins to type in the `Color` filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I begin to type in the `Color` filter text field
@@ -883,7 +908,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User begins to type in the `License` filter 
+#### Scenario: User begins to type in the `License` filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I begin to type in the `License` filter text field
@@ -892,7 +917,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User chooses from the `From Purchase Date` date filter 
+#### Scenario: User chooses from the `From Purchase Date` date filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I select a date from the `From Purchase Date` date filter
@@ -901,7 +926,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User chooses from the `Before Purchase Date` date filter 
+#### Scenario: User chooses from the `Before Purchase Date` date filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
 - **When** I select a date from the `Before Purchase Date` date filter
@@ -917,7 +942,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User clicks the `Maintenance` icon button
 
 - **Given** I am on the Vehicles.vue as a `admin`
-- **When** I click the `Maintenance` icon button 
+- **When** I click the `Maintenance` icon button
 - **Then** I am taken to `Maintenance.vue`
 - **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
@@ -928,7 +953,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User clicks the `Maintenance` icon button
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
-- **When** I click the `Maintenance` icon button 
+- **When** I click the `Maintenance` icon button
 - **Then** I am taken to `Maintenance.vue`
 - **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
@@ -937,7 +962,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User hovers over a vehicle list item as `admin`
 
 - **Given** I am on the Vehicles.vue as a `admin`
-- **When** I hover over a vehicle in the table 
+- **When** I hover over a vehicle in the table
 - **Then** I view a image of the vehicle if one is available in the `Images` table
 - **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
@@ -946,7 +971,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User hovers over a vehicle list item as `maintenance`
 
 - **Given** I am on the Vehicles.vue as a `maintenance`
-- **When** I hover over a vehicle in the table 
+- **When** I hover over a vehicle in the table
 - **Then** I view a image of the vehicle if one is available in the `Images` table
 - **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
@@ -962,7 +987,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User clicks the `cancel` button
 
 - **Given** I am viewing the `Confirm Create New Maintenance Info` modal
-- **When** I click the `cancel` button 
+- **When** I click the `cancel` button
 - **Then** the modal closes
 - **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
 - **And** no API request is sent
@@ -1003,7 +1028,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User clicks the `cancel` button
 
 - **Given** I am viewing the `Confirm Create New Maintenance Info` modal
-- **When** I click the `cancel` button 
+- **When** I click the `cancel` button
 - **Then** the modal closes
 - **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
 - **And** no API request is sent
@@ -1044,7 +1069,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User clicks the `cancel` button
 
 - **Given** I am viewing the `Confirm Create New Fuel Type` modal
-- **When** I click the `cancel` button 
+- **When** I click the `cancel` button
 - **Then** the modal closes
 - **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
 - **And** no API request is sent
@@ -1065,7 +1090,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I am viewing the `Confirm Create New Fuel Type` modal
 - **And** the `Confirm Create New Maintenance Info` is open
 - **When** I click the `confirm` button
-- **Then** the `Confirm Create New Fuel Type` closes 
+- **Then** the `Confirm Create New Fuel Type` closes
 - **And** the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
 - **And** no API request is sent
 
@@ -1081,7 +1106,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 #### Scenario: User clicks the `cancel` button
 
 - **Given** I am viewing the `Confirm Create New Fuel Type` modal
-- **When** I click the `cancel` button 
+- **When** I click the `cancel` button
 - **Then** the modal closes
 - **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
 - **And** no API request is sent
@@ -1102,7 +1127,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I am viewing the `Confirm Create New Fuel Type` modal
 - **And** the `Confirm Create New Maintenance Info` is open
 - **When** I click the `confirm` button
-- **Then** the `Confirm Create New Fuel Type` closes 
+- **Then** the `Confirm Create New Fuel Type` closes
 - **And** the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
 - **And** no API request is sent
 
@@ -1112,82 +1137,82 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 Each scenario above must map to at least one automated test.
 
-| Story | Scenario | Test file | Test name |
-|-------|----------|-----------|-----------|
-| US-4.1 | User clicks the add button | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")` |
-| US-4.1 | User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes")` |
-| US-4.1 | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")` |
-| US-4.1 | User inputs a `fuel type` into the combobox that doesn't exist | `backend/tests/vehicles.test.js` | `it("User inputs a `fuel type` into the combobox that doesn't exist")` |
-| US-4.1 | User inputs valid information into the `Add Vehicle` modal | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")` |
-| US-4.1 | User inputs invalid information into `Add Vehicle` modal | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")` |
-| US-4.1 | User inputs valid information into the `Add Vehicle` modal but a record already exists | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")` |
-| US-4.2 | User clicks the add button | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")` |
-| US-4.2 | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist | `frontend/tests/Vehicle.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")` |
-| US-4.2 | User inputs valid information into the `Add Vehicle` modal | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")` |
-| US-4.2 | User inputs invalid information into `Add Vehicle` modal | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")` |
-| US-4.2 | User inputs valid information into the `Add Vehicle` modal but a record already exists | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")` |
-| US-4.3 | User clicks the edit icon button | `frontend/tests/Vehicle.test.js` | `it("User clicks the edit icon button")` |
-| US-4.3 | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")` |
-| US-4.3 | User inputs valid information into the `Edit Vehicle` modal | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal")` |
-| US-4.3 | User inputs invalid information into `Edit Vehicle` modal | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Edit Vehicle` modal")` |
-| US-4.3 | User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number")` |
-| US-4.4 | User clicks the edit icon button | `frontend/tests/Vehicle.test.js` | `it("User clicks the edit icon button")` |
-| US-4.4 | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")` |
-| US-4.4 | User inputs valid information into the `Edit Vehicle` modal | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal")` |
-| US-4.4 | User inputs invalid information into `Edit Vehicle` modal | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Edit Vehicle` modal")` |
-| US-4.4 | User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number")` |
-| US-4.5 | User clicks the delete icon button | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button")` |
-| US-4.5 | User clicks the delete icon button but no vehicle exists in the database | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button but no vehicle exists in the database")` |
-| US-4.6 | User clicks the delete icon button | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button")` |
-| US-4.6 | User clicks the delete icon button but no vehicle exists in the database | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button but no vehicle exists in the database")` |
-| US-4.7 | There no vehicles to display in the vehicle list | `frontend/tests/Vehicle.test.js` | `it("There no vehicles to display in the vehicle list")` |
-| US-4.7 | User first loads the Vehicle page | `frontend/tests/Vehicle.test.js` | `it("User first loads the Vehicle page")` |
-| US-4.7 | User adds a new vehicle | `frontend/tests/Vehicle.test.js` | `it("User adds a new vehicle")` |
-| US-4.7 | User edits a vehicle in the list | `frontend/tests/Vehicle.test.js` | `it("User edits a vehicle in the list")` |
-| US-4.7 | Vehicle does not have a color value | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a color value")` |
-| US-4.7 | Vehicle does not have a license plate number value | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a license plate number value")` |
-| US-4.8 | There no vehicles to display in the vehicle list | `frontend/tests/Vehicle.test.js` | `it("There no vehicles to display in the vehicle list")` |
-| US-4.8 | User first loads the Vehicle page | `frontend/tests/Vehicle.test.js` | `it("User first loads the Vehicle page")` |
-| US-4.8 | User adds a new vehicle | `frontend/tests/Vehicle.test.js` | `it("User adds a new vehicle")` |
-| US-4.8 | User edits a vehicle in the list | `frontend/tests/Vehicle.test.js` | `it("User edits a vehicle in the list")` |
-| US-4.8 | Vehicle does not have a color value | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a color value")` |
-| US-4.8 | Vehicle does not have a license plate number value | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a license plate number value")` |
-| US-4.9 | User chooses from the year drop down filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the year drop down filter")` |
-| US-4.9 | User chooses from the department drop down filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the department drop down filter")` |
-| US-4.9 | User begins to type in the `Make` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Make` filter")` |
-| US-4.9 | User begins to type in the `Model` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Model` filter")` |
-| US-4.9 | User begins to type in the `Color` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Color` filter")` |
-| US-4.9 | User begins to type in the `License` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `License` filter")` |
-| US-4.9 | User chooses from the `From Purchase Date` date filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `From Purchase Date` date filter")` |
-| US-4.9 | User chooses from the `Before Purchase Date` date filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `Before Purchase Date` date filter")` |
-| US-4.10 | User chooses from the year drop down filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the year drop down filter")` |
-| US-4.10 | User chooses from the department drop down filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the department drop down filter")` |
-| US-4.10 | User begins to type in the `Make` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Make` filter")` |
-| US-4.10 | User begins to type in the `Model` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Model` filter")` |
-| US-4.10 | User begins to type in the `Color` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Color` filter")` |
-| US-4.10 | User begins to type in the `License` filter | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `License` filter")` |
-| US-4.10 | User chooses from the `From Purchase Date` date filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `From Purchase Date` date filter")` |
-| US-4.10 | User chooses from the `Before Purchase Date` date filter | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `Before Purchase Date` date filter")` |
-| US-4.11 | User clicks the `Maintenance` icon button | `frontend/tests/Vehicle.test.js` | `it("User clicks the `Maintenance` icon button")` |
-| US-4.12 | User clicks the `Maintenance` icon button | `frontend/tests/Vehicle.test.js` | `it("User clicks the `Maintenance` icon button")` |
-| US-4.13 | User hovers over a vehicle list item as `admin` | `frontend/tests/Vehicle.test.js` | `it("User hovers over a vehicle list item as `admin`")` |
-| US-4.14 | User hovers over a vehicle list item as `maintenance` | `frontend/tests/Vehicle.test.js` | `it("User hovers over a vehicle list item as `maintenance`")` |
-| US-4.15 | `Confirm Create New Maintenance Info` modal opens | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Maintenance Info\` modal opens")` |
-| US-4.15 | User clicks the `cancel` button | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")` |
-| US-4.15 | User clicks the `confirm` button | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button")` |
-| US-4.15 | User clicks the `confirm` button | `backend/tests/vehicles.test.js` | `it("User clicks the `confirm` button")` |
-| US-4.16 | `Confirm Create New Maintenance Info` modal opens | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Maintenance Info\` modal opens")` |
-| US-4.16 | User clicks the `cancel` button | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")` |
-| US-4.16 | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed")` |
-| US-4.16 | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open")` |
-| US-4.17 | `Confirm Create New Fuel Type` modal opens | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Fuel Type\` modal opens")` |
-| US-4.17 | User clicks the `cancel` button | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")` |
-| US-4.17 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed")` |
-| US-4.17 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open")` |
-| US-4.18 | `Confirm Create New Fuel Type` modal opens | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Fuel Type\` modal opens")` |
-| US-4.18 | User clicks the `cancel` button | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")` |
-| US-4.18 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed")` |
-| US-4.18 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open")` |
+| Story   | Scenario                                                                                                                          | Test file                        | Test name                                                                                                                                 |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| US-4.1  | User clicks the add button                                                                                                        | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")`                                                                                                        |
+| US-4.1  | User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes             | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year`that doesn't exist and a`fuel type` that doesn't exist into the comboboxes")`               |
+| US-4.1  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
+| US-4.1  | User inputs a `fuel type` into the combobox that doesn't exist                                                                    | `backend/tests/vehicles.test.js` | `it("User inputs a `fuel type` into the combobox that doesn't exist")`                                                                    |
+| US-4.1  | User inputs valid information into the `Add Vehicle` modal                                                                        | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")`                                                                        |
+| US-4.1  | User inputs invalid information into `Add Vehicle` modal                                                                          | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")`                                                                          |
+| US-4.1  | User inputs valid information into the `Add Vehicle` modal but a record already exists                                            | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")`                                            |
+| US-4.2  | User clicks the add button                                                                                                        | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")`                                                                                                        |
+| US-4.2  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `frontend/tests/Vehicle.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
+| US-4.2  | User inputs valid information into the `Add Vehicle` modal                                                                        | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")`                                                                        |
+| US-4.2  | User inputs invalid information into `Add Vehicle` modal                                                                          | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")`                                                                          |
+| US-4.2  | User inputs valid information into the `Add Vehicle` modal but a record already exists                                            | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")`                                            |
+| US-4.3  | User clicks the edit icon button                                                                                                  | `frontend/tests/Vehicle.test.js` | `it("User clicks the edit icon button")`                                                                                                  |
+| US-4.3  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
+| US-4.3  | User inputs valid information into the `Edit Vehicle` modal                                                                       | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal")`                                                                       |
+| US-4.3  | User inputs invalid information into `Edit Vehicle` modal                                                                         | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Edit Vehicle` modal")`                                                                         |
+| US-4.3  | User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number")` |
+| US-4.4  | User clicks the edit icon button                                                                                                  | `frontend/tests/Vehicle.test.js` | `it("User clicks the edit icon button")`                                                                                                  |
+| US-4.4  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
+| US-4.4  | User inputs valid information into the `Edit Vehicle` modal                                                                       | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal")`                                                                       |
+| US-4.4  | User inputs invalid information into `Edit Vehicle` modal                                                                         | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Edit Vehicle` modal")`                                                                         |
+| US-4.4  | User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number")` |
+| US-4.5  | User clicks the delete icon button                                                                                                | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button")`                                                                                                |
+| US-4.5  | User clicks the delete icon button but no vehicle exists in the database                                                          | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button but no vehicle exists in the database")`                                                          |
+| US-4.6  | User clicks the delete icon button                                                                                                | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button")`                                                                                                |
+| US-4.6  | User clicks the delete icon button but no vehicle exists in the database                                                          | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button but no vehicle exists in the database")`                                                          |
+| US-4.7  | There no vehicles to display in the vehicle list                                                                                  | `frontend/tests/Vehicle.test.js` | `it("There no vehicles to display in the vehicle list")`                                                                                  |
+| US-4.7  | User first loads the Vehicle page                                                                                                 | `frontend/tests/Vehicle.test.js` | `it("User first loads the Vehicle page")`                                                                                                 |
+| US-4.7  | User adds a new vehicle                                                                                                           | `frontend/tests/Vehicle.test.js` | `it("User adds a new vehicle")`                                                                                                           |
+| US-4.7  | User edits a vehicle in the list                                                                                                  | `frontend/tests/Vehicle.test.js` | `it("User edits a vehicle in the list")`                                                                                                  |
+| US-4.7  | Vehicle does not have a color value                                                                                               | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a color value")`                                                                                               |
+| US-4.7  | Vehicle does not have a license plate number value                                                                                | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a license plate number value")`                                                                                |
+| US-4.8  | There no vehicles to display in the vehicle list                                                                                  | `frontend/tests/Vehicle.test.js` | `it("There no vehicles to display in the vehicle list")`                                                                                  |
+| US-4.8  | User first loads the Vehicle page                                                                                                 | `frontend/tests/Vehicle.test.js` | `it("User first loads the Vehicle page")`                                                                                                 |
+| US-4.8  | User adds a new vehicle                                                                                                           | `frontend/tests/Vehicle.test.js` | `it("User adds a new vehicle")`                                                                                                           |
+| US-4.8  | User edits a vehicle in the list                                                                                                  | `frontend/tests/Vehicle.test.js` | `it("User edits a vehicle in the list")`                                                                                                  |
+| US-4.8  | Vehicle does not have a color value                                                                                               | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a color value")`                                                                                               |
+| US-4.8  | Vehicle does not have a license plate number value                                                                                | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a license plate number value")`                                                                                |
+| US-4.9  | User chooses from the year drop down filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User chooses from the year drop down filter")`                                                                                       |
+| US-4.9  | User chooses from the department drop down filter                                                                                 | `frontend/tests/Vehicle.test.js` | `it("User chooses from the department drop down filter")`                                                                                 |
+| US-4.9  | User begins to type in the `Make` filter                                                                                          | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Make` filter")`                                                                                          |
+| US-4.9  | User begins to type in the `Model` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Model` filter")`                                                                                         |
+| US-4.9  | User begins to type in the `Color` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Color` filter")`                                                                                         |
+| US-4.9  | User begins to type in the `License` filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `License` filter")`                                                                                       |
+| US-4.9  | User chooses from the `From Purchase Date` date filter                                                                            | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `From Purchase Date` date filter")`                                                                            |
+| US-4.9  | User chooses from the `Before Purchase Date` date filter                                                                          | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `Before Purchase Date` date filter")`                                                                          |
+| US-4.10 | User chooses from the year drop down filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User chooses from the year drop down filter")`                                                                                       |
+| US-4.10 | User chooses from the department drop down filter                                                                                 | `frontend/tests/Vehicle.test.js` | `it("User chooses from the department drop down filter")`                                                                                 |
+| US-4.10 | User begins to type in the `Make` filter                                                                                          | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Make` filter")`                                                                                          |
+| US-4.10 | User begins to type in the `Model` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Model` filter")`                                                                                         |
+| US-4.10 | User begins to type in the `Color` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Color` filter")`                                                                                         |
+| US-4.10 | User begins to type in the `License` filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `License` filter")`                                                                                       |
+| US-4.10 | User chooses from the `From Purchase Date` date filter                                                                            | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `From Purchase Date` date filter")`                                                                            |
+| US-4.10 | User chooses from the `Before Purchase Date` date filter                                                                          | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `Before Purchase Date` date filter")`                                                                          |
+| US-4.11 | User clicks the `Maintenance` icon button                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User clicks the `Maintenance` icon button")`                                                                                         |
+| US-4.12 | User clicks the `Maintenance` icon button                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User clicks the `Maintenance` icon button")`                                                                                         |
+| US-4.13 | User hovers over a vehicle list item as `admin`                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User hovers over a vehicle list item as `admin`")`                                                                                   |
+| US-4.14 | User hovers over a vehicle list item as `maintenance`                                                                             | `frontend/tests/Vehicle.test.js` | `it("User hovers over a vehicle list item as `maintenance`")`                                                                             |
+| US-4.15 | `Confirm Create New Maintenance Info` modal opens                                                                                 | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Maintenance Info\` modal opens")`                                                                               |
+| US-4.15 | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
+| US-4.15 | User clicks the `confirm` button                                                                                                  | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button")`                                                                                                  |
+| US-4.15 | User clicks the `confirm` button                                                                                                  | `backend/tests/vehicles.test.js` | `it("User clicks the `confirm` button")`                                                                                                  |
+| US-4.16 | `Confirm Create New Maintenance Info` modal opens                                                                                 | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Maintenance Info\` modal opens")`                                                                               |
+| US-4.16 | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
+| US-4.16 | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed                                                 | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal closed")`                                                   |
+| US-4.16 | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal open")`                                                     |
+| US-4.17 | `Confirm Create New Fuel Type` modal opens                                                                                        | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Fuel Type\` modal opens")`                                                                                      |
+| US-4.17 | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
+| US-4.17 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed                                          | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal closed")`                                            |
+| US-4.17 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open                                            | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal open")`                                              |
+| US-4.18 | `Confirm Create New Fuel Type` modal opens                                                                                        | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Fuel Type\` modal opens")`                                                                                      |
+| US-4.18 | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
+| US-4.18 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed                                          | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal closed")`                                            |
+| US-4.18 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open                                            | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal open")`                                              |
 
 ---
 
