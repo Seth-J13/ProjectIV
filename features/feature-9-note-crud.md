@@ -727,7 +727,7 @@ This feature uses a `Notes` table where each entry has an `id` used by other tab
 #### Scenario: Maintenance deletes from Maintenance Requests Notes List
 
 **Given** I am an authenticated user with `maintenance` or `admin` role on `Maintenance.vue`
-**When** I confirm **Delete** on a `note` frmo the **Vehicle Maintenance Notes** list
+**When** I confirm **Delete** on a `note` from the **Vehicle Maintenance Notes** list
 **Then** I can see the **Notes List** component in **Embed** mode embedded at the bottom of `Maintenance.vue` titled **Vehicle Maintenance Notes**
 **Then** the selected `note` is removed from the `Notes` table
 **And** the confirmation dialog closes
