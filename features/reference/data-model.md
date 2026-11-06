@@ -1,13 +1,12 @@
 # Data Model Reference
 
-**Status:** Features 1 and 2 applied.
+**Status:** Features 1,2,4,5,7 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
 ## Tables
 
 ### `users` table
-
 
 | Field       | Type       | Rules                                                                                                                                                                |
 | ----------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -19,7 +18,6 @@ Update this file when a feature that defines schema merges to `dev`.
 | `role`      | STRING     | Required; `user`, `driver`, `maintenance`, or `admin`. Create account sets `user`                                                                                    |
 | `googleSub` | STRING     | Nullable, unique when set. Google `sub` from the verified token. Required for accounts created by **Continue with Google**.                                          |
 
-
 ### `sessions` table
 
 | Field            | Type       | Rules                                          |
@@ -29,7 +27,6 @@ Update this file when a feature that defines schema merges to `dev`.
 | `email`          | STRING     | Required                                       |
 | `expirationDate` | DATE       | Required; 24 hours from login                  |
 | `userId`         | INTEGER FK | Required; references `users.id`                |
-
 
 ### `Vehicles` Table
 
@@ -48,14 +45,34 @@ Update this file when a feature that defines schema merges to `dev`.
 | `available`           | BIT            | Required                              |
 | `mileage`             | INTEGER        | NULLABLE, Non-negative                |
 
+### `Maintenance_Info` Table
+
+| Field                  | Type           | Rules                  |
+| ---------------------- | -------------- | ---------------------- |
+| `make`                 | VARCHAR(30) PK | Primary Key, Required  |
+| `model`                | VARCHAR(65) PK | Primary Key, Required  |
+| `year`                 | INTEGER PK     | Primary Key, Required  |
+| `fuel_type_id`         | INTEGER FK     | Required               |
+| `fuel_capacity`        | INTEGER        | Required, Non-negative |
+| `oil_viscosity`        | CHAR(3)        | Required               |
+| `recommended_tire_psi` | DECIMAL(5, 2)  | Required, Non-negative |
+| `tire_type`            | VARCHAR(17)    | Required               |
+
+### `Fuel_Type` Table
+
+| Field       | Type        | Rules       |
+| ----------- | ----------- | ----------- |
+| `fuel_id`   | INTEGER PK  | Primary Key |
+| `fuel_type` | VARCHAR(50) | Required    |
+
 ### `Drivers` table
 
-| Field               | Type      | Rules                                                  |
-| ------------------- | --------- | ------------------------------------------------------ |
-| `driver_id`          | INT PK | Required; Unique;                   |
-| `license_status`        | ENUM    | Required; `expired`, `active`, `suspended`, |
-| `license_exp_date`   | date      | Required; |
-| `availability` | ENUM      | Required; `available`, `not available`, `on call` |
+| Field              | Type   | Rules                                             |
+| ------------------ | ------ | ------------------------------------------------- |
+| `driver_id`        | INT PK | Required; Unique;                                 |
+| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`,       |
+| `license_exp_date` | date   | Required;                                         |
+| `availability`     | ENUM   | Required; `available`, `not available`, `on call` |
 
 ## Associations
 
