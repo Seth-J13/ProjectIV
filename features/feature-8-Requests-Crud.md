@@ -9,9 +9,13 @@
 [Feature 4 -- Vehicle CRUD](feature-4-Vehicle-CRUD.md),
 [Feature 6 -- Destination CRUD](feature-6-Destination-CRUD.md),
 [Feature 7 -- Driver CRUD](feature-7-Driver-CRUD.md),
+[Feature 9 -- Note CRUD](feature-9-note-crud.md),
+[Feature 12 -- Landing View](feature-12-Landing-View.md),
 [Feature 13 -- User Management](feature-13-User-Management.md)
-**Related:** `frontend/src/views/Requests.vue`, `backend/app/routes/users.routes.js`, `backend/app/routes/Request.routes.js`,
+**Related:** `frontend/src/views/Landing.vue`, `backend/app/routes/users.routes.js`, `backend/app/routes/Request.routes.js`,
 `backend/app/routes/Vehicle.routes.js`, `backend/app/routes/Destination.routes.js`, `backend/app/routes/Driver.routes.js`
+
+note for ethan: please add somewhere "making a `request` with the 'Maintenance Request' switch toggled to `true` will automatically generate a `Note` with `maintenance_request` toggled to true attached to the `request` so that maintenance will get the request note."
 
 ---
 
