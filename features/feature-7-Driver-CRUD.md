@@ -326,13 +326,14 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 - **Then** I see a search bar named `Find` above the drivers list
   returns
 
-#### Scenario: No search bar appears with no drivers
+#### Scenario: search bar appears with no drivers
 
 - **Given** I am signed in as an admin
 - **And** the driver `1` exists
 - **When** I view the drivers view
-- **Then** I see **"No drivers yet. Create a driver."**
-- **And** I see no search bars in the view
+- **And** I type `2` in the search bar
+- **Then** The search function does not display any drivers
+- **And** I see no drivers in the view
 
 #### Scenario: Admin types in driver search bar
 
@@ -375,14 +376,13 @@ and `4, active` exist
 | US-7.1 | Admin creates a driver with an empty license status               | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver with an empty license status`               |
 | US-7.1 | Admin creates a driver without license expiration date                      | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver without license expiration`                        |
 | US-7.1 | Admin creates a driver without availability          | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Driver.test.js` | `Admin creates a driver without availability`            |
-| US-7.1 | Admin creates a driver with an id that is improperly formatted | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a driver with an id that is improperly formatted` |
-| US-7.2 | Driver view loads with existing semesters                      | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Driver view loads with existing semesters`                      |
+| US-7.1 | Admin creates a driver with an id that is improperly formatted | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a driver with an id that is improperly formatted` |                 |
 | US-7.2 | No drivers exist                                               | `frontend/tests/Drivers.test.js`                                  | `No drivers exist`                                               |
 | US-7.3 | driver rows show edit and delete actions                       | `frontend/tests/Drivers.test.js`                                  | `driver rows show edit and delete actions`                       |
 | US-7.4 | Admin edits a driver                                           | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin edits a driver`                                           |
 | US-7.4 | Admin deletes a driver                                         | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin deletes a driver`                                         |
 | US-7.5 | Search bar appears with drivers                                | `frontend/tests/Drivers.test.js`                                  | `Search bar appears with drivers`                                |
-| US-7.5 | No search bar appears with no drivers                          | `frontend/tests/Drivers.test.js`                                  | `No search bar appears with no drivers`                          |
+| US-7.5 | search bar appears with no drivers                          | `frontend/tests/Drivers.test.js`                                  | `search bar appears with no drivers`                          |
 | US-7.5 | Admin types in driver search bar                               | `frontend/tests/Drivers.test.js`                                  | `Admin types in driver search bar`                               |
 | US-7.5 | Admin types in driver search bar 2                             | `frontend/tests/Drivers.test.js`                                  | `Admin types in driver search bar 2`                             |
 | US-7.5 | Unauthenticated user accesses the drivers view                 | `frontend/tests/Drivers.test.js`                                  | `Unauthenticated user accesses the drivers view`                 |
