@@ -7,7 +7,7 @@
 **Updated:** "2026-11-03"
 **Input:** Application must support the creation, reading, updating, and deleting of many request notes that can be attached to requests to denote different statuses of a future, active, or returned vehicle reservation.
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md), [Feature 10 -- Vehicle Service Log CRUD](feature-10-vehicle-service-log-crud.md)
-**Related:** `frontend/RequestDetails.vue`, `frontend/Maintenance.vue`, `frontend/components/NotesList.vue`, `frontend/tests/NoteForm.test.js`, `frontend/tests/NoteDetails.test.js`
+**Related:** `frontend/RequestDetails.vue`, `frontend/Maintenance.vue`, `frontend/components/NotesList.vue`, `frontend/components/NoteForm.vue`, `frontend/tests/NotesList.test.js`, `frontend/tests/NoteForm.test.js`
 
 ---
 
@@ -95,7 +95,7 @@
 - POST `Notes` with the exact same `text` and `request_id` -> `409`
 - no `Requests` exist but `Notes` exist -> don't render orphaned notes
 - DELETE `Request` with attached `Notes` -> CASCADE DELETE so attached `Notes` are deleted too
-- Malformed date in `Notes` entry -> `NoteForm` and `NoteDetails` for that entry default to today's date
+- Malformed date in `Notes` entry -> `NoteForm` and `NoteList` for that entry default to today's date
 
 ## Success Criteria
 
@@ -545,7 +545,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 - Container: <v-list>
 - Heading: [varies based on embed location]
 - Primary action: **+ New Note** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<NoteForm>` component named **Note Form** Use class `oc-cta` on **+ New Note**, **Note Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Pressing with list item body opens <NoteDetails> component named **Note** using class `oc-cta` on **Note**.
+- Pressing with list item body opens <NoteForm> component named **Note** using class `oc-cta` on **Note**.
 - Display interactive search bar in **List** mode named `Search`. Used to search `note` title and text content.
 - Display `notes` as <v-card> items inside rows separated by a horizontal line each. The following columns should be in each card:
   **Note ID** -- The identifying number of the `note` ("#`id`")
@@ -562,7 +562,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 
 ### Note Form Component
 
-The `Note` Form contains the following information:
+The `NoteForm` component contains the following information:
 
 - **Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is/will-be attached to
 - **Date** -- `MM/DD/YYYY` format of the _earliest_ `Contribution` tied to this note.
