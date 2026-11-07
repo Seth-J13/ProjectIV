@@ -11,7 +11,7 @@
 
 ---
 
-## User Stories [INDEPENDENT TESTS BASED ON FIGMA UI]
+## User Stories
 
 ### US-9.1: See Notes on Requests
 
@@ -136,24 +136,23 @@
 Mount prefix: `/vehicle-t3`. Flat JSON (no `{ success, data }` envelope). Errors: `{ "message": "Human-readable explanation." }`. Authenticated writes send `Authorization: Bearer <token>`.
 
 This feature uses the `Notes` endpoints below.
-Auth surrounded by [brackets] is dependent on whether the operation is performed on a `note` the executing user wrote.
 
-| Method   | Endpoint                                                      | Auth | Purpose                                                                   |
-| -------- | ------------------------------------------------------------- | ---- | ------------------------------------------------------------------------- |
-| `GET`    | `/vehicle-t3/notes`                                           | Yes  | List all `notes`                                                          |
-| `POST`   | `/vehicle-t3/notes/`                                          | Yes  | Add a `note`                                                              |
-| `GET`    | `/vehicle-t3/notes/note/:noteId`                              | Yes  | List the details of the `note` with the `id` `:noteId`                    |
-| `GET`    | `/vehicle-t3/notes/request/:requestId`                        | Yes  | List all the `notes` attached to the `request` with the `id` `:requestId` |
-| `GET`    | `/vehicle-t3/notes/user/:userId`                              | Yes  | List all `notes` contributed to by the `user` with the `id` `:userId`     |
-| `PUT`    | `/vehicle-t3/notes/note/:noteId`                              | Yes  | Overwrite the details of the `note` with the `id` `:noteId`               |
-| `DELETE` | `/vehicle-t3/notes/note/:noteId`                              | Yes  | Remove the `note` with the `id` `:noteId`                                 |
-| `DELETE` | `/vehicle-t3/notes/request/:requestId`                        | Yes  | Remove all `notes` with the `request_id` `:requestId`                     |
-| `GET`    | `/vehicle-t3/notes/contributors`                              | Yes  | List all `note` `contributions`                                           |
-| `POST`   | `/vehicle-t3/notes/contributors`                              | Yes  | Add a `note` `contribution`                                               |
-| `GET`    | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes  | List the `contributions` for the `note` with the `id` `:noteId`           |
-| `GET`    | `/vehicle-t3/notes/contributors/user/:userId`                 | Yes  | List all `contributions` created by the user with the `id` `:userId`      |
-| `DELETE` | `/vehicle-t3/notes/contributors/contribution/:contributionId` | Yes  | Remove the `contribution` with the `id` `:contributionId`                 |
-| `DELETE` | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes  | Remove all `contributions` with the `note_id` `:noteId`                   |
+| Method   | Endpoint                                                      | Auth       | Purpose                                                                   |
+| -------- | ------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------- |
+| `GET`    | `/vehicle-t3/notes`                                           | Yes        | List all `notes`                                                          |
+| `POST`   | `/vehicle-t3/notes/`                                          | Yes        | Add a `note`                                                              |
+| `GET`    | `/vehicle-t3/notes/note/:noteId`                              | Yes        | List the details of the `note` with the `id` `:noteId`                    |
+| `GET`    | `/vehicle-t3/notes/request/:requestId`                        | Yes        | List all the `notes` attached to the `request` with the `id` `:requestId` |
+| `GET`    | `/vehicle-t3/notes/user/:userId`                              | Yes, admin | List all `notes` contributed to by the `user` with the `id` `:userId`     |
+| `PUT`    | `/vehicle-t3/notes/note/:noteId`                              | Yes        | Overwrite the details of the `note` with the `id` `:noteId`               |
+| `DELETE` | `/vehicle-t3/notes/note/:noteId`                              | Yes        | Remove the `note` with the `id` `:noteId`                                 |
+| `DELETE` | `/vehicle-t3/notes/request/:requestId`                        | Yes        | Remove all `notes` with the `request_id` `:requestId`                     |
+| `GET`    | `/vehicle-t3/notes/contributors`                              | Yes, admin | List all `note` `contributions`                                           |
+| `POST`   | `/vehicle-t3/notes/contributors`                              | Yes        | Add a `note` `contribution`                                               |
+| `GET`    | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes, admin | List the `contributions` for the `note` with the `id` `:noteId`           |
+| `GET`    | `/vehicle-t3/notes/contributors/user/:userId`                 | Yes, admin | List all `contributions` created by the user with the `id` `:userId`      |
+| `DELETE` | `/vehicle-t3/notes/contributors/contribution/:contributionId` | Yes, admin | Remove the `contribution` with the `id` `:contributionId`                 |
+| `DELETE` | `/vehicle-t3/notes/contributors/note/:noteId`                 | Yes        | Remove all `contributions` with the `note_id` `:noteId`                   |
 
 **Unauthenticated write:** (`401`) login error
 **Unauthorized write:** (`403`) forbidden
