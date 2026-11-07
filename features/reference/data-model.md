@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1,2,4,5,7,9 applied.
+**Status:** Features 1,2,4,5,6,7,9 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
@@ -28,6 +28,18 @@ Update this file when a feature that defines schema merges to `dev`.
 | `expirationDate` | DATE       | Required; 24 hours from login                  |
 | `userId`         | INTEGER FK | Required; references `users.id`                |
 
+### `destinations` table
+
+| Field             | Type                    | Rules                               |
+| ----------------- | ----------------------- | ----------------------------------- |
+| `id`              | INTEGER; AUTO-INCREMENT | Primary Key                         |
+| `zip`             | VARCHAR(10)             | Required (some ZIPs are #####-####) |
+| `city`            | VARCHAR(255)            | Required                            |
+| `state`           | VARCHAR(255)            | Required                            |
+| `addr_line_1`     | VARCHAR(255)            | Required                            |
+| `addr_line_2`     | VARCHAR(255)            | Nullable                            |
+| `dest_name`       | VARCHAR(255)            | Required                            |
+| `last_visited_on` | DATE                    | Nullable                            |
 
 ### `Vehicles` Table
 
@@ -45,7 +57,6 @@ Update this file when a feature that defines schema merges to `dev`.
 | `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
 | `available`           | BIT            | Required                              |
 | `mileage`             | INTEGER        | NULLABLE, Non-negative                |
-
 
 ### `Maintenance_Info` Table
 
@@ -67,7 +78,6 @@ Update this file when a feature that defines schema merges to `dev`.
 | `fuel_id`   | INTEGER PK  | Primary Key |
 | `fuel_type` | VARCHAR(50) | Required    |
 
-
 ### `Drivers` table
 
 | Field              | Type   | Rules                                             |
@@ -76,7 +86,6 @@ Update this file when a feature that defines schema merges to `dev`.
 | `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`,       |
 | `license_exp_date` | date   | Required;                                         |
 | `availability`     | ENUM   | Required; `available`, `not available`, `on call` |
-
 
 ### `Notes` table
 
@@ -98,24 +107,26 @@ Update this file when a feature that defines schema merges to `dev`.
 | `created_note`   | BOOLEAN                 | Required              |
 | `date`           | DATE                    | Required              |
 
-
 ### Associations
 
-- `User` hasMany `Session` ----|___ not every user has a session
-- `Session` belongsTo `User` --|    but every session is assigned to exactly one user
-
-- `Requests` hasMany `Notes` -----|___ a request can have 0 or many notes
-- `Notes` belongsTo `Requests` ---|    but every note is assigned to exactly one request
-
-- `Notes` hasMany `Contibutors` ---------|    every note has one or more contributor entries
-- `Contributors` belongsTo `Notes`       |--- every contributor entry is assigned to exactly one note
-- `Contributors` belongsTo `Users`-------|    every contributor entry is made by exactly one user
-
-- `User` hasOne `Drivers`  ------|___ not every user is a driver
-- `Drivers` belongsTo `User` ----|    but every driver is a user
-
-- `Vehicles` hasMany `Requests` -----|___ a vehicle can be included in many requests
-- `Requests` belongsTo `Vehicles` ---|    a request has between 0 and 1 vehicles
-
-- `Fuel_Type` hasMany `Maintenance_Info` -----|___ one fuel type can be included in 0 or many maintenance info entries
-- `Maintenance_Info` belongsTo `Fuel_Type` ---|    a maintenance info entry has exactly one fuel type
+- `User` hasMany `Session` ----| not every user has a session
+- `Session` belongsTo `User` --| but every session is assigned to exactly one user
+-
+- `Requests` hasMany `Notes` -----| a request can have 0 or many notes
+- `Notes` belongsTo `Requests` ---| but every note is assigned to exactly one request
+-
+- `Notes` hasMany `Contibutors` ---| every note has one or more contributor entries
+- `Contributors` belongsTo `Notes` | every contributor entry is assigned to exactly one note
+- `Contributors` belongsTo `Users`-| every contributor entry is made by exactly one user
+-
+- `User` hasOne `Drivers` ------| not every user is a driver
+- `Drivers` belongsTo `User` ---| but every driver is a user
+-
+- `Vehicles` hasMany `Requests` -----| a vehicle can be included in many requests
+- `Requests` belongsTo `Vehicles` ---| a request has between 0 and 1 vehicles
+-
+- `Fuel_Type` hasMany `Maintenance_Info` -----| one fuel type can be included in 0 or many maintenance info entries
+- `Maintenance_Info` belongsTo `Fuel_Type` ---| a maintenance info entry has exactly one fuel type
+-
+- `Destinations` hasMany `requests` ----| a destination can be included in many requests
+- `requests` belongsTo `Destinations` --| a request has between 0 and 1 destinations
