@@ -162,60 +162,212 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 | `POST`   | `/vehicle-t3/requests/`                           | Create a new vehicle request                                                      |  All   |
 | `POST`   | `/vehicle-t3/requests/`                           | Create a new maintenance request                                                  |  `admin`, `maintenance` |
 | `PUT`    | `/vehicle-t3/requests/:request_id`                | Update a new vehicle request                                                      |  All   |
+| `PUT`    | `/vehicle-t3/requests/:request_id`                | Update a new maintenance request                                                  |  `admin`, `maintenance` |
 | `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a vehicle request the designated request number                            |  All   |
 | `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a maintenance request the designated request number                        |  `admin`, `maintenance` |
+
+```json
+{
+    
+}
+```
 
 ---
 
 ## Acceptance Criteria (Gherkin)
 
-
-
-### US-1.1 — {Related Functional Requirement}
-
-
-
-#### Scenario: {What is happening or has happend}
-
-- **Given** {Where are you on the website?}
-- **When** {Main action?}
-- **And** {What additional action did you take?}
-- **Then** {Website response}
-- **And** {additional response}
-- **And** 
-- **etc...** 
-
-
-## VVV Example AC (Change or Delete) VVV
-#### Scenario: User submits registration with missing email
-
-- **Given** I am on the registration page
-- **When** I leave the email field empty
-- **And** I submit the form
-- **Then** inline validation blocks the request
-- **And** I see the message **"Email is required."**
-- **And** no API request is sent
-## ^^^ (Change or Delete) ^^^
-
----
-
-
-
-### US-N.2 — {Related Functional Requirement}
-
-
+### US-12. — 
 
 #### Scenario: 
 
 - **Given** 
-- **And** 
 - **When** 
 - **And** 
 - **Then** 
 - **And** 
-- **And**
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
 - **And** 
 
 ---
 
-### etc...
+### US-12. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+---
+
+### US-12. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+---
+
+### US-12. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+---
+
+### US-12. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+---
+
+### US-12. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+---
+
+### US-12. — 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+---
