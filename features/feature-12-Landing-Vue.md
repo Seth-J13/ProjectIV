@@ -106,20 +106,27 @@
     - `feature-11-Images`
     - `Vehicle Request Form` component
     - `Maintenance Request Form` component
+    - `Menu Bar` component
 - What you are deliberately not building yet
     - You do not need to create new form components, **if you cannot find the correct components notify the user when making this feature doc**
-    - Do not create multiple `Landing.vue`s for each role, only create one that filters out the lists depending on the user role
+    - Do not create multiple `Landing.vue`s for each role, only create one that filters out the lists depending on the user
+    - Do no create a `Menu Bar` component
 
 ## Edge Cases
 
-- Empty required field → …
-- Cross-user access → …
-- Duplicate / invalid input → …
+- PUT or Add request with the same id --> `400`
+- PUT or POST with incorrect database types --> `500`
+- PUT or POST with no inputted values --> `400`
+- GET, POST, PUT, DELETE as a student --> `401`
+- Cross-user access → (`driver`, `user`, and `maintenance`) roles should not be able to view vehicles that are unavailable unless they requested the vehicle
 
 ## Success Criteria
 
 - **SC-001**: Every Gherkin scenario has at least one automated test before merge
-- **SC-002**: <measurable outcome for this feature>
+- **SC-002**: Only one `.vue` created
+- **SC-003**: Each role views only what they are allowed to view
+- **SC-004**: After logging in every role is directed to the `Landing.vue`
+- **SC-005**: Each role has access to all other vues they have access to with the `Menu Bar` 
 
 ---
 
