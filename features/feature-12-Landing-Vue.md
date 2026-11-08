@@ -156,8 +156,9 @@ Features 1 and 2 establishes identity;
 
 ## API Requirements
 All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` from Feature 1.
-| Method   | Endpoint                                         | Purpose                                                                           |  Auth  |
+| Method   | Endpoint                                          | Purpose                                                                           |  Auth  |
 | -------- | ------------------------------------------------- | --------------------------------------------------------------------------------- | ------ | 
+| `GET`    | `/vehicle-t3/vehicles/`                           | Get all vehicles in the database                                                  |  All   |
 | `GET`    | `/vehicle-t3/requests/`                           | Get all requests in the database                                                  |  All   |
 | `POST`   | `/vehicle-t3/requests/`                           | Create a new vehicle request                                                      |  All   |
 | `POST`   | `/vehicle-t3/requests/`                           | Create a new maintenance request                                                  |  `admin`, `maintenance` |
@@ -189,13 +190,66 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 | Status | When | Message |
 | ------ | ---------------------------------------------------- | --------------------------------------------------- |
 | `400` | Missing field | `(attribute) is required` (same pattern for `car license`, `make`, `model`, `driver`, `destination`, `number of people`, `start date`, `end date`) |
-| `400` | Two vehicles share the same license plate number | `A vehicle already has license number (AAA-###)` |
 | `400` | Year is less than 1900 and greater than current year | `Select a year between 1900-Today` |
-| `401` | A user who's role is not `admin` or `maintenance` tries to view the page | `Unauthorized user` |
+
+---
+
+## Screen Requirements
+
+### [View: Landing.vue] -- route name `landing`
+
+- Path: `/landing`
+- Heading: **Vehicle Management System**
+- Visible in the nav to all users
+
+**Lists**
+- Available Vehicles
+    - Table Headers: `License`, `Make`, `Model`, `Image`
+- Your Reserved Vehicles
+    - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`
+- Vehicles In Service
+    - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`, `Action`
+    - Action: `Info Icon` button
+- Reserved Vehicles
+    - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`, `Action`
+
+**Form Section**
+- Toggle Switch: Left side (`Request`), Right side (`Maintenance`)
+- Form
+    - Toggle to Left: `Vehicle Request Form`
+    - Toggle to Right: `Maintenance Request Form`
 
 ---
 
 ## Acceptance Criteria (Gherkin)
+
+### US-12.1 — View All Available Vehicles
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+#### Scenario: 
+
+- **Given** 
+- **When** 
+- **And** 
+- **Then** 
+- **And** 
+
+---
 
 ### US-12. — 
 
