@@ -132,42 +132,38 @@
 
 ## Data Ownership & Isolation (foundation)
 
-Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
+Features 1 and 2 establishes identity; 
 
-- Each user account is a separate tenant boundary for todo lists and items.
-- No API in this feature returns another user's profile or session.
-- Later features must never expose lists or todos across users — not in list responses, detail views, or error messages that confirm another user's resource exists.
+- No user owns the vehicles or requests
+- Error messages should that confirm another user's request exists unless `admin`.
 
 ---
 
 ## Key Entities
 
-- **User**: registered account (name, email, username, role); owns future lists and todos.
+- **User**: registered account (name, email, username, role)
 - **Session**: server-side record tying a JWT token to a user; expires after 24 hours.
+- **Requests**:
+    - `Vehicle Request`- vehicles requested to be reserved
+    - `Maintenance Request` - vehicles requested for maintenance
 
 ---
 
-
-
 ## Data Model Requirements
-### Look under ./backend/app/models/(file name).js
-- This shows the table you will need to model
+- **NO TABLE TO CREATE**
 
-## VVV Example table (Change or Delete) VVV
-### `users` table
+---
 
-
-| Field      | Type        | Rules                              |
-| ---------- | ----------- | ---------------------------------- |
-| `id`       | INTEGER PK  | Auto-increment                     |
-| `fName`    | STRING      | Required                           |
-| `lName`    | STRING      | Required                           |
-| `email`    | STRING      | Required, unique                   |
-| `username` | STRING(100) | Required, unique; stored lowercase |
-| `password` | STRING(255) | Required; bcrypt hash only         |
-| `role`     | STRING(20)  | Default `worker`                   |
-
-## ^^^ (Change or Delete) ^^^
+## API Requirements
+All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` from Feature 1.
+| Method   | Endpoint                                         | Purpose                                                                           |  Auth  |
+| -------- | ------------------------------------------------- | --------------------------------------------------------------------------------- | ------ | 
+| `GET`    | `/vehicle-t3/requests/`                           | Get all requests in the database                                                  |  All   |
+| `POST`   | `/vehicle-t3/requests/`                           | Create a new vehicle request                                                      |  All   |
+| `POST`   | `/vehicle-t3/requests/`                           | Create a new maintenance request                                                  |  `admin`, `maintenance` |
+| `PUT`    | `/vehicle-t3/requests/:request_id`                | Update a new vehicle request                                                      |  All   |
+| `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a vehicle request the designated request number                            |  All   |
+| `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a maintenance request the designated request number                        |  `admin`, `maintenance` |
 
 ---
 
