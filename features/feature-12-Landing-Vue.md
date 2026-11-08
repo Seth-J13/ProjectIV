@@ -166,11 +166,32 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 | `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a vehicle request the designated request number                            |  All   |
 | `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a maintenance request the designated request number                        |  `admin`, `maintenance` |
 
+**Create / Update Request Body (Request Table)**
+
 ```json
 {
-    
+    "userId": 12312312,
+    "vehicleId": 12345671234567123,
+    "destId": 1232123321,
+    "driverId": 12312312,
+    "numPeople": 5,
+    "currentlyActive": true,
+    "startDate": '2026-10-25',
+    "endDate": '2026-10-28',
+    "startTime": '09:00:00',
+    "endTime": '17:00:00'
 }
 ```
+
+**Success — create (**`201`**) and update (**`200`**):**
+
+**Error response:** `{"message": "..."}`
+| Status | When | Message |
+| ------ | ---------------------------------------------------- | --------------------------------------------------- |
+| `400` | Missing field | `(attribute) is required` (same pattern for `car license`, `make`, `model`, `driver`, `destination`, `number of people`, `start date`, `end date`) |
+| `400` | Two vehicles share the same license plate number | `A vehicle already has license number (AAA-###)` |
+| `400` | Year is less than 1900 and greater than current year | `Select a year between 1900-Today` |
+| `401` | A user who's role is not `admin` or `maintenance` tries to view the page | `Unauthorized user` |
 
 ---
 
