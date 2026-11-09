@@ -30,7 +30,7 @@
 **So that** I can know all its information.
 
 **Priority:** P1
-**Independent test:** destinations row in the list has a button which, when pressed, opens a `Details` modal containing a destination's information and current/future reservations headed to that area
+**Independent test:** destinations row in the list has a button which, when pressed, opens a `Details` modal containing a destination's information and current/future reservations headed to that destination
 **Acceptance scenarios:** see ### US-6.2 under Acceptance Criteria
 
 ### US-6.3: Add Destination
