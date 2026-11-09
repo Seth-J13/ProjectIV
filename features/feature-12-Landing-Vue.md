@@ -1,4 +1,4 @@
-# Feature: User Authentication & Session Management
+# Feature: Landing Vue
 
 **Feature ID:** 12
 **Branch pattern:** `feature/12-Landing-Vue`
@@ -11,7 +11,7 @@
 
 ## User Stories
 
-### US-12.1: View All Available Vehicles
+### US-12.1: View Available Vehicles
 **As a** (`admin`, `maintenance`, `driver`, or `user`)
 **I want to** View all vehicles that are available for reservation
 **So that** I can see my options of available vehicles
@@ -20,7 +20,7 @@
 **Independent test:** I land on the landing page and see a list of all available vehicles
 **Acceptance scenarios:**see ### US-12.1 under Acceptance Criteria
 
-### US-12.2: View `My` Reserved Vehicles
+### US-12.2: View `Your Reserved Vehicles`
 **As a** (`admin`, `driver`, `maintenance` or `user`)
 **I want to** see a list of vehicles that I have reserved
 **So that** I can manage my reservation requests
@@ -61,9 +61,18 @@
 **I want to** view the `Maintenance Request Form` component
 **So that** I can make a request for to reserve a vehicle for maintenance
 
-**Priority:** P1
+**Priority:** P2
 **Independent test:** I land on the landing page and at the bottom is the `Maintenance Request Form` component
 **Acceptance scenarios:**see ### US-12.6 under Acceptance Criteria
+
+### US-12.7: View `Reserved Vehicles`
+**As a** `admin`
+**I want to** see a list of all vehicle requests
+**So that** I can manage all reservation requests
+
+**Priority:** P3
+**Independent test:** I land on the landing page and view all reserved vehicles
+**Acceptance scenarios:**see ### US-12.7 under Acceptance Criteria
 
 ---
 
@@ -72,7 +81,7 @@
 ### Functional Requirements
 
 - **FR-001**: System **MUST** show what the user role is allowed to see
-- **FR-002**: System **MUST NOT** show what the use role is not allowed to see
+- **FR-002**: System **MUST NOT** show what the user role is not allowed to see
 - **FR-003**: System **MUST** use `Vehicle Request Form` component
 - **FR-004**: System **MUST** use `Maintenance Request Form` component
 - **FR-005**: System **MUST** navigate user to proper `.vue`s when managing list items on the landing page
@@ -101,7 +110,7 @@
 - What you are deliberately not building yet
     - You do not need to create new form components, **if you cannot find the correct components notify the user when making this feature doc**
     - Do not create multiple `Landing.vue`s for each role, only create one that filters out the lists depending on the user
-    - Do no create a `Menu Bar` component
+    - Do not create a `Menu Bar` component
 
 ## Edge Cases
 
@@ -109,7 +118,7 @@
 - PUT or POST with incorrect database types --> `500`
 - PUT or POST with no inputted values --> `400`
 - GET, POST, PUT, DELETE as a student --> `401`
-- Cross-user access → (`driver`, `user`, and `maintenance`) roles should not be able to view vehicles that are unavailable unless they requested the vehicle
+- Cross-user access → (`driver`, `user`, and `maintenance`) roles should not be able to view reserved vehicles that are unavailable unless they requested the vehicle. All `maintenance` can see vehicles requested for maintenance work.
 
 ## Success Criteria
 
@@ -162,8 +171,8 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ```json
 {
-    "userId": 12312312,
-    "vehicleId": 12345671234567123,
+    "requesterId": 12312312,
+    "vehicleId": "12345671234567123",
     "destId": 1232123321,
     "driverId": 12312312,
     "numPeople": 5,
@@ -171,7 +180,8 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
     "startDate": '2026-10-25',
     "endDate": '2026-10-28',
     "startTime": '09:00:00',
-    "endTime": '17:00:00'
+    "endTime": '17:00:00',
+    "maintenance": false
 }
 ```
 
@@ -195,7 +205,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 **Lists**
 - Available Vehicles
-    - Table Headers: `License`, `Make`, `Model`, `Image`
+    - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`
 - Your Reserved Vehicles
     - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`
 - Vehicles In Service
@@ -214,7 +224,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ## Acceptance Criteria (Gherkin)
 
-### US-12.1 — View All Available Vehicles
+### US-12.1 — View Available Vehicles
 
 #### Scenario: User logs in and `Landing.vue` is loaded
 
@@ -224,16 +234,22 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** a `GET` request is sent to get all vehicles
 - **Then** the list displays all vehicles available to reserve
 
-#### Scenario: User clicks a vehicle in the `All Available Vehicles` list
+#### Scenario: User clicks a vehicle in the `Available Vehicles` list
 
 - **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
 - **When** I click a list item
-- **Then** the `Vehicle Request From` will have vehicle details filled out
+- **Then** the `Vehicle Request From` component will have vehicle details filled out
 - **And** no API request is sent
+
+#### Scenario: User views `Available Vehicles` list
+
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I view the `Available Vehicles` list
+- **Then** every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`
 
 ---
 
-### US-12.2 — View `My` Reserved Vehicles
+### US-12.2 — View `Your Reserved Vehicles`
 
 #### Scenario: User logs in and `Landing.vue` is loaded
 
@@ -241,7 +257,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I log in
 - **And** the `Landing.vue` has loaded  
 - **And** a `GET` request is sent to get all vehicles 
-- **And** a `GET` request is sent to get all requests with my userId
+- **And** a `GET` request is sent to get all requests with my requesterId
 - **Then** I see all the vehicles associated with my requests
 
 #### Scenario: User clicks on a list item
@@ -250,6 +266,12 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I click one of the vehicles that I have reserved
 - **Then** I am sent to the `Requests.vue`
 - **And** no API request is sent
+
+#### Scenario: User views `Your Reserved Vehicles` list
+
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I view the `My` Reserved Vehicles list
+- **Then** I see all my reserved vehicles is listed with their `License`, `Make`, `Model`, `Year`, `Image`
 
 ---
 
@@ -268,6 +290,18 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I click on a vehicle in the `Vehicles Currently in Service`
 - **Then** I am redirected to the `Maintenance.vue` for the selected vehicle
 - **And** no API request is sent
+
+#### Scenario: User views `Vehicles In Service` list
+
+- **Given** I am a (`admin` or `mainentance`)
+- **When** I view the `Vehicles In Service` list
+- **Then** every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button
+
+#### Scenario: User clicks `Info Icon` button
+
+- **Given** I am a (`admin` or `mainentance`)
+- **When** I click the `Info Icon` button for a list item in the `Vehicles In Service` list
+- **Then** I am redirected to the `Maintenance.vue` page for the selected vehicle
 
 ---
 
@@ -306,7 +340,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ### US-12.6 — View `Maintenance Request Form` component
 
-#### Scenario: User correctly fills out the `Vehicle Request Form`
+#### Scenario: User correctly fills out the `Maintenance Request Form`
 
 - **Given** I am a (`admin` or `mainentance`)
 - **When** I fill out the `Maintenance Request Form` component
@@ -324,3 +358,76 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** returns `400` with a payload of `{"message": "human readable message"}`
 
 ---
+
+### US-12.7 — View `Reserved Vehicles`
+
+#### Scenario: User logs in and `Landing.vue` is loaded
+
+- **Given** I am a `admin`
+- **When** I log in
+- **And** the `Landing.vue` loads
+- **And** a `GET` request is sent
+- **And** returns a `200` code  with a payload of `{"message":"humman readable message"}`
+- **Then** a list of all reserved vehicles displays
+
+#### Scenario: User views `Reserved Vehicles` list
+
+- **Given** I am a `admin`
+- **When** I view the `All` Reserved Vehicles list
+- **Then** every reserved vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button
+
+#### Scenario: User clicks `Info Icon` button
+
+- **Given** I am a `admin`
+- **When** I click the `Info Icon` button for a list item in the `All` Reserved Vehicles list
+- **Then** I am redirected to the `Requests.vue` page for the selected vehicle
+
+---
+
+## Test Coverage Map
+
+Each scenario above must map to at least one automated test. Submit scenarios, and the admin reserved-list load, are listed twice: the backend test asserts the HTTP status and `{ message }`, and the frontend test asserts what the page shows.
+
+| Story | Scenario | Test file | Test name |
+|-------|----------|-----------|-----------|
+| US-12.1 | User logs in and `Landing.vue` is loaded | `frontend/tests/Landing.test.js` | it("User logs in and `Landing.vue` is loaded") |
+| US-12.1 | User clicks a vehicle in the `Available Vehicles` list | `frontend/tests/Landing.test.js` | it("User clicks a vehicle in the `Available Vehicles` list") |
+| US-12.1 | User views `Available Vehicles` list | `frontend/tests/Landing.test.js` | it("User views `Available Vehicles` list") |
+| US-12.2 | User logs in and `Landing.vue` is loaded | `frontend/tests/Landing.test.js` | it("User logs in and `Landing.vue` is loaded") |
+| US-12.2 | User clicks on a list item | `frontend/tests/Landing.test.js` | it("User clicks on a list item") |
+| US-12.2 | User views `Your Reserved Vehicles` list | `frontend/tests/Landing.test.js` | it("User views `Your Reserved Vehicles` list") |
+| US-12.3 | User logs in and `Landing.vue` is loaded | `frontend/tests/Landing.test.js` | it("User logs in and `Landing.vue` is loaded") |
+| US-12.3 | User clicks a list item | `frontend/tests/Landing.test.js` | it("User clicks a list item") |
+| US-12.3 | User views `Vehicles In Service` list | `frontend/tests/Landing.test.js` | it("User views `Vehicles In Service` list") |
+| US-12.3 | User clicks `Info Icon` button | `frontend/tests/Landing.test.js` | it("User clicks `Info Icon` button") |
+| US-12.4 | User clicks the form toggle switch | `frontend/tests/Landing.test.js` | it("User clicks the form toggle switch") |
+| US-12.5 | User correctly fills out the `Vehicle Request Form` | `backend/tests/landing.test.js` | it("User correctly fills out the `Vehicle Request Form`") |
+| US-12.5 | User correctly fills out the `Vehicle Request Form` | `frontend/tests/Landing.test.js` | it("User correctly fills out the `Vehicle Request Form`") |
+| US-12.5 | User incorrectly fills out the `Vehicle Request Form` | `backend/tests/landing.test.js` | it("User incorrectly fills out the `Vehicle Request Form`") |
+| US-12.5 | User incorrectly fills out the `Vehicle Request Form` | `frontend/tests/Landing.test.js` | it("User incorrectly fills out the `Vehicle Request Form`") |
+| US-12.6 | User correctly fills out the `Maintenance Request Form` | `backend/tests/landing.test.js` | it("User correctly fills out the `Maintenance Request Form`") |
+| US-12.6 | User correctly fills out the `Maintenance Request Form` | `frontend/tests/Landing.test.js` | it("User correctly fills out the `Maintenance Request Form`") |
+| US-12.6 | User incorrectly fills out the `Maintenance Request Form` | `backend/tests/landing.test.js` | it("User incorrectly fills out the `Maintenance Request Form`") |
+| US-12.6 | User incorrectly fills out the `Maintenance Request Form` | `frontend/tests/Landing.test.js` | it("User incorrectly fills out the `Maintenance Request Form`") |
+| US-12.7 | User logs in and `Landing.vue` is loaded | `backend/tests/landing.test.js` | it("User logs in and `Landing.vue` is loaded") |
+| US-12.7 | User logs in and `Landing.vue` is loaded | `frontend/tests/Landing.test.js` | it("User logs in and `Landing.vue` is loaded") |
+| US-12.7 | User views `Reserved Vehicles` list | `frontend/tests/Landing.test.js` | it("User views `Reserved Vehicles` list") |
+| US-12.7 | User clicks `Info Icon` button | `frontend/tests/Landing.test.js` | it("User clicks `Info Icon` button") |
+
+---
+
+## Agent implementation request
+
+Copy when asking Cursor to implement this feature (`@` this file):
+
+```text
+Implement Feature 12 from @features/feature-12-Landing-Vue.md on branch `feature/12-Landing-Vue`.
+
+Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
+If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
+Complete Definition of Done and the merge checklist in @features/framework.md.
+Do not implement behavior not in this spec.
+```
+
+**Reference updates for this feature:** `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`
