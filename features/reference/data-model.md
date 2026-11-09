@@ -53,7 +53,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | `color`               | VARCHAR(20)    | NULLABLE;                             |
 | `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
 | `tag_exp_month`       | DATE           | Required                              |
-| `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
+| `area_id`             | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
 | `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
 | `available`           | BIT            | Required                              |
 | `mileage`             | INTEGER        | NULLABLE, Non-negative                |
