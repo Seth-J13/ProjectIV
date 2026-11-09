@@ -259,164 +259,68 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 - **Given** I am a (`admin` or `maintenance`)
 - **When** I log in
-- **And** a
-- **Then** 
-- **And** no API request is sent
+- **And** a `GET` request is sent to get all vehicles  
+- **Then** the list displays all vehicles currently reserved for maintenance work
 
-#### Scenario: 
+#### Scenario: User clicks a list item
 
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
+- **Given** I am a (`admin` or `maintenance`)
+- **When** I click on a vehicle in the `Vehicles Currently in Service`
+- **Then** I am redirected to the `Maintenance.vue` for the selected vehicle
 - **And** no API request is sent
 
 ---
 
-### US-12. — 
+### US-12.4 — Toggle between Vehicle Request Form and Maintenance Request
 
-#### Scenario: 
+#### Scenario: User clicks the form toggle switch 
 
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
+- **Given** I am a (`admin` or `maintenance`)
+- **When** I view the `Vehicle Request Form` component
+- **And** I click the toggle button  
+- **Then** the request form component switches to the `Maintenance Request Form` component
 - **And** no API request is sent
 
 ---
 
-### US-12. — 
+### US-12.5 — View `Vehicle Request Form` component
 
-#### Scenario: 
+#### Scenario: User correctly fills out the `Vehicle Request Form`
 
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent 
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I fill out the `Vehicle Request Form` component
+- **And** click `submit`
+- **Then** a `POST` request is sent to create a vehicle request
+- **And** returns `201` with a payload of `{"message": "human readable message"}`
+- **And** component is reset for another request
 
-#### Scenario: 
+#### Scenario: User incorrectly fills out the `Vehicle Request Form`
 
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent 
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I fill out the `Vehicle Request Form` component
+- **And** click `submit`
+- **Then** a `POST` request is sent to create a vehicle request
+- **And** returns `400` with a payload of `{"message": "human readable message"}`
 
 ---
 
-### US-12. — 
+### US-12.6 — View `Maintenance Request Form` component
 
-#### Scenario: 
+#### Scenario: User correctly fills out the `Vehicle Request Form`
 
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
+- **Given** I am a (`admin` or `mainentance`)
+- **When** I fill out the `Maintenance Request Form` component
+- **And** click `submit`
+- **Then** a `POST` request is sent to create a maintenance request
+- **And** returns `201` with a payload of `{"message": "human readable message"}`
+- **And** component is reset for another request
 
-#### Scenario: 
+#### Scenario: User incorrectly fills out the `Maintenance Request Form`
 
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
----
-
-### US-12. — 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** no API request is sent
-
----
-
-### US-12. — 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
+- **Given** I am a (`admin` or `mainentance`)
+- **When** I fill out the `Maintenance Request Form` component
+- **And** click `submit`
+- **Then** a `POST` request is sent to create a maintenance request
+- **And** returns `400` with a payload of `{"message": "human readable message"}`
 
 ---
