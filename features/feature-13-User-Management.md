@@ -22,11 +22,7 @@
 
 ---
 
-
-
 ## User Stories
-
-
 
 ### US-13.1: View users
 
@@ -60,11 +56,7 @@
 
 ---
 
-
-
 ## Requirements
-
-
 
 ### Functional Requirements
 
@@ -83,8 +75,6 @@
 
 ---
 
-
-
 ## Assumptions
 
 - Feature 1 is already available: email/password sign-in, sessions, `localStorage` `user` (including `role`), MenuBar, and `/landing`.
@@ -95,23 +85,19 @@
 
 ---
 
-
-
 ## Edge Cases
 
-- Non-admin opens `/users` → redirect to `/landing`; no user list is shown
-- Non-admin calls a user API → **403** `"Admin access required."`; no rows returned or changed
-- Missing or expired Bearer token → **401**; frontend clears `user` and redirects to Login
-- Empty first name, last name, or email → **400**; user unchanged
-- Role other than `user`, `driver`, `maintenance`, or `admin` → **400**; user unchanged
-- Email already used by another account → **409** `"Email already in use!"`; user unchanged
-- Admin changes their own role → **400** `"You cannot change your own role."`; role unchanged
-- Unknown user id → **404** `"User with id={id} not found."`
+- Non-admin opens `/users` -> redirect to `/landing`; no user list is shown
+- Non-admin calls a user API -> **403** `"Admin access required."`; no rows returned or changed
+- Missing or expired Bearer token -> **401**; frontend clears `user` and redirects to Login
+- Empty first name, last name, or email -> **400**; user unchanged
+- Role other than `user`, `driver`, `maintenance`, or `admin` -> **400**; user unchanged
+- Email already used by another account -> **409** `"Email already in use!"`; user unchanged
+- Admin changes their own role -> **400** `"You cannot change your own role."`; role unchanged
+- Unknown user id -> **404** `"User with id={id} not found."`
 - Edit does not include a password and does not return one
 
 ---
-
-
 
 ## Success Criteria
 
@@ -123,12 +109,9 @@
 
 ---
 
-
-
 ## Data Ownership & Isolation
 
 Feature 13 lets an admin read and update account fields for any user. It does not reveal credentials or another user's session.
-
 
 | Rule                  | Requirement                                                                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -138,10 +121,7 @@ Feature 13 lets an admin read and update account fields for any user. It does no
 | **Cross-user access** | A non-admin receives **403** and no user data. A missing user id returns **404**. Passwords and tokens are never returned.         |
 | **UI scope**          | **User Management** is visible and reachable only for role `admin`. `/landing` is unchanged for every other role.                  |
 
-
 ---
-
-
 
 ## Key Entities
 
@@ -150,16 +130,12 @@ Feature 13 lets an admin read and update account fields for any user. It does no
 
 ---
 
-
-
 ## API Requirements
-
 
 | Method | Endpoint         | Auth                        | Purpose                                 |
 | ------ | ---------------- | --------------------------- | --------------------------------------- |
 | `GET`  | `/api/users`     | Yes (`Bearer` token, admin) | List every user's account fields        |
 | `PUT`  | `/api/users/:id` | Yes (`Bearer` token, admin) | Update one user's name, email, and role |
-
 
 **List success:** a JSON array, no envelope, ordered by `lastName` A–Z. Example item:
 
@@ -190,7 +166,6 @@ Feature 13 lets an admin read and update account fields for any user. It does no
 
 Quoted messages that tests must match:
 
-
 | Situation                             | Status | `message`                          |
 | ------------------------------------- | ------ | ---------------------------------- |
 | Signed in, role is not `admin`        | 403    | `Admin access required.`           |
@@ -198,16 +173,11 @@ Quoted messages that tests must match:
 | Admin changes their own role          | 400    | `You cannot change your own role.` |
 | User id does not exist                | 404    | `User with id={id} not found.`     |
 
-
 Missing or expired Bearer token remains Feature 1 **401**.
 
 ---
 
-
-
 ## Screen Requirements
-
-
 
 ### [View: User Management] — route name `users` (`/users`)
 
@@ -222,15 +192,11 @@ Missing or expired Bearer token remains Feature 1 **401**.
 - **Save success:** snackbar **"User updated."**, dialog closes, the list shows the new values, and the route stays `users`
 - **Error:** show the API `message` (including **"Email already in use!"** and **"You cannot change your own role."**) and keep the dialog open
 
-
-
 ### App chrome — `MenuBar`
 
 - When `role` is `admin`: show **User Management**, which navigates to route `users`
 - When `role` is `user`, `driver`, or `maintenance`: do not show **User Management**
 - Logout stays as specified in Feature 1
-
-
 
 ### Other routes
 
@@ -239,14 +205,11 @@ Missing or expired Bearer token remains Feature 1 **401**.
 
 ---
 
-
-
 ## Data Model Requirements
 
 This feature does **not** add tables or columns. It uses `users` and `sessions` from Feature 1.
 
 ### Fields this feature may change
-
 
 | Field       | Rules                                                                                          |
 | ----------- | ---------------------------------------------------------------------------------------------- |
@@ -254,7 +217,6 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 | `lastName`  | Required on update                                                                             |
 | `email`     | Required, unique. Also written to that user's `sessions.email`                                 |
 | `role`      | Required; `user`, `driver`, `maintenance`, or `admin`. The caller's own role cannot be changed |
-
 
 `password` and `googleSub` are not accepted in the update body and are not modified.
 
@@ -264,15 +226,9 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 ---
 
-
-
 ## Acceptance Criteria (Gherkin)
 
-
-
 ### US-13.1 — View users
-
-
 
 #### Scenario: Admin opens user management
 
@@ -283,8 +239,6 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **And** I see each account's first name, last name, email, and role
 - **And** I do not see a password
 
-
-
 #### Scenario: Refresh user management
 
 - **Given** I am signed in as an admin on `/users`
@@ -292,11 +246,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **Then** I remain on `/users`
 - **And** I still see each account's first name, last name, email, and role
 
-
-
 ### US-13.2 — Edit user data
-
-
 
 #### Scenario: Admin edits a user
 
@@ -309,8 +259,6 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **And** the list shows the new first name, last name, email, and role
 - **And** I remain on `/users`
 
-
-
 #### Scenario: Email already in use
 
 - **Given** I am signed in as an admin
@@ -319,8 +267,6 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **Then** the response is **409** with message **"Email already in use!"**
 - **And** the first account is unchanged
 
-
-
 #### Scenario: Admin cannot change own role
 
 - **Given** I am signed in as an admin
@@ -328,11 +274,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **Then** the response is **400** with message **"You cannot change your own role."**
 - **And** my role is still `admin`
 
-
-
 ### US-13.3 — Keep the page admin-only
-
-
 
 #### Scenario: Non-admin cannot open user management
 
@@ -342,8 +284,6 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **Then** I am redirected to `/landing`
 - **And** I do not see the user list
 
-
-
 #### Scenario: Non-admin cannot edit a user
 
 - **Given** I am signed in with a role other than `admin`
@@ -351,8 +291,6 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **When** I update that account through the user API
 - **Then** the response is **403** with message **"Admin access required."**
 - **And** that account is unchanged
-
-
 
 #### Scenario: Missing session cannot view users
 
@@ -363,12 +301,9 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 ---
 
-
-
 ## Test Coverage Map
 
 Each scenario above must map to at least one automated test.
-
 
 | Story   | Scenario                              | Test file                               | Test name                                     |
 | ------- | ------------------------------------- | --------------------------------------- | --------------------------------------------- |
@@ -381,10 +316,7 @@ Each scenario above must map to at least one automated test.
 | US-13.3 | Non-admin cannot edit a user          | `backend/tests/users.test.js`           | `it("Non-admin cannot edit a user")`          |
 | US-13.3 | Missing session cannot view users     | `backend/tests/users.test.js`           | `it("Missing session cannot view users")`     |
 
-
 ---
-
-
 
 ## Agent implementation request
 
@@ -393,7 +325,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 13 from @features/feature-13-User-Management.md on branch `feature/13-user-management`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.
@@ -416,8 +348,6 @@ Leave Feature 1 login, create account, logout, and /landing behavior in place.
 
 ---
 
-
-
 ## Out of Scope
 
 - Creating accounts (Feature 1 **Create Account** and Feature 2 **Continue with Google**)
@@ -428,4 +358,3 @@ Leave Feature 1 login, create account, logout, and /landing behavior in place.
 - Vehicle records and registration requests
 - A user editing their own account from a non-admin profile screen
 - Changing `/landing` content by role
-

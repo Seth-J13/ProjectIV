@@ -159,7 +159,7 @@ This feature uses the `Notes` endpoints below.
 
 ### Read Notes (`GET /vehicle-t3/notes`)
 
-**Success:** (`200`): the next batch of at most `3` `notes`, sorted by the most recent `date`. `offset` is the number of `notes` already retrieved. Missing `offset` → `offset` defaults to `0`. Fewer than `3` `notes` in the array means that batch is the last one. `[]` means no `notes` remain.
+**Success:** (`200`): the next batch of at most `3` `notes`, sorted by the most recent `date`. `offset` is the number of `notes` already retrieved. Missing `offset` -> `offset` defaults to `0`. Fewer than `3` `notes` in the array means that batch is the last one. `[]` means no `notes` remain.
 
 `GET /vehicle-t3/notes?offset=0`
 
@@ -330,9 +330,9 @@ This feature uses the `Notes` endpoints below.
 }
 ```
 
-Missing `maintenance_request` → `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` → `400` bad request.
-Duplicate `request_id` and `text` (combined) → `409` conflict.
+Missing `maintenance_request` -> `maintenance_request` defaults to `false`
+Missing `reason`, `request_id`, `text` -> `400` bad request.
+Duplicate `request_id` and `text` (combined) -> `409` conflict.
 
 **Server error:** (`500`) `{ "message": "…" }`.
 
@@ -362,9 +362,9 @@ Duplicate `request_id` and `text` (combined) → `409` conflict.
 }
 ```
 
-Missing `maintenance_request` → `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` → `400` bad request.
-Duplicate `request_id` and `text` (combined) → `409` conflict.
+Missing `maintenance_request` -> `maintenance_request` defaults to `false`
+Missing `reason`, `request_id`, `text` -> `400` bad request.
+Duplicate `request_id` and `text` (combined) -> `409` conflict.
 
 **Unauthorized:** (`403`) Forbidden
 **Server error:** (`500`) `{ "message": "…" }`.
@@ -447,9 +447,9 @@ Duplicate `request_id` and `text` (combined) → `409` conflict.
 }
 ```
 
-Missing `date` → `date` defaults to current date
-Missing `note_id`, `contributor_id`, `created_note` → `400` bad request.
-Two contributions on the same `note_id` being `true` → `409` conflict.
+Missing `date` -> `date` defaults to current date
+Missing `note_id`, `contributor_id`, `created_note` -> `400` bad request.
+Two contributions on the same `note_id` being `true` -> `409` conflict.
 
 **Server error:** (`500`) `{ "message": "…" }`.
 
@@ -927,7 +927,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 9 from @features/feature-9-note-crud.md on branch `feature/9-note-crud`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.

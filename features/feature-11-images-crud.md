@@ -4,8 +4,9 @@
 **Branch pattern:** `feature/11-images-crud`
 **Status:** Draft
 **Created:** 2026-11-06
+**Updated:** 2026-11-09
 **Input:** Application must support the creation, reading, updating, and deleting of images paired with different tables in the application to assist in understanding data entities.
-**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Department CRUD](feature-3-Department-CRUD.md), [Feature 6 -- Destination CRUD](feature-6-destination-crud.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md), [Feature 9 -- Images CRUD](feature-9-image-crud.md)
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Area CRUD](feature-3-Area-CRUD.md), [Feature 6 -- Destination CRUD](feature-6-destination-crud.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md), [Feature 9 -- Images CRUD](feature-9-image-crud.md)
 **Related:** `frontend/Vehicles.vue`, `frontend/Maintenance.vue`, `frontend/components/NoteDetails.vue`, `frontend/components/NoteDetails.vue`, `frontend/components/ImagesContainer.vue`, `frontend/components/ImagesDetails.vue`, `frontend/components/RequestForm.vue`
 
 ---
@@ -77,48 +78,48 @@
 ### US-11.7: See VehicleImage on Request Form
 
 **As a** authenticated user filling out the `RequestForm.vue` component
-**I want to** see the `VehicleImage` of my selected `department`
+**I want to** see the `VehicleImage` of my selected `area`
 **So that** I know I've selected the correct `vehicle`.
 
 **Priority:** P1
 **Independent test:** [write after getting confirmation about RequestForm component from Ethan]
 **Acceptance scenarios:** see ### US-11.7 under Acceptance Criteria
 
-### US-11.8: See DepartmentImage on Department listings
+### US-11.8: See AreaImage on Area listings
 
 **As a** authenticated user with the `admin` or `maintenance` role
-**I want to** see every `DepartmentImage` attached to a `department`
-**So that** I know which `department` I'm looking at.
+**I want to** see every `AreaImage` attached to a `area`
+**So that** I know which `area` I'm looking at.
 
 **Priority:** P1
-**Independent test:** On `Departments.vue`, hover over a `department`'s listing, shows a popup above the cursor with the first `DepartmentImage` containing the selected `department`'s VIN, hovering over popup does not close popup, clicking on popup opens modal with scrollable list of `DepartmentImages`, clicking **Close** or anywhere outside modal closes modal.
+**Independent test:** On `Areas.vue`, hover over a `area`'s listing, shows a popup above the cursor with the first `AreaImage` containing the selected `area`'s VIN, hovering over popup does not close popup, clicking on popup opens modal with scrollable list of `AreaImages`, clicking **Close** or anywhere outside modal closes modal.
 **Acceptance scenarios:** see ### US-11.8 under Acceptance Criteria
 
-### US-11.9: Create DepartmentImage on Department listings
+### US-11.9: Create AreaImage on Area listings
 
 **As a** authenticated user with the `admin` or `maintenance` role
-**I want to** add more than one `DepartmentImage` to a `department`
-**So that** I can help others know what `department` they're looking at.
+**I want to** add more than one `AreaImage` to a `area`
+**So that** I can help others know what `area` they're looking at.
 
 **Priority:** P1
-**Independent test:** On `Maintenance.vue`, press on the **Department Images** container, press **+ New Image** on the **Department Images** modal, option to choose between Google Drive or upload (system file-picker), uploaded image is _appended_ to `DepartmentImages` table with the same VIN as the selected `department`, and the **Department Images** list inside the **Department Images** modal reloads without the page reloading, clicking **Close** or anywhere outside modal closes modal.
+**Independent test:** On `Maintenance.vue`, press on the **Area Images** container, press **+ New Image** on the **Area Images** modal, option to choose between Google Drive or upload (system file-picker), uploaded image is _appended_ to `AreaImages` table with the same VIN as the selected `area`, and the **Area Images** list inside the **Area Images** modal reloads without the page reloading, clicking **Close** or anywhere outside modal closes modal.
 **Acceptance scenarios:** see ### US-11.9 under Acceptance Criteria
 
-### US-11.10: Delete DepartmentImage on Department listings
+### US-11.10: Delete AreaImage on Area listings
 
 **As a** authenticated user with the `admin` or `maintenance` role
-**I want to** remove a `DepartmentImage` from a `department`
-**So that** I can replace incorrect `DepartmentImages`.
+**I want to** remove a `AreaImage` from a `area`
+**So that** I can replace incorrect `AreaImages`.
 
 **Priority:** P1
-**Independent test:** On `Maintenance.vue`, press on the **Department Images** container, opens the **Department Images** modal, hover over a `DepartmentImage`, `X` appears in top-right corner of `DepartmentImage` which colors anything beneath it in negative color so it contrasts strongly and is easy to find, clicking `X` DELETEs the `DepartmentImage` from both the displayed list and the `DepartmentImages` table, `DepartmentImage` list in the **Vehicle Images** modal refreshes without the page refreshing, clicking **Close** or anywhere outside modal closes modal.
+**Independent test:** On `Maintenance.vue`, press on the **Area Images** container, opens the **Area Images** modal, hover over a `AreaImage`, `X` appears in top-right corner of `AreaImage` which colors anything beneath it in negative color so it contrasts strongly and is easy to find, clicking `X` DELETEs the `AreaImage` from both the displayed list and the `AreaImages` table, `AreaImage` list in the **Vehicle Images** modal refreshes without the page refreshing, clicking **Close** or anywhere outside modal closes modal.
 **Acceptance scenarios:** see ### US-11.10 under Acceptance Criteria
 
-### US-11.11: See DepartmentImage on Vehicle listing
+### US-11.11: See AreaImage on Vehicle listing
 
 **As a** authenticated user filling out the `RequestForm.vue` component
-**I want to** see the `DepartmentImage` of my selected `department`
-**So that** I know I've selected the correct `department`.
+**I want to** see the `AreaImage` of my selected `area`
+**So that** I know I've selected the correct `area`.
 
 **Priority:** P1
 **Independent test:** [write after getting confirmation about RequestForm component from Ethan]
@@ -196,63 +197,57 @@
 
 Mount prefix: `/vehicle-t3`. Flat JSON (no `{ success, data }` envelope). Errors: `{ "message": "Human-readable explanation." }`. Authenticated writes send `Authorization: Bearer <token>`.
 
-This feature uses the `Images` endpoints below.
-Auth surrounded by [brackets] is dependent on whether the operation is performed on a `image` the executing user wrote.
+This feature uses the `[type]image` endpoints below.
 
-| Method   | Endpoint                                                       | Auth | Purpose                                                                    |
-| -------- | -------------------------------------------------------------- | ---- | -------------------------------------------------------------------------- |
-| `GET`    | `/vehicle-t3/images`                                           | Yes  | List all `images`                                                          |
-| `POST`   | `/vehicle-t3/images/`                                          | Yes  | Add a `image`                                                              |
-| `GET`    | `/vehicle-t3/images/image/:imageId`                            | Yes  | List the details of the `image` with the `id` `:imageId`                   |
-| `GET`    | `/vehicle-t3/images/request/:requestId`                        | Yes  | List all the `images` attached to the `request` with the `id` `:requestId` |
-| `GET`    | `/vehicle-t3/images/user/:userId`                              | Yes  | List all `images` contributed to by the `user` with the `id` `:userId`     |
-| `PUT`    | `/vehicle-t3/images/image/:imageId`                            | Yes  | Overwrite the details of the `image` with the `id` `:imageId`              |
-| `DELETE` | `/vehicle-t3/images/image/:imageId`                            | Yes  | Remove the `image` with the `id` `:imageId`                                |
-| `DELETE` | `/vehicle-t3/images/request/:requestId`                        | Yes  | Remove all `images` with the `request_id` `:requestId`                     |
-| `GET`    | `/vehicle-t3/images/contributors`                              | Yes  | List all `image` `contributions`                                           |
-| `POST`   | `/vehicle-t3/images/contributors`                              | Yes  | Add a `image` `contribution`                                               |
-| `GET`    | `/vehicle-t3/images/contributors/image/:imageId`               | Yes  | List the `contributions` for the `image` with the `id` `:imageId`          |
-| `GET`    | `/vehicle-t3/images/contributors/user/:userId`                 | Yes  | List all `contributions` created by the user with the `id` `:userId`       |
-| `DELETE` | `/vehicle-t3/images/contributors/contribution/:contributionId` | Yes  | Remove the `contribution` with the `id` `:contributionId`                  |
-| `DELETE` | `/vehicle-t3/images/contributors/image/:imageId`               | Yes  | Remove all `contributions` with the `image_id` `:imageId`                  |
+`[type]` is a stand-in, not a path segment and not a JSON field. Replace every `[type]` in a path with the same one of `note`, `vehicle`, or `area`. The registered paths are concrete, for example `GET /vehicle-t3/noteimage/note/5`. A path whose `[type]` tokens differ, such as `GET /vehicle-t3/noteimage/vehicle/5`, is `404`. Any other word is `404`.
+
+`GET /vehicle-t3/[type]image/:id` loads the image row whose own `id` is `:id`. `GET /vehicle-t3/[type]image/[type]/:[type]Id` loads every image attached to that parent. The static `[type]` segment between `image` and the parent id keeps those two `GET`s distinct. Register the parent route before `GET /:id`, and limit that segment to `note`, `vehicle`, or `area`.
+
+Mount one image router three times: `/vehicle-t3/noteimage`, `/vehicle-t3/vehicleimage`, and `/vehicle-t3/areaimage`. The handler switches on `[type]` to choose the model and foreign key: `note` -> `NoteImage.note_id`, `vehicle` -> `VehicleImage.vehicle_id`, `area` -> `AreaImage.area_id`. The parent id can be one parameter, such as `:parentId`; the switch decides which column it filters.
+
+| Method   | Endpoint                                   | Auth | Purpose                                                            |
+| -------- | ------------------------------------------ | ---- | ------------------------------------------------------------------ |
+| `GET`    | `/vehicle-t3/[type]image`                  | Yes  | List all images for that `[type]` in batches of at most `3`        |
+| `POST`   | `/vehicle-t3/[type]image/`                 | Yes  | Create a new image for that `[type]`                               |
+| `GET`    | `/vehicle-t3/[type]image/:id`              | Yes  | List information about the image with the `id` `:id`               |
+| `GET`    | `/vehicle-t3/[type]image/[type]/:[type]Id` | Yes  | List all images attached to the parent whose `id` is `:[type]Id`   |
+| `DELETE` | `/vehicle-t3/[type]image/[type]/:[type]Id` | Yes  | Delete all images attached to the parent whose `id` is `:[type]Id` |
 
 **Unauthenticated write:** (`401`) login error
 **Unauthorized write:** (`403`) forbidden
 
-### Read Images (`GET /vehicle-t3/images`)
+**The [type] placeholder in the below API responses behaves the same as the [type] placeholder in the above table and paragraphs.**
 
-**Success:** (`200`): the next batch of at most `3` `images`, sorted by the most recent `date`. `offset` is the number of `images` already retrieved. Missing `offset` → `offset` defaults to `0`. Fewer than `3` `images` in the array means that batch is the last one. `[]` means no `images` remain.
+Corrupted images can be uploaded and retrieved, the end user is responsible for uploading valid files.
 
-`GET /vehicle-t3/images?offset=0`
+### Read [type]Images (`GET /vehicle-t3/[type]image`)
+
+**Success:** (`200`): the next batch of at most `3` `[type]Images`, sorted by the most recent `date`. `offset` is the number of `[type]Images` already retrieved. Missing `offset` -> `offset` defaults to `0`. Fewer than `3` `[type]Images` in the array means that batch is the last one. `[]` means no `[type]Images` remain.
+
+`GET /vehicle-t3/[type]images?offset=0`
 
 ```json
 [
   {
-    "id": 1,
-    "reason": "test",
-    "maintenance_request": false,
-    "request_id": 5,
-    "created_by": 12345,
-    "date": "2026-11-02",
-    "text": "this is an extremely long image text. I chose TEXT as the data type because someone's image might contain many more than 255 characters. TEXT is a valid data type, and it can be stored in SQL as VARCHAR('max'). Sequelize should handle that automatically."
-  },
-  {
-    "id": 2,
-    "reason": "test2",
-    "maintenance_request": true,
-    "request_id": 6,
-    "created_by": 54321,
-    "date": "2026-11-02",
-    "text": "this is another extremely long image text. I chose TEXT as the data type because someone's image might contain many more than 255 characters. TEXT is a valid data type, and it can be stored in SQL as VARCHAR('max'). Sequelize should handle that automatically."
+    "id": 4,
+    "image": 0x89504E470D0A1A0A0000000D49484452000000010000000108020000009077
+53DE0000000C4944415408D763F8CFC000000301010018DD8DB00000000049454E44AE426082,
+    "date": 2026-11-09,
+    "[type]_id": 5
   },
   {
     "id": 3,
-    "reason": "test3",
-    "maintenance_request": true,
-    "request_id": 6,
-    "created_by": 99,
-    "date": "2026-11-03",
-    "text": "well well well..."
+    "image": 0x89504E470D0A1A0A0000000D40484452000000010000000108020000009077
+53DE0000000C4944415408D763F8CFC000000301010008DDFFB00123000050454E44AE426082,
+    "date": 2026-11-08,
+    "[type]_id": 8
+  },
+  {
+    "id": 2,
+    "image": 0x89504E470D0A1A0A0000000D49484452000000010000000108020000009077
+53DE0000000C4944415408D763F8CFC000000301010018DD8DB00000000049454E44AE426082,
+    "date": 2026-11-02,
+    "[type]_id": 2
   }
 ]
 ```
@@ -262,13 +257,11 @@ Auth surrounded by [brackets] is dependent on whether the operation is performed
 ```json
 [
   {
-    "id": 4,
-    "reason": "test4",
-    "maintenance_request": false,
-    "request_id": 5,
-    "created_by": 12345,
-    "date": "2026-10-25",
-    "text": "this is the last image."
+    "id": 1,
+    "image": 0x89504E400D0A1A0A000FFF0D40484452000000010000000108021111119077
+53DE0000000C4944415408D763F8CFC000000301010008DDFFB00123000050454E44AE426082,
+    "date": 2026-10-30,
+    "[type]_id": 1
   }
 ]
 ```
@@ -392,9 +385,9 @@ Auth surrounded by [brackets] is dependent on whether the operation is performed
 }
 ```
 
-Missing `maintenance_request` → `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` → `400` bad request.
-Duplicate `request_id` and `text` (combined) → `409` conflict.
+Missing `maintenance_request` -> `maintenance_request` defaults to `false`
+Missing `reason`, `request_id`, `text` -> `400` bad request.
+Duplicate `request_id` and `text` (combined) -> `409` conflict.
 
 **Server error:** (`500`) `{ "message": "…" }`.
 
@@ -424,9 +417,9 @@ Duplicate `request_id` and `text` (combined) → `409` conflict.
 }
 ```
 
-Missing `maintenance_request` → `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` → `400` bad request.
-Duplicate `request_id` and `text` (combined) → `409` conflict.
+Missing `maintenance_request` -> `maintenance_request` defaults to `false`
+Missing `reason`, `request_id`, `text` -> `400` bad request.
+Duplicate `request_id` and `text` (combined) -> `409` conflict.
 
 **Unauthorized:** (`403`) Forbidden
 **Server error:** (`500`) `{ "message": "…" }`.
@@ -509,9 +502,9 @@ Duplicate `request_id` and `text` (combined) → `409` conflict.
 }
 ```
 
-Missing `date` → `date` defaults to current date
-Missing `image_id`, `contributor_id`, `created_image` → `400` bad request.
-Two contributions on the same `image_id` being `true` → `409` conflict.
+Missing `date` -> `date` defaults to current date
+Missing `image_id`, `contributor_id`, `created_image` -> `400` bad request.
+Two contributions on the same `image_id` being `true` -> `409` conflict.
 
 **Server error:** (`500`) `{ "message": "…" }`.
 
@@ -675,37 +668,45 @@ Body:
 
 ## Data Model Requirements
 
-This feature uses a `Images` table where each entry has an `id` used by other tables as a foreign key. Sequelize also stores `createdAt` / `updatedAt`.
+This feature uses different image tables where each entry has a foreign key to the item it belongs to. Sequelize also stores `createdAt` / `updatedAt`.
 
-### `Images` table
+### `NoteImage` table
 
-| Field                 | Type                    | Rules                 |
-| --------------------- | ----------------------- | --------------------- |
-| `id`                  | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL |
-| `reason`              | VARCHAR(255)            | Required              |
-| `maintenance_request` | BOOLEAN                 | Required              |
-| `request_id`          | INTEGER, FOREIGN KEY    | Required              |
-| `text`                | TEXT                    | Required              |
+| Field     | Type                    | Rules                                      |
+| --------- | ----------------------- | ------------------------------------------ |
+| `id`      | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
+| `image`   | BLOB                    | Required                                   |
+| `date`    | DATE                    | Derived from image metadata (or generated) |
+| `note_id` | INTEGER, FOREIGN KEY    | Required                                   |
 
-### `Contributors` table
+### `VehicleImage` table
 
-| Field            | Type                    | Rules                 |
-| ---------------- | ----------------------- | --------------------- |
-| `id`             | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL |
-| `image_id`       | INTEGER; FOREIGN KEY    | Required              |
-| `contributor_id` | INTEGER; FOREIGN KEY    | Required              |
-| `created_image`  | BOOLEAN                 | Required              |
-| `date`           | DATE                    | Required              |
+| Field        | Type                    | Rules                                      |
+| ------------ | ----------------------- | ------------------------------------------ |
+| `id`         | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
+| `image`      | BLOB                    | Required                                   |
+| `date`       | DATE                    | Derived from image metadata (or generated) |
+| `vehicle_id` | INTEGER, FOREIGN KEY    | Required                                   |
+
+### `AreaImage` table
+
+| Field     | Type                    | Rules                                      |
+| --------- | ----------------------- | ------------------------------------------ |
+| `id`      | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
+| `image`   | BLOB                    | Required                                   |
+| `date`    | DATE                    | Derived from image metadata (or generated) |
+| `area_id` | INTEGER, FOREIGN KEY    | Required                                   |
 
 ### Associations
 
-- `Requests` hasMany `Images`
-- `Images` belongsTo `Requests`
-- `Images` belongsTo `Users`
+- `Notes` hasMany `NoteImage`
+- `NoteImage` belongsTo `Notes`
 
-- `Images` hasMany `Contibutors`
-- `Contributors` belongsTo `Images`
-- `Contributors` belongsTo `Users`
+- `Vehicles` hasMany `VehicleImage`
+- `VehicleImage` belongsTo `Vehicles`
+
+- `Areas` hasMany `AreaImage`
+- `AreaImage` belongsTo `Areas`
 
 ---
 
@@ -724,7 +725,7 @@ This feature uses a `Images` table where each entry has an `id` used by other ta
 **Given** I am an authenticated user with `maintenance` or `admin` role on `Vehicles.vue`
 **When** I press the wrench list icon to navigate to `Maintenance.vue`
 **Then** I can see the **Images List** component in **Embed** mode embedded at the bottom of `Maintenance.vue` titled **Vehicle Maintenance Images**
-**And** the **Vehicle Maintenance Images** list contains every `image` that both has `maintenance_request` set to `true` and has the same `request_id` as any `request` containing the same `vehicle_id` as the `vin` of the `department` selected to get to `Maintenance.vue`.
+**And** the **Vehicle Maintenance Images** list contains every `image` that both has `maintenance_request` set to `true` and has the same `request_id` as any `request` containing the same `vehicle_id` as the `vin` of the `area` selected to get to `Maintenance.vue`.
 
 #### Scenario: More than 3 Images in a Image List
 
@@ -989,7 +990,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 9 from @features/feature-9-image-crud.md on branch `feature/9-image-crud`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.

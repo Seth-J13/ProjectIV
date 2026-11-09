@@ -63,11 +63,7 @@
 
 ---
 
-
-
 ## Requirements
-
-
 
 ### Functional Requirements
 
@@ -91,8 +87,6 @@
 
 ---
 
-
-
 ## Assumptions
 
 - Feature 1 is already available: email/password **Login**, **Create Account**, server sessions, `localStorage` `user`, **Logout**, and `/landing` with the placeholder **"This feature has not been implemented yet"**.
@@ -104,8 +98,6 @@
 
 ---
 
-
-
 ## Google Developer Console
 
 Link this app to Google before the Login button can obtain an ID token.
@@ -116,34 +108,28 @@ Link this app to Google before the Login button can obtain an ID token.
 4. Add the frontend origin as an authorized JavaScript origin. In dev that origin is `http://localhost:8082`.
 5. Copy the two codes from that client into environment configuration. Do not commit real values.
 
-
 | Code                   | Where it is stored                                                               | What it links                                                                                       |
 | ---------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `GOOGLE_CLIENT_ID`     | Backend `GOOGLE_CLIENT_ID` and frontend `VITE_GOOGLE_CLIENT_ID` (the same value) | The Google button on Login, and the audience check in the backend login service                     |
 | `GOOGLE_CLIENT_SECRET` | Backend `GOOGLE_CLIENT_SECRET` only                                              | The same OAuth client, on the server. The login service loads it and never sends it to the browser. |
 
-
 Put placeholders in `backend/.env.example` and `backend/.env.test.example`. Put the client ID placeholder in `frontend/.env.example` as `VITE_GOOGLE_CLIENT_ID`. The ID token check uses `GOOGLE_CLIENT_ID`. The secret is server-only configuration from that same client.
 
 ---
 
-
-
 ## Edge Cases
 
-- User cancels the Google prompt → stay on Login, no session, **"Google sign-in was cancelled."**
-- Missing ID token → **400** `"Google sign-in failed."`
-- Invalid, expired, wrong-audience, or unverified Google token → **401** `"Google sign-in failed."`
-- Verified token with no given name or no family name → **400** `"Google did not provide a name."`; no user row and no session
-- Verified email already used by an email/password account → **409** `"Email already in use!"`; that user row is unchanged
-- Email/password **Login** on a Google-only account → **401** `"Invalid password!"`
-- Same `googleSub` signs in again → one user row; session reused or created per Feature 1
-- Expired app session after Google sign-in → Feature 1 **401** handling; frontend clears `user` and redirects to Login
-- Protected route with no Bearer token, or with a token the Google login service did not issue and Feature 1 does not recognize → **401**; the handler does not run
+- User cancels the Google prompt -> stay on Login, no session, **"Google sign-in was cancelled."**
+- Missing ID token -> **400** `"Google sign-in failed."`
+- Invalid, expired, wrong-audience, or unverified Google token -> **401** `"Google sign-in failed."`
+- Verified token with no given name or no family name -> **400** `"Google did not provide a name."`; no user row and no session
+- Verified email already used by an email/password account -> **409** `"Email already in use!"`; that user row is unchanged
+- Email/password **Login** on a Google-only account -> **401** `"Invalid password!"`
+- Same `googleSub` signs in again -> one user row; session reused or created per Feature 1
+- Expired app session after Google sign-in -> Feature 1 **401** handling; frontend clears `user` and redirects to Login
+- Protected route with no Bearer token, or with a token the Google login service did not issue and Feature 1 does not recognize -> **401**; the handler does not run
 
 ---
-
-
 
 ## Success Criteria
 
@@ -158,12 +144,9 @@ Put placeholders in `backend/.env.example` and `backend/.env.test.example`. Put 
 
 ---
 
-
-
 ## Data Ownership & Isolation
 
 Feature 2 starts a session for the person Google just verified, or creates that person's own user row when the Google subject is new. Google holds the sign-in credentials. This feature does not read or write another user's account.
-
 
 | Rule                  | Requirement                                                                                                                                                        |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -174,10 +157,7 @@ Feature 2 starts a session for the person Google just verified, or creates that 
 | **UI scope**          | Login shows **Continue with Google**. After success, MenuBar and `/landing` behave as Feature 1 for this user.                                                     |
 | **Google scope**      | Only `openid`, `email`, and `profile`. Sign-in credentials stay at Google.                                                                                         |
 
-
 ---
-
-
 
 ## Key Entities
 
@@ -187,15 +167,11 @@ Feature 2 starts a session for the person Google just verified, or creates that 
 
 ---
 
-
-
 ## API Requirements
-
 
 | Method | Endpoint      | Auth | Purpose                                                                                         |
 | ------ | ------------- | ---- | ----------------------------------------------------------------------------------------------- |
 | `POST` | `/api/google` | No   | Backend Google login service: verify a Google ID token, then create or reuse a user and session |
-
 
 **Request body:**
 
@@ -222,7 +198,6 @@ Feature 2 starts a session for the person Google just verified, or creates that 
 
 Quoted messages that tests must match:
 
-
 | Situation                                             | Status | `message`                        |
 | ----------------------------------------------------- | ------ | -------------------------------- |
 | Missing ID token                                      | 400    | `Google sign-in failed.`         |
@@ -231,27 +206,20 @@ Quoted messages that tests must match:
 | Email already belongs to a password account           | 409    | `Email already in use!`          |
 | Email/password login on a Google-only account         | 401    | `Invalid password!`              |
 
-
 Email/password login on a Google-only account is still `POST /api/login` from Feature 1. This feature adds the **401** outcome for a null password.
 
 **Route authorization.** `authenticate` reads `Authorization: Bearer <session token>`, checks the Feature 1 session, and sets the caller. The Google login service is public. Protected routes accept a session token from email/password login or from `POST /api/google`.
 
-
-| Method | Endpoint        | Auth                         | This feature                                                                                    |
-| ------ | --------------- | ---------------------------- | ----------------------------------------------------------------------------------------------- |
-| `POST` | `/api/google`   | No                           | Google login service. Must not use `authenticate`.                                              |
-| `POST` | `/api/login`    | No                           | Feature 1. Unchanged.                                                                           |
-| `POST` | `/api/register` | No                           | Feature 1. Unchanged.                                                                           |
-| `POST` | `/api/logout`   | Yes (`Bearer` session token) | Protected. A Google-issued session token MUST authorize it. Missing or expired token → **401**. |
-
+| Method | Endpoint        | Auth                         | This feature                                                                                     |
+| ------ | --------------- | ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| `POST` | `/api/google`   | No                           | Google login service. Must not use `authenticate`.                                               |
+| `POST` | `/api/login`    | No                           | Feature 1. Unchanged.                                                                            |
+| `POST` | `/api/register` | No                           | Feature 1. Unchanged.                                                                            |
+| `POST` | `/api/logout`   | Yes (`Bearer` session token) | Protected. A Google-issued session token MUST authorize it. Missing or expired token -> **401**. |
 
 ---
 
-
-
 ## Screen Requirements
-
-
 
 ### [View: Login] — route name `login` (`/`)
 
@@ -263,14 +231,10 @@ Email/password login on a Google-only account is still `POST /api/login` from Fe
 - **Cancel:** stay on Login and show **"Google sign-in was cancelled."**
 - **Error:** show the API `message` (**"Google sign-in failed."**, **"Google did not provide a name."**, **"Email already in use!"**). Stay on Login. Do not store `user`.
 
-
-
 ### [View: Placeholder] — route name `landing` (`/landing`)
 
 - Unchanged from Feature 1. The only content is **"This feature has not been implemented yet"**.
 - Shown after **Continue with Google** and after refresh of a Google session.
-
-
 
 ### App chrome — `MenuBar`
 
@@ -279,20 +243,16 @@ Email/password login on a Google-only account is still `POST /api/login` from Fe
 
 ---
 
-
-
 ## Data Model Requirements
 
 This feature **extends** `users` from Feature 1. It uses the existing `sessions` table and does not add columns to `sessions`.
 
 ### `users` table (delta)
 
-
 | Field       | Type   | Rules                                                                                                                                                  |
 | ----------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `googleSub` | STRING | Nullable, unique when set. Google `sub` from the verified token. Required for accounts created by this feature.                                        |
 | `password`  | STRING | Required for email/password accounts. Null for accounts created by **Continue with Google**. Bcrypt hash only when set. Never store a Google password. |
-
 
 `email` stays required and unique. A Google-created row still stores the verified email so MenuBar and Feature 1 session lookup by email keep working.
 
@@ -302,15 +262,9 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 
 ---
 
-
-
 ## Acceptance Criteria (Gherkin)
 
-
-
 ### US-2.1 — Continue with Google
-
-
 
 #### Scenario: New Google user signs in
 
@@ -323,8 +277,6 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **And** I land on `/landing`
 - **And** I see **"This feature has not been implemented yet"**
 
-
-
 #### Scenario: Sign-in data stays on Google
 
 - **Given** Google has confirmed a new verified account
@@ -332,8 +284,6 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **Then** the stored account has a `googleSub` and no password
 - **And** the response includes a session token
 - **And** the response includes no password and no Google token
-
-
 
 #### Scenario: Refresh after Google sign-in
 
@@ -343,8 +293,6 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **Then** I remain logged in
 - **And** I see **"This feature has not been implemented yet"**
 
-
-
 #### Scenario: Logging out a Google session
 
 - **Given** I have a valid session from **Continue with Google**
@@ -353,11 +301,7 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **Then** I am logged out of the user session
 - **And** I am redirected to the Login page
 
-
-
 ### US-2.2 — Sign in again with the same Google account
-
-
 
 #### Scenario: Same Google account signs in again
 
@@ -370,11 +314,7 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **And** I land on `/landing`
 - **And** I see **"This feature has not been implemented yet"**
 
-
-
 ### US-2.3 — Keep email/password accounts separate
-
-
 
 #### Scenario: Email already has a password account
 
@@ -387,8 +327,6 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **And** I am not signed in
 - **And** that account is unchanged
 
-
-
 #### Scenario: Password login cannot open a Google account
 
 - **Given** I am on the Login page
@@ -398,11 +336,7 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **And** I remain on Login
 - **And** I am not signed in
 
-
-
 ### US-2.4 — Stay signed out when Google does not confirm
-
-
 
 #### Scenario: User cancels Google
 
@@ -413,8 +347,6 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **And** I remain on Login
 - **And** I am not signed in
 
-
-
 #### Scenario: Google rejects the sign-in
 
 - **Given** I am on the Login page
@@ -423,8 +355,6 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **Then** I see the message **"Google sign-in failed."**
 - **And** I remain on Login
 - **And** I am not signed in
-
-
 
 #### Scenario: Google account has no name
 
@@ -435,11 +365,7 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **And** I remain on Login
 - **And** I am not signed in
 
-
-
 ### US-2.5 — Authorize protected routes
-
-
 
 #### Scenario: Google session authorizes a protected route
 
@@ -447,8 +373,6 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 - **When** I call `POST /api/logout` with `Authorization: Bearer` set to that session token
 - **Then** the route authorizes the call
 - **And** I am logged out of the user session
-
-
 
 #### Scenario: Protected route rejects a missing session
 
@@ -459,12 +383,9 @@ This feature **extends** `users` from Feature 1. It uses the existing `sessions`
 
 ---
 
-
-
 ## Test Coverage Map
 
 Each scenario above must map to at least one automated test. Tests substitute Google's ID token verification and do not call Google's network.
-
 
 | Story  | Scenario                                    | Test file                           | Test name                                           |
 | ------ | ------------------------------------------- | ----------------------------------- | --------------------------------------------------- |
@@ -481,12 +402,9 @@ Each scenario above must map to at least one automated test. Tests substitute Go
 | US-2.5 | Google session authorizes a protected route | `backend/tests/googleAuth.test.js`  | `it("Google session authorizes a protected route")` |
 | US-2.5 | Protected route rejects a missing session   | `backend/tests/googleAuth.test.js`  | `it("Protected route rejects a missing session")`   |
 
-
 `it("Google rejects the sign-in")` covers a missing ID token (**400**) and an invalid or unverified token (**401**). Both use **"Google sign-in failed."**
 
 ---
-
-
 
 ## Agent implementation request
 
@@ -495,7 +413,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 2 from @features/feature-2-Google-Auth.md on branch `feature/2-google-auth`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.
@@ -519,8 +437,6 @@ Link the app with the Google Developer Console client ID and client secret throu
 
 ---
 
-
-
 ## Out of Scope
 
 - Vehicle records: create, edit, delete, and listing real vehicle data
@@ -536,4 +452,3 @@ Link the app with the Google Developer Console client ID and client secret throu
 - Storing vehicle, request, or other app records at Google
 - New protected product routes beyond Feature 1 `POST /api/logout`
 - Committing real `GOOGLE_CLIENT_ID` or `GOOGLE_CLIENT_SECRET` values
-

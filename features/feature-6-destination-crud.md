@@ -202,8 +202,8 @@ This feature uses the `Destinations` endpoints below.
 }
 ```
 
-Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` → `400` bad request.
-Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `409` conflict.
+Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` -> `400` bad request.
+Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` -> `409` conflict.
 
 **Success** (`201`)
 **Server error:** `500` `{ "message": "…" }`.
@@ -225,9 +225,9 @@ Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `
 }
 ```
 
-Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` → `400` bad request.
-Malformed `zip`, `city`, `state`, `addr_line_1`, `dest_name`, `last_visited_on` → `400` bad request.
-Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `409` conflict.
+Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` -> `400` bad request.
+Malformed `zip`, `city`, `state`, `addr_line_1`, `dest_name`, `last_visited_on` -> `400` bad request.
+Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` -> `409` conflict.
 
 **Success** (`201`)
 **Server error:** `500` `{ "message": "…" }`.
@@ -587,7 +587,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 6 from @features/feature-6-destination-crud.md on branch `feature/6-destination-crud`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.
