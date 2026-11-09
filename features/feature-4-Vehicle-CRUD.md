@@ -69,7 +69,7 @@
 **So that** I can view all vehicles that match the filters
 
 **Priority:** P2
-**Independent test:** I can see all filters `year`, `make`, `model`, `color`, `department`, `license`, `From Purchase Date`, `Before Purchase Date` as a `maintenance` or `admin`
+**Independent test:** I can see all filters `year`, `make`, `model`, `color`, `area_id`, `license`, `From Purchase Date`, `Before Purchase Date` as a `maintenance` or `admin`
 **Acceptance scenarios:** see ### US-4.6 under Acceptance Criteria
 
 ### US-4.7: Vehicle maintenance as a `maintenance` or `admin`
@@ -200,7 +200,7 @@ Feature 1 and 2 establishes identity
 | `color`               | VARCHAR(20)    | NULLABLE;                             |
 | `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
 | `tag_exp_month`       | DATE           | Required                              |
-| `department`          | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
+| `area_id`             | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
 | `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
 | `available`           | BIT            | Required                              |
 | `mileage`             | INTEGER        | NULLABLE, Non-negative                |
@@ -235,7 +235,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
   "color": "White",
   "license_plate_num": "ABC344",
   "tag_exp_month": "2016/5/25",
-  "department": "Engineering",
+  "area_id": 5,
   "most_recent_dest_id": null,
   "available": 1,
   "mileage": 0
@@ -261,7 +261,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 **Error response:** `{"message": "..."}`
 | Status | When | Message |
 | ------ | ---------------------------------------------------- | --------------------------------------------------- |
-| `400` | Missing field | `(attribute) is required` (same pattern for `make`, `model`, `year`, `purchased_date`, `tag_exp_mont`, `department`, and `available`)
+| `400` | Missing field | `(attribute) is required` (same pattern for `make`, `model`, `year`, `purchased_date`, `tag_exp_mont`, `area_id`, and `available`) |
 | `400` | Two vehicles share the same license plate number | `A vehicle already has license number (AAA-###)` |
 | `400` | Year is less than 1900 and greater than current year | `Select a year between 1900-Today` |
 | `401` | A user who's role is not `admin` or `maintenance` tries to view the page | `Unauthorized user` |
@@ -283,7 +283,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
   - `Make`: Combobox (Values should show all distinct `makes` in system or add a new make)
   - `Model`: Combobox (Values should show all distinct `models` in system or add a new model)
   - `Color`: Text field
-  - `Department`: Dropd own with all departments
+  - `Area`: Dropdown with all areas
   - `License`: Text field
   - `From Purchase Date`: Calendar Picker
   - `Before Purchase Date`: Calendar Picker
@@ -302,7 +302,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
     - `Model`- Combo box
     - `Year`- Drop down with values from 1900 to present year
     - `Color`- Text field
-    - `Department`- Drop down with all departments
+    - `Area`- Drop down with all areas
     - `Purchase Date` - Calendar Picker
     - `Tag Expiration Month` - Calendar Picker
     - `Fuel Type` - Combo box
@@ -621,12 +621,12 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** still applying all other filters
 - **And** no API request is sent
 
-#### Scenario: User chooses from the department drop down filter
+#### Scenario: User chooses from the area drop down filter
 
 - **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I select a value from the department drop down filter
+- **When** I select a value from the area drop down filter
 - **Then** the drop down field shows the selected value
-- **And** the frontend shows only the vehicles with that department
+- **And** the frontend shows only the vehicles with that area
 - **And** still applying all other filters
 - **And** no API request is sent
 
@@ -818,7 +818,7 @@ Each scenario above must map to at least one automated test.
 | US-4.5  | Vehicle does not have a color value                                                                                               | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a color value")`                                                                                               |
 | US-4.5  | Vehicle does not have a license plate number value                                                                                | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a license plate number value")`                                                                                |
 | US-4.6  | User chooses from the year drop down filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User chooses from the year drop down filter")`                                                                                       |
-| US-4.6  | User chooses from the department drop down filter                                                                                 | `frontend/tests/Vehicle.test.js` | `it("User chooses from the department drop down filter")`                                                                                 |
+| US-4.6  | User chooses from the area drop down filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User chooses from the area drop down filter")`                                                                                       |
 | US-4.6  | User begins to type in the `Make` filter                                                                                          | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Make` filter")`                                                                                          |
 | US-4.6  | User begins to type in the `Model` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Model` filter")`                                                                                         |
 | US-4.6  | User begins to type in the `Color` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Color` filter")`                                                                                         |
@@ -826,15 +826,15 @@ Each scenario above must map to at least one automated test.
 | US-4.6  | User chooses from the `From Purchase Date` date filter                                                                            | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `From Purchase Date` date filter")`                                                                            |
 | US-4.6  | User chooses from the `Before Purchase Date` date filter                                                                          | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `Before Purchase Date` date filter")`                                                                          |
 | US-4.7  | User clicks the `Maintenance` icon button                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User clicks the `Maintenance` icon button")`                                                                                         |
-| US-4.8  | User hovers over a vehicle list item as a `maintenance` or `admin`                                                                | `frontend/tests/Vehicle.test.js` | `it("User hovers over a vehicle list item as a `maintenance` or `admin`")`                                                                |
+| US-4.8  | User hovers over a vehicle list item as a `maintenance` or `admin`                                                                | `frontend/tests/Vehicle.test.js` | `it("User hovers over a vehicle list item as a `maintenance`or`admin`")`                                                                  |
 | US-4.9  | `Confirm Create New Maintenance Info` modal opens                                                                                 | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Maintenance Info\` modal opens")`                                                                               |
 | US-4.9  | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
-| US-4.9  | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed                                                 | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed")`                                                 |
-| US-4.9  | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open                                                   | `backend/tests/vehicles.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open")`                                                   |
+| US-4.9  | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed                                                 | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal closed")`                                                   |
+| US-4.9  | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open                                                   | `backend/tests/vehicles.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal open")`                                                     |
 | US-4.10 | `Confirm Create New Fuel Type` modal opens                                                                                        | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Fuel Type\` modal opens")`                                                                                      |
 | US-4.10 | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
-| US-4.10 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed                                          | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed")`                                          |
-| US-4.10 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open                                            | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open")`                                            |
+| US-4.10 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed                                          | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal closed")`                                            |
+| US-4.10 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open                                            | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal open")`                                              |
 
 ---
 
