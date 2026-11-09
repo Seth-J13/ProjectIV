@@ -38,41 +38,32 @@
 **Independent test:** I land on the landing page and view a list of vehicles that have maintenance requests
 **Acceptance scenarios:**see ### US-12.3 under Acceptance Criteria
 
-### US-12.4: View All Available Vehicles
-**As a** `admin`
-**I want to** view a list of all available vehicles
-**So that** I can manage all available vehicles 
-
-**Priority:** P2
-**Independent test:** I land on the landing page and view a list of all available vehicles
-**Acceptance scenarios:**see ### US-12.4 under Acceptance Criteria
-
-### US-12.5: Toggle between Vehicle Request Form and Maintenance Request
+### US-12.4: Toggle between Vehicle Request Form and Maintenance Request
 **As a** (`admin`, `maintenance`)
 **I want to** toggle between different `Vehicle Request Form` and `Maintenance Request`
 **So that** I can make different requests as needed
 
 **Priority:** P1
 **Independent test:** I land on the landing page and I see a toggle switch that changes the form component
-**Acceptance scenarios:**see ### US-12.5 under Acceptance Criteria
+**Acceptance scenarios:**see ### US-12.4 under Acceptance Criteria
 
-### US-12.6: View `Vehicle Request Form` component
+### US-12.5: View `Vehicle Request Form` component
 **As a** (`admin`, `maintenance`, `driver`, and `user`)
 **I want to** view the `Vehicle Request Form` component
 **So that** I can make a request for to reserve a vehicle
 
 **Priority:** P1
 **Independent test:** I land on the landing page and at the bottom is the `Vehicle Request Form` component
-**Acceptance scenarios:**see ### US-12.6 under Acceptance Criteria
+**Acceptance scenarios:**see ### US-12.5 under Acceptance Criteria
 
-### US-12.7: View `Maintenance Request Form` component
+### US-12.6: View `Maintenance Request Form` component
 **As a** (`admin`, `maintenance`)
 **I want to** view the `Maintenance Request Form` component
 **So that** I can make a request for to reserve a vehicle for maintenance
 
 **Priority:** P1
 **Independent test:** I land on the landing page and at the bottom is the `Maintenance Request Form` component
-**Acceptance scenarios:**see ### US-12.7 under Acceptance Criteria
+**Acceptance scenarios:**see ### US-12.6 under Acceptance Criteria
 
 ---
 
@@ -225,13 +216,60 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ### US-12.1 — View All Available Vehicles
 
+#### Scenario: User logs in and `Landing.vue` is loaded
+
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I log in 
+- **And** the `Landing.vue` has loaded
+- **And** a `GET` request is sent to get all vehicles
+- **Then** the list displays all vehicles available to reserve
+
+#### Scenario: User clicks a vehicle in the `All Available Vehicles` list
+
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I click a list item
+- **Then** the `Vehicle Request From` will have vehicle details filled out
+- **And** no API request is sent
+
+---
+
+### US-12.2 — View `My` Reserved Vehicles
+
+#### Scenario: User logs in and `Landing.vue` is loaded
+
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I log in
+- **And** the `Landing.vue` has loaded  
+- **And** a `GET` request is sent to get all vehicles 
+- **And** a `GET` request is sent to get all requests with my userId
+- **Then** I see all the vehicles associated with my requests
+
+#### Scenario: User clicks on a list item
+
+- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **When** I click one of the vehicles that I have reserved
+- **Then** I am sent to the `Requests.vue`
+- **And** no API request is sent
+
+---
+
+### US-12.3 — View Vehicles Currently in Service
+
+#### Scenario: User logs in and `Landing.vue` is loaded 
+
+- **Given** I am a (`admin` or `maintenance`)
+- **When** I log in
+- **And** a
+- **Then** 
+- **And** no API request is sent
+
 #### Scenario: 
 
 - **Given** 
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -239,15 +277,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
+- **And** no API request is sent
 
 ---
 
@@ -259,7 +289,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -267,7 +297,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -275,7 +305,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 ---
 
@@ -287,7 +317,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent 
 
 #### Scenario: 
 
@@ -295,7 +325,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -303,7 +333,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent 
 
 ---
 
@@ -315,7 +345,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -323,7 +353,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -331,7 +361,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 ---
 
@@ -343,7 +373,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -351,7 +381,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
+- **And** no API request is sent
 
 #### Scenario: 
 
@@ -359,63 +389,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** 
 - **And** 
 - **Then** 
-- **And** 
-
----
-
-### US-12. — 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-
----
-
-### US-12. — 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-
-#### Scenario: 
-
-- **Given** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
+- **And** no API request is sent
 
 ---
 
