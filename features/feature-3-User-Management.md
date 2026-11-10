@@ -1,7 +1,7 @@
 # Feature: User Management
 
-**Feature ID:** 13
-**Branch pattern:** `feature/13-user-management`
+**Feature ID:** 3
+**Branch pattern:** `feature/3-user-management`
 **Status:** Ready
 **Created:** 2026-10-29
 **Input:** An admin can open a user management page to view and edit user data.
@@ -9,16 +9,6 @@
 
 - [Feature 1 — User Auth & Session Management](./feature-1-User-Auth-&-Session-Management.md)
 - [Feature 2 — Google Auth](./feature-2-Google-Auth.md)
-- [Feature 3 — Department CRUD](./feature-3-Department-CRUD.md)
-- [Feature 4 — Vehicle CRUD](./feature-4-Vehicle-CRUD.md)
-- [Feature 5 — Maintenance CRUD](./feature-5-Maintenance-Info-CRUD.md)
-- [Feature 6 — Destination CRUD](./feature-6-destination-crud.md)
-- [Feature 7 — Driver CRUD](./feature-7-Driver-CRUD.md)
-- [Feature 8 — Requests CRUD](./feature-8-Requests-Crud.md)
-- [Feature 9 — Note CRUD](./feature-9-Note-CRUD.md)
-- [Feature 10 — Vehicle Service Log CRUD](./feature-10-Vehicle-Service-Log-CRUD.md)
-- [Feature 11 — Images](./feature-11-Images.md)
-- [Feature 12 — Landing Vue](./feature-12-Landing-Vue.md)
 
 ---
 
@@ -28,7 +18,7 @@
 
 
 
-### US-13.1: View users
+### US-3.1: View users
 
 **As an** admin
 **I want to** open a user management page and see each account's data
@@ -36,9 +26,9 @@
 
 **Priority:** P1
 **Independent test:** Sign in as an admin, open `/users`, and see every account's first name, last name, email, and role, with no password.
-**Acceptance scenarios:** see ### US-13.1 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-3.1 under Acceptance Criteria
 
-### US-13.2: Edit user data
+### US-3.2: Edit user data
 
 **As an** admin
 **I want to** change a user's name, email, and role
@@ -46,9 +36,9 @@
 
 **Priority:** P1
 **Independent test:** From `/users`, edit one user and confirm the list shows the new first name, last name, email, and role.
-**Acceptance scenarios:** see ### US-13.2 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-3.2 under Acceptance Criteria
 
-### US-13.3: Keep the page admin-only
+### US-3.3: Keep the page admin-only
 
 **As a** user who is not an admin
 **I want** user management to stay closed
@@ -56,7 +46,7 @@
 
 **Priority:** P1
 **Independent test:** Sign in as a non-admin and confirm `/users` is not available and the user APIs reject the call.
-**Acceptance scenarios:** see ### US-13.3 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-3.3 under Acceptance Criteria
 
 ---
 
@@ -127,7 +117,7 @@
 
 ## Data Ownership & Isolation
 
-Feature 13 lets an admin read and update account fields for any user. It does not reveal credentials or another user's session.
+Feature 3 lets an admin read and update account fields for any user. It does not reveal credentials or another user's session.
 
 
 | Rule                  | Requirement                                                                                                                        |
@@ -270,7 +260,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 
 
-### US-13.1 — View users
+### US-3.1 — View users
 
 
 
@@ -294,7 +284,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 
 
-### US-13.2 — Edit user data
+### US-3.2 — Edit user data
 
 
 
@@ -330,7 +320,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 
 
-### US-13.3 — Keep the page admin-only
+### US-3.3 — Keep the page admin-only
 
 
 
@@ -372,14 +362,14 @@ Each scenario above must map to at least one automated test.
 
 | Story   | Scenario                              | Test file                               | Test name                                     |
 | ------- | ------------------------------------- | --------------------------------------- | --------------------------------------------- |
-| US-13.1 | Admin opens user management           | `frontend/tests/UserManagement.test.js` | `it("Admin opens user management")`           |
-| US-13.1 | Refresh user management               | `frontend/tests/UserManagement.test.js` | `it("Refresh user management")`               |
-| US-13.2 | Admin edits a user                    | `frontend/tests/UserManagement.test.js` | `it("Admin edits a user")`                    |
-| US-13.2 | Email already in use                  | `backend/tests/users.test.js`           | `it("Email already in use")`                  |
-| US-13.2 | Admin cannot change own role          | `backend/tests/users.test.js`           | `it("Admin cannot change own role")`          |
-| US-13.3 | Non-admin cannot open user management | `frontend/tests/UserManagement.test.js` | `it("Non-admin cannot open user management")` |
-| US-13.3 | Non-admin cannot edit a user          | `backend/tests/users.test.js`           | `it("Non-admin cannot edit a user")`          |
-| US-13.3 | Missing session cannot view users     | `backend/tests/users.test.js`           | `it("Missing session cannot view users")`     |
+| US-3.1 | Admin opens user management           | `frontend/tests/UserManagement.test.js` | `it("Admin opens user management")`           |
+| US-3.1 | Refresh user management               | `frontend/tests/UserManagement.test.js` | `it("Refresh user management")`               |
+| US-3.2 | Admin edits a user                    | `frontend/tests/UserManagement.test.js` | `it("Admin edits a user")`                    |
+| US-3.2 | Email already in use                  | `backend/tests/users.test.js`           | `it("Email already in use")`                  |
+| US-3.2 | Admin cannot change own role          | `backend/tests/users.test.js`           | `it("Admin cannot change own role")`          |
+| US-3.3 | Non-admin cannot open user management | `frontend/tests/UserManagement.test.js` | `it("Non-admin cannot open user management")` |
+| US-3.3 | Non-admin cannot edit a user          | `backend/tests/users.test.js`           | `it("Non-admin cannot edit a user")`          |
+| US-3.3 | Missing session cannot view users     | `backend/tests/users.test.js`           | `it("Missing session cannot view users")`     |
 
 
 ---
@@ -391,7 +381,7 @@ Each scenario above must map to at least one automated test.
 Copy when asking Cursor to implement this feature (`@` this file):
 
 ```text
-Implement Feature 13 from @features/feature-13-User-Management.md on branch `feature/13-user-management`.
+Implement Feature 3 from @features/feature-3-User-Management.md on branch `feature/3-user-management`.
 
 Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.

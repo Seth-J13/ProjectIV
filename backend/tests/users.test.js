@@ -1,6 +1,6 @@
 /**
- * Feature 13 — User Management
- * Spec: features/feature-13-User-Management.md
+ * Feature 3 — User Management
+ * Spec: features/feature-3-User-Management.md
  */
 import request from "supertest";
 import bcrypt from "bcryptjs";
@@ -63,7 +63,7 @@ function updateUser(token, id, body) {
   return call;
 }
 
-describe("Feature 13 — User Management", () => {
+describe("Feature 3 — User Management", () => {
   beforeEach(async () => {
     await syncTestDatabase();
   });
@@ -72,7 +72,7 @@ describe("Feature 13 — User Management", () => {
     await db.sequelize.close();
   });
 
-  describe("US-13.2 — Edit user data", () => {
+  describe("US-3.2 — Edit user data", () => {
     it("Email already in use", async () => {
       const admin = await seedUser({
         firstName: "Ann",
@@ -137,7 +137,7 @@ describe("Feature 13 — User Management", () => {
     });
   });
 
-  describe("US-13.3 — Keep the page admin-only", () => {
+  describe("US-3.3 — Keep the page admin-only", () => {
     it("Non-admin cannot edit a user", async () => {
       const caller = await seedUser({
         firstName: "Uma",
