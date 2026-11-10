@@ -1,6 +1,6 @@
 /**
- * Feature 13 — User Management
- * Spec: features/feature-13-User-Management.md
+ * Feature 3 — User Management
+ * Spec: features/feature-3-User-Management.md
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
@@ -129,7 +129,7 @@ function expectAccountVisible(account) {
   expect(text).toContain(account.role);
 }
 
-describe("Feature 13 — User Management", () => {
+describe("Feature 3 — User Management", () => {
   beforeEach(() => {
     localStorage.clear();
     listedUsers = accounts.map((account) => ({ ...account }));
@@ -150,7 +150,7 @@ describe("Feature 13 — User Management", () => {
     document.body.innerHTML = "";
   });
 
-  describe("US-13.1 — View users", () => {
+  describe("US-3.1 — View users", () => {
     it("Admin opens user management", async () => {
       localStorage.setItem("user", JSON.stringify(storedSession("admin")));
 
@@ -185,7 +185,7 @@ describe("Feature 13 — User Management", () => {
     });
   });
 
-  describe("US-13.2 — Edit user data", () => {
+  describe("US-3.2 — Edit user data", () => {
     it("Admin edits a user", async () => {
       localStorage.setItem("user", JSON.stringify(storedSession("admin")));
 
@@ -216,7 +216,7 @@ describe("Feature 13 — User Management", () => {
     });
   });
 
-  describe("US-13.3 — Keep the page admin-only", () => {
+  describe("US-3.3 — Keep the page admin-only", () => {
     it("Non-admin cannot open user management", async () => {
       localStorage.setItem("user", JSON.stringify(storedSession("user")));
 
