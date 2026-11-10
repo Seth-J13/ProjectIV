@@ -1,13 +1,13 @@
-# Feature: Image CRUD
+# Feature: Images CRUD
 
 **Feature ID:** 11
 **Branch pattern:** `feature/11-images-crud`
 **Status:** Draft
 **Created:** 2026-11-06
-**Updated:** 2026-11-09
+**Updated:** 2026-11-10
 **Input:** Application must support the creation, reading, updating, and deleting of images paired with different tables in the application to assist in understanding data entities.
-**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Area CRUD](feature-3-Area-CRUD.md), [Feature 6 -- Destination CRUD](feature-6-destination-crud.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md), [Feature 9 -- Images CRUD](feature-9-image-crud.md)
-**Related:** `frontend/Vehicles.vue`, `frontend/Maintenance.vue`, `frontend/components/NoteDetails.vue`, `frontend/components/NoteDetails.vue`, `frontend/components/ImagesContainer.vue`, `frontend/components/ImagesDetails.vue`, `frontend/components/RequestForm.vue`
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Area CRUD](feature-3-Area-CRUD.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 9 -- Notes CRUD](feature-9-note-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md)
+**Related:** `frontend/Vehicles.vue`, `frontend/Maintenance.vue`, `frontend/components/NoteForm.vue`, `frontend/components/ImagesContainer.vue`, `frontend/components/ImagesDetails.vue`, `frontend/components/RequestForm.vue`, `backend/tests/noteimage.test.js`, `backend/tests/vehicleimage.test.js`, `backend/tests/areaimage.test.js`
 
 ---
 
@@ -102,7 +102,7 @@
 **So that** I can help others know what `area` they're looking at.
 
 **Priority:** P1
-**Independent test:** On `Maintenance.vue`, press on the **Area Images** container, press **+ New Image** on the **Area Images** modal, option to choose between Google Drive or upload (system file-picker), uploaded image is _appended_ to `AreaImages` table with the same VIN as the selected `area`, and the **Area Images** list inside the **Area Images** modal reloads without the page reloading, clicking **Close** or anywhere outside modal closes modal.
+**Independent test:** [write after getting confirmation about Area Forms component from Jalen]
 **Acceptance scenarios:** see ### US-11.9 under Acceptance Criteria
 
 ### US-11.10: Delete AreaImage on Area listings
@@ -112,7 +112,7 @@
 **So that** I can replace incorrect `AreaImages`.
 
 **Priority:** P1
-**Independent test:** On `Maintenance.vue`, press on the **Area Images** container, opens the **Area Images** modal, hover over a `AreaImage`, `X` appears in top-right corner of `AreaImage` which colors anything beneath it in negative color so it contrasts strongly and is easy to find, clicking `X` DELETEs the `AreaImage` from both the displayed list and the `AreaImages` table, `AreaImage` list in the **Vehicle Images** modal refreshes without the page refreshing, clicking **Close** or anywhere outside modal closes modal.
+**Independent test:** [write after getting confirmation about Area Forms component from Jalen]
 **Acceptance scenarios:** see ### US-11.10 under Acceptance Criteria
 
 ### US-11.11: See AreaImage on Vehicle listing
@@ -122,7 +122,7 @@
 **So that** I know I've selected the correct `area`.
 
 **Priority:** P1
-**Independent test:** [write after getting confirmation about RequestForm component from Ethan]
+**Independent test:** [write after getting confirmation about Area Forms component from Jalen]
 **Acceptance scenarios:** see ### US-11.11 under Acceptance Criteria
 
 ---
@@ -131,26 +131,22 @@
 
 ### Functional Requirements
 
-**FR-001**: Any authenticated user **MUST** be allowed to do CRUD operations on `images` belonging to `requests` whose `requester_id` matches the user's `id`
-**FR-002**: Authenticated admin users **MUST** be allowed to do CRUD operations on all `images`.
-**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the `Images` table from only `ImageForm`.
-**FR-004**: Any authenticated user **MUST** be allowed to perform `GET` on the `Images` table.
-**FR-005**: The **Request Details** view **MUST** show a list of images beneath the rest of the `request`'s information.
-**FR-008**: Authenticated maintenance users **MUST** be able to see a list of `images` whose `maintenance_request` bool is toggled on.
-**FR-009**: The list of `images` **MUST** be embedded in other screens rather than having a screen dedicated to it.
-**FR-010**: The `ImagesList` component **MUST** have a callback passed into it on implementation which filters its items dynamically.
-**FR-011**: The `ImagesList` and `ImageForm` components **MUST** behave differently based on what page they're embedded into, described in **Screen Requirements** and the **Acceptance Criteria**.
-**FR-012**: Displaying an error inside a create, update, or delete dialog **MUST NOT** close the dialog.
-**FR-013**: Encountering a field/form/dialog error **MUST NOT** send the query to the `Images` table.
-**FR-014**: The `ImagesList` component **MUST** be retrieved in batches of _at most_ `3` when arriving at the bottom of the list, or less if the final batch does not have `3` entries left to retrieve.
-**FR-015**: The application **MUST NOT** have a whole view dedicated to Images CRUD.
-**FR-016**: Any updates to a `Images` entry **MUST** include the `id` of the `user` who updated the `image`.
+**FR-001**: Any authenticated user **MUST** be allowed to do Create, Read, and Delete operations on `NoteImages` attached to `notes` they are either in the process of making or that they are the creator of.
+**FR-002**: Authenticated admin users **MUST** be allowed to do CRUD operations on all images attached to all entities.
+**FR-003**: Any authenticated user **MUST** be able to perform `POST` on the image tables from each image type's respective forms as defined in the **Screen Requirements**.
+**FR-004**: Any authenticated user **MUST** be allowed to reach all `GET` endpoints on any image table.
+**FR-005**: The `ImagesContainer` component **MUST** provide methods for authenticated users to Create, Read, and Delete to and from the image table associated with the form it's embedded in.
+**FR-006**: Displaying an error inside a create, update, or delete dialog **MUST NOT** close the dialog.
+**FR-007**: The application **MUST** convert all uploaded images into `png` format and compress it so it is less than `10` Megabytes.
+**FR-008**: The application **MUST** accept these MIME types only: `png`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or a `bmp`.
+**FR-009**: The application **MUST NOT** have a whole view dedicated to Images CRUD.
+**FR-010**: The application **MUST** reject all `PUT` requests, authenticated or not.
 
 ---
 
 ## Assumptions
 
-- Feature 1, 2, 8, and 13 are already on `dev`
+- Features 1, 2, 3, 8, 9, and 13 are already on `dev`
 
 ## Edge Cases
 
@@ -162,34 +158,38 @@
 ## Success Criteria
 
 **SC-001**: Every Gherkin scenario has at least one automated test before merge
-**SC-002**: Administrator user can Create, Read, Update, or Delete from `Images`
-**SC-003**: Maintenance users can Create, Read, and Update from `Images`
-**SC-004**: User and Driver users can Create and Read from `Images`
-**SC-005**: User, Driver, and Maintenance users can only Delete `Images` created by them
+**SC-002**: User/Driver/Maintenance/Admin users can Create and Read from all image tables
+**SC-003**: User/Driver can only Delete images pertaining to entities they created
+**SC-004**: Maintenance user can Delete images pertaining to entities marked as maintenance requests or that they created
+**SC-005**: Admin users can Delete from all image tables.
 **SC-006**: npm test passes for `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js`, `frontend/tests/ImageForm.test.js`
 
 ---
 
 ## Data Ownership & Isolation
 
-`Images` are owned by both `users` and `requests` since a `user` has permissions on `images` they write while `images` are attached to a `request`.
+Each image is owned by its respective type. That is, a `NoteImage` is owned by a `note` while an `AreaImage` is owned by an `area`.
 
-| Rule                  | Requirement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Read scope**        | Any authenticated user (`GET /vehicle-t3/images`, `GET /vehicle-t3/images/image/:imageId`, `GET /vehicle-t3/images/request/:requestId`, `GET /vehicle-t3/images/user/:userId`, `GET /vehicle-t3/images/contributors`, `GET /vehicle-t3/images/contributors/image/:imageId`, `GET /vehicle-t3/images/contributors/user/:userId`). `GET /vehicle-t3/images/user/:userId` returns the images that user has contributed to.                                                                               |
-| **Write scope**       | `PUT /vehicle-t3/images/image/:imageId`. User and Driver may update images they created and images on requests whose `requester_id` is their id. Admin and Maintenance may update every image. The server records a contribution with `created_image` false and `contributor_id` taken from the signed-in user.                                                                                                                                                                                       |
-| **Create scope**      | Any authenticated user may `POST /vehicle-t3/images/`. The same `request_id` and `text` returns `409`. The server adds a contribution with `created_image` true and `contributor_id` taken from the signed-in user. `POST /vehicle-t3/images/contributors` adds a contribution for that same user. A second contribution with `created_image` true on that `image_id` returns `409`.                                                                                                                  |
-| **Delete scope**      | `DELETE /vehicle-t3/images/image/:imageId`. User and Driver may delete images they created and images on requests whose `requester_id` is their id. Maintenance may delete only images they created. Admin may delete any image, and may `DELETE /vehicle-t3/images/request/:requestId`. Deleting a image also deletes its contributions. `DELETE /vehicle-t3/images/contributors/contribution/:contributionId` and `DELETE /vehicle-t3/images/contributors/image/:imageId` use this same role split. |
-| **Cross-user access** | Image and contribution responses may include `created_by` and `contributor_id`. They include no other user profile fields. `contributor_id` comes from the authenticated user, not the request body.                                                                                                                                                                                                                                                                                                  |
-| **UI scope**          | `ImagesList.vue` is embedded on other screens. It shows `Images` in batches of at most 3, sorted by most recent `date`. This feature has no dedicated images view and no screen for contribution management.                                                                                                                                                                                                                                                                                          |
-| **Later features**    | A confirmed delete on **Vehicle Maintenance Images** uploads that image's `text` to vehicle service logs in Feature 10. Image images are Feature 11.                                                                                                                                                                                                                                                                                                                                                  |
+| Rule                  | Requirement                                                                                                                                                                                                                                                                  |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Read scope**        | Any authenticated user can (`GET /vehicle-t3/[type]image`,`GET /vehicle-t3/[type]image/:id`,`GET /vehicle-t3/[type]image/[type]/:[type]Id`).                                                                                                                                 |
+| **Write scope**       | All overwriting requests are automatically rejected. Images must be deleted and re-uploaded to correct wrong data                                                                                                                                                            |
+| **Create scope**      | Any authenticated user may `POST /vehicle-t3/[type]image/`, but it must be performed through either the `ImagesContainer.vue` or `ImagesDetails.vue` component. The same `[type]_id` and `image` combined returns `409`.                                                     |
+| **Delete scope**      | `DELETE /vehicle-t3/[type]image/:id` (individual) and `DELETE /vehicle-t3/[type]image/[type]/:[type]Id` (bulk). User, Driver, Maintenance may delete images on `notes` they created and any image on `notes` marked as maintenance requests. Admin may delete **any** image. |
+| **Cross-user access** | Image responses may not include any user data.                                                                                                                                                                                                                               |
+| **UI scope**          | `ImagesContainer.vue` and `ImagesDetails.vue` are embedded on other screens/components. They show images sorted by most recent `date`. This feature has no dedicated images router page.                                                                                     |
 
 ---
 
 ## Key Entities
 
-**User**: registered account (email, password, role, etc); has permission levels pertaining to `Images` CRUD.
-**Image**: Entity containing extraneous information attached to a `request`.
+**User**: registered account (email, password, role, etc); has permission levels pertaining to images CRUD.
+
+**Image** [type]s:
+
+- **NoteImage**: Entity containing visual and date information attached to a `note`.
+- **VehicleImage**: Entity containing visual and date information attached to a `vehicle`.
+- **AreaImage**: Entity containing visual and date information attached to an `area`.
 
 ---
 
@@ -210,56 +210,53 @@ Mount one image router three times: `/vehicle-t3/noteimage`, `/vehicle-t3/vehicl
 | `GET`    | `/vehicle-t3/[type]image`                  | Yes  | List all images for that `[type]` in batches of at most `3`        |
 | `POST`   | `/vehicle-t3/[type]image/`                 | Yes  | Create a new image for that `[type]`                               |
 | `GET`    | `/vehicle-t3/[type]image/:id`              | Yes  | List information about the image with the `id` `:id`               |
+| `DELETE` | `/vehicle-t3/[type]image/:id`              | Yes  | Delete the image with the `id` `:id`                               |
 | `GET`    | `/vehicle-t3/[type]image/[type]/:[type]Id` | Yes  | List all images attached to the parent whose `id` is `:[type]Id`   |
 | `DELETE` | `/vehicle-t3/[type]image/[type]/:[type]Id` | Yes  | Delete all images attached to the parent whose `id` is `:[type]Id` |
 
 **Unauthenticated write:** (`401`) login error
 **Unauthorized write:** (`403`) forbidden
 
-**The [type] placeholder in the below API responses behaves the same as the [type] placeholder in the above table and paragraphs.**
+**The [type] placeholder in the below API responses behaves the same as the [type] placeholder in the above table and paragraphs.** No instance of [type] in a string or as part of a path is actually implemented as [type], but is instead repeated one of the following: `note`, `vehicle`, or `area`.
 
 Corrupted images can be uploaded and retrieved, the end user is responsible for uploading valid files.
 
 ### Read [type]Images (`GET /vehicle-t3/[type]image`)
 
-**Success:** (`200`): the next batch of at most `3` `[type]Images`, sorted by the most recent `date`. `offset` is the number of `[type]Images` already retrieved. Missing `offset` -> `offset` defaults to `0`. Fewer than `3` `[type]Images` in the array means that batch is the last one. `[]` means no `[type]Images` remain.
+**Success:** (`200`): the next batch of at most `3` `[type]Images`, sorted by the most recent `date`. `offset` is the number of `[type]Images` already retrieved. Missing `offset` -> `offset` defaults to `0`. Fewer than `3` `[type]Images` in the array means that batch is the last one. `[]` means no `[type]Images` remain. `offset` greater than number of existing entries -> return error saying `Fewer than [offset] [type] images exist` (where [offset] is whatever value is passed as the `offset`)
 
-`GET /vehicle-t3/[type]images?offset=0`
+`GET /vehicle-t3/[type]images?offset=12`
 
 ```json
 [
   {
     "id": 4,
-    "image": 0x89504E470D0A1A0A0000000D49484452000000010000000108020000009077
-53DE0000000C4944415408D763F8CFC000000301010018DD8DB00000000049454E44AE426082,
+    "image": 0x89504E470D0A1A0A0000000D4948445200000001000000010802000000907753DE0000000C4944415408D763F8CFC000000301010018DD8DB00000000049454E44AE426082,
     "date": 2026-11-09,
     "[type]_id": 5
   },
   {
     "id": 3,
-    "image": 0x89504E470D0A1A0A0000000D40484452000000010000000108020000009077
-53DE0000000C4944415408D763F8CFC000000301010008DDFFB00123000050454E44AE426082,
+    "image": 0x89504E470D0A1A0A0000000D4048445200000001000000010802000000907753DE0000000C4944415408D763F8CFC000000301010008DDFFB00123000050454E44AE426082,
     "date": 2026-11-08,
     "[type]_id": 8
   },
   {
     "id": 2,
-    "image": 0x89504E470D0A1A0A0000000D49484452000000010000000108020000009077
-53DE0000000C4944415408D763F8CFC000000301010018DD8DB00000000049454E44AE426082,
+    "image": 0x89504E470D0A1A0A0000000D4948445200000001000000010802000000907753DE0000000C4944415408D763F8CFC000000301010018DD8DB00000000049454E44AE426082,
     "date": 2026-11-02,
     "[type]_id": 2
   }
 ]
 ```
 
-`GET /vehicle-t3/images?offset=3` returns the next batch. The last batch is shorter than `3`:
+`GET /vehicle-t3/images?offset=15` returns the next batch. The last batch is shorter than `3`:
 
 ```json
 [
   {
     "id": 1,
-    "image": 0x89504E400D0A1A0A000FFF0D40484452000000010000000108021111119077
-53DE0000000C4944415408D763F8CFC000000301010008DDFFB00123000050454E44AE426082,
+    "image": 0x89504E400D0A1A0A000FFF0D4048445200000001000000010802111111907753DE0000000C4944415408D763F8CFC000000301010008DDFFB00123000050454E44AE426082,
     "date": 2026-10-30,
     "[type]_id": 1
   }
@@ -268,330 +265,100 @@ Corrupted images can be uploaded and retrieved, the end user is responsible for 
 
 **Server error:** (`500`) `{ "message": "…" }`.
 
-### Read Image details (`GET /vehicle-t3/images/image/:imageId`)
+### Read [type]Image from id (`GET /vehicle-t3/[type]image/:id`)
 
-**Success:** (`200`): `image` details
+**Success:** (`200`): `[type]image` details
+
+(where `:id` is 3)
 
 ```json
 {
   "id": 3,
-  "reason": "test3",
-  "maintenance_request": true,
-  "request_id": 6,
-  "text": "well well well...",
-  "contributors": [
-    {
-      "id": 1,
-      "image_id": 3,
-      "contributor_id": 99,
-      "created_image": true,
-      "date": "2026-11-02"
-    },
-    {
-      "id": 2,
-      "image_id": 3,
-      "contributor_id": 54321,
-      "created_image": false,
-      "date": "2026-11-03"
-    }
-  ]
+  "image": 0x89504E400D0A1A0A000FFF0D4048445200000001000000010802111111907753DE0000000C4944415408D763F8CFC000000301010008DDFFB00123000050454E44AE426082,
+  "date": 2026-10-30,
+  "[type]_id": 8
 }
 ```
 
 **Not found:** (`404`)
 **Server error:** (`500`) `{ "message": "…" }`.
 
-### Read Images on a Request (`GET /vehicle-t3/images/request/:requestId`)
+### Add [type]Image (`POST /vehicle-t3/[type]image/`)
+
+**Request body:** (fields the add request sends):
+
+```json
+{
+  "image": 0x89504E470D0A1A0A0000000D4948445200000001000000010802000000907753DE01230000C4944415408D763FFFFC000000301010018DD8DB00000000049454E44AE426082,
+  "date": 2026-11-02,
+  "[type]_id": 2
+}
+```
+
+Missing `image` or `[type]_id` -> `400` bad request
+Missing `date` -> try to extract image creation date from metadata.
+No `date` to extract from metadata -> auto-fill `date` with the current date
+Duplicate `image` and `[note]_id` (combined) -> `409` conflict.
+
+**Server error:** (`500`) `{ "message": "…" }`.
+
+### Read [type]Images from a [type] (`GET /vehicle-t3/[type]image/[type]/:[type]Id`)
 
 **Success:** (`200`): array with all `images` belonging to that `request`
 
-```json
-[
-  {
-    "id": 2,
-    "reason": "test2",
-    "maintenance_request": false,
-    "request_id": 6,
-    "text": "this is an extremely long image text. I chose TEXT as the data type because someone's image might contain many more than 255 characters. TEXT is a valid data type, and it can be stored in SQL as VARCHAR('max'). Sequelize should handle that automatically."
-  },
-  {
-    "id": 3,
-    "reason": "test3",
-    "maintenance_request": true,
-    "request_id": 6,
-    "text": "this is not a maintenance request."
-  },
-  ...
-]
-```
-
-**Not found:** (`404`) `{ "message": "This request <requestId> doesn't have any images" }`
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Read a user's image history (`GET /vehicle-t3/images/user/:userId`)
-
-**Success:** (`200`): array with all `images` `contributed` to by a `user`
-
-(where :userId is `54321`)
+(where `:[type]Id` is `5`)
 
 ```json
 [
   {
-    "id": 2,
-    "reason": "test2",
-    "maintenance_request": false,
-    "request_id": 6,
-    "date": "2026-11-02",
-    "created_by": 54321,
-    "text": "this is an extremely long image text. I chose TEXT as the data type because someone's image might contain many more than 255 characters. TEXT is a valid data type, and it can be stored in SQL as VARCHAR('max'). Sequelize should handle that automatically."
+    "id": 9,
+    "image": 0x89504E47078A1A0A0000000D4948445200000001000000010123456780907753DE0000000C4944415401D763F8CFC000000301010018DD8DB00000000049454E44AE426082,
+    "date": 2026-11-12,
+    "[type]_id": 5
   },
   {
-    "id": 3,
-    "reason": "test3",
-    "maintenance_request": true,
-    "request_id": 6,
-    "date": "2026-11-02",
-    "created_by": 99,
-    "text": "well well well..."
+    "id": 7,
+    "image": 0x89504E470D0A1A0A0000000D4048445200000001000000010802000000907753DE0000000C4944415408D763F8CFC000000301010008DABCDEFGABCDEFG0454E44AE426082,
+    "date": 2026-11-10,
+    "[type]_id": 5
   }
-  ...
 ]
 ```
 
-**Not found:** (`404`) `{ "message": "This user <userId> hasn't contributed to any images" }`
+**Not found:** (`404`) `{ "message": "This [type] <:[type]Id> doesn't have any images" }`
 **Server error:** (`500`) `{ "message": "…" }`.
 
-### Add Image (`POST /vehicle-t3/images`)
+### Remove all [type]Images from [type] (`DELETE /vehicle-t3/[type]image/[type]/:[type]Id`)
 
-**Request body:** (fields the add request sends):
-
-```json
-{
-  "reason": "test",
-  "maintenance_request": false,
-  "request_id": 5,
-  "text": "this is an extremely long image text. I chose TEXT as the data type because someone's image might contain many more than 255 characters. TEXT is a valid data type, and it can be stored in SQL as VARCHAR('max'). Sequelize should handle that automatically."
-}
-```
-
-**Success:** (`201`): `contribution` generation
-
-```json
-{
-  "image_id": 1,
-  "contributor_id": 12345,
-  "created_image": true,
-  "date": "2026-11-02"
-}
-```
-
-Missing `maintenance_request` -> `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` -> `400` bad request.
-Duplicate `request_id` and `text` (combined) -> `409` conflict.
-
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Overwrite Image (`PUT /vehicle-t3/images/image/:imageId`)
-
-**Request body:** (fields the update request sends):
-
-```json
-{
-  "id": 3,
-  "reason": "test3",
-  "maintenance_request": false,
-  "request_id": 6,
-  "text": "well well well..."
-}
-```
-
-**Success:** (`200`): `contribution` generation
-
-```json
-{
-  "id": 3,
-  "image_id": 3,
-  "contributor_id": 54321,
-  "created_image": false,
-  "date": "2026-11-03"
-}
-```
-
-Missing `maintenance_request` -> `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` -> `400` bad request.
-Duplicate `request_id` and `text` (combined) -> `409` conflict.
-
+**Success:** (`204`)
 **Unauthorized:** (`403`) Forbidden
+**Not found:** (`404`) `{ "message": "This [type] <:[type]Id> doesn't have any images" }`
 **Server error:** (`500`) `{ "message": "…" }`.
 
-### Remove Image (`DELETE /vehicle-t3/images/image/:imageId`)
+### Remove all [type]Images with id (`DELETE /vehicle-t3/[type]image/:id`)
 
 **Success:** (`204`)
 **Unauthorized:** (`403`) Forbidden
 **Not found:** (`404`)
 **Server error:** (`500`) `{ "message": "…" }`.
 
-### Remove Request Images (`DELETE /vehicle-t3/images/request/:requestId`)
-
-**Success:** (`204`)
-**Not found:** (`404`) `{ "message": "No images on request=<requestId>" }`
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Read Contributions (`GET /vehicle-t3/images/contributors`)
-
-**Success:** (`200`): array with all `contributions`
-
-```json
-[
-  {
-    "id": 1,
-    "contributor_id": 99,
-    "image_id": 3,
-    "created_image": true,
-    "date": "2026-11-02"
-  },
-  {
-    "id": 2,
-    "contributor_id": 54321,
-    "image_id": 3,
-    "created_image": false,
-    "date": "2026-11-03"
-  },
-  {
-    "id": 3,
-    "contributor_id": 12345,
-    "image_id": 2,
-    "created_image": true,
-    "date": "2026-11-07"
-  },
-  {
-    "id": 4,
-    "contributor_id": 99,
-    "image_id": 3,
-    "created_image": false,
-    "date": "2026-11-09"
-  },
-  ...
-]
-```
-
-**Not found:** (`404`)
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Add Contribution (`POST /vehicle-t3/images/contributors`)
-
-**Request body:** (fields the add request sends):
-
-```json
-{
-  "image_id": 3,
-  "created_image": true,
-  "date": "2026-11-09"
-}
-```
-
-**Success:** (`201`)
-
-```json
-{
-  "id": 9,
-  "contributor_id": 7,
-  "image_id": 3,
-  "created_image": true,
-  "date": "2026-11-09"
-}
-```
-
-Missing `date` -> `date` defaults to current date
-Missing `image_id`, `contributor_id`, `created_image` -> `400` bad request.
-Two contributions on the same `image_id` being `true` -> `409` conflict.
-
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Read Contributions from Image (`GET /vehicle-t3/images/contributors/image/:imageId`)
-
-**Success:** (`200`): array with all `contributions` belonging to that `image`
-
-```json
-[
-  {
-    "id": 3,
-    "contributor_id": 12345,
-    "image_id": 2,
-    "created_image": true,
-    "date": "2026-11-07"
-  },
-  {
-    "id": 12,
-    "contributor_id": 99,
-    "image_id": 2,
-    "created_image": false,
-    "date": "2026-12-19"
-  }
-]
-```
-
-**Not found:** (`404`) `{ "message": "This image <imageId> doesn't have any contributions" }`
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Get Contributions by a User (`GET /vehicle-t3/images/contributors/user/:userId`)
-
-**Success:** (`200`): array with all `contributions` by a `user`
-
-(where :userId is `54321`)
-
-```json
-[
-  {
-    "id": 2,
-    "contributor_id": 54321,
-    "image_id": 3,
-    "created_image": false,
-    "date": "2026-11-03"
-  },
-  {
-    "id": 5,
-    "image_id": 3,
-    "contributor_id": 54321,
-    "created_image": false,
-    "date": "2026-11-03"
-  }
-]
-```
-
-**Not found:** (`404`) `{ "message": "This user <userId> hasn't contributed to any images" }`
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Remove Contribution (`DELETE /vehicle-t3/images/contributors/contribution/:contributionId`)
-
-**Success:** (`204`)
-**Unauthorized:** (`403`) Forbidden
-**Not found:** (`404`)
-**Server error:** (`500`) `{ "message": "…" }`.
-
-### Remove Request Images (`DELETE /vehicle-t3/images/contributors/image/:imageId`)
-
-**Success:** (`204`)
-**Not found:** (`404`) `{ "message": "No contributions on image=<imageId>" }`
-**Server error:** (`500`) `{ "message": "…" }`.
-
-Quoted messages that tests must match:
+Quoted messages that tests must match if no other message is specified:
 
 | Situation        | Status | `message`                                                                           |
 | ---------------- | ------ | ----------------------------------------------------------------------------------- |
 | `GET` success    | 200    | <response from GET>                                                                 |
-| `PUT` success    | 200    | <new/updated entry details>                                                         |
+| `PUT` recognized | 403    | `PUT and overwriting requests are not allowed to image entries`                     |
 | `POST` success   | 201    | `New image created with id=<id>`                                                    |
 | `DELETE` success | 204    | <empty response>                                                                    |
 | Bad Request      | 400    | `Malformed request. Please make sure everything in the form is properly formatted!` |
 | Login Error      | 401    | `Please sign in. If you think this is a mistake, contact your system administrator` |
 | Forbidden        | 403    | `Please contact a system administrator for assistance.`                             |
-| Not Found        | 404    | `No image` (or `contributor`) `was found for id=<id>`                               |
-| Conflict         | 409    | `Image` (or `contributor`) `with these details already exists!`                     |
+| Not Found        | 404    | `No image was found for id=<id>`                                                    |
+| Conflict         | 409    | `Image with these details already exists!`                                          |
 
 ---
 
-## Screen Requirements
+## Screen Requirements [RESUME HERE WHEN CONTINUING]
 
 Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labeled actions use class `oc-cta`. Icon-only row actions need `aria-label`s.
 
@@ -641,7 +408,7 @@ Primary Action: Fill out a form with the following fields (auto-filled if in **E
 - **Cancel** button clears all fields in the current form and closes the component
 - **Add** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Images` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
 
-**Implementation image:** no view or frontend-route for `Images`; `Images` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
+**Implementation image:** no page or frontend-route for `Images`; `Images` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
 
 ### Image Details Component
 
@@ -658,7 +425,7 @@ Body:
 - **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `image`
 - **Close** -- closes the dialog
 
-**Implementation image:** no view or frontend-route for `Images`; `Images` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
+**Implementation image:** no page or frontend-route for `Images`; `Images` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
 
 **App chrome**
 

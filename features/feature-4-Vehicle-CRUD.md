@@ -5,7 +5,7 @@
 **Status:** Draft
 **Created:** 2026-10-24
 **Input:** This feature is a vehicle management to view, add, update, and delete vehicles
-**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md),
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Area CRUD](feature-2-Area-CRUD.md)
 **Required for future use:** [Feature 5 -- Maintenance Info CRUD](feature-5-Maintenance-Info-CRUD.md), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD.md), [Feature 11 -- Images](feature-11-images-crud.md)
 
 ---

@@ -306,7 +306,7 @@ This feature uses the `Notes` endpoints below.
 **Not found:** (`404`) `{ "message": "This user <userId> hasn't contributed to any notes" }`
 **Server error:** (`500`) `{ "message": "…" }`.
 
-### Add Note (`POST /vehicle-t3/notes`)
+### Add Note (`POST /vehicle-t3/notes/`)
 
 **Request body:** (fields the add request sends):
 
@@ -520,7 +520,7 @@ Two contributions on the same `note_id` being `true` -> `409` conflict.
 **Not found:** (`404`) `{ "message": "No contributions on note=<noteId>" }`
 **Server error:** (`500`) `{ "message": "…" }`.
 
-Quoted messages that tests must match:
+Quoted messages that tests must match if no other message is specified:
 
 | Situation        | Status | `message`                                                                           |
 | ---------------- | ------ | ----------------------------------------------------------------------------------- |
