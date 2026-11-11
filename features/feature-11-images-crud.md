@@ -7,7 +7,7 @@
 **Updated:** 2026-11-10
 **Input:** Application must support the creation, reading, updating, and deleting of images paired with different tables in the application to assist in understanding data entities.
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Area CRUD](feature-3-Area-CRUD.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 9 -- Notes CRUD](feature-9-note-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md)
-**Related:** `frontend/Vehicles.vue`, `frontend/Maintenance.vue`, `frontend/components/NoteForm.vue`, `frontend/components/ImagesContainer.vue`, `frontend/components/ImagesDetails.vue`, `frontend/components/RequestForm.vue`, `backend/tests/noteimage.test.js`, `backend/tests/vehicleimage.test.js`, `backend/tests/areaimage.test.js`
+**Related:** `frontend/Vehicles.vue`, `frontend/Maintenance.vue`, `frontend/components/NoteForm.vue`, `frontend/components/ImagesContainer.vue`, `frontend/components/ImagesDetails.vue`, `frontend/components/ImagesBox.vue`, `frontend/components/RequestForm.vue`, `backend/tests/noteimage.test.js`, `backend/tests/vehicleimage.test.js`, `backend/tests/areaimage.test.js`
 
 ---
 
@@ -150,10 +150,10 @@
 
 ## Edge Cases
 
-- POST `Images` with the exact same `text` and `request_id` -> `409`
-- no `Requests` exist but `Images` exist -> don't render orphaned images
-- DELETE `Request` with attached `Images` -> CASCADE DELETE so attached `Images` are deleted too
-- Malformed date in `Images` entry -> `ImageForm` and `ImageDetails` for that entry default to today's date
+- POST images with the exact same `image` and `[note]_id` -> `409`
+- no `images` exist -> don't render orphaned images
+- DELETE `[type]` with attached `[type]Images` -> CASCADE DELETE so attached `[type]Images` are deleted too
+- Corrupted data in `[type]Image` entry -> `ImagesContainer` and `ImagesDetails` still show attempt to render image
 
 ## Success Criteria
 
@@ -362,9 +362,31 @@ Quoted messages that tests must match if no other message is specified:
 
 Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labeled actions use class `oc-cta`. Icon-only row actions need `aria-label`s.
 
-### Images List Component
+### ImagesContainer Component
 
-- Container: <v-list>
+- Container: tonal <v-card> w/ dashed outline
+- Heading: [in center of card]
+- Primary action: **+ New Image** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<ImageForm>` component named **Image Form** Use class `oc-cta` on **+ New Image**, **Image Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Pressing with list item body opens <ImageDetails> component named **Image** using class `oc-cta` on **Image**.
+- Display interactive search bar in **List** mode named `Search`. Used to search `image` title and text content.
+- Display `images` as <v-card> items inside rows separated by a horizontal line each. The following columns should be in each card:
+  **Image ID** -- The identifying number of the `image` ("#`id`")
+  **Request ID** -- The identifying number of the `request` the `image` is attached to ("R: `request_id`")
+  **Subject** -- The first 20 characters of the `image` `reason` (if 20 exist) followed by ellipsis ("this is not a mainte...")
+  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
+- Row cards are displayed in the list in batches of `3` at a time. Scrolling down inside the container loads the next batch beneath the current one.
+- List entries are, by default, sorted by the most recently created (`date`)
+
+- Empty state in **List** mode: **No images.**
+- Empty state in **Embed** mode: **No images. ** followed by the **+ New Image** button.
+- Loading state: skeleton or progress indicator while enrollments are fetching.
+- Error state: `<v-alert type="error">` for API failures.
+
+### ImagesDetails Component
+
+The `Image` Form contains the following information:
+
+- Container: <v->
 - Heading: [varies based on embed location]
 - Primary action: **+ New Image** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<ImageForm>` component named **Image Form** Use class `oc-cta` on **+ New Image**, **Image Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
 - Pressing with list item body opens <ImageDetails> component named **Image** using class `oc-cta` on **Image**.
@@ -382,31 +404,27 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 - Loading state: skeleton or progress indicator while enrollments are fetching.
 - Error state: `<v-alert type="error">` for API failures.
 
-### Image Form Component
+### ImagesBox Component
 
 The `Image` Form contains the following information:
 
-- **Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `image` is/will-be attached to
-- **Date** -- `MM/DD/YYYY` format of the _earliest_ `Contribution` tied to this image.
+- Container: <v-card>
+- Heading: [no header]
+- Primary action: **+ New Image** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<ImageForm>` component named **Image Form** Use class `oc-cta` on **+ New Image**, **Image Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Pressing with list item body opens <ImageDetails> component named **Image** using class `oc-cta` on **Image**.
+- Display interactive search bar in **List** mode named `Search`. Used to search `image` title and text content.
+- Display `images` as <v-card> items inside rows separated by a horizontal line each. The following columns should be in each card:
+  **Image ID** -- The identifying number of the `image` ("#`id`")
+  **Request ID** -- The identifying number of the `request` the `image` is attached to ("R: `request_id`")
+  **Subject** -- The first 20 characters of the `image` `reason` (if 20 exist) followed by ellipsis ("this is not a mainte...")
+  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
+- Row cards are displayed in the list in batches of `3` at a time. Scrolling down inside the container loads the next batch beneath the current one.
+- List entries are, by default, sorted by the most recently created (`date`)
 
-Primary Action: Fill out a form with the following fields (auto-filled if in **Edit** mode):
-
-- **Subject** -- accepts string of length 254 or less; trim whitespaces in beginning/end; sent to backend as `reason`.
-- **Description** -- `TEXT` input; sent to the backend as `text`.
-- **Drop or Upload Image Here** -- eventually allows users to upload images to their images. Implement this frame, but don't add functionality until Feature 11.
-
-**Edit State**
-
-- Header: **Edit Image**
-- **Cancel** button clears all fields in the current form and closes the component, sending no request to the backend.
-- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Images` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
-- **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `image`
-
-**Add State**
-
-- Header: **Add Image**
-- **Cancel** button clears all fields in the current form and closes the component
-- **Add** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Images` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
+- Empty state in **List** mode: **No images.**
+- Empty state in **Embed** mode: **No images. ** followed by the **+ New Image** button.
+- Loading state: skeleton or progress indicator while enrollments are fetching.
+- Error state: `<v-alert type="error">` for API failures.
 
 **Implementation image:** no page or frontend-route for `Images`; `Images` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
 
