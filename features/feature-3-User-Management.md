@@ -14,13 +14,7 @@
 
 ## User Stories
 
-<<<<<<< HEAD:features/feature-13-User-Management.md
-### US-13.1: View users
-=======
-
-
 ### US-3.1: View users
->>>>>>> 9b20d21cf674d0398a8f715ca6271cfeb43c9244:features/feature-3-User-Management.md
 
 **As an** admin
 **I want to** open a user management page and see each account's data
@@ -224,13 +218,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 ## Acceptance Criteria (Gherkin)
 
-<<<<<<< HEAD:features/feature-13-User-Management.md
-### US-13.1 — View users
-=======
-
-
 ### US-3.1 — View users
->>>>>>> 9b20d21cf674d0398a8f715ca6271cfeb43c9244:features/feature-3-User-Management.md
 
 #### Scenario: Admin opens user management
 
@@ -248,13 +236,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **Then** I remain on `/users`
 - **And** I still see each account's first name, last name, email, and role
 
-<<<<<<< HEAD:features/feature-13-User-Management.md
-### US-13.2 — Edit user data
-=======
-
-
 ### US-3.2 — Edit user data
->>>>>>> 9b20d21cf674d0398a8f715ca6271cfeb43c9244:features/feature-3-User-Management.md
 
 #### Scenario: Admin edits a user
 
@@ -282,13 +264,7 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 - **Then** the response is **400** with message **"You cannot change your own role."**
 - **And** my role is still `admin`
 
-<<<<<<< HEAD:features/feature-13-User-Management.md
-### US-13.3 — Keep the page admin-only
-=======
-
-
 ### US-3.3 — Keep the page admin-only
->>>>>>> 9b20d21cf674d0398a8f715ca6271cfeb43c9244:features/feature-3-User-Management.md
 
 #### Scenario: Non-admin cannot open user management
 
@@ -319,8 +295,8 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 Each scenario above must map to at least one automated test.
 
-| Story   | Scenario                              | Test file                               | Test name                                     |
-| ------- | ------------------------------------- | --------------------------------------- | --------------------------------------------- |
+| Story  | Scenario                              | Test file                               | Test name                                     |
+| ------ | ------------------------------------- | --------------------------------------- | --------------------------------------------- |
 | US-3.1 | Admin opens user management           | `frontend/tests/UserManagement.test.js` | `it("Admin opens user management")`           |
 | US-3.1 | Refresh user management               | `frontend/tests/UserManagement.test.js` | `it("Refresh user management")`               |
 | US-3.2 | Admin edits a user                    | `frontend/tests/UserManagement.test.js` | `it("Admin edits a user")`                    |

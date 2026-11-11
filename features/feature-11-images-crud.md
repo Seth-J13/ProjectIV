@@ -4,10 +4,10 @@
 **Branch pattern:** `feature/11-images-crud`
 **Status:** Draft
 **Created:** 2026-11-06
-**Updated:** 2026-11-10
+**Updated:** 2026-11-11
 **Input:** Application must support the creation, reading, updating, and deleting of images paired with different tables in the application to assist in understanding data entities.
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Area CRUD](feature-3-Area-CRUD.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 9 -- Notes CRUD](feature-9-note-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md)
-**Related:** `frontend/Vehicles.vue`, `frontend/Maintenance.vue`, `frontend/components/NoteForm.vue`, `frontend/components/ImagesContainer.vue`, `frontend/components/ImagesDetails.vue`, `frontend/components/ImagesBox.vue`, `frontend/components/RequestForm.vue`, `backend/tests/noteimage.test.js`, `backend/tests/vehicleimage.test.js`, `backend/tests/areaimage.test.js`
+**Related:** `frontend/src/views/Vehicles.vue`, `frontend/src/views/Maintenance.vue`, `frontend/src/components/NoteForm.vue`, `frontend/src/components/ImagesContainer.vue`, `frontend/src/components/ImagesDetails.vue`, `frontend/src/components/ImagesBox.vue`, `frontend/src/components/ImagesTooltip.vue`, `frontend/src/components/RequestForm.vue`, `backend/app/models/noteImage.js`, `backend/app/models/vehicleImage.js`, `backend/app/models/areaImage.js`, `backend/app/controllers/noteImageController.js`, `backend/app/controllers/vehicleImageController.js`, `backend/app/controllers/areaImageController.js`, `backend/app/routes/noteImageRoutes.js`, `backend/app/routes/vehicleImageRoutes.js`, `backend/app/routes/areaImageRoutes.js`, `backend/tests/noteimage.test.js`, `backend/tests/vehicleimage.test.js`, `backend/tests/areaimage.test.js`
 
 ---
 
@@ -141,6 +141,7 @@
 **FR-008**: The application **MUST** accept these MIME types only: `png`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or a `bmp`.
 **FR-009**: The application **MUST NOT** have a whole view dedicated to Images CRUD.
 **FR-010**: The application **MUST** reject all `PUT` requests, authenticated or not.
+**FR-011**: The application **MUST NOT** accept file uploads of more than `25` Megabytes
 
 ---
 
@@ -346,10 +347,10 @@ Quoted messages that tests must match if no other message is specified:
 
 | Situation        | Status | `message`                                                                           |
 | ---------------- | ------ | ----------------------------------------------------------------------------------- |
-| `GET` success    | 200    | <response from GET>                                                                 |
+| `GET` success    | 200    |                                                                                     |
 | `PUT` recognized | 403    | `PUT and overwriting requests are not allowed to image entries`                     |
 | `POST` success   | 201    | `New image created with id=<id>`                                                    |
-| `DELETE` success | 204    | <empty response>                                                                    |
+| `DELETE` success | 204    |                                                                                     |
 | Bad Request      | 400    | `Malformed request. Please make sure everything in the form is properly formatted!` |
 | Login Error      | 401    | `Please sign in. If you think this is a mistake, contact your system administrator` |
 | Forbidden        | 403    | `Please contact a system administrator for assistance.`                             |
@@ -358,69 +359,60 @@ Quoted messages that tests must match if no other message is specified:
 
 ---
 
-## Screen Requirements [RESUME HERE WHEN CONTINUING]
+## Screen Requirements
 
 Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labeled actions use class `oc-cta`. Icon-only row actions need `aria-label`s.
 
 ### ImagesContainer Component
 
-- Container: tonal <v-card> w/ dashed outline
+- Container: tonal w/ dashed outline
 - Heading: [in center of card]
-- Primary action: **+ New Image** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<ImageForm>` component named **Image Form** Use class `oc-cta` on **+ New Image**, **Image Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Pressing with list item body opens <ImageDetails> component named **Image** using class `oc-cta` on **Image**.
-- Display interactive search bar in **List** mode named `Search`. Used to search `image` title and text content.
-- Display `images` as <v-card> items inside rows separated by a horizontal line each. The following columns should be in each card:
-  **Image ID** -- The identifying number of the `image` ("#`id`")
-  **Request ID** -- The identifying number of the `request` the `image` is attached to ("R: `request_id`")
-  **Subject** -- The first 20 characters of the `image` `reason` (if 20 exist) followed by ellipsis ("this is not a mainte...")
-  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
-- Row cards are displayed in the list in batches of `3` at a time. Scrolling down inside the container loads the next batch beneath the current one.
-- List entries are, by default, sorted by the most recently created (`date`)
-
-- Empty state in **List** mode: **No images.**
-- Empty state in **Embed** mode: **No images. ** followed by the **+ New Image** button.
-- Loading state: skeleton or progress indicator while enrollments are fetching.
+- Primary action: **Drop or Upload Image Here** inside container. `ImageDetails` components each containing their own image associated with the viewed entity displayed in a grid inside container. Use class `oc-cta` on whole container (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Dragging image file into container auto `POST`s a new `[type]Image` entry based on where component is embedded..
+- Pressing inside container (but not in an image) presents two options.
+  - **From Cloud** -- w/ `oc-cta` class. Include **Google OAuth integration** for authentication. Modal has tabbed interface for **Google Drive**, **Dropbox**, and **OneDrive**, with a file browser for selection. Support drag-and-drop for local files, validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads with a progress bar. Use slots for UI customization and ensure the modal has proper focus trapping and accessibility. Pressing outside this dialog emphasizes the dialog, requiring to hit an `X` in the top-right corner to close it.
+  - **From Computer** -- System file-picker dialog. Validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads. Ensure the system dialog has proper focus trapping and accessibility.
+- Empty state in **ImagesContainer**: **Drop or Upload Image Here**
+- Loading state: skeleton or progress indicator while images are fetching.
 - Error state: `<v-alert type="error">` for API failures.
+
+**Implementation Notes:**
+
+- Grid **ImagesDetails** components are separated by about `25`px of space horizontally and `25`px of space vertically.
+- Grid expands vertically downward when horizontal row limit is reached (dependent on space inside container).
+- Overflow requires scroll bar.
 
 ### ImagesDetails Component
 
-The `Image` Form contains the following information:
+- Container: w/ dashed outline
+- Heading: [when expanded, show date of currently-viewed image above expanded image]
+- Primary action: Press left arrow and right arrow to navigate through list of images inside component. Press on image to expand it in center of screen. Press `X` on expanded image (or press outside it) to close. Use class `oc-cta` on whole container (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Wrap `[type]Images` in a L/R navigable list. The items below hold no text, labels are just the names of the elements:
+  - **Image Content** -- The image rendered inside the square container; clicking on **Image Content** opens a larger modal overlaying the screen with an expanded version of the selected `[type]Image`. Remove options from context menu related to saving the image.
+  - **X** -- An `X` in the top-right corner of each image container coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this on the expanded `[type]Image` modal closes that modal. Pressing this on an image inside the **Image Content** sends a `DELETE` request **if and only if** the parent **ImagesDetails** component is embedded in an entity's creation form/modal (can only delete `NoteImages` from a `NoteForm` in **Edit/Add** modes, for example)
+  - **<** -- A `<` vertical-center and horizontal-left of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the previous image in the list (unless it's the 0th index).
+  - **>** -- A `>` vertical-center and horizontal-right of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the next image in the list (unless it's the final index).
 
-- Container: <v->
-- Heading: [varies based on embed location]
-- Primary action: **+ New Image** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<ImageForm>` component named **Image Form** Use class `oc-cta` on **+ New Image**, **Image Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Pressing with list item body opens <ImageDetails> component named **Image** using class `oc-cta` on **Image**.
-- Display interactive search bar in **List** mode named `Search`. Used to search `image` title and text content.
-- Display `images` as <v-card> items inside rows separated by a horizontal line each. The following columns should be in each card:
-  **Image ID** -- The identifying number of the `image` ("#`id`")
-  **Request ID** -- The identifying number of the `request` the `image` is attached to ("R: `request_id`")
-  **Subject** -- The first 20 characters of the `image` `reason` (if 20 exist) followed by ellipsis ("this is not a mainte...")
-  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
-- Row cards are displayed in the list in batches of `3` at a time. Scrolling down inside the container loads the next batch beneath the current one.
-- List entries are, by default, sorted by the most recently created (`date`)
-
-- Empty state in **List** mode: **No images.**
-- Empty state in **Embed** mode: **No images. ** followed by the **+ New Image** button.
-- Loading state: skeleton or progress indicator while enrollments are fetching.
+- Empty state in **ImagesDetails**: **No images**
+- Loading state: skeleton or progress indicator while images are fetching.
 - Error state: `<v-alert type="error">` for API failures.
 
 ### ImagesBox Component
 
-The `Image` Form contains the following information:
+### ImagesTooltip Component
 
-- Container: <v-card>
+- Container:
 - Heading: [no header]
-- Primary action: **+ New Image** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<ImageForm>` component named **Image Form** Use class `oc-cta` on **+ New Image**, **Image Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Pressing with list item body opens <ImageDetails> component named **Image** using class `oc-cta` on **Image**.
+- Primary action: Hover over `note`, `vehicle`, or `area` list item for `1 second` to show associated image(s). Remains if user moves cursor over it. Pressing opens `<ImageForm>` component named **Image Form** Use class `oc-cta` on **+ New Image**, **Image Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Pressing with list item body opens component named **Image** using class `oc-cta` on **Image**.
 - Display interactive search bar in **List** mode named `Search`. Used to search `image` title and text content.
-- Display `images` as <v-card> items inside rows separated by a horizontal line each. The following columns should be in each card:
+- Display `images` as items inside rows separated by a horizontal line each. The following columns should be in each card:
   **Image ID** -- The identifying number of the `image` ("#`id`")
   **Request ID** -- The identifying number of the `request` the `image` is attached to ("R: `request_id`")
   **Subject** -- The first 20 characters of the `image` `reason` (if 20 exist) followed by ellipsis ("this is not a mainte...")
-  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
+  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation to perform their respective operations
 - Row cards are displayed in the list in batches of `3` at a time. Scrolling down inside the container loads the next batch beneath the current one.
 - List entries are, by default, sorted by the most recently created (`date`)
-
 - Empty state in **List** mode: **No images.**
 - Empty state in **Embed** mode: **No images. ** followed by the **+ New Image** button.
 - Loading state: skeleton or progress indicator while enrollments are fetching.
@@ -443,7 +435,7 @@ Body:
 - **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `image`
 - **Close** -- closes the dialog
 
-**Implementation image:** no page or frontend-route for `Images`; `Images` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
+**Implementation note:** no page or frontend-route for `Images`; `Images` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
 
 **App chrome**
 
@@ -486,10 +478,8 @@ This feature uses different image tables where each entry has a foreign key to t
 
 - `Notes` hasMany `NoteImage`
 - `NoteImage` belongsTo `Notes`
-
 - `Vehicles` hasMany `VehicleImage`
 - `VehicleImage` belongsTo `Vehicles`
-
 - `Areas` hasMany `AreaImage`
 - `AreaImage` belongsTo `Areas`
 
@@ -518,7 +508,7 @@ This feature uses different image tables where each entry has a foreign key to t
 **When** I view a **Images List** in **List** or **Embed** mode
 **And** I reach the bottom of the **Images List**
 **Then** the **Images List** tries to `GET` and display another batch of 3 images without refreshing the whole page
-**And** they overflowing with a scroll bar inside the <v-list> rather than expanding the page.
+**And** they overflowing with a scroll bar inside the rather than expanding the page.
 
 #### Scenario: Less than 3 list items left to GET
 
@@ -542,7 +532,7 @@ This feature uses different image tables where each entry has a foreign key to t
 
 #### Scenario: Press anywhere outside Image dialog
 
-**Given** I am an authenticated user with any <v-dialog> open from interacting with **Images List** list items
+**Given** I am an authenticated user with any open from interacting with **Images List** list items
 **When** I press anywhere outside the dialog
 **Or** I press the **Close** button
 **Then** the **Image** dialog closes and nothing is changed.
