@@ -189,20 +189,20 @@ Feature 1 and 2 establishes identity
 
 ### `Vehicles` Table
 
-| Field                 | Type           | Rules                                 |
-| --------------------- | -------------- | ------------------------------------- |
-| `vin`                 | INTEGER PK     | Primary Key, Must be 17 numbers (0-9) |
-| `make`                | VARCHAR(30)    | Required                              |
-| `model`               | VARCHAR(65)    | Required                              |
-| `year`                | INTEGER        | Required                              |
-| `purchased_date`      | DATE           | Required; Cannot be in the future     |
-| `color`               | VARCHAR(20)    | NULLABLE;                             |
-| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
-| `tag_exp_month`       | DATE           | Required                              |
-| `area_id`             | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
-| `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
-| `available`           | BIT            | Required                              |
-| `mileage`             | INTEGER        | NULLABLE, Non-negative                |
+| Field                 | Type        | Rules                                 |
+| --------------------- | ----------- | ------------------------------------- |
+| `vin`                 | INTEGER PK  | Primary Key, Must be 17 numbers (0-9) |
+| `make`                | VARCHAR(30) | Required                              |
+| `model`               | VARCHAR(65) | Required                              |
+| `year`                | INTEGER     | Required                              |
+| `purchased_date`      | DATE        | Required; Cannot be in the future     |
+| `color`               | VARCHAR(20) | NULLABLE;                             |
+| `license_plate_num`   | VARCHAR(8)  | NULLABLE; Unique                      |
+| `tag_exp_month`       | DATE        | Required                              |
+| `area_id`             | INTEGER FK  | Foreign Key, NOT NULLABLE             |
+| `most_recent_dest_id` | INTEGER     | NULLABLE;                             |
+| `available`           | BIT         | Required                              |
+| `mileage`             | INTEGER     | NULLABLE, Non-negative                |
 
 ---
 
