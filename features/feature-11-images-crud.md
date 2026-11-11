@@ -7,7 +7,7 @@
 **Updated:** 2026-11-11
 **Input:** Application must support the creation, reading, and deleting of images paired with different tables in the application to assist in understanding data entities.
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- User Management](feature-3-User-Management.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 9 -- Notes CRUD](feature-9-note-crud.md), [Feature 13 -- Area CRUD](feature-13-Area-CRUD.md)
-**Related:** `frontend/src/views/Vehicles.vue`, `frontend/src/views/Maintenance.vue`, `frontend/src/views/Landing.vue`, `frontend/src/views/Areas.vue`, `frontend/src/components/NoteForm.vue`, `frontend/src/components/AreaForm.vue`, `frontend/src/components/ImagesContainer.vue`, `frontend/src/components/ImagesDetails.vue`, `frontend/src/components/ImagesBox.vue`, `frontend/src/components/ImagesTooltip.vue`, `frontend/src/components/RequestForm.vue`, `backend/app/models/noteImage.js`, `backend/app/models/vehicleImage.js`, `backend/app/models/areaImage.js`, `backend/app/controllers/noteImageController.js`, `backend/app/controllers/vehicleImageController.js`, `backend/app/controllers/areaImageController.js`, `backend/app/routes/noteImageRoutes.js`, `backend/app/routes/vehicleImageRoutes.js`, `backend/app/routes/areaImageRoutes.js`, `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js`, `frontend/tests/ImageForm.test.js`
+**Related:** `frontend/src/views/Vehicles.vue`, `frontend/src/views/Maintenance.vue`, `frontend/src/views/Landing.vue`, `frontend/src/views/Areas.vue`, `frontend/src/components/NoteForm.vue`, `frontend/src/components/AreaForm.vue`, `frontend/src/components/ImagesContainer.vue`, `frontend/src/components/ImagesDetails.vue`, `frontend/src/components/ImagesBox.vue`, `frontend/src/components/ImagesTooltip.vue`, `frontend/src/components/RequestForm.vue`, `backend/app/models/noteImage.js`, `backend/app/models/vehicleImage.js`, `backend/app/models/areaImage.js`, `backend/app/controllers/noteImageController.js`, `backend/app/controllers/vehicleImageController.js`, `backend/app/controllers/areaImageController.js`, `backend/app/routes/noteImageRoutes.js`, `backend/app/routes/vehicleImageRoutes.js`, `backend/app/routes/areaImageRoutes.js`, `backend/tests/images.test.js`, `frontend/tests/ImagesContainer.test.js`, `frontend/tests/ImagesDetails.test.js`, `frontend/tests/ImagesBox.test.js`, `frontend/tests/ImagesTooltip.test.js`
 
 ---
 
@@ -163,7 +163,7 @@
 **SC-003**: A `user` or `driver` can Delete only `NoteImages` on `notes` they created.
 **SC-004**: A `maintenance` user can Delete `NoteImages` they created or `NoteImages` on a maintenance request, and can Delete `VehicleImages` and `AreaImages`.
 **SC-005**: Admin users can Delete from all image tables.
-**SC-006**: npm test passes for `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js`, `frontend/tests/ImageForm.test.js`
+**SC-006**: npm test passes for image-related tests on every `*.test.js` file in the **Related** section in the headers
 
 ---
 
@@ -877,61 +877,61 @@ This feature uses different image tables where each entry has a foreign key to t
 
 Each scenario above must map to at least one automated test. `it` names must match the Gherkin **Scenario** titles exactly.
 
-| Story    | Scenario                                          | Test file                                                           | Test name                                           |
-| -------- | ------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------- |
-| US-11.1  | Hover a vehicle listing                           | `frontend/tests/ImagesList.test.js`                                 | `Hover a vehicle listing`                           |
-| US-11.1  | Press the vehicle image tooltip                   | `frontend/tests/ImagesList.test.js`                                 | `Press the vehicle image tooltip`                   |
-| US-11.1  | Close the vehicle image modal                     | `frontend/tests/ImagesList.test.js`                                 | `Close the vehicle image modal`                     |
-| US-11.1  | Vehicle has no images                             | `backend/tests/images.test.js`                                      | `Vehicle has no images`                             |
-| US-11.2  | Drag a valid image onto Vehicle Images            | `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js` | `Drag a valid image onto Vehicle Images`            |
-| US-11.2  | Press inside the Vehicle Images container         | `frontend/tests/ImagesList.test.js`                                 | `Press inside the Vehicle Images container`         |
-| US-11.2  | Upload from the cloud                             | `frontend/tests/ImagesList.test.js`                                 | `Upload from the cloud`                             |
-| US-11.2  | Upload from the computer                          | `frontend/tests/ImagesList.test.js`                                 | `Upload from the computer`                          |
-| US-11.2  | Reject an invalid vehicle image                   | `frontend/tests/ImageForm.test.js`                                  | `Reject an invalid vehicle image`                   |
-| US-11.2  | Duplicate vehicle image                           | `backend/tests/images.test.js`                                      | `Duplicate vehicle image`                           |
-| US-11.2  | Vehicle image request is missing a required field | `backend/tests/images.test.js`                                      | `Vehicle image request is missing a required field` |
-| US-11.2  | Signed out user uploads a vehicle image           | `backend/tests/images.test.js`                                      | `Signed out user uploads a vehicle image`           |
-| US-11.2  | Overwrite a vehicle image                         | `backend/tests/images.test.js`                                      | `Overwrite a vehicle image`                         |
-| US-11.3  | Show delete on a vehicle image                    | `frontend/tests/ImagesList.test.js`                                 | `Show delete on a vehicle image`                    |
-| US-11.3  | Delete one vehicle image                          | `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js` | `Delete one vehicle image`                          |
-| US-11.3  | Close an expanded vehicle image                   | `frontend/tests/ImagesList.test.js`                                 | `Close an expanded vehicle image`                   |
-| US-11.3  | Admin deletes any vehicle image                   | `backend/tests/images.test.js`                                      | `Admin deletes any vehicle image`                   |
-| US-11.3  | Signed out user deletes a vehicle image           | `backend/tests/images.test.js`                                      | `Signed out user deletes a vehicle image`           |
-| US-11.3  | Delete a missing vehicle image                    | `backend/tests/images.test.js`                                      | `Delete a missing vehicle image`                    |
-| US-11.4  | Note form shows its images                        | `frontend/tests/ImagesList.test.js`                                 | `Note form shows its images`                        |
-| US-11.4  | Expand a note image                               | `frontend/tests/ImagesList.test.js`                                 | `Expand a note image`                               |
-| US-11.4  | Close an expanded note image                      | `frontend/tests/ImagesList.test.js`                                 | `Close an expanded note image`                      |
-| US-11.4  | Note has no images                                | `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js` | `Note has no images`                                |
-| US-11.5  | Drag a valid image onto a note                    | `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js` | `Drag a valid image onto a note`                    |
-| US-11.5  | Press inside the note image container             | `frontend/tests/ImagesList.test.js`                                 | `Press inside the note image container`             |
-| US-11.5  | Reject an invalid note image                      | `frontend/tests/ImageForm.test.js`                                  | `Reject an invalid note image`                      |
-| US-11.5  | Duplicate note image                              | `backend/tests/images.test.js`                                      | `Duplicate note image`                              |
-| US-11.5  | Note image request is missing a required field    | `backend/tests/images.test.js`                                      | `Note image request is missing a required field`    |
-| US-11.5  | Signed out user uploads a note image              | `backend/tests/images.test.js`                                      | `Signed out user uploads a note image`              |
-| US-11.5  | Overwrite a note image                            | `backend/tests/images.test.js`                                      | `Overwrite a note image`                            |
-| US-11.6  | Delete a note image from the note form            | `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js` | `Delete a note image from the note form`            |
-| US-11.6  | User or driver deletes someone else's note image  | `backend/tests/images.test.js`                                      | `User or driver deletes someone else's note image`  |
-| US-11.6  | Maintenance deletes a note image                  | `backend/tests/images.test.js`                                      | `Maintenance deletes a note image`                  |
-| US-11.6  | Admin deletes any note image                      | `backend/tests/images.test.js`                                      | `Admin deletes any note image`                      |
-| US-11.6  | Close an expanded note image without deleting     | `frontend/tests/ImagesList.test.js`                                 | `Close an expanded note image without deleting`     |
-| US-11.7  | Selected vehicle shows its images                 | `frontend/tests/ImagesList.test.js`                                 | `Selected vehicle shows its images`                 |
-| US-11.7  | Request form does not delete vehicle images       | `frontend/tests/ImagesList.test.js`                                 | `Request form does not delete vehicle images`       |
-| US-11.8  | Hover an area listing                             | `frontend/tests/ImagesList.test.js`                                 | `Hover an area listing`                             |
-| US-11.8  | Press the area image tooltip                      | `frontend/tests/ImagesList.test.js`                                 | `Press the area image tooltip`                      |
-| US-11.8  | Close the area image modal                        | `frontend/tests/ImagesList.test.js`                                 | `Close the area image modal`                        |
-| US-11.8  | Area has no images                                | `backend/tests/images.test.js`                                      | `Area has no images`                                |
-| US-11.9  | Drag a valid image onto an area                   | `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js` | `Drag a valid image onto an area`                   |
-| US-11.9  | Press inside the area image container             | `frontend/tests/ImagesList.test.js`                                 | `Press inside the area image container`             |
-| US-11.9  | Reject an invalid area image                      | `frontend/tests/ImageForm.test.js`                                  | `Reject an invalid area image`                      |
-| US-11.9  | Duplicate area image                              | `backend/tests/images.test.js`                                      | `Duplicate area image`                              |
-| US-11.9  | Signed out user uploads an area image             | `backend/tests/images.test.js`                                      | `Signed out user uploads an area image`             |
-| US-11.9  | Overwrite an area image                           | `backend/tests/images.test.js`                                      | `Overwrite an area image`                           |
-| US-11.10 | Delete one area image                             | `backend/tests/images.test.js`, `frontend/tests/ImagesList.test.js` | `Delete one area image`                             |
-| US-11.10 | Close an expanded area image                      | `frontend/tests/ImagesList.test.js`                                 | `Close an expanded area image`                      |
-| US-11.10 | Admin deletes any area image                      | `backend/tests/images.test.js`                                      | `Admin deletes any area image`                      |
-| US-11.10 | Signed out user deletes an area image             | `backend/tests/images.test.js`                                      | `Signed out user deletes an area image`             |
-| US-11.11 | Selected area shows its images                    | `frontend/tests/ImagesList.test.js`                                 | `Selected area shows its images`                    |
-| US-11.11 | Request form does not delete area images          | `frontend/tests/ImagesList.test.js`                                 | `Request form does not delete area images`          |
+| Story    | Scenario                                          | Test file                                                                                                        | Test name                                           |
+| -------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| US-11.1  | Hover a vehicle listing                           | `frontend/tests/ImagesTooltip.test.js`                                                                           | `Hover a vehicle listing`                           |
+| US-11.1  | Press the vehicle image tooltip                   | `frontend/tests/ImagesTooltip.test.js`, `frontend/tests/ImagesDetails.test.js`                                   | `Press the vehicle image tooltip`                   |
+| US-11.1  | Close the vehicle image modal                     | `frontend/tests/ImagesTooltip.test.js`                                                                           | `Close the vehicle image modal`                     |
+| US-11.1  | Vehicle has no images                             | `backend/tests/images.test.js`                                                                                   | `Vehicle has no images`                             |
+| US-11.2  | Drag a valid image onto Vehicle Images            | `backend/tests/images.test.js`, `frontend/tests/ImagesContainer.test.js`                                         | `Drag a valid image onto Vehicle Images`            |
+| US-11.2  | Press inside the Vehicle Images container         | `frontend/tests/ImagesContainer.test.js`                                                                         | `Press inside the Vehicle Images container`         |
+| US-11.2  | Upload from the cloud                             | `frontend/tests/ImagesContainer.test.js`                                                                         | `Upload from the cloud`                             |
+| US-11.2  | Upload from the computer                          | `frontend/tests/ImagesContainer.test.js`                                                                         | `Upload from the computer`                          |
+| US-11.2  | Reject an invalid vehicle image                   | `frontend/tests/ImagesContainer.test.js`                                                                         | `Reject an invalid vehicle image`                   |
+| US-11.2  | Duplicate vehicle image                           | `backend/tests/images.test.js`                                                                                   | `Duplicate vehicle image`                           |
+| US-11.2  | Vehicle image request is missing a required field | `backend/tests/images.test.js`                                                                                   | `Vehicle image request is missing a required field` |
+| US-11.2  | Signed out user uploads a vehicle image           | `backend/tests/images.test.js`                                                                                   | `Signed out user uploads a vehicle image`           |
+| US-11.2  | Overwrite a vehicle image                         | `backend/tests/images.test.js`                                                                                   | `Overwrite a vehicle image`                         |
+| US-11.3  | Show delete on a vehicle image                    | `frontend/tests/ImagesDetails.test.js`                                                                           | `Show delete on a vehicle image`                    |
+| US-11.3  | Delete one vehicle image                          | `backend/tests/images.test.js`, `frontend/tests/ImagesDetails.test.js`                                           | `Delete one vehicle image`                          |
+| US-11.3  | Close an expanded vehicle image                   | `frontend/tests/ImagesDetails.test.js`                                                                           | `Close an expanded vehicle image`                   |
+| US-11.3  | Admin deletes any vehicle image                   | `backend/tests/images.test.js`                                                                                   | `Admin deletes any vehicle image`                   |
+| US-11.3  | Signed out user deletes a vehicle image           | `backend/tests/images.test.js`                                                                                   | `Signed out user deletes a vehicle image`           |
+| US-11.3  | Delete a missing vehicle image                    | `backend/tests/images.test.js`                                                                                   | `Delete a missing vehicle image`                    |
+| US-11.4  | Note form shows its images                        | `frontend/tests/ImagesContainer.test.js`, `frontend/tests/ImagesDetails.test.js`                                 | `Note form shows its images`                        |
+| US-11.4  | Expand a note image                               | `frontend/tests/ImagesDetails.test.js`                                                                           | `Expand a note image`                               |
+| US-11.4  | Close an expanded note image                      | `frontend/tests/ImagesDetails.test.js`                                                                           | `Close an expanded note image`                      |
+| US-11.4  | Note has no images                                | `backend/tests/images.test.js`, `frontend/tests/ImagesContainer.test.js`, `frontend/tests/ImagesDetails.test.js` | `Note has no images`                                |
+| US-11.5  | Drag a valid image onto a note                    | `backend/tests/images.test.js`, `frontend/tests/ImagesContainer.test.js`                                         | `Drag a valid image onto a note`                    |
+| US-11.5  | Press inside the note image container             | `frontend/tests/ImagesContainer.test.js`                                                                         | `Press inside the note image container`             |
+| US-11.5  | Reject an invalid note image                      | `frontend/tests/ImagesContainer.test.js`                                                                         | `Reject an invalid note image`                      |
+| US-11.5  | Duplicate note image                              | `backend/tests/images.test.js`                                                                                   | `Duplicate note image`                              |
+| US-11.5  | Note image request is missing a required field    | `backend/tests/images.test.js`                                                                                   | `Note image request is missing a required field`    |
+| US-11.5  | Signed out user uploads a note image              | `backend/tests/images.test.js`                                                                                   | `Signed out user uploads a note image`              |
+| US-11.5  | Overwrite a note image                            | `backend/tests/images.test.js`                                                                                   | `Overwrite a note image`                            |
+| US-11.6  | Delete a note image from the note form            | `backend/tests/images.test.js`, `frontend/tests/ImagesDetails.test.js`                                           | `Delete a note image from the note form`            |
+| US-11.6  | User or driver deletes someone else's note image  | `backend/tests/images.test.js`                                                                                   | `User or driver deletes someone else's note image`  |
+| US-11.6  | Maintenance deletes a note image                  | `backend/tests/images.test.js`                                                                                   | `Maintenance deletes a note image`                  |
+| US-11.6  | Admin deletes any note image                      | `backend/tests/images.test.js`                                                                                   | `Admin deletes any note image`                      |
+| US-11.6  | Close an expanded note image without deleting     | `frontend/tests/ImagesDetails.test.js`                                                                           | `Close an expanded note image without deleting`     |
+| US-11.7  | Selected vehicle shows its images                 | `frontend/tests/ImagesBox.test.js`, `frontend/tests/ImagesDetails.test.js`                                       | `Selected vehicle shows its images`                 |
+| US-11.7  | Request form does not delete vehicle images       | `frontend/tests/ImagesBox.test.js`                                                                               | `Request form does not delete vehicle images`       |
+| US-11.8  | Hover an area listing                             | `frontend/tests/ImagesTooltip.test.js`                                                                           | `Hover an area listing`                             |
+| US-11.8  | Press the area image tooltip                      | `frontend/tests/ImagesTooltip.test.js`, `frontend/tests/ImagesDetails.test.js`                                   | `Press the area image tooltip`                      |
+| US-11.8  | Close the area image modal                        | `frontend/tests/ImagesTooltip.test.js`                                                                           | `Close the area image modal`                        |
+| US-11.8  | Area has no images                                | `backend/tests/images.test.js`                                                                                   | `Area has no images`                                |
+| US-11.9  | Drag a valid image onto an area                   | `backend/tests/images.test.js`, `frontend/tests/ImagesContainer.test.js`                                         | `Drag a valid image onto an area`                   |
+| US-11.9  | Press inside the area image container             | `frontend/tests/ImagesContainer.test.js`                                                                         | `Press inside the area image container`             |
+| US-11.9  | Reject an invalid area image                      | `frontend/tests/ImagesContainer.test.js`                                                                         | `Reject an invalid area image`                      |
+| US-11.9  | Duplicate area image                              | `backend/tests/images.test.js`                                                                                   | `Duplicate area image`                              |
+| US-11.9  | Signed out user uploads an area image             | `backend/tests/images.test.js`                                                                                   | `Signed out user uploads an area image`             |
+| US-11.9  | Overwrite an area image                           | `backend/tests/images.test.js`                                                                                   | `Overwrite an area image`                           |
+| US-11.10 | Delete one area image                             | `backend/tests/images.test.js`, `frontend/tests/ImagesDetails.test.js`                                           | `Delete one area image`                             |
+| US-11.10 | Close an expanded area image                      | `frontend/tests/ImagesDetails.test.js`                                                                           | `Close an expanded area image`                      |
+| US-11.10 | Admin deletes any area image                      | `backend/tests/images.test.js`                                                                                   | `Admin deletes any area image`                      |
+| US-11.10 | Signed out user deletes an area image             | `backend/tests/images.test.js`                                                                                   | `Signed out user deletes an area image`             |
+| US-11.11 | Selected area shows its images                    | `frontend/tests/ImagesBox.test.js`, `frontend/tests/ImagesDetails.test.js`                                       | `Selected area shows its images`                    |
+| US-11.11 | Request form does not delete area images          | `frontend/tests/ImagesBox.test.js`                                                                               | `Request form does not delete area images`          |
 
 ---
 
