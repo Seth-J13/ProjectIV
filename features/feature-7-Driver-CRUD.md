@@ -5,7 +5,7 @@
 **Status:** {Draft | Ready | Shipped}
 **Created:** 2026-10-26
 **Input:** create, read, update, delete drivers
-**Depends on:** [Feature 1 -- User Management](feature-1-User-Management.md),
+**Depends on:** [Feature 3 -- User Management](feature-1-User-Management.md),
 [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature X -- ...](feature-X-...md), ... <-- (omit if none)
 **Related:** `frontend/src/views/Drivers.vue`, `backend/app/routes/users.routes.js`,
 `backend/app/routes/vehicle-t3.routes.js`

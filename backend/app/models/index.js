@@ -5,8 +5,8 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// Register models and associations here as features define them, e.g.:
-// import userModel from "./user.model.js";
-// db.user = userModel(sequelize, Sequelize);
+import driverModel from "./driver.model.js";
+
+db.driver = driverModel(sequelize, Sequelize);
 
 export default db;

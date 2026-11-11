@@ -82,9 +82,10 @@ Update this file when a feature that defines schema merges to `dev`.
 
 | Field              | Type   | Rules                                             |
 | ------------------ | ------ | ------------------------------------------------- |
-| `driver_id`        | INT PK | Required; Unique;                                 |
-| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`,       |
-| `license_exp_date` | date   | Required;                                         |
+| `driver_id`        | INT PK | Required; unique; supplied by the client          |
+| `name`             | STRING | Optional; trimmed. A blank name is rejected       |
+| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`        |
+| `license_exp_date` | STRING | Required; stored as entered (for example `05/2026`) |
 | `availability`     | ENUM   | Required; `available`, `not available`, `on call` |
 
 ### `Notes` table
