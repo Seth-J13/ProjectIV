@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1,2,4,5,6,7,9,12,13 applied.
+**Status:** Features 1,2,4,5,6,7,9,10,12,13 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
@@ -107,6 +107,27 @@ Update this file when a feature that defines schema merges to `dev`.
 | `created_note`   | BOOLEAN                 | Required              |
 | `date`           | DATE                    | Required              |
 
+### `vehicle_logs` table
+
+| Field | Type | Rules |
+| ----- | ---- | ----- |
+| `id` | INTEGER PK | Auto-increment |
+| `serviceDate` | DATE | Required |
+| `vin` | STRING | Required; references an existing vehicle |
+| `description` | TEXT | Required |
+| `completed` | BOOLEAN | Required |
+| `creatorId` | INTEGER FK | Required; references `users.id`. Set to the signed-in user on create |
+| `createdAt` | DATE | Set when the log is created |
+| `updatedAt` | DATE | Set when the log is created and on every update |
+
+### `vehicle_log_owners` table
+
+| Field | Type | Rules |
+| ----- | ---- | ----- |
+| `id` | INTEGER PK | Auto-increment |
+| `vehicleLogId` | INTEGER FK | Required; references `vehicle_logs.id` |
+| `userId` | INTEGER FK | Required; references `users.id` |
+
 ### `Areas` table
 
 | Field | Type | Rules |
@@ -139,6 +160,10 @@ Update this file when a feature that defines schema merges to `dev`.
 - `Vehicle` belongsTo `Area` --| a vehicle belongs to one area
 - `Area` hasMany `AreaImage` --| an area can have many images
 - `Maintenance_Info` belongsTo `Fuel_Type` ---| a maintenance info entry has exactly one fuel type
+-
+- `VehicleLog` belongsTo `User` ----| a log belongs to one user as creator
+- `VehicleLog` belongsToMany `User` | a log belongs to many users as owners
+- `VehicleLog` belongsTo `Vehicle` -| a log belongs to one vehicle as vin
 -
 - `Destinations` hasMany `requests` ----| a destination can be included in many requests
 - `requests` belongsTo `Destinations` --| a request has between 0 and 1 destinations
