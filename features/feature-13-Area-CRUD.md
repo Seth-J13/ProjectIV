@@ -4,7 +4,7 @@
 **Branch pattern:** `feature/13-area`
 **Status:** Draft
 **Created:** 2026-11-11
-**Input:** An admin needs to create, read, update, and delete areas. An area is the record formerly called a department.
+**Input:** An admin needs to create, read, update, and delete areas.
 **Depends on:** [Feature 1 — User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md)
 
 ---
@@ -15,7 +15,7 @@
 
 **As an** admin
 **I want to** create an area with a name and a notice email
-**So that** vehicles and destinations can belong to that area
+**So that** vehicles can belong to that area
 
 **Priority:** P1
 **Independent test:** Sign in as admin, save an area with a unique name and a notice email, and see that area on the list.
@@ -48,7 +48,7 @@
 **So that** deleted areas leave the directory
 
 **Priority:** P2
-**Independent test:** Sign in as admin, delete an area that no vehicle or destination references, and that area is gone from the list.
+**Independent test:** Sign in as admin, delete an area that no vehicle references, and that area is gone from the list.
 **Acceptance scenarios:** see ### US-13.4 under Acceptance Criteria
 
 ### US-13.5: Block other roles
@@ -71,8 +71,8 @@
 - **FR-002**: An area MUST contain a unique `name` of at most 30 characters and a `noticeEmail`. `logo` is optional.
 - **FR-003**: An admin MUST be able to list every area and open one area by id.
 - **FR-004**: An admin MUST be able to update an area’s `name`, `noticeEmail`, and `logo`.
-- **FR-005**: An admin MUST be able to delete an area that no vehicle and no destination references.
-- **FR-006**: A delete MUST fail when a vehicle or a destination still references that area, and the area MUST remain.
+- **FR-005**: An admin MUST be able to delete an area that has no vehicle references.
+- **FR-006**: A delete MUST fail when a vehicle still references that area, and the area MUST remain.
 - **FR-007**: Creating an area with a name that already exists MUST return **409** with message **"Area name already in use!"** and MUST NOT create a second row.
 - **FR-008**: A missing `name` or `noticeEmail` MUST return **400** with message **"Area is incomplete!"**.
 - **FR-009**: Roles `user`, `driver`, and `maintenance` MUST receive **403** with message **"Forbidden"** on every area route.
@@ -84,8 +84,8 @@
 
 - Feature 1 auth is already specified. The caller is signed in and has a role.
 - Roles are `user`, `driver`, `maintenance`, and `admin`.
-- This feature owns the **Area** record from the ERD (the renamed Department): `id`, `name`, `logo`, `notice_email`.
-- A vehicle stores `area_id`, and a destination stores `area_id`. This feature does not create vehicles or destinations.
+- This feature owns the **Area** record from the ERD: `id`, `name`, `logo`, `notice_email`.
+- A vehicle stores `area_id`. This feature does not create vehicles.
 - The **Areas** menu entry is added by this feature and is visible only to `admin`.
 
 ---
@@ -96,7 +96,7 @@
 - Duplicate area name → **409** `"Area name already in use!"`
 - Unknown area id → **404** `"Area not found!"`
 - `user`, `driver`, or `maintenance` calls an area route or opens `/areas` → **403** `"Forbidden"`
-- Delete an area that a vehicle or destination still references → **409** `"Area is in use!"` and the area remains
+- Delete an area that a vehicle still references → **409** `"Area is in use!"` and the area remains
 - Missing or expired token → **401**, handled by Feature 1
 
 ---
@@ -124,7 +124,7 @@ Areas are organization records, not private user rows. Only an admin may create,
 | **Write scope** | Role `admin` may update or delete an area by id. |
 | **Other roles** | Roles `user`, `driver`, and `maintenance` receive **403** and do not see **Areas**. |
 | **Unknown area** | An admin asking for a missing area id receives **404**. |
-| **Delete guard** | An area referenced by a vehicle or a destination is not deleted. |
+| **Delete guard** | An area referenced by a vehicle is not deleted. |
 
 
 ## API Requirements
@@ -182,7 +182,7 @@ Quoted messages that tests must match:
 
 ## Key Entities
 
-- **Area**: the organization unit formerly called Department. It has a unique name, an optional logo, and a notice email. A vehicle and a destination may point at one area.
+- **Area**: Organizational unit with a unique name, an optional logo, and a notice email. A vehicle may point at one area.
 - **User**: the signed-in account from Feature 1. Only role `admin` uses this feature.
 
 ---
@@ -210,7 +210,7 @@ Quoted messages that tests must match:
 
 ## Data Model Requirements
 
-This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or `destinations`.
+This feature **owns** `areas`. It does not create `area_images` or `vehicles`.
 
 ### `areas` table
 
@@ -225,9 +225,8 @@ This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or 
 
 ### Associations
 
-- `Vehicle` belongsTo `Area` through `areaId` (owned by the vehicle feature)
-- `Destination` belongsTo `Area` through `areaId` (owned by the destination feature)
-- `Area` hasMany `AreaImage` (owned by a later feature)
+- `Vehicle` belongsTo `Area` through `area_id` (owned by the vehicle feature)
+- `Area` hasMany `AreaImage` (owned by feature 11)
 
 ---
 
@@ -281,14 +280,14 @@ This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or 
 #### Scenario: Admin deletes an unused area
 
 - **Given** I am signed in as `admin`
-- **And** an area exists that no vehicle and no destination references
+- **And** an area exists that no vehicle reference
 - **When** I delete that area
 - **Then** it does not appear on the list
 
 #### Scenario: Area still in use
 
 - **Given** I am signed in as `admin`
-- **And** a vehicle or a destination references an area
+- **And** a vehicle references an area
 - **When** I delete that area
 - **Then** I see **"Area is in use!"**
 - **And** the area remains on the list
@@ -359,7 +358,7 @@ Do not implement behavior listed under Out of Scope.
 ## Out of Scope
 
 - Area images (`area_images`: image, date, and `area_id`)
-- Creating, editing, or listing vehicles and destinations
+- Creating, editing, or listing vehicles
 - Vehicle service logs, requests, notes, and maintenance specifications
 - Login, create account, logout, and the landing-page placeholder
 - Password reset, email verification, profile editing, and Google sign-in
