@@ -11,7 +11,7 @@
 
 ## User Stories
 
-### US-3.1: Create an area
+### US-13.1: Create an area
 
 **As an** admin
 **I want to** create an area with a name and a notice email
@@ -19,9 +19,9 @@
 
 **Priority:** P1
 **Independent test:** Sign in as admin, save an area with a unique name and a notice email, and see that area on the list.
-**Acceptance scenarios:** see ### US-3.1 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-13.1 under Acceptance Criteria
 
-### US-3.2: Read areas
+### US-13.2: Read areas
 
 **As an** admin
 **I want to** view every area
@@ -29,9 +29,9 @@
 
 **Priority:** P1
 **Independent test:** Sign in as admin, open Areas, and see the name and notice email of an existing area.
-**Acceptance scenarios:** see ### US-3.2 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-13.2 under Acceptance Criteria
 
-### US-3.3: Update an area
+### US-13.3: Update an area
 
 **As an** admin
 **I want to** change an area’s name or notice email
@@ -39,9 +39,9 @@
 
 **Priority:** P1
 **Independent test:** Sign in as admin, change an area’s notice email, and see the saved notice email on the list.
-**Acceptance scenarios:** see ### US-3.3 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-13.3 under Acceptance Criteria
 
-### US-3.4: Delete an area
+### US-13.4: Delete an area
 
 **As an** admin
 **I want to** delete an area that nothing still uses
@@ -49,9 +49,9 @@
 
 **Priority:** P2
 **Independent test:** Sign in as admin, delete an area that no vehicle or destination references, and that area is gone from the list.
-**Acceptance scenarios:** see ### US-3.4 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-13.4 under Acceptance Criteria
 
-### US-3.5: Block other roles
+### US-13.5: Block other roles
 
 **As the** application
 **I want to** refuse area changes from anyone who is not an admin
@@ -59,7 +59,7 @@
 
 **Priority:** P1
 **Independent test:** Sign in as maintenance, driver, or user and open `/areas`. The area list is not shown.
-**Acceptance scenarios:** see ### US-3.5 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-13.5 under Acceptance Criteria
 
 ---
 
@@ -132,11 +132,11 @@ Areas are organization records, not private user rows. Only an admin may create,
 
 | Method | Endpoint | Auth | Purpose |
 | ------ | -------- | ---- | ------- |
-| `POST` | `/api/areas` | Bearer, `admin` | Create an area |
-| `GET` | `/api/areas` | Bearer, `admin` | List areas |
-| `GET` | `/api/areas/:id` | Bearer, `admin` | Read one area |
-| `PUT` | `/api/areas/:id` | Bearer, `admin` | Update an area |
-| `DELETE` | `/api/areas/:id` | Bearer, `admin` | Delete an unused area |
+| `POST` | `/api/areas` | Yes, `admin` | Create an area |
+| `GET` | `/api/areas` | Yes, `admin` | List areas |
+| `GET` | `/api/areas/:id` | Yes, `admin` | Read one area |
+| `PUT` | `/api/areas/:id` | Yes, `admin` | Update an area |
+| `DELETE` | `/api/areas/:id` | Yes, `admin` | Delete an unused area |
 
 
 **Create and update body:**
@@ -233,7 +233,7 @@ This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or 
 
 ## Acceptance Criteria (Gherkin)
 
-### US-3.1 — Create an area
+### US-13.1 — Create an area
 
 #### Scenario: Admin creates an area
 
@@ -258,7 +258,7 @@ This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or 
 - **Then** I see **"Area is incomplete!"**
 - **And** no area is added
 
-### US-3.2 — Read areas
+### US-13.2 — Read areas
 
 #### Scenario: Admin reads the list
 
@@ -267,7 +267,7 @@ This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or 
 - **When** I open **Areas**
 - **Then** I see that area’s name and notice email
 
-### US-3.3 — Update an area
+### US-13.3 — Update an area
 
 #### Scenario: Admin updates an area
 
@@ -276,7 +276,7 @@ This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or 
 - **When** I change the notice email and save
 - **Then** the list shows the new notice email
 
-### US-3.4 — Delete an area
+### US-13.4 — Delete an area
 
 #### Scenario: Admin deletes an unused area
 
@@ -293,7 +293,7 @@ This feature **owns** `areas`. It does not create `area_images`, `vehicles`, or 
 - **Then** I see **"Area is in use!"**
 - **And** the area remains on the list
 
-### US-3.5 — Block other roles
+### US-13.5 — Block other roles
 
 #### Scenario: Maintenance cannot open areas
 
@@ -316,15 +316,15 @@ Each scenario above must map to at least one automated test.
 
 | Story | Scenario | Test file | Test name |
 | ----- | -------- | --------- | --------- |
-| US-3.1 | Admin creates an area | `frontend/tests/Area.test.js` | `it("Admin creates an area")` |
-| US-3.1 | Duplicate area name | `backend/tests/area.test.js` | `it("Duplicate area name")` |
-| US-3.1 | Blank area | `backend/tests/area.test.js` | `it("Blank area")` |
-| US-3.2 | Admin reads the list | `frontend/tests/Area.test.js` | `it("Admin reads the list")` |
-| US-3.3 | Admin updates an area | `frontend/tests/Area.test.js` | `it("Admin updates an area")` |
-| US-3.4 | Admin deletes an unused area | `backend/tests/area.test.js` | `it("Admin deletes an unused area")` |
-| US-3.4 | Area still in use | `backend/tests/area.test.js` | `it("Area still in use")` |
-| US-3.5 | Maintenance cannot open areas | `frontend/tests/Area.test.js` | `it("Maintenance cannot open areas")` |
-| US-3.5 | Driver cannot open areas | `frontend/tests/Area.test.js` | `it("Driver cannot open areas")` |
+| US-13.1 | Admin creates an area | `frontend/tests/Area.test.js` | `it("Admin creates an area")` |
+| US-13.1 | Duplicate area name | `backend/tests/area.test.js` | `it("Duplicate area name")` |
+| US-13.1 | Blank area | `backend/tests/area.test.js` | `it("Blank area")` |
+| US-13.2 | Admin reads the list | `frontend/tests/Area.test.js` | `it("Admin reads the list")` |
+| US-13.3 | Admin updates an area | `frontend/tests/Area.test.js` | `it("Admin updates an area")` |
+| US-13.4 | Admin deletes an unused area | `backend/tests/area.test.js` | `it("Admin deletes an unused area")` |
+| US-13.4 | Area still in use | `backend/tests/area.test.js` | `it("Area still in use")` |
+| US-13.5 | Maintenance cannot open areas | `frontend/tests/Area.test.js` | `it("Maintenance cannot open areas")` |
+| US-13.5 | Driver cannot open areas | `frontend/tests/Area.test.js` | `it("Driver cannot open areas")` |
 
 
 ## Agent implementation request
@@ -332,7 +332,7 @@ Each scenario above must map to at least one automated test.
 Copy when asking Cursor to implement this feature (`@` this file):
 
 ```text
-Implement Feature 3 from @features/feature-3-departmentCRUD.md on branch `feature/3-area`.
+Implement Feature 13 from @features/feature-13-Area-CRUD.md on branch `feature/13-area-crud`.
 
 Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
