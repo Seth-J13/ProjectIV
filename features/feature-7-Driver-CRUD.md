@@ -17,7 +17,7 @@
 ### US-7.1: Create drivers
 
 **As a** signed-in admin user  
-**I want to** create named drivers 
+**I want to** create named drivers
 **So that** I can give admins a list of drivers to assign
 
 **Priority:** P1  
@@ -85,9 +85,9 @@
 
 ## Edge Cases
 
-- Empty or whitespace-only driver name → client block and/or `400`.
-- Invalid `driver_id` → `400`; unowned driver → `404`.
-- Unauthenticated `Drivers.vue` → redirect or `401`.
+- Empty or whitespace-only driver name -> client block and/or `400`.
+- Invalid `driver_id` -> `400`; unowned driver -> `404`.
+- Unauthenticated `Drivers.vue` -> redirect or `401`.
 
 ## Success Criteria
 
@@ -102,24 +102,24 @@
 
 Drivers are not owned by anybody; however, only administrator-role users are authorized to write/create on `drivers`
 
-| Rule                  | Requirement                                                                                                                                   |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Read scope**        | `GET /vehicle-t3` returns only drivers.                                                                                                          |
-| **Write scope**       | `PUT` and `DELETE` apply only when the driver row matches both `id` and `req.user.id`.                                                        |
-| **Create scope**      | New drivers owned by nobody.                                                                                                                  |
-| **Cross-user access** | If an unauthorized user tries to `PUT`, `DELETE`, or `POST` drivers, respond with `403`.                                                      |
-| **UI scope**          | The drivers view shows only drivers returned by `GET /vehicle-t3` for the signed-in admin.                                                       |
+| Rule                  | Requirement                                                                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Read scope**        | `GET /vehicle-t3` returns only drivers.                                                                                                        |
+| **Write scope**       | `PUT` and `DELETE` apply only when the driver row matches both `id` and `req.user.id`.                                                         |
+| **Create scope**      | New drivers owned by nobody.                                                                                                                   |
+| **Cross-user access** | If an unauthorized user tries to `PUT`, `DELETE`, or `POST` drivers, respond with `403`.                                                       |
+| **UI scope**          | The drivers view shows only drivers returned by `GET /vehicle-t3` for the signed-in admin.                                                     |
 | **Implementation**    | Use a shared helper (e.g. `getAccessibleDriversOrNull(req, driver_id)`) in `app/authorization/` — do not duplicate scope logic in controllers. |
 
 ---
 
 ## API Requirements
 
-| Method   | Endpoint             | Auth       | Purpose             |
-| -------- | -------------------- | ---------- | ------------------- |
-| `GET`    | `/vehicle-t3`           | Yes        | Fetch all drivers   |
+| Method   | Endpoint                 | Auth       | Purpose             |
+| -------- | ------------------------ | ---------- | ------------------- |
+| `GET`    | `/vehicle-t3`            | Yes        | Fetch all drivers   |
 | `GET`    | `/vehicle-t3/:driver_id` | Yes        | Show driver details |
-| `POST`   | `/vehicle-t3`           | Yes, admin | Create a new driver |
+| `POST`   | `/vehicle-t3`            | Yes, admin | Create a new driver |
 | `PUT`    | `/vehicle-t3/:driver_id` | Yes, admin | Update a driver     |
 | `DELETE` | `/vehicle-t3/:driver_id` | Yes, admin | Delete a driver     |
 
@@ -201,12 +201,12 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 ### `drivers` table
 
-| Field               | Type      | Rules                                                  |
-| ------------------- | --------- | ------------------------------------------------------ |
-| `driver_id`          | INT PK | Required; Unique;                   |
-| `license_status`        | ENUM    | Required; `expired`, `active`, `suspended`, |
-| `license_exp_date`   | date      | Required; |
-| `availability` | ENUM      | Required; `available`, `not available`, `on call` |
+| Field              | Type   | Rules                                             |
+| ------------------ | ------ | ------------------------------------------------- |
+| `driver_id`        | INT PK | Required; Unique;                                 |
+| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`,       |
+| `license_exp_date` | date   | Required;                                         |
+| `availability`     | ENUM   | Required; `available`, `not available`, `on call` |
 
 ---
 
@@ -266,11 +266,9 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 - **And** I see the message **"availability is required."**
 - **And** no API request is sent
 
-
 ---
 
 ### US-7.2 — View all drivers
-
 
 #### Scenario: No drivers exist
 
@@ -326,20 +324,21 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 - **Then** I see a search bar named `Find` above the drivers list
   returns
 
-#### Scenario: No search bar appears with no drivers
+#### Scenario: search bar appears with no drivers
 
 - **Given** I am signed in as an admin
 - **And** the driver `1` exists
 - **When** I view the drivers view
-- **Then** I see **"No drivers yet. Create a driver."**
-- **And** I see no search bars in the view
+- **And** I type `2` in the search bar
+- **Then** The search function does not display any drivers
+- **And** I see no drivers in the view
 
 #### Scenario: Admin types in driver search bar
 
 - **Given** I am signed in as an admin
 - **And** I am viewing the drivers view
-- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`, 
-and `4, active` exist
+- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`,
+  and `4, active` exist
 - **When** I type `active` in the `Find` search bar
 - **Then** the driver list updates to contain only the drivers `1` and `4`
 
@@ -347,8 +346,8 @@ and `4, active` exist
 
 - **Given** I am signed in as an admin
 - **And** I am viewing the drivera view
-- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`, 
-and `4, active` exist
+- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`,
+  and `4, active` exist
 - **When** I type `suspended` in the `Find` search bar
 - **Then** the driver list updates to contain only the driver `2`
 
@@ -368,24 +367,23 @@ and `4, active` exist
 
 ## Test Coverage Map
 
-| Story  | Scenario                                                       | Test file                                                         | Test name                                                        |
-| ------ | -------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Story  | Scenario                                                       | Test file                                                            | Test name                                                        |
+| ------ | -------------------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------- | --- |
 | US-7.1 | Admin creates a new driver                                     | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a new driver`                                     |
-| US-7.1 | Admin creates a driver with an empty name                      | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver with an empty name`                      |
-| US-7.1 | Admin creates a driver with an empty license status               | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver with an empty license status`               |
-| US-7.1 | Admin creates a driver without license expiration date                      | `frontend/tests/Drivers.test.js`                                  | `Admin creates a driver without license expiration`                        |
-| US-7.1 | Admin creates a driver without availability          | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Driver.test.js` | `Admin creates a driver without availability`            |
-| US-7.1 | Admin creates a driver with an id that is improperly formatted | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a driver with an id that is improperly formatted` |
-| US-7.2 | Driver view loads with existing semesters                      | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Driver view loads with existing semesters`                      |
-| US-7.2 | No drivers exist                                               | `frontend/tests/Drivers.test.js`                                  | `No drivers exist`                                               |
-| US-7.3 | driver rows show edit and delete actions                       | `frontend/tests/Drivers.test.js`                                  | `driver rows show edit and delete actions`                       |
+| US-7.1 | Admin creates a driver with an empty name                      | `frontend/tests/Drivers.test.js`                                     | `Admin creates a driver with an empty name`                      |
+| US-7.1 | Admin creates a driver with an empty license status            | `frontend/tests/Drivers.test.js`                                     | `Admin creates a driver with an empty license status`            |
+| US-7.1 | Admin creates a driver without license expiration date         | `frontend/tests/Drivers.test.js`                                     | `Admin creates a driver without license expiration`              |
+| US-7.1 | Admin creates a driver without availability                    | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Driver.test.js`  | `Admin creates a driver without availability`                    |
+| US-7.1 | Admin creates a driver with an id that is improperly formatted | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin creates a driver with an id that is improperly formatted` |     |
+| US-7.2 | No drivers exist                                               | `frontend/tests/Drivers.test.js`                                     | `No drivers exist`                                               |
+| US-7.3 | driver rows show edit and delete actions                       | `frontend/tests/Drivers.test.js`                                     | `driver rows show edit and delete actions`                       |
 | US-7.4 | Admin edits a driver                                           | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin edits a driver`                                           |
 | US-7.4 | Admin deletes a driver                                         | `backend/tests/vehicle-t3.test.js`, `frontend/tests/Drivers.test.js` | `Admin deletes a driver`                                         |
-| US-7.5 | Search bar appears with drivers                                | `frontend/tests/Drivers.test.js`                                  | `Search bar appears with drivers`                                |
-| US-7.5 | No search bar appears with no drivers                          | `frontend/tests/Drivers.test.js`                                  | `No search bar appears with no drivers`                          |
-| US-7.5 | Admin types in driver search bar                               | `frontend/tests/Drivers.test.js`                                  | `Admin types in driver search bar`                               |
-| US-7.5 | Admin types in driver search bar 2                             | `frontend/tests/Drivers.test.js`                                  | `Admin types in driver search bar 2`                             |
-| US-7.5 | Unauthenticated user accesses the drivers view                 | `frontend/tests/Drivers.test.js`                                  | `Unauthenticated user accesses the drivers view`                 |
+| US-7.5 | Search bar appears with drivers                                | `frontend/tests/Drivers.test.js`                                     | `Search bar appears with drivers`                                |
+| US-7.5 | search bar appears with no drivers                             | `frontend/tests/Drivers.test.js`                                     | `search bar appears with no drivers`                             |
+| US-7.5 | Admin types in driver search bar                               | `frontend/tests/Drivers.test.js`                                     | `Admin types in driver search bar`                               |
+| US-7.5 | Admin types in driver search bar 2                             | `frontend/tests/Drivers.test.js`                                     | `Admin types in driver search bar 2`                             |
+| US-7.5 | Unauthenticated user accesses the drivers view                 | `frontend/tests/Drivers.test.js`                                     | `Unauthenticated user accesses the drivers view`                 |
 | US-7.5 | Unauthenticated API request to drivers                         | `backend/tests/vehicle-t3.test.js`                                   | `Unauthenticated API request to drivers`                         |
 
 ---
@@ -397,7 +395,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 7 from @features/feature-7-driver-management.md on branch `feature/7-driver-management`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checksemester in @features/framework.md.
@@ -429,4 +427,3 @@ Do not implement behavior not in this spec.
 - `POST`/`GET`/`PUT`/`DELETE` anywhere that's not `/vehicle-t3/vehicle-t3` or `/vehicle-t3/:driver_id`
 
 ---
-
