@@ -5,8 +5,14 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// Register models and associations here as features define them, e.g.:
-// import userModel from "./user.model.js";
-// db.user = userModel(sequelize, Sequelize);
+import vehicleModel from "./vehicle.model.js";
+import driverModel from "./catalog-driver.model.js";
+import destinationModel from "./destination.model.js";
+import requestModel from "./request.model.js";
+
+db.vehicle = vehicleModel(sequelize, Sequelize);
+db.driver = driverModel(sequelize, Sequelize);
+db.destination = destinationModel(sequelize, Sequelize);
+db.request = requestModel(sequelize, Sequelize);
 
 export default db;

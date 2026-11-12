@@ -59,12 +59,24 @@ function requestIds(body) {
   return (Array.isArray(body) ? body : []).map((row) => row.requestId);
 }
 
+async function seedCatalog() {
+  await db.vehicle.create({
+    vehicleId: 12,
+    license: "ABC-1234",
+    make: "Ford",
+    model: "Transit",
+  });
+  await db.driver.create({ driverId: 3, name: "Jane Doe" });
+  await db.destination.create({ destId: 7, name: "State Capitol" });
+}
+
 describe("Feature 8 — Request Management", () => {
   describe("US-8.1 — Create a normal request", () => {
     let user;
 
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
       user = await authHeader("worker", "requester");
     });
 
@@ -132,6 +144,7 @@ describe("Feature 8 — Request Management", () => {
   describe("US-8.2 — Create a maintenance request", () => {
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
     });
 
     it("Admin creates a maintenance request", async () => {
@@ -159,6 +172,7 @@ describe("Feature 8 — Request Management", () => {
   describe("US-8.3 — View requests", () => {
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
     });
 
     it("Requests view loads with existing requests", async () => {
@@ -199,7 +213,7 @@ describe("Feature 8 — Request Management", () => {
       const secondUser = await authHeader("worker", "ben");
       const admin = await authHeader("admin", "admin");
       const first = await request(app).post(REQUESTS_PATH).set(firstUser).send(tripBody);
-      const second = await request(app).post(REQUESTS_PATH).set(secondUser).send(maintenanceBody);
+      const second = await request(app).post(REQUESTS_PATH).set(secondUser).send(tripBody);
 
       const response = await request(app).get(REQUESTS_PATH).set(admin);
 
@@ -213,6 +227,7 @@ describe("Feature 8 — Request Management", () => {
   describe("US-8.5 — Edit and delete requests", () => {
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
     });
 
     it("User edits a request", async () => {

@@ -137,6 +137,27 @@ Update this file when a feature that defines schema merges to `dev`.
 | `logo` | BLOB | Optional. ERD `logo` |
 | `noticeEmail` | STRING(255) | Required. ERD `notice_email` |
 
+### `requests` table
+
+Feature 8. Dates and times are stored as strings so values such as `2026-11-10` and `09:00` round-trip. Type-dependent fields are nullable in the database and checked in the controller.
+
+| Field | Type | Rules |
+| --- | --- | --- |
+| `requestId` | INTEGER PK | Auto-increment |
+| `requestType` | ENUM | Required; `trip` or `maintenance` |
+| `requesterId` | INTEGER | Required; set from the signed-in user |
+| `vehicleId` | INTEGER | Required |
+| `driverId` | INTEGER | Required for `trip`; null for `maintenance` |
+| `destId` | INTEGER | Required for `trip`; null for `maintenance` |
+| `startDate` | STRING | Required for `trip`; optional for `maintenance` |
+| `startTime` | STRING | Required for `trip`; optional for `maintenance` |
+| `endDate` | STRING | Required for `trip`; defaults to `startDate` for `maintenance` when omitted |
+| `endTime` | STRING | Required for `trip`; optional for `maintenance` |
+| `numPeople` | INTEGER | Required, at least 1, for `trip`; null for `maintenance` |
+| `currentlyActive` | BOOLEAN | Required; default `true` |
+
+Request dropdowns read `vehicles` (`vehicleId`, `license`, `make`, `model`), `drivers` (`driverId`, `name`), and `destinations` (`destId`, `name`). Those list columns are the Feature 8 API shape.
+
 ### Associations
 
 - `User` hasMany `Session` ----| not every user has a session
