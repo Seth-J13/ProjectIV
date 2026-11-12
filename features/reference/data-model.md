@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1,2,4,5,6,7,9 applied.
+**Status:** Features 1,2,3,4,5,6,7,9,10 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
