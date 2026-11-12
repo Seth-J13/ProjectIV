@@ -24,7 +24,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | ---------------- | ---------- | ---------------------------------------------- |
 | `sessionId`      | INTEGER PK | Auto-increment                                 |
 | `token`          | STRING     | Required, unique; value returned to the client |
-| `email`          | STRING     | Required                                       |
+| `email`          | STRING     | Required. An admin email change updates that user's session emails and leaves the token valid. |
 | `expirationDate` | DATE       | Required; 24 hours from login                  |
 | `userId`         | INTEGER FK | Required; references `users.id`                |
 

@@ -33,4 +33,12 @@ export async function authenticate(req, res, next) {
     logger.error(`Authentication failed: ${error.message}`);
     return res.status(401).send({ message: "Unauthorized!" });
   }
-};
+}
+
+export function requireAdmin(req, res, next) {
+  if (req.user?.role !== "admin") {
+    return res.status(403).send({ message: "Admin access required." });
+  }
+
+  return next();
+}
