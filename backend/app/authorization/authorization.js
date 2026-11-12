@@ -46,7 +46,7 @@ export async function authenticate(req, res, next) {
 
 export function requireAdmin(req, res, next) {
   if (req.user?.role !== "admin") {
-    return res.status(403).send({ message: "Unauthorized. Administrator role required." });
+    return res.status(403).send({ message: "Admin access required." });
   }
 
   return next();

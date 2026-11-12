@@ -40,7 +40,7 @@ router.beforeEach((to) => {
   }
 
   if (user.role !== "admin") {
-    return { name: "home" };
+    return router.hasRoute("landing") ? { name: "landing" } : { name: "home" };
   }
 
   return true;
