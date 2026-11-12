@@ -9,7 +9,7 @@
 [Feature 4 -- Vehicle CRUD](feature-4-Vehicle-CRUD.md),
 [Feature 6 -- Destination CRUD](feature-6-Destination-CRUD.md),
 [Feature 7 -- Driver CRUD](feature-7-Driver-CRUD.md),
-[Feature 13 -- User Management](feature-13-User-Management.md)
+[Feature 3 -- User Management](feature-3-User-Management.md)
 **Related:** `frontend/src/views/Requests.vue`, `backend/app/routes/users.routes.js`, `backend/app/routes/Request.routes.js`,
 `backend/app/routes/Vehicle.routes.js`, `backend/app/routes/Destination.routes.js`, `backend/app/routes/Driver.routes.js`
 
