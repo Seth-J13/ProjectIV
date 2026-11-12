@@ -15,6 +15,10 @@ export default {
     return apiClient.post("register", account);
   },
 
+  googleLogin(idToken) {
+    return apiClient.post("google", { idToken });
+  },
+
   logoutUser() {
     return apiClient.post("logout");
   },

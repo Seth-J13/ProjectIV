@@ -33,4 +33,4 @@ export async function authenticate(req, res, next) {
     logger.error(`Authentication failed: ${error.message}`);
     return res.status(401).send({ message: "Unauthorized!" });
   }
-}
+};

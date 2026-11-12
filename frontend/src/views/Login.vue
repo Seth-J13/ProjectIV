@@ -1,8 +1,10 @@
 <script setup>
-import { nextTick, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import authServices from "../services/authServices.js";
 import Utils from "../config/utils.js";
+
+const GOOGLE_SCRIPT = "https://accounts.google.com/gsi/client";
 
 const router = useRouter();
 
@@ -23,6 +25,12 @@ const accountEmail = ref("");
 const accountPassword = ref("");
 
 const requiredRules = [(value) => !!value?.trim() || "Required"];
+const googleChooser = ref(false);
+const googleChooserHost = ref(null);
+
+onMounted(() => {
+  loadGoogleIdentity().catch(() => {});
+});
 
 function storeSession(data) {
   Utils.setStore("user", data);
@@ -110,6 +118,130 @@ async function createAccount() {
     creating.value = false;
   }
 }
+
+function loadGoogleIdentity() {
+  if (window.google?.accounts?.id) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${GOOGLE_SCRIPT}"]`);
+
+    const finish = () => {
+      if (window.google?.accounts?.id) {
+        resolve();
+        return;
+      }
+
+      reject(new Error("Google Identity Services did not load."));
+    };
+
+    if (existing) {
+      if (window.google?.accounts?.id) {
+        finish();
+        return;
+      }
+
+      existing.addEventListener("load", finish, { once: true });
+      existing.addEventListener("error", () => reject(new Error("Google script failed")), {
+        once: true,
+      });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = GOOGLE_SCRIPT;
+    script.async = true;
+    script.onload = finish;
+    script.onerror = () => reject(new Error("Google script failed"));
+    document.head.appendChild(script);
+  });
+}
+
+async function onGoogleCredential(response) {
+  const idToken = response?.credential;
+
+  if (!idToken) {
+    errorMessage.value = "Google sign-in failed.";
+    return;
+  }
+
+  errorMessage.value = "";
+  loading.value = true;
+
+  try {
+    const result = await authServices.googleLogin(idToken);
+    storeSession(result.data);
+    window.dispatchEvent(new CustomEvent("login-successful"));
+    await router.push({ name: "landing" });
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || "Google sign-in failed.";
+  } finally {
+    loading.value = false;
+  }
+}
+
+function openGoogleChooser(googleId) {
+  googleChooser.value = true;
+
+  nextTick(() => {
+    if (!googleChooserHost.value || typeof googleId.renderButton !== "function") {
+      errorMessage.value = "Google sign-in failed.";
+      return;
+    }
+
+    googleChooserHost.value.replaceChildren();
+    googleId.renderButton(googleChooserHost.value, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: "continue_with",
+      shape: "rectangular",
+      width: 320,
+    });
+  });
+}
+
+function continueWithGoogle() {
+  errorMessage.value = "";
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const googleId = window.google?.accounts?.id;
+
+  if (!clientId || !googleId) {
+    errorMessage.value = "Google sign-in failed.";
+    return;
+  }
+
+  let pending = null;
+
+  googleId.initialize({
+    client_id: clientId,
+    callback: (response) => {
+      pending = onGoogleCredential(response);
+    },
+    auto_select: false,
+    cancel_on_tap_outside: true,
+  });
+
+  googleId.prompt((notification) => {
+    if (notification?.isNotDisplayed?.() || notification?.isSkippedMoment?.()) {
+      openGoogleChooser(googleId);
+      return;
+    }
+
+    if (!notification?.isDismissedMoment?.()) {
+      return;
+    }
+
+    const reason = notification.getDismissedReason?.();
+
+    if (reason !== "credential_returned") {
+      errorMessage.value = "Google sign-in was cancelled.";
+    }
+  });
+
+  return pending;
+}
 </script>
 
 <template>
@@ -141,6 +273,16 @@ async function createAccount() {
                 Login
               </v-btn>
             </v-form>
+            <v-btn
+              class="mt-4"
+              color="secondary"
+              variant="outlined"
+              type="button"
+              @click="continueWithGoogle"
+            >
+              Continue with Google
+            </v-btn>
+            <div v-if="googleChooser" ref="googleChooserHost" class="mt-4"></div>
             <v-btn
               class="mt-4"
               color="secondary"
