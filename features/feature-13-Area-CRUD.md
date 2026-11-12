@@ -1,7 +1,7 @@
 # Feature: Area
 
-**Feature ID:** 3
-**Branch pattern:** `feature/3-area`
+**Feature ID:** 13
+**Branch pattern:** `feature/13-area`
 **Status:** Draft
 **Created:** 2026-11-11
 **Input:** An admin needs to create, read, update, and delete areas. An area is the record formerly called a department.
