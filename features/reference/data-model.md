@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1,2,3,4,5,6,7,9,10 applied.
+**Status:** Features 1,2,4,5,6,7,9,10,12,13 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
@@ -128,6 +128,15 @@ Update this file when a feature that defines schema merges to `dev`.
 | `vehicleLogId` | INTEGER FK | Required; references `vehicle_logs.id` |
 | `userId` | INTEGER FK | Required; references `users.id` |
 
+### `Areas` table
+
+| Field | Type | Rules |
+| ----- | ---- | ----- |
+| `id` | INTEGER PK | Auto-increment. ERD `id` |
+| `name` | STRING(30) | Required, unique. ERD `name` |
+| `logo` | BLOB | Optional. ERD `logo` |
+| `noticeEmail` | STRING(255) | Required. ERD `notice_email` |
+
 ### Associations
 
 - `User` hasMany `Session` ----| not every user has a session
@@ -147,6 +156,9 @@ Update this file when a feature that defines schema merges to `dev`.
 - `Requests` belongsTo `Vehicles` ---| a request has between 0 and 1 vehicles
 -
 - `Fuel_Type` hasMany `Maintenance_Info` -----| one fuel type can be included in 0 or many maintenance info entries
+-
+- `Vehicle` belongsTo `Area` --| a vehicle belongs to one area
+- `Area` hasMany `AreaImage` --| an area can have many images
 - `Maintenance_Info` belongsTo `Fuel_Type` ---| a maintenance info entry has exactly one fuel type
 -
 - `VehicleLog` belongsTo `User` ----| a log belongs to one user as creator
