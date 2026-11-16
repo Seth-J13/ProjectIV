@@ -38,7 +38,7 @@
 **So that** the directory stays correct
 
 **Priority:** P1
-**Independent test:** Sign in as admin, change an area’s notice email, and see the saved notice email on the list.
+**Independent test:** Sign in as admin, change an area's notice email, and see the saved notice email on the list.
 **Acceptance scenarios:** see ### US-13.3 under Acceptance Criteria
 
 ### US-13.4: Delete an area
@@ -256,7 +256,7 @@ This feature **owns** `areas`. It does not create `area_images` or `vehicles`.
 **Given** I am signed in as `admin`
 **And** an area exists
 **When** I open **Areas**
-**Then** I see that area’s name and notice email
+**Then** I see that area's name and notice email
 
 ### US-13.3 — Update an area
 

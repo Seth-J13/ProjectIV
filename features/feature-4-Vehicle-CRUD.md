@@ -347,7 +347,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 **Then** a add vehicle modal pops up
 **And** no API request is sent
 
-#### Scenario: User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes
+#### Scenario: User inputs a missing `make`, `model`, `year`, and `fuel type`
 
 **Given** I have searched for a `make`, `model`, `year`, and `fuel type`
 **And** the inputted `make`, `model`, and `year` do not exist in the database
@@ -522,7 +522,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
 **And** a no API request is sent
 
-#### Scenario: User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number
+#### Scenario: Valid `Edit Vehicle` input duplicates another VIN's license plate
 
 **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
 **And** I have correctly inputted values into the form
@@ -796,7 +796,7 @@ Each scenario above must map to at least one automated test.
 | Story   | Scenario                                                                                                                          | Test file                        | Test name                                                                                                                                 |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | US-4.1  | User clicks the add button                                                                                                        | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")`                                                                                                        |
-| US-4.1  | User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes             | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year`that doesn't exist and a`fuel type` that doesn't exist into the comboboxes")`               |
+| US-4.1  | User inputs a missing `make`, `model`, `year`, and `fuel type`                                                                   | `backend/tests/vehicles.test.js` | `it("User inputs a missing `make`, `model`, `year`, and `fuel type`")`                                                                   |
 | US-4.1  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
 | US-4.1  | User inputs a `fuel type` into the combobox that doesn't exist                                                                    | `backend/tests/vehicles.test.js` | `it("User inputs a `fuel type` into the combobox that doesn't exist")`                                                                    |
 | US-4.1  | User inputs valid information into the `Add Vehicle` modal                                                                        | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")`                                                                        |
@@ -811,7 +811,7 @@ Each scenario above must map to at least one automated test.
 | US-4.3  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
 | US-4.3  | User inputs valid information into the `Edit Vehicle` modal                                                                       | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal")`                                                                       |
 | US-4.3  | User inputs invalid information into `Edit Vehicle` modal                                                                         | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Edit Vehicle` modal")`                                                                         |
-| US-4.3  | User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number")` |
+| US-4.3  | Valid `Edit Vehicle` input duplicates another VIN's license plate                                                                | `backend/tests/vehicles.test.js` | `it("Valid `Edit Vehicle` input duplicates another VIN's license plate")`                                                                |
 | US-4.4  | User clicks the delete icon button                                                                                                | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button")`                                                                                                |
 | US-4.4  | User clicks the delete icon button but no vehicle exists in the database                                                          | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button but no vehicle exists in the database")`                                                          |
 | US-4.5  | There no vehicles to display in the vehicle list                                                                                  | `frontend/tests/Vehicle.test.js` | `it("There no vehicles to display in the vehicle list")`                                                                                  |

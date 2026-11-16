@@ -827,7 +827,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 **Then** the `Confirm Create New Fuel Type` modal component opens
 **And** no API request is sent
 
-#### Scenario: User clicks `Update` button and both the `fuel type` and `make`, `year`, and `model` are not in the database
+#### Scenario: `Update` when `fuel type` and `make`, `year`, `model` are not in the database
 
 **Given** the user is on the `Edit Maintenance Info` modal form
 **And** the `fuel type` and `make`, `year`, and `model` are not in the database
@@ -1000,7 +1000,7 @@ Each scenario above must map to at least one automated test.
 | US-5.9  | User inputs into tire type                                                                                   | `frontend/tests/Maintenance.test.js` | `it("User inputs into tire type")`                                                                               |
 | US-5.9  | User clicks the `Update` button and only the `make`, `year`, and `model` are not in the database             | `frontend/tests/Maintenance.test.js` | `it("User clicks the `Update`button and only the`make`, `year`, and `model` are not in the database")`           |
 | US-5.9  | User clicks `Update` button and only the `fuel type` is not in the database                                  | `frontend/tests/Maintenance.test.js` | `it("User clicks `Update`button and only the`fuel type` is not in the database")`                                |
-| US-5.9  | User clicks `Update` button and both the `fuel type` and `make`, `year`, and `model` are not in the database | `frontend/tests/Maintenance.test.js` | `it("User clicks `Update`button and both the`fuel type`and`make`, `year`, and `model` are not in the database")` |
+| US-5.9  | `Update` when `fuel type` and `make`, `year`, `model` are not in the database                             | `frontend/tests/Maintenance.test.js` | `it("`Update` when `fuel type` and `make`, `year`, `model` are not in the database")` |
 | US-5.9  | User clicks confirms the `fuel type` and/or `make`, `year`, and `model`                                      | `backend/tests/maintenance.test.js`  | `it("User clicks confirms the `fuel type`and/or`make`, `year`, and `model`")`                                    |
 | US-5.10 | User clicks the `manage fuels` button                                                                        | `frontend/tests/Maintenance.test.js` | `it("User clicks the `manage fuels` button")`                                                                    |
 | US-5.10 | User views the fuels table                                                                                   | `frontend/tests/Maintenance.test.js` | `it("User views the fuels table")`                                                                               |
