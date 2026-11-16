@@ -1,6 +1,6 @@
 import db from "../app/models/index.js";
 
-/** Sync schema for tests (no models registered in the starter shell). */
+/** Drop and recreate tables for the models registered in this feature. */
 export const syncTestDatabase = async () => {
   await db.sequelize.sync({ force: true });
 };

@@ -1,0 +1,14 @@
+AssetType,Name,Scope,Description,Reference
+Portfolio Item,User Auth & Session Management,Speckit App,Epic for features/feature-1-User-Auth-&-Session-Management.md. Spec-driven backlog.,SK-F1-EPIC
+Portfolio Item,Google Auth,Speckit App,Epic for features/feature-2-Google-Auth.md. Spec-driven backlog.,SK-F2-EPIC
+Portfolio Item,User Management,Speckit App,Epic for features/feature-3-User-Management.md. Spec-driven backlog.,SK-F3-EPIC
+Portfolio Item,Vehicle CRUD,Speckit App,Epic for features/feature-4-Vehicle-CRUD.md. Spec-driven backlog.,SK-F4-EPIC
+Portfolio Item,Maintenance Info CRUD,Speckit App,Epic for features/feature-5-Maintenance-Info-CRUD.md. Spec-driven backlog.,SK-F5-EPIC
+Portfolio Item,Destination CRUD,Speckit App,Epic for features/feature-6-destination-crud.md. Spec-driven backlog.,SK-F6-EPIC
+Portfolio Item,Driver Crud,Speckit App,Epic for features/feature-7-Driver-CRUD.md. Spec-driven backlog.,SK-F7-EPIC
+Portfolio Item,Request Management,Speckit App,Epic for features/feature-8-Requests-Crud.md. Spec-driven backlog.,SK-F8-EPIC
+Portfolio Item,Note CRUD,Speckit App,Epic for features/feature-9-note-crud.md. Spec-driven backlog.,SK-F9-EPIC
+Portfolio Item,Vehicle Service Log,Speckit App,Epic for features/feature-10-Vehicle-Service-CRUD copy.md. Spec-driven backlog.,SK-F10-EPIC
+Portfolio Item,Images CRUD,Speckit App,Epic for features/feature-11-images-crud.md. Spec-driven backlog.,SK-F11-EPIC
+Portfolio Item,Landing Vue,Speckit App,Epic for features/feature-12-Landing-Vue.md. Spec-driven backlog.,SK-F12-EPIC
+Portfolio Item,Area,Speckit App,Epic for features/feature-13-Area-CRUD.md. Spec-driven backlog.,SK-F13-EPIC
