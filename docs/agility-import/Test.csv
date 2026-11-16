@@ -1,0 +1,2834 @@
+AssetType,Name,Parent,Description,ExpectedResults,Reference
+Test,Admin signs in,SK-F1-US1.1,"*Given I am on the Login page
+*And an account exists with role `admin`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""","*Given I am on the Login page
+*And an account exists with role `admin`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""",SK-F1-AC001
+Test,User signs in,SK-F1-US1.1,"*Given I am on the Login page
+*And an account exists with role `user`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""","*Given I am on the Login page
+*And an account exists with role `user`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""",SK-F1-AC002
+Test,Driver signs in,SK-F1-US1.1,"*Given I am on the Login page
+*And an account exists with role `driver`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""","*Given I am on the Login page
+*And an account exists with role `driver`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""",SK-F1-AC003
+Test,Maintenance signs in,SK-F1-US1.1,"*Given I am on the Login page
+*And an account exists with role `maintenance`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""","*Given I am on the Login page
+*And an account exists with role `maintenance`
+*When I enter that email and password and press Login
+*Then I am signed in
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""",SK-F1-AC004
+Test,Bad email,SK-F1-US1.1,"*Given I am on the Login page
+*When I fill out an unused or wrong email and a password
+*And I press Login
+*Then I see the message ""User not found!""
+*And I remain on Login
+*And I am not signed in","*Given I am on the Login page
+*When I fill out an unused or wrong email and a password
+*And I press Login
+*Then I see the message ""User not found!""
+*And I remain on Login
+*And I am not signed in",SK-F1-AC005
+Test,Bad password,SK-F1-US1.1,"*Given I am on the Login page
+*When I fill out an existing email and an invalid password
+*And I press Login
+*Then I see the message ""Invalid password!""
+*And I remain on Login
+*And I am not signed in","*Given I am on the Login page
+*When I fill out an existing email and an invalid password
+*And I press Login
+*Then I see the message ""Invalid password!""
+*And I remain on Login
+*And I am not signed in",SK-F1-AC006
+Test,Opening the signed-in screen,SK-F1-US1.2,"*Given I have a valid session
+*When I open `/landing`
+*Then I remain logged in
+*And I see ""This feature has not been implemented yet""","*Given I have a valid session
+*When I open `/landing`
+*Then I remain logged in
+*And I see ""This feature has not been implemented yet""",SK-F1-AC007
+Test,Refresh pages,SK-F1-US1.2,"*Given I have a valid session on `/landing`
+*When I refresh the page
+*Then I remain logged in
+*And I do not have to sign in again
+*And I see ""This feature has not been implemented yet""","*Given I have a valid session on `/landing`
+*When I refresh the page
+*Then I remain logged in
+*And I do not have to sign in again
+*And I see ""This feature has not been implemented yet""",SK-F1-AC008
+Test,Logging out,SK-F1-US1.3,"*Given I have a valid session
+*When I press the profile circle
+*And I click Logout
+*Then I am logged out of the user session
+*And I am redirected to the Login page","*Given I have a valid session
+*When I press the profile circle
+*And I click Logout
+*Then I am logged out of the user session
+*And I am redirected to the Login page",SK-F1-AC009
+Test,Creating new account,SK-F1-US1.4,"*Given I am on the Login page
+*When I press the Create Account button
+*And I fill all textboxes
+*And I click Create Account
+*Then I am logged into the new account
+*And that account has role `user`
+*And I am redirected to `/landing`
+*And I see ""This feature has not been implemented yet""","*Given I am on the Login page
+*When I press the Create Account button
+*And I fill all textboxes
+*And I click Create Account
+*Then I am logged into the new account
+*And that account has role `user`
+*And I am redirected to `/landing`
+*And I see ""This feature has not been implemented yet""",SK-F1-AC010
+Test,Email already in use,SK-F1-US1.4,"*Given I am on the Login page
+*And an account already exists with an email
+*When I press Create Account
+*And I submit that same email with a first name, last name, and password
+*Then I see the message ""Email already in use!""
+*And I remain on Login
+*And I am not signed in
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am on the Login page
+*And an account already exists with an email
+*When I press Create Account
+*And I submit that same email with a first name, last name, and password
+*Then I see the message ""Email already in use!""
+*And I remain on Login
+*And I am not signed in
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F1-AC011
+Test,New Google user signs in,SK-F2-US2.1,"*Given I am on the Login page
+*And no account exists for the Google account I will confirm
+*When I press Continue with Google
+*And Google confirms a verified email, first name, and last name
+*Then I am signed in
+*And that account has role `user`
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""","*Given I am on the Login page
+*And no account exists for the Google account I will confirm
+*When I press Continue with Google
+*And Google confirms a verified email, first name, and last name
+*Then I am signed in
+*And that account has role `user`
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""",SK-F2-AC001
+Test,Sign-in data stays on Google,SK-F2-US2.1,"*Given Google has confirmed a new verified account
+*When this app accepts that confirmation
+*Then the stored account has a `googleSub` and no password
+*And the response includes a session token
+*And the response includes no password and no Google token","*Given Google has confirmed a new verified account
+*When this app accepts that confirmation
+*Then the stored account has a `googleSub` and no password
+*And the response includes a session token
+*And the response includes no password and no Google token",SK-F2-AC002
+Test,Refresh after Google sign-in,SK-F2-US2.1,"*Given I signed in with Continue with Google
+*And I am on `/landing`
+*When I refresh the page
+*Then I remain logged in
+*And I see ""This feature has not been implemented yet""","*Given I signed in with Continue with Google
+*And I am on `/landing`
+*When I refresh the page
+*Then I remain logged in
+*And I see ""This feature has not been implemented yet""",SK-F2-AC003
+Test,Logging out a Google session,SK-F2-US2.1,"*Given I have a valid session from Continue with Google
+*When I press the profile circle
+*And I click Logout
+*Then I am logged out of the user session
+*And I am redirected to the Login page","*Given I have a valid session from Continue with Google
+*When I press the profile circle
+*And I click Logout
+*Then I am logged out of the user session
+*And I am redirected to the Login page",SK-F2-AC004
+Test,Same Google account signs in again,SK-F2-US2.2,"*Given I am on the Login page
+*And an account already exists for my Google subject
+*When I press Continue with Google
+*And Google confirms that same account
+*Then I am signed in to that same account
+*And no second account is created
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""","*Given I am on the Login page
+*And an account already exists for my Google subject
+*When I press Continue with Google
+*And Google confirms that same account
+*Then I am signed in to that same account
+*And no second account is created
+*And I land on `/landing`
+*And I see ""This feature has not been implemented yet""",SK-F2-AC005
+Test,Email already has a password account,SK-F2-US2.3,"*Given I am on the Login page
+*And an account already exists for an email with a password and no `googleSub`
+*When I press Continue with Google
+*And Google confirms that same email
+*Then I see the message ""Email already in use!""
+*And I remain on Login
+*And I am not signed in
+*And that account is unchanged","*Given I am on the Login page
+*And an account already exists for an email with a password and no `googleSub`
+*When I press Continue with Google
+*And Google confirms that same email
+*Then I see the message ""Email already in use!""
+*And I remain on Login
+*And I am not signed in
+*And that account is unchanged",SK-F2-AC006
+Test,Password login cannot open a Google account,SK-F2-US2.3,"*Given I am on the Login page
+*And an account was created with Continue with Google
+*When I enter that email and a password and press Login
+*Then I see the message ""Invalid password!""
+*And I remain on Login
+*And I am not signed in","*Given I am on the Login page
+*And an account was created with Continue with Google
+*When I enter that email and a password and press Login
+*Then I see the message ""Invalid password!""
+*And I remain on Login
+*And I am not signed in",SK-F2-AC007
+Test,User cancels Google,SK-F2-US2.4,"*Given I am on the Login page
+*When I press Continue with Google
+*And I cancel the Google prompt
+*Then I see the message ""Google sign-in was cancelled.""
+*And I remain on Login
+*And I am not signed in","*Given I am on the Login page
+*When I press Continue with Google
+*And I cancel the Google prompt
+*Then I see the message ""Google sign-in was cancelled.""
+*And I remain on Login
+*And I am not signed in",SK-F2-AC008
+Test,Google rejects the sign-in,SK-F2-US2.4,"*Given I am on the Login page
+*When I press Continue with Google
+*And Google does not confirm a verified account
+*Then I see the message ""Google sign-in failed.""
+*And I remain on Login
+*And I am not signed in","*Given I am on the Login page
+*When I press Continue with Google
+*And Google does not confirm a verified account
+*Then I see the message ""Google sign-in failed.""
+*And I remain on Login
+*And I am not signed in",SK-F2-AC009
+Test,Google account has no name,SK-F2-US2.4,"*Given I am on the Login page
+*When I press Continue with Google
+*And Google confirms a verified email with no first name or no last name
+*Then I see the message ""Google did not provide a name.""
+*And I remain on Login
+*And I am not signed in","*Given I am on the Login page
+*When I press Continue with Google
+*And Google confirms a verified email with no first name or no last name
+*Then I see the message ""Google did not provide a name.""
+*And I remain on Login
+*And I am not signed in",SK-F2-AC010
+Test,Google session authorizes a protected route,SK-F2-US2.5,"*Given I have a valid session from Continue with Google
+*When I call `POST /api/logout` with `Authorization: Bearer` set to that session token
+*Then the route authorizes the call
+*And I am logged out of the user session","*Given I have a valid session from Continue with Google
+*When I call `POST /api/logout` with `Authorization: Bearer` set to that session token
+*Then the route authorizes the call
+*And I am logged out of the user session",SK-F2-AC011
+Test,Protected route rejects a missing session,SK-F2-US2.5,"*Given I am not signed in
+*When I call `POST /api/logout` with no Bearer token
+*Then the response is 401
+*And the route does not log anyone out
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am not signed in
+*When I call `POST /api/logout` with no Bearer token
+*Then the response is 401
+*And the route does not log anyone out
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F2-AC012
+Test,Non-admin cannot open user management,SK-F3-US3.3,"*Given I am signed in with a role other than `admin`
+*Then I do not see User Management
+*When I open `/users`
+*Then I am redirected to `/landing`
+*And I do not see the user list","*Given I am signed in with a role other than `admin`
+*Then I do not see User Management
+*When I open `/users`
+*Then I am redirected to `/landing`
+*And I do not see the user list",SK-F3-AC006
+Test,Non-admin cannot edit a user,SK-F3-US3.3,"*Given I am signed in with a role other than `admin`
+*And another account exists
+*When I update that account through the user API
+*Then the response is 403 with message ""Admin access required.""
+*And that account is unchanged","*Given I am signed in with a role other than `admin`
+*And another account exists
+*When I update that account through the user API
+*Then the response is 403 with message ""Admin access required.""
+*And that account is unchanged",SK-F3-AC007
+Test,Missing session cannot view users,SK-F3-US3.3,"*Given I have no session token
+*When I request the user list
+*Then the response is 401
+*And no user data is returned
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/behavior.md`","*Given I have no session token
+*When I request the user list
+*Then the response is 401
+*And no user data is returned
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/behavior.md`",SK-F3-AC008
+Test,User clicks the add button,SK-F4-US4.1,"*Given I am on the Vehicles.vue as a `admin`
+*When click the `Add` button
+*Then a add vehicle modal pops up
+*And no API request is sent","*Given I am on the Vehicles.vue as a `admin`
+*When click the `Add` button
+*Then a add vehicle modal pops up
+*And no API request is sent",SK-F4-AC001
+Test,"User inputs a missing `make`, `model`, `year`, and `fuel type`",SK-F4-US4.1,"*Given I have searched for a `make`, `model`, `year`, and `fuel type`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*And the inputted `fuel type` does not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully fuel type.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I have searched for a `make`, `model`, `year`, and `fuel type`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*And the inputted `fuel type` does not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully fuel type.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC002
+Test,"User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist",SK-F4-US4.1,"*Given I have searched for a `make`, `model`, and `year`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I have searched for a `make`, `model`, and `year`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC003
+Test,User inputs a `fuel type` into the combobox that doesn't exist,SK-F4-US4.1,"*Given I have searched for a `fuel type`
+*And the inputted `fuel type` does not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created fuel-type.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I have searched for a `fuel type`
+*And the inputted `fuel type` does not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created fuel-type.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC004
+Test,User inputs valid information into the `Add Vehicle` modal,SK-F4-US4.1,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC005
+Test,User inputs invalid information into `Add Vehicle` modal,SK-F4-US4.1,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent",SK-F4-AC006
+Test,User inputs valid information into the `Add Vehicle` modal but a record already exists,SK-F4-US4.1,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`",SK-F4-AC007
+Test,User clicks the add button,SK-F4-US4.2,"*Given I am on the Vehicles.vue as a `maintenance`
+*When click the `Add` button
+*Then a add vehicle modal pops up
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance`
+*When click the `Add` button
+*Then a add vehicle modal pops up
+*And no API request is sent",SK-F4-AC008
+Test,User clicks the add button,SK-F4-US4.2,"*Given I am on the Vehicles.vue as a `maintenance`
+*When click the `Add` button
+*Then a add vehicle modal pops up
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance`
+*When click the `Add` button
+*Then a add vehicle modal pops up
+*And no API request is sent",SK-F4-AC009
+Test,"User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist",SK-F4-US4.2,"*Given I have searched for a `make`, `model`, and `year`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then the `Confirm Create New Maintenance Info` modal opens","*Given I have searched for a `make`, `model`, and `year`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*When I click `Add Vehicle` a new vehicle
+*Then the `Confirm Create New Maintenance Info` modal opens",SK-F4-AC010
+Test,User inputs valid information into the `Add Vehicle` modal,SK-F4-US4.2,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC011
+Test,User inputs invalid information into `Add Vehicle` modal,SK-F4-US4.2,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent",SK-F4-AC012
+Test,User inputs valid information into the `Add Vehicle` modal but a record already exists,SK-F4-US4.2,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`",SK-F4-AC013
+Test,User inputs valid information into the `Add Vehicle` modal,SK-F4-US4.2,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC014
+Test,User inputs invalid information into `Add Vehicle` modal,SK-F4-US4.2,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent",SK-F4-AC015
+Test,User inputs valid information into the `Add Vehicle` modal but a record already exists,SK-F4-US4.2,"*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`","*Given I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Add Vehicle` button
+*Then the `Add Vehicle` modal closes
+*And a `PUT` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`",SK-F4-AC016
+Test,User clicks the edit icon button,SK-F4-US4.3,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When click the `Edit` icon button
+*Then a edit vehicle modal pops up
+*And all form values are filled out with vehicle information
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When click the `Edit` icon button
+*Then a edit vehicle modal pops up
+*And all form values are filled out with vehicle information
+*And no API request is sent",SK-F4-AC017
+Test,"User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist",SK-F4-US4.3,"*Given I have searched for a `make`, `model`, and `year`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*When I click `Update Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully updated vehicle.""}`","*Given I have searched for a `make`, `model`, and `year`
+*And the inputted `make`, `model`, and `year` do not exist in the database
+*When I click `Update Vehicle` a new vehicle
+*Then a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server
+*And returns a value of `201` witha payload containing `{""message"": ""Successfully updated vehicle.""}`",SK-F4-AC018
+Test,User inputs valid information into the `Edit Vehicle` modal,SK-F4-US4.3,"*Given I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Update Vehicle` button
+*Then the `Update Vehicle` modal closes
+*And a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully updated vehicle.""}`","*Given I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Update Vehicle` button
+*Then the `Update Vehicle` modal closes
+*And a `POST` API request is sent to the server
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully updated vehicle.""}`",SK-F4-AC019
+Test,User inputs invalid information into `Edit Vehicle` modal,SK-F4-US4.3,"*Given I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Update Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent","*Given I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+*And I have incorrectly inputted values into the form
+*When I click the `Update Vehicle` button
+*Then a `</v-alert>` pops up saying `An error occured processing your form.`
+*And a no API request is sent",SK-F4-AC020
+Test,Valid `Edit Vehicle` input duplicates another VIN's license plate,SK-F4-US4.3,"*Given I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Update Vehicle` button
+*Then the `Edit Vehicle` modal closes
+*And a `POST` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`","*Given I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+*And I have correctly inputted values into the form
+*When I click the `Update Vehicle` button
+*Then the `Edit Vehicle` modal closes
+*And a `POST` API request is sent to the server
+*And returns a value of `409` with a payload containing a `human readable error message`",SK-F4-AC021
+Test,User clicks the delete icon button,SK-F4-US4.4,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When click the `Delete` icon button
+*Then a `DELETE` API request is sent to the server
+*And removes the selected vehicle with matching VIN","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When click the `Delete` icon button
+*Then a `DELETE` API request is sent to the server
+*And removes the selected vehicle with matching VIN",SK-F4-AC022
+Test,User clicks the delete icon button but no vehicle exists in the database,SK-F4-US4.4,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When click the `Delete` icon button
+*Then a `DELETE` API request is sent to the server
+*And returns a `500` error with payload containing `{""message"": ""human readable error""}`","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When click the `Delete` icon button
+*Then a `DELETE` API request is sent to the server
+*And returns a `500` error with payload containing `{""message"": ""human readable error""}`",SK-F4-AC023
+Test,There no vehicles to display in the vehicle list,SK-F4-US4.5,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I load the page
+*And a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And there are not vechiles to display
+*Then the list will display the headers of the list table with no vehicles in the list
+*And a `</v-alert>` pops up saying `No vehicles to display`","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I load the page
+*And a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And there are not vechiles to display
+*Then the list will display the headers of the list table with no vehicles in the list
+*And a `</v-alert>` pops up saying `No vehicles to display`",SK-F4-AC024
+Test,User first loads the Vehicle page,SK-F4-US4.5,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I first view the page
+*Then a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And list of all vehicles in the database are shown
+*And each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+*And on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I first view the page
+*Then a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And list of all vehicles in the database are shown
+*And each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+*And on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`",SK-F4-AC025
+Test,User adds a new vehicle,SK-F4-US4.5,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I add a new vehicle
+*Then a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And the frontend re-retreives all vehicles in the database
+*And lists out all retreived vehicles in a list
+*And each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+*And on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I add a new vehicle
+*Then a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And the frontend re-retreives all vehicles in the database
+*And lists out all retreived vehicles in a list
+*And each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+*And on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`",SK-F4-AC026
+Test,User edits a vehicle in the list,SK-F4-US4.5,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I edit a selected vehicle
+*Then a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And the frontend re-retreives all vehicles in the database
+*And lists out all retreived vehicles in a list
+*And each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+*And on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I edit a selected vehicle
+*Then a `GET` API request is sent to the server
+*And returns a `200` with a payload containing `{""message"": ""Successfully retreived all vehicles""}`
+*And the frontend re-retreives all vehicles in the database
+*And lists out all retreived vehicles in a list
+*And each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+*And on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`",SK-F4-AC027
+Test,Vehicle does not have a color value,SK-F4-US4.5,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*And a vehicle does not have a color value
+*When the list loads the vehicle list item
+*Then the value for null will be replaced with `No Color`
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*And a vehicle does not have a color value
+*When the list loads the vehicle list item
+*Then the value for null will be replaced with `No Color`
+*And no API request is sent",SK-F4-AC028
+Test,Vehicle does not have a license plate number value,SK-F4-US4.5,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*And a vehicle does not have a license plate number value
+*When the list loads the vehicle list item
+*Then the value for null will be replaced with `No License Plate`
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*And a vehicle does not have a license plate number value
+*When the list loads the vehicle list item
+*Then the value for null will be replaced with `No License Plate`
+*And no API request is sent",SK-F4-AC029
+Test,User chooses from the year drop down filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a value from the year drop down filter
+*Then the drop down field shows the selected value
+*And the frontend shows only the vehicles with that year
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a value from the year drop down filter
+*Then the drop down field shows the selected value
+*And the frontend shows only the vehicles with that year
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC030
+Test,User chooses from the area drop down filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a value from the area drop down filter
+*Then the drop down field shows the selected value
+*And the frontend shows only the vehicles with that area
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a value from the area drop down filter
+*Then the drop down field shows the selected value
+*And the frontend shows only the vehicles with that area
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC031
+Test,User begins to type in the `Make` filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `Make` filter combo box
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `Make` filter combo box
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC032
+Test,User begins to type in the `Model` filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `Model` filter combo box
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `Model` filter combo box
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC033
+Test,User begins to type in the `Color` filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `Color` filter text field
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `Color` filter text field
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC034
+Test,User begins to type in the `License` filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `License` filter text field
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I begin to type in the `License` filter text field
+*Then the frontend shows only the matching vehicles
+*And continues to update the list as I type in the field
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC035
+Test,User chooses from the `From Purchase Date` date filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a date from the `From Purchase Date` date filter
+*Then the selected date shows in the field
+*And the frontend shows only the vehicles purchased after or on the selected date to that current day
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a date from the `From Purchase Date` date filter
+*Then the selected date shows in the field
+*And the frontend shows only the vehicles purchased after or on the selected date to that current day
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC036
+Test,User chooses from the `Before Purchase Date` date filter,SK-F4-US4.6,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a date from the `Before Purchase Date` date filter
+*Then the selected date shows in the field
+*And the frontend shows only the vehicles purchased before or on the selected date
+*And still applying all other filters
+*And no API request is sent","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I select a date from the `Before Purchase Date` date filter
+*Then the selected date shows in the field
+*And the frontend shows only the vehicles purchased before or on the selected date
+*And still applying all other filters
+*And no API request is sent",SK-F4-AC037
+Test,User clicks the `Maintenance` icon button,SK-F4-US4.7,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I click the `Maintenance` icon button
+*Then I am taken to `Maintenance.vue`
+*And the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I click the `Maintenance` icon button
+*Then I am taken to `Maintenance.vue`
+*And the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use",SK-F4-AC038
+Test,User hovers over a vehicle list item as a `maintenance` or `admin`,SK-F4-US4.8,"*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I hover over a vehicle in the table
+*Then I see a popup of the first image holding this vehicle's vin if one is available in the `VehicleImages` table
+*And the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use","*Given I am on the Vehicles.vue as a `maintenance` or `admin`
+*When I hover over a vehicle in the table
+*Then I see a popup of the first image holding this vehicle's vin if one is available in the `VehicleImages` table
+*And the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use",SK-F4-AC039
+Test,`Confirm Create New Maintenance Info` modal opens,SK-F4-US4.9,"*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*When I view the `Display` question
+*Then I see in the question `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
+*And no API request is sent","*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*When I view the `Display` question
+*Then I see in the question `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
+*And no API request is sent",SK-F4-AC040
+Test,User clicks the `cancel` button,SK-F4-US4.9,"*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*When I click the `cancel` button
+*Then the modal closes
+*And returns to the `Add Vehicle` or `Edit Vehicle` modal
+*And no API request is sent","*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*When I click the `cancel` button
+*Then the modal closes
+*And returns to the `Add Vehicle` or `Edit Vehicle` modal
+*And no API request is sent",SK-F4-AC041
+Test,User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed,SK-F4-US4.9,"*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*And the `Confirm Create New Fuel Type` modal is closed
+*When I click the `confirm` button
+*Then the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+*And a `POST` API request is sent to the server to create a new maintenance info
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server to create a new vehicle
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*And the `Confirm Create New Fuel Type` modal is closed
+*When I click the `confirm` button
+*Then the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+*And a `POST` API request is sent to the server to create a new maintenance info
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server to create a new vehicle
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC042
+Test,User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open,SK-F4-US4.9,"*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*And the `Confirm Create New Fuel Type` modal is open
+*When I click the `confirm` button
+*Then the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+*And a `POST` API request is sent to the server to create a new maintenance info
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server to create a fuel type
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created fuel type.""}`
+*And a `POST`API request is sent to the server to create a new vehicle
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I am viewing the `Confirm Create New Maintenance Info` modal
+*And the `Confirm Create New Fuel Type` modal is open
+*When I click the `confirm` button
+*Then the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+*And a `POST` API request is sent to the server to create a new maintenance info
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created maintenance-info.""}`
+*And a `POST`API request is sent to the server to create a fuel type
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created fuel type.""}`
+*And a `POST`API request is sent to the server to create a new vehicle
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC043
+Test,`Confirm Create New Fuel Type` modal opens,SK-F4-US4.10,"*Given I am viewing the `Confirm Create New Fuel Type` modal
+*When I view the `Display` question
+*Then I see in the question `Do you want to create a new fuel type of {fuel_type}?`
+*And no API request is sent","*Given I am viewing the `Confirm Create New Fuel Type` modal
+*When I view the `Display` question
+*Then I see in the question `Do you want to create a new fuel type of {fuel_type}?`
+*And no API request is sent",SK-F4-AC044
+Test,User clicks the `cancel` button,SK-F4-US4.10,"*Given I am viewing the `Confirm Create New Fuel Type` modal
+*When I click the `cancel` button
+*Then the modal closes
+*And returns to the `Add Vehicle` or `Edit Vehicle` modal
+*And no API request is sent","*Given I am viewing the `Confirm Create New Fuel Type` modal
+*When I click the `cancel` button
+*Then the modal closes
+*And returns to the `Add Vehicle` or `Edit Vehicle` modal
+*And no API request is sent",SK-F4-AC045
+Test,User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed,SK-F4-US4.10,"*Given I am viewing the `Confirm Create New Fuel Type` modal
+*And the `Confirm Create New Maintenance Info` is not open
+*When I click the `confirm` button
+*Then the `Confirm Create New Fuel Type` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+*And a `POST` API request is sent to the server to create a new maintenance info
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created fuel type.""}`
+*And a `POST`API request is sent to the server to create a new vehicle
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`","*Given I am viewing the `Confirm Create New Fuel Type` modal
+*And the `Confirm Create New Maintenance Info` is not open
+*When I click the `confirm` button
+*Then the `Confirm Create New Fuel Type` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+*And a `POST` API request is sent to the server to create a new maintenance info
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created fuel type.""}`
+*And a `POST`API request is sent to the server to create a new vehicle
+*And returns a value of `201` with a payload containing `{""message"": ""Successfully created vehicle.""}`",SK-F4-AC046
+Test,User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open,SK-F4-US4.10,"*Given I am viewing the `Confirm Create New Fuel Type` modal
+*And the `Confirm Create New Maintenance Info` is open
+*When I click the `confirm` button
+*Then the `Confirm Create New Fuel Type` closes
+*And the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
+*And no API request is sent
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Given I am viewing the `Confirm Create New Fuel Type` modal
+*And the `Confirm Create New Maintenance Info` is open
+*When I click the `confirm` button
+*Then the `Confirm Create New Fuel Type` closes
+*And the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
+*And no API request is sent
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F4-AC047
+Test,User has just loaded the `Maintenance.vue`,SK-F5-US5.1,"*Given the user has just opened the `Maintenance.vue`
+*When they look at the top of the page
+*Then they will see the main action buttons (`back`, `view service logs`, `edit maintenance info`, `update mileage`, `manage fuels`)
+*And no API request is sent","*Given the user has just opened the `Maintenance.vue`
+*When they look at the top of the page
+*Then they will see the main action buttons (`back`, `view service logs`, `edit maintenance info`, `update mileage`, `manage fuels`)
+*And no API request is sent",SK-F5-AC001
+Test,User has just viewed the action buttons,SK-F5-US5.1,"*Given the user has just looked at the action buttons at the top of the `Maintenance.vue`
+*When they look just below the buttons
+*Then they see the maintenance info (`make`, `model`, `year`, `fuel type`, `fuel capacity`, `oil viscosity`, `Recommended Tire PSi`, `tire type`, and `last updated mileage`) for the vehicle displayed at the top of the page
+*And no API request is sent","*Given the user has just looked at the action buttons at the top of the `Maintenance.vue`
+*When they look just below the buttons
+*Then they see the maintenance info (`make`, `model`, `year`, `fuel type`, `fuel capacity`, `oil viscosity`, `Recommended Tire PSi`, `tire type`, and `last updated mileage`) for the vehicle displayed at the top of the page
+*And no API request is sent",SK-F5-AC002
+Test,User has just viewed the maintenance info for the vehicle,SK-F5-US5.1,"*Given the user has just looked at the maintenance info for the vehicle
+*When they look below the maintenance info
+*Then they will see a table with headers (`Subject`, `Actions`)
+*And a list of maintenance notes associated with the vehicle's requests
+*And a `Add Note` Button near the top of the table
+*And no API request is sent","*Given the user has just looked at the maintenance info for the vehicle
+*When they look below the maintenance info
+*Then they will see a table with headers (`Subject`, `Actions`)
+*And a list of maintenance notes associated with the vehicle's requests
+*And a `Add Note` Button near the top of the table
+*And no API request is sent",SK-F5-AC003
+Test,User clicks the `Add Note` button,SK-F5-US5.2,"*Given the user is viewing the `Maintenance Notes` table
+*When they click the `Add Note` button
+*Then the `Add Maintenance Note` modal opens
+*And no API request is sent","*Given the user is viewing the `Maintenance Notes` table
+*When they click the `Add Note` button
+*Then the `Add Maintenance Note` modal opens
+*And no API request is sent",SK-F5-AC004
+Test,User inputs valid text into the subject text field,SK-F5-US5.2,"*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter text into the subject field
+*Then the text field displays what they type
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter text into the subject field
+*Then the text field displays what they type
+*And no API request is sent",SK-F5-AC005
+Test,User inputs no text into the subject text field,SK-F5-US5.2,"*Given the user is viewing the `Add Maintenance Note` modal
+*When no text is entered into the subject field
+*And the `Add Note` button is clicked
+*Then the text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `""Subject is required.""`
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When no text is entered into the subject field
+*And the `Add Note` button is clicked
+*Then the text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `""Subject is required.""`
+*And no API request is sent",SK-F5-AC006
+Test,User inputs valid text into the description field,SK-F5-US5.2,"*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter text into the description field
+*Then the text field displays what they type
+*And the amount of characters available decreases
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter text into the description field
+*Then the text field displays what they type
+*And the amount of characters available decreases
+*And no API request is sent",SK-F5-AC007
+Test,User inputs invalid text into the description field,SK-F5-US5.2,"*Given the user is viewing the `Add Maintenance Note` modal
+*When they do not enter text into the description field
+*And the `Add Note` button is clicked
+*Then the text field is highligted red
+*And a `</v-alert>` pops up in red, saying `""Description is required.""`
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When they do not enter text into the description field
+*And the `Add Note` button is clicked
+*Then the text field is highligted red
+*And a `</v-alert>` pops up in red, saying `""Description is required.""`
+*And no API request is sent",SK-F5-AC008
+Test,User inputs too many characters into the description field,SK-F5-US5.2,"*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter more than `255` characters into the description field
+*Then the text field is highligted red
+*And a note appears over the text field saying `Too many inputted characters`
+*And the amount of characters available goes red and into the negatives
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter more than `255` characters into the description field
+*Then the text field is highligted red
+*And a note appears over the text field saying `Too many inputted characters`
+*And the amount of characters available goes red and into the negatives
+*And no API request is sent",SK-F5-AC009
+Test,User clicks the `Cancel` button,SK-F5-US5.2,"*Given the useer is viewing the `Add Maintenance Note` modal
+*When they click the `Cancel` button
+*Then the modal closes
+*And all inputted information is cleared
+*And no API request is sent","*Given the useer is viewing the `Add Maintenance Note` modal
+*When they click the `Cancel` button
+*Then the modal closes
+*And all inputted information is cleared
+*And no API request is sent",SK-F5-AC010
+Test,User inputs valid input into the `Add Maintenance Note` modal,SK-F5-US5.2,"*Given the user is viewing the `Add Maintenance Note` modal and has valid inputs in the form
+*When they click the `Add Note` button
+*Then a `POST` API request is sent
+*And returns a `201` with a payload of `{""message"": ""human readable message""}`
+*And the modal closes
+*And a `</v-alert>` pops up in green, saying `Successfully created maintenance note.`","*Given the user is viewing the `Add Maintenance Note` modal and has valid inputs in the form
+*When they click the `Add Note` button
+*Then a `POST` API request is sent
+*And returns a `201` with a payload of `{""message"": ""human readable message""}`
+*And the modal closes
+*And a `</v-alert>` pops up in green, saying `Successfully created maintenance note.`",SK-F5-AC011
+Test,User inputs invalid input into the `Add Maintenance Note` modal,SK-F5-US5.2,"*Given the user is viewing the `Add Maintenance Note` modal and has invalid inputs in the form
+*When they click the `Add Note` button
+*Then a `POST` API request is sent
+*And returns a `404` with a payload of `{""message"": ""human readable explanation""}`
+*And a `</v-alert>` pops up in red, saying `Could not create maintenance note.`","*Given the user is viewing the `Add Maintenance Note` modal and has invalid inputs in the form
+*When they click the `Add Note` button
+*Then a `POST` API request is sent
+*And returns a `404` with a payload of `{""message"": ""human readable explanation""}`
+*And a `</v-alert>` pops up in red, saying `Could not create maintenance note.`",SK-F5-AC012
+Test,User clicks the `Edit Note` icon button,SK-F5-US5.3,"*Given the user is viewing the `Maintenance Notes` table
+*When they click the `Edit Note` icon button for a specific table item
+*Then the `Edit Maintenance Note` modal opens
+*And no API request is sent","*Given the user is viewing the `Maintenance Notes` table
+*When they click the `Edit Note` icon button for a specific table item
+*Then the `Edit Maintenance Note` modal opens
+*And no API request is sent",SK-F5-AC013
+Test,`Edit Maintenance Note` modal opens,SK-F5-US5.3,"*Given the user is viewing the `Edit Maintenance Note` modal
+*When they first view the `Edit Maintenance Note` modal
+*Then the text fields for `subject` and `description` displays what the selected maintenance note had for its `subject` and `description`
+*And no API request is sent","*Given the user is viewing the `Edit Maintenance Note` modal
+*When they first view the `Edit Maintenance Note` modal
+*Then the text fields for `subject` and `description` displays what the selected maintenance note had for its `subject` and `description`
+*And no API request is sent",SK-F5-AC014
+Test,User inputs valid text into the subject text field,SK-F5-US5.3,"*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter text into the subject field
+*Then the text field displays what they type
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter text into the subject field
+*Then the text field displays what they type
+*And no API request is sent",SK-F5-AC015
+Test,User deletes previous input and does not input any text into the subject text field,SK-F5-US5.3,"*Given the user is viewing the `Add Maintenance Note` modal
+*When no text is entered into the subject field
+*And the `Update Note` button is clicked
+*Then the text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `""Subject is required.""`
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When no text is entered into the subject field
+*And the `Update Note` button is clicked
+*Then the text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `""Subject is required.""`
+*And no API request is sent",SK-F5-AC016
+Test,User inputs text into the description field,SK-F5-US5.3,"*Given the user is viewing the `Edit Maintenance Note` modal
+*When they enter text into the description field
+*Then the text field displays what they type
+*And the amount of characters available decreases
+*And no API request is sent","*Given the user is viewing the `Edit Maintenance Note` modal
+*When they enter text into the description field
+*Then the text field displays what they type
+*And the amount of characters available decreases
+*And no API request is sent",SK-F5-AC017
+Test,User inputs invalid text into the description field,SK-F5-US5.3,"*Given the user is viewing the `Edit Maintenance Note` modal
+*And the user deleted all the previous description information from the selected maintenance note
+*When they do not enter text into the description field
+*And the `Add Note` button is clicked
+*Then the text field is highligted red
+*And a `</v-alert>` pops up in red, saying `""Description is required.""`
+*And no API request is sent","*Given the user is viewing the `Edit Maintenance Note` modal
+*And the user deleted all the previous description information from the selected maintenance note
+*When they do not enter text into the description field
+*And the `Add Note` button is clicked
+*Then the text field is highligted red
+*And a `</v-alert>` pops up in red, saying `""Description is required.""`
+*And no API request is sent",SK-F5-AC018
+Test,User inputs too many characters into the description field,SK-F5-US5.3,"*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter more than `255` characters into the description field
+*Then the text field is highligted red
+*And a note appears over the text field saying `Too many inputted characters`
+*And the amount of characters available goes red and into the negatives
+*And no API request is sent","*Given the user is viewing the `Add Maintenance Note` modal
+*When they enter more than `255` characters into the description field
+*Then the text field is highligted red
+*And a note appears over the text field saying `Too many inputted characters`
+*And the amount of characters available goes red and into the negatives
+*And no API request is sent",SK-F5-AC019
+Test,User clicks the `Cancel` button,SK-F5-US5.3,"*Given the useer is viewing the `Edit Maintenance Note` modal
+*When they click the `Cancel` button
+*Then the modal closes
+*And all inputted information is cleared
+*And no API request is sent","*Given the useer is viewing the `Edit Maintenance Note` modal
+*When they click the `Cancel` button
+*Then the modal closes
+*And all inputted information is cleared
+*And no API request is sent",SK-F5-AC020
+Test,User inputs valid input into the `Edit Maintenance Note` modal,SK-F5-US5.3,"*Given the user is viewing the `Edit Maintenance Note` modal and have valid inputs in the form
+*When they click the `Update Note` button
+*Then a `PUT` API request is sent
+*And returns a `201` with a payload of `{""message"": ""human readable message""}`
+*And the modal closes
+*And a `</v-alert>` pops up in green, saying `Successfully updated maintenance note.`","*Given the user is viewing the `Edit Maintenance Note` modal and have valid inputs in the form
+*When they click the `Update Note` button
+*Then a `PUT` API request is sent
+*And returns a `201` with a payload of `{""message"": ""human readable message""}`
+*And the modal closes
+*And a `</v-alert>` pops up in green, saying `Successfully updated maintenance note.`",SK-F5-AC021
+Test,User inputs invalid input into the `Edit Maintenance Note` modal,SK-F5-US5.3,"*Given the user is viewing the `Edit Maintenance Note` modal and has invalid inputs in the form
+*When they click the `Update Note` button
+*Then a `PUT` API request is sent
+*And returns a `404` with a payload of `{""message"": ""human readable explanation""}`
+*And a `</v-alert>` pops up in red, saying `Could not create maintenance note.`","*Given the user is viewing the `Edit Maintenance Note` modal and has invalid inputs in the form
+*When they click the `Update Note` button
+*Then a `PUT` API request is sent
+*And returns a `404` with a payload of `{""message"": ""human readable explanation""}`
+*And a `</v-alert>` pops up in red, saying `Could not create maintenance note.`",SK-F5-AC022
+Test,User clicks the `Delete Note` icon button,SK-F5-US5.4,"*Given the user is viewing the `Maintenance Note` table
+*When the user clicks the `Delete Note` icon button for a specific table item
+*Then the `Complete Note` modal opens
+*And no API request is sent","*Given the user is viewing the `Maintenance Note` table
+*When the user clicks the `Delete Note` icon button for a specific table item
+*Then the `Complete Note` modal opens
+*And no API request is sent",SK-F5-AC023
+Test,User clicks `cancel` button,SK-F5-US5.4,"*Given the user is viewing the `Complete Note` modal
+*When the user clicks the `cancel` button
+*Then the modal closes
+*And no API request is sent","*Given the user is viewing the `Complete Note` modal
+*When the user clicks the `cancel` button
+*Then the modal closes
+*And no API request is sent",SK-F5-AC024
+Test,User clicks `confirm` button,SK-F5-US5.4,"*Given the user is viewing the `Complete Note` modal
+*When the user clicks the `confirm` button
+*Then a `POST` request is sent to the server to create a service log
+*And returns a `201` with a payload containing `{""message"": ""human readable message""}`
+*And a `DELETE` request is sent to delete the note
+*And returns a `200` with a payload containing `{""message"": ""Successfully deleted (note_id)""}`","*Given the user is viewing the `Complete Note` modal
+*When the user clicks the `confirm` button
+*Then a `POST` request is sent to the server to create a service log
+*And returns a `201` with a payload containing `{""message"": ""human readable message""}`
+*And a `DELETE` request is sent to delete the note
+*And returns a `200` with a payload containing `{""message"": ""Successfully deleted (note_id)""}`",SK-F5-AC025
+Test,User clicks `update mileage` button,SK-F5-US5.5,"*Given the user is on the `Maintenance.vue`
+*When they click the `update mileage` button
+*Then the `Update Mileage` modal opens
+*And no API request is sent","*Given the user is on the `Maintenance.vue`
+*When they click the `update mileage` button
+*Then the `Update Mileage` modal opens
+*And no API request is sent",SK-F5-AC026
+Test,`Update Mileage` modal opens,SK-F5-US5.5,"*Given the user is viewing the `Update Mileage` modal
+*When the modal opens
+*Then the `current mileage` is viewable as a non-editable text field
+*And a blank text field to add a updated mileage is viewable
+*And a `cancel` and `confirm` buttons at the bottom
+*And no API request is sent","*Given the user is viewing the `Update Mileage` modal
+*When the modal opens
+*Then the `current mileage` is viewable as a non-editable text field
+*And a blank text field to add a updated mileage is viewable
+*And a `cancel` and `confirm` buttons at the bottom
+*And no API request is sent",SK-F5-AC027
+Test,User inputs a `NaN` mileage,SK-F5-US5.5,"*Given the user is viewing the `Update Mileage` modal
+*When the user inputs a `NaN` into the `update mileage` field
+*And the `confirm` button is clicked
+*Then the `update mileage` text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `Mileage must be a whole number.`
+*And no API request is sent","*Given the user is viewing the `Update Mileage` modal
+*When the user inputs a `NaN` into the `update mileage` field
+*And the `confirm` button is clicked
+*Then the `update mileage` text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `Mileage must be a whole number.`
+*And no API request is sent",SK-F5-AC028
+Test,User inputs a low mileage,SK-F5-US5.5,"*Given the user is viewing the `Update Mileage` modal
+*When the user inputs a mileage lower or equal to the current mileage
+*And the `confirm` button is clicked
+*Then the `update mileage` text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `New mileage must be greater than the old mileage.`
+*And no API request is sent","*Given the user is viewing the `Update Mileage` modal
+*When the user inputs a mileage lower or equal to the current mileage
+*And the `confirm` button is clicked
+*Then the `update mileage` text field is highlighted red
+*And a `</v-alert>` pops up in red, saying `New mileage must be greater than the old mileage.`
+*And no API request is sent",SK-F5-AC029
+Test,User clicks the `cancel` button,SK-F5-US5.5,"*Given the user is viewing the `Update Mileage` modal
+*When the user clicks the `cancel` button
+*Then all input is cleared
+*And the modal is closed
+*And no API request is sent","*Given the user is viewing the `Update Mileage` modal
+*When the user clicks the `cancel` button
+*Then all input is cleared
+*And the modal is closed
+*And no API request is sent",SK-F5-AC030
+Test,User clicks the `confirm` button,SK-F5-US5.5,"*Given the user is viewing the `Update Mileage` modal
+*When the user clicks the `confirm` button
+*Then a `PUT` request is sent
+*And returns `200` with a payload saying `{""message"": ""human readable message""}`
+*And a `</v-alert>` pops up in greed, saying `Updated vehicle mileage.`","*Given the user is viewing the `Update Mileage` modal
+*When the user clicks the `confirm` button
+*Then a `PUT` request is sent
+*And returns `200` with a payload saying `{""message"": ""human readable message""}`
+*And a `</v-alert>` pops up in greed, saying `Updated vehicle mileage.`",SK-F5-AC031
+Test,User selects a service note,SK-F5-US5.6,"*Given the user is viewing the `Maintenance Notes` table
+*When the user selects a specific note
+*Then the `View Maintenance Note` modal opens
+*And no API request is sent","*Given the user is viewing the `Maintenance Notes` table
+*When the user selects a specific note
+*Then the `View Maintenance Note` modal opens
+*And no API request is sent",SK-F5-AC032
+Test,User clicks the `view service logs` button,SK-F5-US5.7,"*Given the user is on the `Maintenance.vue`
+*When they click the `view service logs` button
+*Then they are sent to `Vehicle-Service-Logs.vue`
+*And `vehicle_id` is sent as a param
+*And no API request is sent","*Given the user is on the `Maintenance.vue`
+*When they click the `view service logs` button
+*Then they are sent to `Vehicle-Service-Logs.vue`
+*And `vehicle_id` is sent as a param
+*And no API request is sent",SK-F5-AC033
+Test,User clicks the `Back` button,SK-F5-US5.8,"*Given the user is on the `Maintenance.vue`
+*When they click the `Back` button
+*Then they are returned to the `Vehicles.vue`
+*And no API request is sent","*Given the user is on the `Maintenance.vue`
+*When they click the `Back` button
+*Then they are returned to the `Vehicles.vue`
+*And no API request is sent",SK-F5-AC034
+Test,User clicks `edit maintenance info` button,SK-F5-US5.9,"*Given the user is on the `Maintenance.vue`
+*When they click the `edit maintenance info` button
+*Then the `Edit Maintenance Info` modal opens
+*And no API request is sent","*Given the user is on the `Maintenance.vue`
+*When they click the `edit maintenance info` button
+*Then the `Edit Maintenance Info` modal opens
+*And no API request is sent",SK-F5-AC035
+Test,`Edit Maintenance Info` modal opens,SK-F5-US5.9,"*Given the user clicked the `edit maintenance info button`
+*When the modal opens
+*Then all the inputs are filled out for current vehicle being viewed (`make`, `model`, `year`, `fuel type`, `fuel capacity`, `oil viscosity`, `recommended tire psi`, and `tire type`)
+*And no API request is sent","*Given the user clicked the `edit maintenance info button`
+*When the modal opens
+*Then all the inputs are filled out for current vehicle being viewed (`make`, `model`, `year`, `fuel type`, `fuel capacity`, `oil viscosity`, `recommended tire psi`, and `tire type`)
+*And no API request is sent",SK-F5-AC036
+Test,User enters valid input for all fields,SK-F5-US5.9,"*Given the user enters valid inputs for all fields
+*When the user clicks the `Update Maintenance Info` button
+*Then a `PUT` request is sent
+*And returns `200` with a payload containing `{""message"": ""human readable message""}`","*Given the user enters valid inputs for all fields
+*When the user clicks the `Update Maintenance Info` button
+*Then a `PUT` request is sent
+*And returns `200` with a payload containing `{""message"": ""human readable message""}`",SK-F5-AC037
+Test,"User inputs a `make`, `model`, and `year` that don't exist in the database",SK-F5-US5.9,"*Given the inputted `make`, `model`, and `year` don't exist
+*When the `Update Maintenance Info` button is clicked
+*Then the values are held to be confirmed when the user clicks confirm
+*And no API request is sent","*Given the inputted `make`, `model`, and `year` don't exist
+*When the `Update Maintenance Info` button is clicked
+*Then the values are held to be confirmed when the user clicks confirm
+*And no API request is sent",SK-F5-AC038
+Test,User deletes previous input for any input field and does not add new input,SK-F5-US5.9,"*Given any input field for the `Edit Maintenance Info` form is empty
+*When the `Update Maintenance Info` button is clicked
+*Then each input field left blank is highlighted red
+*And no API request is sent","*Given any input field for the `Edit Maintenance Info` form is empty
+*When the `Update Maintenance Info` button is clicked
+*Then each input field left blank is highlighted red
+*And no API request is sent",SK-F5-AC039
+Test,User inputs a fuel type that doesn't exist,SK-F5-US5.9,"*Given the user types into the fuel type combobox
+*When the user types a fuel type that does not exist in the database
+*Then a `POST` request is sent
+*And returns `201` with a payload of `{""message"": ""human readable message""}`","*Given the user types into the fuel type combobox
+*When the user types a fuel type that does not exist in the database
+*Then a `POST` request is sent
+*And returns `201` with a payload of `{""message"": ""human readable message""}`",SK-F5-AC040
+Test,User selects a fuel type `Electric`,SK-F5-US5.9,"*Given the user chooses `Electric` fuel
+*When the user clicks off the field
+*Then the fuel capacity is greyed out
+*And non-editable
+*And no API request is sent","*Given the user chooses `Electric` fuel
+*When the user clicks off the field
+*Then the fuel capacity is greyed out
+*And non-editable
+*And no API request is sent",SK-F5-AC041
+Test,User inputs a fuel capacity that is `NaN`,SK-F5-US5.9,"*Given the user enters a `NaN` into the fuel capacity stepper field
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be a whole number`
+*And no API request is sent","*Given the user enters a `NaN` into the fuel capacity stepper field
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be a whole number`
+*And no API request is sent",SK-F5-AC042
+Test,User inputs a `negative` number into fuel capacity,SK-F5-US5.9,"*Given the user enters a `negative` number into the fuel capacity stepper field
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be a positive number`
+*And no API request is sent","*Given the user enters a `negative` number into the fuel capacity stepper field
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be a positive number`
+*And no API request is sent",SK-F5-AC043
+Test,User inputs a number greater than `300`,SK-F5-US5.9,"*Given the user enters a number greater than `300` into the fuel capacity stepper field
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be below 300 or lower`
+*And no API request is sent","*Given the user enters a number greater than `300` into the fuel capacity stepper field
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be below 300 or lower`
+*And no API request is sent",SK-F5-AC044
+Test,User enters oil viscosity,SK-F5-US5.9,"*Given the user inputs valid oil viscosity
+*When the user clicks off
+*Then the text field reflects what the user entered
+*And no API request is sent","*Given the user inputs valid oil viscosity
+*When the user clicks off
+*Then the text field reflects what the user entered
+*And no API request is sent",SK-F5-AC045
+Test,User enters a `NaN` into Recommended Tire PSI,SK-F5-US5.9,"*Given the user inputs a `NaN` into recommended tire psi
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be a number (i.e. 10.00)`
+*And no API request is sent","*Given the user inputs a `NaN` into recommended tire psi
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be a number (i.e. 10.00)`
+*And no API request is sent",SK-F5-AC046
+Test,User enters a number greater than `999.99` into Recommended Tire PSI,SK-F5-US5.9,"*Given the user inputs a number greater than `999.99` into recommended tire psi
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be below 999.99`
+*And no API request is sent","*Given the user inputs a number greater than `999.99` into recommended tire psi
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be below 999.99`
+*And no API request is sent",SK-F5-AC047
+Test,User enters a `negative` number into Recommended Tire PSI,SK-F5-US5.9,"*Given the user inputs a `negative` number into recommended tire psi
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be greater than 000.00`
+*And no API request is sent","*Given the user inputs a `negative` number into recommended tire psi
+*When the user clicks off the field
+*Then the field is highlighted red
+*And a warning pops up just above the field saying `Must be greater than 000.00`
+*And no API request is sent",SK-F5-AC048
+Test,User inputs into tire type,SK-F5-US5.9,"*Given the user inputs text into tire type
+*When the user clicks off the field
+*Then the text field reflects what the user entered
+*And no API request is sent","*Given the user inputs text into tire type
+*When the user clicks off the field
+*Then the text field reflects what the user entered
+*And no API request is sent",SK-F5-AC049
+Test,"User clicks the `Update` button and only the `make`, `year`, and `model` are not in the database",SK-F5-US5.9,"*Given the user is on the `Edit Maintenance Info` modal form
+*And the only `make`, `year`, and `model` are not in the database
+*When the user clicks the `Update` button
+*Then the `Confirm Create New Maintenance Info` modal component opens
+*And no API request is sent","*Given the user is on the `Edit Maintenance Info` modal form
+*And the only `make`, `year`, and `model` are not in the database
+*When the user clicks the `Update` button
+*Then the `Confirm Create New Maintenance Info` modal component opens
+*And no API request is sent",SK-F5-AC050
+Test,User clicks `Update` button and only the `fuel type` is not in the database,SK-F5-US5.9,"*Given the user is on the `Edit Maintenance Info` modal form
+*And the `fuel type` only are not in the database
+*When the user clicks the `Update` button
+*Then the `Confirm Create New Fuel Type` modal component opens
+*And no API request is sent","*Given the user is on the `Edit Maintenance Info` modal form
+*And the `fuel type` only are not in the database
+*When the user clicks the `Update` button
+*Then the `Confirm Create New Fuel Type` modal component opens
+*And no API request is sent",SK-F5-AC051
+Test,"`Update` when `fuel type` and `make`, `year`, `model` are not in the database",SK-F5-US5.9,"*Given the user is on the `Edit Maintenance Info` modal form
+*And the `fuel type` and `make`, `year`, and `model` are not in the database
+*When the user clicks the `Update` button
+*Then the `Confirm Create New Maintenance Info` modal component opens
+*And the `Confirm Create New Fuel Type` modal component opens
+*And no API request is sent","*Given the user is on the `Edit Maintenance Info` modal form
+*And the `fuel type` and `make`, `year`, and `model` are not in the database
+*When the user clicks the `Update` button
+*Then the `Confirm Create New Maintenance Info` modal component opens
+*And the `Confirm Create New Fuel Type` modal component opens
+*And no API request is sent",SK-F5-AC052
+Test,"User clicks confirms the `fuel type` and/or `make`, `year`, and `model`",SK-F5-US5.9,"*Given the user is on the `Edit Maintenance Info` modal form
+*And the `fuel type` and/or `make`, `year`, and `model` are not in the database
+*When the user clicks the `confirm` button(s) on (`Confirm Create New Fuel Type` and/or `Confirm Create New Maintenance Info`)
+*Then a `POST` request is sent to create a new maintenance info
+*And returns `201` with a payload containing `{""message"": ""human readable message""}`
+*And a `POST` request is sent to create a new `make`, `model`, and `year` maintenance info
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`
+*And a `POST` request is sent to create a new `fuel type` maintenance info
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`
+*And a `POST` request is sent to update the vehicle's `make`, `model`, and `year`
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`","*Given the user is on the `Edit Maintenance Info` modal form
+*And the `fuel type` and/or `make`, `year`, and `model` are not in the database
+*When the user clicks the `confirm` button(s) on (`Confirm Create New Fuel Type` and/or `Confirm Create New Maintenance Info`)
+*Then a `POST` request is sent to create a new maintenance info
+*And returns `201` with a payload containing `{""message"": ""human readable message""}`
+*And a `POST` request is sent to create a new `make`, `model`, and `year` maintenance info
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`
+*And a `POST` request is sent to create a new `fuel type` maintenance info
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`
+*And a `POST` request is sent to update the vehicle's `make`, `model`, and `year`
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`",SK-F5-AC053
+Test,User clicks the `manage fuels` button,SK-F5-US5.10,"*Given the user is on the `Maintenance.vue`
+*When they clcik the `manage fuels` button
+*Then the `View Fuel Management` modal opens
+*And no API request is sent","*Given the user is on the `Maintenance.vue`
+*When they clcik the `manage fuels` button
+*Then the `View Fuel Management` modal opens
+*And no API request is sent",SK-F5-AC054
+Test,User views the fuels table,SK-F5-US5.10,"*Given the user is on the `View Fuel Management` modal
+*When the modal opens
+*Then a table is shown with all the fuels and each having a `delete` and `edit` icon buttons
+*And no API request is sent","*Given the user is on the `View Fuel Management` modal
+*When the modal opens
+*Then a table is shown with all the fuels and each having a `delete` and `edit` icon buttons
+*And no API request is sent",SK-F5-AC055
+Test,User clicks the `edit` fuel icon button,SK-F5-US5.10,"*Given the user is on the `View Fuel Management` modal
+*When the `edit` fuel icon button is clicked
+*Then the `Edit Fuel` modal opens
+*And no API request is sent","*Given the user is on the `View Fuel Management` modal
+*When the `edit` fuel icon button is clicked
+*Then the `Edit Fuel` modal opens
+*And no API request is sent",SK-F5-AC056
+Test,User clicks the `cancel` button on the `Edit Fuel` modal,SK-F5-US5.10,"*Given the user is on the `Edit Fuel` modal
+*When the `cancel` button is clicked
+*Then the `Edit Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And no API request is sent","*Given the user is on the `Edit Fuel` modal
+*When the `cancel` button is clicked
+*Then the `Edit Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And no API request is sent",SK-F5-AC057
+Test,User modifies the `fuel type` text field on the `Edit Fuel` modal,SK-F5-US5.10,"*Given the user is on the `Edit Fuel` modal
+*When the modal opens the `fuel type` text field holds the current fuel name
+*And the user changes the fuel name
+*Then the `fuel type` text field reflects the inputted fuel type
+*And no API request is sent","*Given the user is on the `Edit Fuel` modal
+*When the modal opens the `fuel type` text field holds the current fuel name
+*And the user changes the fuel name
+*Then the `fuel type` text field reflects the inputted fuel type
+*And no API request is sent",SK-F5-AC058
+Test,User clicks the `update` button on the `Edit Fuel` modal,SK-F5-US5.10,"*Given the user is on the `Edit Fuel` modal
+*When the `update` button is clicked
+*Then the `Edit Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And a `PUT` request is sent to update the selected fuel
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`","*Given the user is on the `Edit Fuel` modal
+*When the `update` button is clicked
+*Then the `Edit Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And a `PUT` request is sent to update the selected fuel
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`",SK-F5-AC059
+Test,User clicks the `Add Fuel` button,SK-F5-US5.10,"*Given the user is on the `View Fuel Management` modal
+*When the `Add Fuel` button is clicked
+*Then the `Add Fuel` modal opens
+*And no API request is sent","*Given the user is on the `View Fuel Management` modal
+*When the `Add Fuel` button is clicked
+*Then the `Add Fuel` modal opens
+*And no API request is sent",SK-F5-AC060
+Test,User clicks the `cancel` button on the `Add Fuel` modal,SK-F5-US5.10,"*Given the user is on the `Add Fuel` modal
+*When the `cancel` button is clicked
+*Then the `Add Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And no API request is sent","*Given the user is on the `Add Fuel` modal
+*When the `cancel` button is clicked
+*Then the `Add Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And no API request is sent",SK-F5-AC061
+Test,User modifies the `fuel type` text field on the `Add Fuel` modal,SK-F5-US5.10,"*Given the user is on the `Add Fuel` modal
+*When the user inputs text in the fuel name text field
+*Then the `fuel type` text field reflects the inputted fuel type
+*And no API request is sent","*Given the user is on the `Add Fuel` modal
+*When the user inputs text in the fuel name text field
+*Then the `fuel type` text field reflects the inputted fuel type
+*And no API request is sent",SK-F5-AC062
+Test,User clicks the `Add` button on the `Add Fuel` modal,SK-F5-US5.10,"*Given the user is on the `Add Fuel` modal
+*When the `Add` button is clicked
+*Then the `Add Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And a `POST` request is sent to update the selected fuel
+*And returns a `201` with a payload containing `{""message"": ""human readable message""}`","*Given the user is on the `Add Fuel` modal
+*When the `Add` button is clicked
+*Then the `Add Fuel` modal closes and returns the user to the `View Fuel Management` modal
+*And a `POST` request is sent to update the selected fuel
+*And returns a `201` with a payload containing `{""message"": ""human readable message""}`",SK-F5-AC063
+Test,User clicks the `Delete` button on the `View Fuel Management` modal,SK-F5-US5.10,"*Given the user is on the `View Fuel Management` modal
+*When the `Delete` button is clicked
+*Then a `DELETE` request is sent
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`","*Given the user is on the `View Fuel Management` modal
+*When the `Delete` button is clicked
+*Then a `DELETE` request is sent
+*And returns a `200` with a payload containing `{""message"": ""human readable message""}`",SK-F5-AC064
+Test,User clicks the `Back` button on the `View Fuel Management` modal,SK-F5-US5.10,"*Given the user is on the `View Fuel Management` modal
+*When the `Back` button is clicked
+*Then the `View Fuel Management` modal closes
+*And no API request is sent
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Given the user is on the `View Fuel Management` modal
+*When the `Back` button is clicked
+*Then the `View Fuel Management` modal closes
+*And no API request is sent
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F5-AC065
+Test,Admin views DestinationList,SK-F6-US6.1,"*Given I am an authenticated admin user
+*When I navigate to `DestinationList.vue`
+*Then I am allowed to see the Manage Destinations list described in Screen Requirements with everything on it.","*Given I am an authenticated admin user
+*When I navigate to `DestinationList.vue`
+*Then I am allowed to see the Manage Destinations list described in Screen Requirements with everything on it.",SK-F6-AC001
+Test,Other role views DestinationList,SK-F6-US6.1,"*Given I am an authenticated user with a role other than `admin`
+*When I navigate to `DestinationList.vue`
+*Then I am immediately redirected to the landing page.","*Given I am an authenticated user with a role other than `admin`
+*When I navigate to `DestinationList.vue`
+*Then I am immediately redirected to the landing page.",SK-F6-AC002
+Test,No entries exist in Destinations table,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When the `Destinations` table is empty
+*Then I see text inside the Manage Destinations list saying `""No destinations yet. Add a destination to view its details.""`","*Given I am viewing the Manage Destinations list
+*When the `Destinations` table is empty
+*Then I see text inside the Manage Destinations list saying `""No destinations yet. Add a destination to view its details.""`",SK-F6-AC003
+Test,Less than 5 entries exist in Destinations table,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When there exist between `1` and `5` (inclusive) entries in the `Destinations` table
+*Then I can see every existing row and its details as per the Screen Requirements.","*Given I am viewing the Manage Destinations list
+*When there exist between `1` and `5` (inclusive) entries in the `Destinations` table
+*Then I can see every existing row and its details as per the Screen Requirements.",SK-F6-AC004
+Test,More than 5 entries exist in Destinations table,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When there exist more than `5` entries in the `Destinations` table
+*Then I can see the first `5` entries of the `Destinations` table and their details listed
+*And I can scroll to the bottom of the page to automatically load the next `5` entries of the `Destinations` table into the list.","*Given I am viewing the Manage Destinations list
+*When there exist more than `5` entries in the `Destinations` table
+*Then I can see the first `5` entries of the `Destinations` table and their details listed
+*And I can scroll to the bottom of the page to automatically load the next `5` entries of the `Destinations` table into the list.",SK-F6-AC005
+Test,Back to Top button hidden when at top of page,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When I am viewing the top of the page
+*Then I cannot see the Top ↑ button.","*Given I am viewing the Manage Destinations list
+*When I am viewing the top of the page
+*Then I cannot see the Top ↑ button.",SK-F6-AC006
+Test,Back to Top button shown when scrolling down,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When I scroll down on the view
+*Then I can see the Top ↑ button.","*Given I am viewing the Manage Destinations list
+*When I scroll down on the view
+*Then I can see the Top ↑ button.",SK-F6-AC007
+Test,Press Back to Top button,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When I press the Top ↑ button
+*Then I scroll to the top of the page
+*And the Manage Destinations list is entirely unaffected.","*Given I am viewing the Manage Destinations list
+*When I press the Top ↑ button
+*Then I scroll to the top of the page
+*And the Manage Destinations list is entirely unaffected.",SK-F6-AC008
+Test,Press New Destination,SK-F6-US6.3,"*Given I am viewing the Manage Destinations list
+*When I press the + New Destination
+*Then I see the `DestinationForm` component open in Add mode","*Given I am viewing the Manage Destinations list
+*When I press the + New Destination
+*Then I see the `DestinationForm` component open in Add mode",SK-F6-AC009
+Test,Press outside DestinationForm component (add),SK-F6-US6.3,"*Given I am viewing the `DestinationForm` component in Add mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen","*Given I am viewing the `DestinationForm` component in Add mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen",SK-F6-AC010
+Test,Send add request with invalid form data,SK-F6-US6.3,"*Given I have filled out any field in the `DestinationForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent","*Given I have filled out any field in the `DestinationForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent",SK-F6-AC011
+Test,Send add request with a missing required field,SK-F6-US6.3,"*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Zip
+*When I press the Add button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent","*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Zip
+*When I press the Add button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent",SK-F6-AC012
+Test,Send add request with valid form data,SK-F6-US6.3,"*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload","*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload",SK-F6-AC013
+Test,Signed out user makes add request,SK-F6-US6.3,"*Given I am an unauthenticated user
+*When I send a `POST` request to the `Destinations` table with or without valid data
+*Then I receive a `401` response code and message","*Given I am an unauthenticated user
+*When I send a `POST` request to the `Destinations` table with or without valid data
+*Then I receive a `401` response code and message",SK-F6-AC014
+Test,Press Delete icon,SK-F6-US6.4,"*Given I am viewing the Manage Destinations list
+*When I press the Delete icon
+*Then a Delete Destination dialog appears","*Given I am viewing the Manage Destinations list
+*When I press the Delete icon
+*Then a Delete Destination dialog appears",SK-F6-AC015
+Test,Press outside Delete confirmation dialog,SK-F6-US6.4,"*Given I am viewing the Delete Destination dialog
+*When I press anywhere outside the Delete Destination dialog
+*Then the Delete Destination dialog closes
+*And no request is sent","*Given I am viewing the Delete Destination dialog
+*When I press anywhere outside the Delete Destination dialog
+*Then the Delete Destination dialog closes
+*And no request is sent",SK-F6-AC016
+Test,Press Cancel inside Delete confirmation dialog,SK-F6-US6.4,"*Given I am viewing the Delete Destination dialog
+*When I press the Cancel button
+*Then the Delete Destination dialog closes
+*And no request is sent","*Given I am viewing the Delete Destination dialog
+*When I press the Cancel button
+*Then the Delete Destination dialog closes
+*And no request is sent",SK-F6-AC017
+Test,Press Delete inside Delete confirmation dialog,SK-F6-US6.4,"*Given I am viewing the Delete Destination dialog
+*When I press the Delete button
+*Then the Delete Destination dialog closes
+*And the selected destination no longer exists in the table
+*And I receive a `204` status code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen saying `""Successfully deleted Destination!""`
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload","*Given I am viewing the Delete Destination dialog
+*When I press the Delete button
+*Then the Delete Destination dialog closes
+*And the selected destination no longer exists in the table
+*And I receive a `204` status code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen saying `""Successfully deleted Destination!""`
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload",SK-F6-AC018
+Test,No rendering Search Bar when no destinations exist,SK-F6-US6.5,"*Given I am viewing the Manage Destination list
+*When no entries exist in the `Destinations` table
+*Then I do not see a search bar in the view","*Given I am viewing the Manage Destination list
+*When no entries exist in the `Destinations` table
+*Then I do not see a search bar in the view",SK-F6-AC019
+Test,Search Bar rendering when destinations exist,SK-F6-US6.5,"*Given I am viewing the Manage Destination list
+*When entries exist in the `Destinations` table
+*Then I see a search bar in the view","*Given I am viewing the Manage Destination list
+*When entries exist in the `Destinations` table
+*Then I see a search bar in the view",SK-F6-AC020
+Test,No search attribute selected,SK-F6-US6.5,"*Given I leave the search-attribute selection of the search bar empty
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' Name.","*Given I leave the search-attribute selection of the search bar empty
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' Name.",SK-F6-AC021
+Test,Search attribute selected,SK-F6-US6.5,"*Given I select City in the search-attribute selection of the search bar
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' City attribute.","*Given I select City in the search-attribute selection of the search bar
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' City attribute.",SK-F6-AC022
+Test,Press Edit icon,SK-F6-US6.6,"*Given I am viewing the Manage Destinations list
+*When I press the Edit icon on a destination
+*Then I see the `DestinationForm` component open in Edit mode
+*And the input fields of the `DestinationForm` component contain the correct details of the selected destination","*Given I am viewing the Manage Destinations list
+*When I press the Edit icon on a destination
+*Then I see the `DestinationForm` component open in Edit mode
+*And the input fields of the `DestinationForm` component contain the correct details of the selected destination",SK-F6-AC023
+Test,Press outside DestinationForm component (edit),SK-F6-US6.6,"*Given I am viewing the `DestinationForm` component in Edit mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen","*Given I am viewing the `DestinationForm` component in Edit mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen",SK-F6-AC024
+Test,Send edit request with invalid form data,SK-F6-US6.6,"*Given I have filled out any field in the `DestinationForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent","*Given I have filled out any field in the `DestinationForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent",SK-F6-AC025
+Test,Send edit request with a missing required field,SK-F6-US6.6,"*Given I have filled out all the fields in the `DestinationForm` component in Edit mode except for Zip
+*When I press the Save button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent","*Given I have filled out all the fields in the `DestinationForm` component in Edit mode except for Zip
+*When I press the Save button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent",SK-F6-AC026
+Test,Send edit request with valid form data,SK-F6-US6.6,"*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Save button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload","*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Save button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload",SK-F6-AC027
+Test,Non-admin user makes update request,SK-F6-US6.6,"*Given I am any authenticated non-admin user
+*When I send a `PUT` request to the `Destinations` table with or without valid data
+*Then I receive a `403` response code and message
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am any authenticated non-admin user
+*When I send a `PUT` request to the `Destinations` table with or without valid data
+*Then I receive a `403` response code and message
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F6-AC028
+Test,Admin creates a new driver,SK-F7-US7.1,"*Given I am signed in as an admin on the driver view
+*When I click + New driver
+*And I enter license status `active`
+*And I enter expiration date `05/2026`
+*And I add availability `available`
+*And I confirm the dialog
+*Then the API returns `201` with a driver object containing `driver_id`, `license_status:'active'`, `license_exp_date:'05/2026'` and `availability:'available'`
+*And driver_id, license_status, license_exp_date, and availability appears in the drivers view
+*And the add-driver dialog closes","*Given I am signed in as an admin on the driver view
+*When I click + New driver
+*And I enter license status `active`
+*And I enter expiration date `05/2026`
+*And I add availability `available`
+*And I confirm the dialog
+*Then the API returns `201` with a driver object containing `driver_id`, `license_status:'active'`, `license_exp_date:'05/2026'` and `availability:'available'`
+*And driver_id, license_status, license_exp_date, and availability appears in the drivers view
+*And the add-driver dialog closes",SK-F7-AC001
+Test,Admin creates a driver with an empty name,SK-F7-US7.1,"*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the name field empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""Driver name is required.""
+*And no API request is sent","*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the name field empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""Driver name is required.""
+*And no API request is sent",SK-F7-AC002
+Test,Admin creates a driver with an empty license status,SK-F7-US7.1,"*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the license status field empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""license status is required.""
+*And no API request is sent","*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the license status field empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""license status is required.""
+*And no API request is sent",SK-F7-AC003
+Test,Admin creates a driver without license expiration date,SK-F7-US7.1,"*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the license expiration date empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""license expiration date is required.""
+*And no API request is sent","*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the license expiration date empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""license expiration date is required.""
+*And no API request is sent",SK-F7-AC004
+Test,Admin creates a driver without availability,SK-F7-US7.1,"*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the availability empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""availability is required.""
+*And no API request is sent","*Given I am signed in as an admin on the driver view
+*When I open the new driver dialog
+*And I leave the availability empty or whitespace only
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""availability is required.""
+*And no API request is sent",SK-F7-AC005
+Test,No drivers exist,SK-F7-US7.2,"*Given I am signed in as an admin
+*And no drivers exist
+*When I navigate to the driver view
+*Then I see ""No drivers yet. Create a driver.""","*Given I am signed in as an admin
+*And no drivers exist
+*When I navigate to the driver view
+*Then I see ""No drivers yet. Create a driver.""",SK-F7-AC006
+Test,driver rows show edit and delete actions,SK-F7-US7.3,"*Given I am signed in as an admin
+*And the driver `1` exists
+*When I view the drivers view
+*Then the `1` row shows an Edit driver icon action
+*And the `1` row shows a Delete driver icon action","*Given I am signed in as an admin
+*And the driver `1` exists
+*When I view the drivers view
+*Then the `1` row shows an Edit driver icon action
+*And the `1` row shows a Delete driver icon action",SK-F7-AC007
+Test,Admin edits a driver,SK-F7-US7.4,"*Given I am signed in as an admin
+*And the driver `1` exists
+*When I click the edit icon on the `1` row with the license status `suspended`
+*And I change the license status to `active` in the rename dialog
+*And I confirm
+*Then the API returns `200` with the updated driver object
+*And the drivers view shows `active` instead of `suspended`","*Given I am signed in as an admin
+*And the driver `1` exists
+*When I click the edit icon on the `1` row with the license status `suspended`
+*And I change the license status to `active` in the rename dialog
+*And I confirm
+*Then the API returns `200` with the updated driver object
+*And the drivers view shows `active` instead of `suspended`",SK-F7-AC008
+Test,Admin deletes a driver,SK-F7-US7.4,"*Given I am signed in as an admin
+*And the driver `1` exists
+*When I click the delete icon on the `1` row
+*And I confirm the delete dialog
+*Then the API returns `204`
+*And the driver is removed from the drivers view","*Given I am signed in as an admin
+*And the driver `1` exists
+*When I click the delete icon on the `1` row
+*And I confirm the delete dialog
+*Then the API returns `204`
+*And the driver is removed from the drivers view",SK-F7-AC009
+Test,Search bar appears with drivers,SK-F7-US7.5,"*Given I am signed in as an admin
+*And the driver `1` exists
+*When I view the drivers view
+*Then I see a search bar named `Find` above the drivers list","*Given I am signed in as an admin
+*And the driver `1` exists
+*When I view the drivers view
+*Then I see a search bar named `Find` above the drivers list",SK-F7-AC010
+Test,search bar appears with no drivers,SK-F7-US7.5,"*Given I am signed in as an admin
+*And the driver `1` exists
+*When I view the drivers view
+*And I type `2` in the search bar
+*Then The search function does not display any drivers
+*And I see no drivers in the view","*Given I am signed in as an admin
+*And the driver `1` exists
+*When I view the drivers view
+*And I type `2` in the search bar
+*Then The search function does not display any drivers
+*And I see no drivers in the view",SK-F7-AC011
+Test,Admin types in driver search bar,SK-F7-US7.5,"*Given I am signed in as an admin
+*And I am viewing the drivers view
+*And the drivers license status `1, active`, `2, suspended`, `3, expired`,
+*When I type `active` in the `Find` search bar
+*Then the driver list updates to contain only the drivers `1` and `4`","*Given I am signed in as an admin
+*And I am viewing the drivers view
+*And the drivers license status `1, active`, `2, suspended`, `3, expired`,
+*When I type `active` in the `Find` search bar
+*Then the driver list updates to contain only the drivers `1` and `4`",SK-F7-AC012
+Test,Admin types in driver search bar 2,SK-F7-US7.5,"*Given I am signed in as an admin
+*And I am viewing the drivera view
+*And the drivers license status `1, active`, `2, suspended`, `3, expired`,
+*When I type `suspended` in the `Find` search bar
+*Then the driver list updates to contain only the driver `2`","*Given I am signed in as an admin
+*And I am viewing the drivera view
+*And the drivers license status `1, active`, `2, suspended`, `3, expired`,
+*When I type `suspended` in the `Find` search bar
+*Then the driver list updates to contain only the driver `2`",SK-F7-AC013
+Test,Unauthenticated user accesses the drivers view,SK-F7-US7.5,"*Given I have no session in `localStorage`
+*When I navigate to the drivers view
+*Then I am redirected to the login page","*Given I have no session in `localStorage`
+*When I navigate to the drivers view
+*Then I am redirected to the login page",SK-F7-AC014
+Test,Unauthenticated API request to drivers,SK-F7-US7.5,"*Given I have no valid session token
+*When I request `GET /vehicle-t3`
+*Then the API returns `401` with an unauthorized message
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Given I have no valid session token
+*When I request `GET /vehicle-t3`
+*Then the API returns `401` with an unauthorized message
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F7-AC015
+Test,User creates a trip request,SK-F8-US8.1,"*Given I am signed in
+*And a vehicle, a driver, and a destination exist
+*When I click + New request
+*And I select the type Trip
+*And I choose a vehicle, a driver, and a destination from the dropdowns
+*And I pick a start date/time and an end date/time from the calendars
+*And I enter the number of people `6`
+*And I confirm the dialog
+*Then the API returns `201` with a request object containing `requestId`, `requestType`, `vehicle`, `driver`, `destination`, dates/times, and `numPeople`
+*And the new request appears in the requests view
+*And the add-request dialog closes","*Given I am signed in
+*And a vehicle, a driver, and a destination exist
+*When I click + New request
+*And I select the type Trip
+*And I choose a vehicle, a driver, and a destination from the dropdowns
+*And I pick a start date/time and an end date/time from the calendars
+*And I enter the number of people `6`
+*And I confirm the dialog
+*Then the API returns `201` with a request object containing `requestId`, `requestType`, `vehicle`, `driver`, `destination`, dates/times, and `numPeople`
+*And the new request appears in the requests view
+*And the add-request dialog closes",SK-F8-AC001
+Test,Trip form shows vehicle details,SK-F8-US8.1,"*Given I am signed in
+*And vehicle `ABC-1234` (Ford Transit) exists
+*When I select that vehicle in the trip form
+*Then I see its license, make, and model displayed","*Given I am signed in
+*And vehicle `ABC-1234` (Ford Transit) exists
+*When I select that vehicle in the trip form
+*Then I see its license, make, and model displayed",SK-F8-AC002
+Test,User creates a trip request with a missing required field,SK-F8-US8.1,"*Given I am signed in
+*When I open the new request dialog with type Trip
+*And I leave the driver, destination, or any date empty
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""<field> is required.""
+*And no API request is sent","*Given I am signed in
+*When I open the new request dialog with type Trip
+*And I leave the driver, destination, or any date empty
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""<field> is required.""
+*And no API request is sent",SK-F8-AC003
+Test,User creates a trip request with an end before the start,SK-F8-US8.1,"*Given I am signed in
+*When I submit a trip request whose end date/time is before its start date/time
+*Then the API returns `400` with `{ ""message"": ""end must be after start."" }`
+*And the error is displayed in a `<v-alert type=""error"">`","*Given I am signed in
+*When I submit a trip request whose end date/time is before its start date/time
+*Then the API returns `400` with `{ ""message"": ""end must be after start."" }`
+*And the error is displayed in a `<v-alert type=""error"">`",SK-F8-AC004
+Test,User creates a trip request with an invalid number of people,SK-F8-US8.1,"*Given I am signed in
+*When I submit a trip request with `numPeople` of `0`
+*Then the API returns `400` with `{ ""message"": ""number of people must be at least 1."" }`
+*And the error is displayed in a `<v-alert type=""error"">`","*Given I am signed in
+*When I submit a trip request with `numPeople` of `0`
+*Then the API returns `400` with `{ ""message"": ""number of people must be at least 1."" }`
+*And the error is displayed in a `<v-alert type=""error"">`",SK-F8-AC005
+Test,User creates a request referencing a nonexistent vehicle,SK-F8-US8.1,"*Given I am signed in
+*When I `POST /requests` with a `vehicleId` that does not exist
+*Then the API returns `400` with `{ ""message"": ""vehicle does not exist."" }`","*Given I am signed in
+*When I `POST /requests` with a `vehicleId` that does not exist
+*Then the API returns `400` with `{ ""message"": ""vehicle does not exist."" }`",SK-F8-AC006
+Test,Unauthenticated user accesses the requests view,SK-F8-US8.1,"*Given I have no session in `localStorage`
+*When I navigate to the requests view
+*Then I am redirected to the login page","*Given I have no session in `localStorage`
+*When I navigate to the requests view
+*Then I am redirected to the login page",SK-F8-AC023
+Test,Unauthenticated API request to requests,SK-F8-US8.1,"*Given I have no valid session token
+*When I request `GET /requests`
+*Then the API returns `401` with an unauthorized message
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Given I have no valid session token
+*When I request `GET /requests`
+*Then the API returns `401` with an unauthorized message
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F8-AC024
+Test,Admin creates a maintenance request,SK-F8-US8.2,"*Given I am signed in as an admin
+*And vehicle `ABC-1234` exists
+*When I click + New request
+*And I select the type Maintenance
+*And I choose vehicle `ABC-1234`
+*And I pick a start date from the calendar
+*And I confirm the dialog
+*Then the API returns `201` with a request object whose `requestType` is `maintenance`
+*And `driverId`, `destId`, and `numPeople` are null
+*And the request appears in the requests view","*Given I am signed in as an admin
+*And vehicle `ABC-1234` exists
+*When I click + New request
+*And I select the type Maintenance
+*And I choose vehicle `ABC-1234`
+*And I pick a start date from the calendar
+*And I confirm the dialog
+*Then the API returns `201` with a request object whose `requestType` is `maintenance`
+*And `driverId`, `destId`, and `numPeople` are null
+*And the request appears in the requests view",SK-F8-AC007
+Test,Maintenance form hides trip-only fields,SK-F8-US8.2,"*Given I am signed in as an admin
+*When I select the type Maintenance in the new request dialog
+*Then I see the vehicle dropdown and the start date/time picker
+*And I do not see the driver, destination, or number-of-people fields","*Given I am signed in as an admin
+*When I select the type Maintenance in the new request dialog
+*Then I see the vehicle dropdown and the start date/time picker
+*And I do not see the driver, destination, or number-of-people fields",SK-F8-AC008
+Test,Maintenance request without a start date,SK-F8-US8.2,"*Given I am signed in as an admin
+*When I open the dialog with type Maintenance and leave the start date empty
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""start date is required.""
+*And no API request is sent","*Given I am signed in as an admin
+*When I open the dialog with type Maintenance and leave the start date empty
+*And I attempt to confirm
+*Then inline validation blocks the request
+*And I see the message ""start date is required.""
+*And no API request is sent",SK-F8-AC009
+Test,Non-admin cannot create a maintenance request,SK-F8-US8.2,"*Given I am signed in as a non-admin user
+*When I `POST /requests` with `requestType` `maintenance`
+*Then the API returns `403` with an unauthorized message","*Given I am signed in as a non-admin user
+*When I `POST /requests` with `requestType` `maintenance`
+*Then the API returns `403` with an unauthorized message",SK-F8-AC010
+Test,Requests view loads with existing requests,SK-F8-US8.3,"*Given I am signed in
+*And I own two requests
+*When I navigate to the requests view
+*Then both requests appear in the requests view
+*And each row shows the request type, vehicle, and dates with edit and delete icon actions","*Given I am signed in
+*And I own two requests
+*When I navigate to the requests view
+*Then both requests appear in the requests view
+*And each row shows the request type, vehicle, and dates with edit and delete icon actions",SK-F8-AC011
+Test,User does not see other users' requests,SK-F8-US8.3,"*Given I am signed in as a non-admin user
+*And another user owns a request
+*When I navigate to the requests view
+*Then I do not see the other user's request","*Given I am signed in as a non-admin user
+*And another user owns a request
+*When I navigate to the requests view
+*Then I do not see the other user's request",SK-F8-AC012
+Test,Admin sees all requests,SK-F8-US8.3,"*Given I am signed in as an admin
+*And several users own requests
+*When I navigate to the requests view
+*Then I see every user's requests","*Given I am signed in as an admin
+*And several users own requests
+*When I navigate to the requests view
+*Then I see every user's requests",SK-F8-AC013
+Test,No requests exist,SK-F8-US8.3,"*Given I am signed in
+*And I have no requests
+*When I navigate to the requests view
+*Then I see ""No requests yet. Create a request.""","*Given I am signed in
+*And I have no requests
+*When I navigate to the requests view
+*Then I see ""No requests yet. Create a request.""",SK-F8-AC014
+Test,Request rows show edit and delete actions,SK-F8-US8.4,"*Given I am signed in
+*And I own a request
+*When I view the requests view
+*Then the row shows an Edit request icon action
+*And the row shows a Delete request icon action","*Given I am signed in
+*And I own a request
+*When I view the requests view
+*Then the row shows an Edit request icon action
+*And the row shows a Delete request icon action",SK-F8-AC015
+Test,User edits a request,SK-F8-US8.5,"*Given I am signed in
+*And I own a trip request with `numPeople` `6`
+*When I click the edit icon on that row
+*And I change `numPeople` to `4` in the edit dialog
+*And I confirm
+*Then the API returns `200` with the updated request object
+*And the requests view shows `4` people for that request","*Given I am signed in
+*And I own a trip request with `numPeople` `6`
+*When I click the edit icon on that row
+*And I change `numPeople` to `4` in the edit dialog
+*And I confirm
+*Then the API returns `200` with the updated request object
+*And the requests view shows `4` people for that request",SK-F8-AC016
+Test,User deletes a request,SK-F8-US8.5,"*Given I am signed in
+*And I own a request
+*When I click the delete icon on that row
+*And I confirm the delete dialog
+*Then the API returns `204`
+*And the request is removed from the requests view","*Given I am signed in
+*And I own a request
+*When I click the delete icon on that row
+*And I confirm the delete dialog
+*Then the API returns `204`
+*And the request is removed from the requests view",SK-F8-AC017
+Test,User cannot edit another user's request,SK-F8-US8.5,"*Given I am signed in as a non-admin user
+*And another user owns request `41`
+*When I `PUT /requests/41`
+*Then the API returns `404`","*Given I am signed in as a non-admin user
+*And another user owns request `41`
+*When I `PUT /requests/41`
+*Then the API returns `404`",SK-F8-AC018
+Test,User cannot delete another user's request,SK-F8-US8.5,"*Given I am signed in as a non-admin user
+*And another user owns request `41`
+*When I `DELETE /requests/41`
+*Then the API returns `404`","*Given I am signed in as a non-admin user
+*And another user owns request `41`
+*When I `DELETE /requests/41`
+*Then the API returns `404`",SK-F8-AC019
+Test,Admin edits any request,SK-F8-US8.5,"*Given I am signed in as an admin
+*And another user owns request `41`
+*When I `PUT /requests/41` with valid changes
+*Then the API returns `200` with the updated request object","*Given I am signed in as an admin
+*And another user owns request `41`
+*When I `PUT /requests/41` with valid changes
+*Then the API returns `200` with the updated request object",SK-F8-AC020
+Test,Active-only filter,SK-F8-US8.6,"*Given I am signed in
+*And I own one active request and one inactive request
+*When I turn on the Active only toggle
+*Then the list contains only the active request","*Given I am signed in
+*And I own one active request and one inactive request
+*When I turn on the Active only toggle
+*Then the list contains only the active request",SK-F8-AC021
+Test,Request type filter,SK-F8-US8.6,"*Given I am signed in as an admin
+*And a trip request and a maintenance request exist
+*When I select Maintenance in the type selector
+*Then the list contains only the maintenance request","*Given I am signed in as an admin
+*And a trip request and a maintenance request exist
+*When I select Maintenance in the type selector
+*Then the list contains only the maintenance request",SK-F8-AC022
+Test,Landing View Request Form Note List Embed,SK-F9-US9.1,"*Given I am an authenticated user
+*When I navigate to `Landing.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of any Request Form on the page with the title Notes.","*Given I am an authenticated user
+*When I navigate to `Landing.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of any Request Form on the page with the title Notes.",SK-F9-AC001
+Test,Vehicle Maintenance Note List Embed,SK-F9-US9.1,"*Given I am an authenticated user with `maintenance` or `admin` role on `Vehicles.vue`
+*When I press the wrench list icon to navigate to `Maintenance.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*And the Vehicle Maintenance Notes list contains every `note` that both has `maintenance_request` set to `true` and has the same `request_id` as any `request` containing the same `vehicle_id` as the `vin` of the `vehicle` selected to get to `Maintenance.vue`.","*Given I am an authenticated user with `maintenance` or `admin` role on `Vehicles.vue`
+*When I press the wrench list icon to navigate to `Maintenance.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*And the Vehicle Maintenance Notes list contains every `note` that both has `maintenance_request` set to `true` and has the same `request_id` as any `request` containing the same `vehicle_id` as the `vin` of the `vehicle` selected to get to `Maintenance.vue`.",SK-F9-AC002
+Test,More than 3 Notes in a Note List,SK-F9-US9.1,"*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*Then the Notes List tries to `GET` and display another batch of 3 notes without refreshing the whole page
+*And they overflowing with a scroll bar inside the <v-list> rather than expanding the page.","*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*Then the Notes List tries to `GET` and display another batch of 3 notes without refreshing the whole page
+*And they overflowing with a scroll bar inside the <v-list> rather than expanding the page.",SK-F9-AC003
+Test,Less than 3 list items left to GET,SK-F9-US9.1,"*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*And the batch of list items is smaller 3
+*Then the Notes List does not try to retrieve any more `notes`.","*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*And the batch of list items is smaller 3
+*Then the Notes List does not try to retrieve any more `notes`.",SK-F9-AC004
+Test,Press on list item body,SK-F9-US9.1,"*Given I am an authenticated user
+*When I press on the body (not action icons) of a Notes List list item
+*Then the Note details dialog opens holding the correct information from that selected `note`.","*Given I am an authenticated user
+*When I press on the body (not action icons) of a Notes List list item
+*Then the Note details dialog opens holding the correct information from that selected `note`.",SK-F9-AC005
+Test,Press on list item action icon,SK-F9-US9.1,"*Given I am an authenticated user
+*When I press an action icon on a Notes List list item
+*Then that action is performed in accordance with later Acceptance Criteria.","*Given I am an authenticated user
+*When I press an action icon on a Notes List list item
+*Then that action is performed in accordance with later Acceptance Criteria.",SK-F9-AC006
+Test,Press anywhere outside Note dialog,SK-F9-US9.1,"*Given I am an authenticated user with any <v-dialog> open from interacting with Notes List list items
+*When I press anywhere outside the dialog
+*Or I press the Close button
+*Then the Note dialog closes and nothing is changed.","*Given I am an authenticated user with any <v-dialog> open from interacting with Notes List list items
+*When I press anywhere outside the dialog
+*Or I press the Close button
+*Then the Note dialog closes and nothing is changed.",SK-F9-AC007
+Test,User selects Delete icon on Notes List item,SK-F9-US9.2,"*Given I am an authenticated user viewing a Notes List belonging to a request I own
+*When I select the Delete icon on a list item row's Actions section
+*Then I see a confirmation dialog titled Delete appear with two options: Cancel and Delete.","*Given I am an authenticated user viewing a Notes List belonging to a request I own
+*When I select the Delete icon on a list item row's Actions section
+*Then I see a confirmation dialog titled Delete appear with two options: Cancel and Delete.",SK-F9-AC008
+Test,User cancels Delete,SK-F9-US9.2,"*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Cancel button
+*Then the confirmation dialog closes and nothing else happens.","*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Cancel button
+*Then the confirmation dialog closes and nothing else happens.",SK-F9-AC009
+Test,User confirms Delete,SK-F9-US9.2,"*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Delete button
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And all `Contributiors` entries tied to this `note` are deleted as well.
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List.","*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Delete button
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And all `Contributiors` entries tied to this `note` are deleted as well.
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List.",SK-F9-AC010
+Test,Maintenance deletes from Maintenance Requests Notes List,SK-F9-US9.2,"*Given I am an authenticated user with `maintenance` or `admin` role on `Maintenance.vue`
+*When I confirm Delete on a `note` from the Vehicle Maintenance Notes list
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List
+*And a `vehicle service log` is created with the `text` content of the deleted `note` and uploaded to the `vehicle service logs` table as per Feature 10.","*Given I am an authenticated user with `maintenance` or `admin` role on `Maintenance.vue`
+*When I confirm Delete on a `note` from the Vehicle Maintenance Notes list
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List
+*And a `vehicle service log` is created with the `text` content of the deleted `note` and uploaded to the `vehicle service logs` table as per Feature 10.",SK-F9-AC011
+Test,Press New Note from Request form,SK-F9-US9.3,"*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `false`.","*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `false`.",SK-F9-AC012
+Test,Press New Note from Maintenance Request form,SK-F9-US9.3,"*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `true`.","*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `true`.",SK-F9-AC013
+Test,Press Cancel from Request form (add),SK-F9-US9.3,"*Given I am viewing the Add Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the Add Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC014
+Test,Press outside NoteForm component (add),SK-F9-US9.3,"*Given I am viewing the `NoteForm` component in Add mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the `NoteForm` component in Add mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC015
+Test,Send add request with invalid form data,SK-F9-US9.3,"*Given I have filled out any field in the `NoteForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.","*Given I have filled out any field in the `NoteForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.",SK-F9-AC016
+Test,Send add request with a missing required field,SK-F9-US9.3,"*Given I have filled out all the fields in the `NoteForm` component in Add mode except for Subject
+*When I press the Add button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.","*Given I have filled out all the fields in the `NoteForm` component in Add mode except for Subject
+*When I press the Add button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.",SK-F9-AC017
+Test,Send add request with valid form data,SK-F9-US9.3,"*Given I have filled out all the fields in the `NoteForm` component in Add mode with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the new `note` is added as an entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.","*Given I have filled out all the fields in the `NoteForm` component in Add mode with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the new `note` is added as an entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.",SK-F9-AC018
+Test,Signed out user makes add request,SK-F9-US9.3,"*Given I am an unauthenticated user
+*When I send a `POST` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.","*Given I am an unauthenticated user
+*When I send a `POST` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.",SK-F9-AC019
+Test,Press Edit icon on Notes List item,SK-F9-US9.4,"*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.","*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.",SK-F9-AC020
+Test,Press Edit icon from Maintenance Request list,SK-F9-US9.4,"*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.","*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.",SK-F9-AC021
+Test,Press Cancel from Request form (edit),SK-F9-US9.4,"*Given I am viewing the Edit Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the Edit Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC022
+Test,Press outside NoteForm component (edit),SK-F9-US9.4,"*Given I am viewing the `NoteForm` component in Edit mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the `NoteForm` component in Edit mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC023
+Test,Send edit request with invalid form data,SK-F9-US9.4,"*Given I have filled out any field in the `NoteForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.","*Given I have filled out any field in the `NoteForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.",SK-F9-AC024
+Test,Send edit request with a missing required field,SK-F9-US9.4,"*Given I have filled out all the fields in the `NoteForm` component in Edit mode except for Subject
+*When I press the Save button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.","*Given I have filled out all the fields in the `NoteForm` component in Edit mode except for Subject
+*When I press the Save button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.",SK-F9-AC025
+Test,Send edit request with valid form data,SK-F9-US9.4,"*Given I have filled out all the fields in the `NoteForm` component in Edit mode with valid form data as per the Screen Requirements
+*When I press the Edit button
+*Then I receive a `200` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `200` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the changes to the `note` are reflected in its entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.","*Given I have filled out all the fields in the `NoteForm` component in Edit mode with valid form data as per the Screen Requirements
+*When I press the Edit button
+*Then I receive a `200` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `200` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the changes to the `note` are reflected in its entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.",SK-F9-AC026
+Test,Signed out user makes edit request,SK-F9-US9.4,"*Given I am an unauthenticated user
+*When I send a `PUT` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.","*Given I am an unauthenticated user
+*When I send a `PUT` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.",SK-F9-AC027
+Test,View Note Creation List for User Management,SK-F9-US9.5,"*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` created by that user.","*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` created by that user.",SK-F9-AC028
+Test,View Note Contribution List for User Management,SK-F9-US9.5,"*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` that user has contributed to.","*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` that user has contributed to.",SK-F9-AC029
+Test,Admin super-permissions on any list,SK-F9-US9.5,"*Given I am viewing any `note` or Note List, including ones I didn't create
+*When I try to create, read, update, or delete it or items on it
+*Then I am allowed to
+*And form validation rules hold consistent like in previous Acceptance Criteria.
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am viewing any `note` or Note List, including ones I didn't create
+*When I try to create, read, update, or delete it or items on it
+*Then I am allowed to
+*And form validation rules hold consistent like in previous Acceptance Criteria.
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F9-AC030
+Test,Maintenance creates a log,SK-F10-US10.1,"*Given I am signed in as `maintenance`
+*And a vehicle exists
+*When I open Vehicle Service Logs and press Create log
+*And I enter a service date, that vehicle, a description, and a completed status
+*And I save
+*Then the list shows that log for that vehicle id
+*And I am the creator
+*And I am an owner","*Given I am signed in as `maintenance`
+*And a vehicle exists
+*When I open Vehicle Service Logs and press Create log
+*And I enter a service date, that vehicle, a description, and a completed status
+*And I save
+*Then the list shows that log for that vehicle id
+*And I am the creator
+*And I am an owner",SK-F10-AC001
+Test,Admin creates a log,SK-F10-US10.1,"*Given I am signed in as `admin`
+*And a vehicle exists
+*When I create a log for that vehicle with a service date, description, and completed status
+*Then the log is stored for that vehicle id","*Given I am signed in as `admin`
+*And a vehicle exists
+*When I create a log for that vehicle with a service date, description, and completed status
+*Then the log is stored for that vehicle id",SK-F10-AC002
+Test,Blank log,SK-F10-US10.1,"*Given I am signed in as `maintenance`
+*When I press Create log and save with a required field empty
+*Then I see ""Vehicle log is incomplete!""
+*And no log is added","*Given I am signed in as `maintenance`
+*When I press Create log and save with a required field empty
+*Then I see ""Vehicle log is incomplete!""
+*And no log is added",SK-F10-AC003
+Test,Owner assigns another owner,SK-F10-US10.2,"*Given I am signed in as the owner of a vehicle log
+*And another user exists
+*When I add that user as an owner
+*Then that user can modify the log","*Given I am signed in as the owner of a vehicle log
+*And another user exists
+*When I add that user as an owner
+*Then that user can modify the log",SK-F10-AC004
+Test,Non-owner cannot modify,SK-F10-US10.2,"*Given I am signed in as `maintenance`
+*And I am not an owner of a log
+*And I am not an admin
+*When I try to update that log
+*Then I see ""Forbidden""
+*And the log is unchanged","*Given I am signed in as `maintenance`
+*And I am not an owner of a log
+*And I am not an admin
+*When I try to update that log
+*Then I see ""Forbidden""
+*And the log is unchanged",SK-F10-AC005
+Test,Maintenance reads the logs,SK-F10-US10.3,"*Given I am signed in as `maintenance`
+*And a vehicle log exists
+*When I open Vehicle Service Logs
+*Then I see its service date, vehicle id, description, completed status, and creator","*Given I am signed in as `maintenance`
+*And a vehicle log exists
+*When I open Vehicle Service Logs
+*Then I see its service date, vehicle id, description, completed status, and creator",SK-F10-AC006
+Test,Admin reads the logs,SK-F10-US10.3,"*Given I am signed in as `admin`
+*And a vehicle log exists
+*When I open Vehicle Service Logs
+*Then I see that log","*Given I am signed in as `admin`
+*And a vehicle log exists
+*When I open Vehicle Service Logs
+*Then I see that log",SK-F10-AC007
+Test,Driver cannot open the page,SK-F10-US10.3,"*Given I am signed in as `driver`
+*When I go to `/vehicle-logs`
+*Then I do not see the log list","*Given I am signed in as `driver`
+*When I go to `/vehicle-logs`
+*Then I do not see the log list",SK-F10-AC008
+Test,Owner updates a log,SK-F10-US10.4,"*Given I am signed in as the owner of a vehicle log
+*When I change the description and save
+*Then the list shows the new description","*Given I am signed in as the owner of a vehicle log
+*When I change the description and save
+*Then the list shows the new description",SK-F10-AC009
+Test,Admin updates any log,SK-F10-US10.4,"*Given I am signed in as `admin`
+*And I am not the creator of a log
+*When I change the completed status and save
+*Then the log shows the new completed status","*Given I am signed in as `admin`
+*And I am not the creator of a log
+*When I change the completed status and save
+*Then the log shows the new completed status",SK-F10-AC010
+Test,Log older than 18 months is removed,SK-F10-US10.5,"*Given a vehicle log has a service date more than 18 months ago
+*When retention runs
+*Then that log is deleted
+*And it does not appear on that vehicle’s logs","*Given a vehicle log has a service date more than 18 months ago
+*When retention runs
+*Then that log is deleted
+*And it does not appear on that vehicle’s logs",SK-F10-AC011
+Test,Non-owner cannot delete,SK-F10-US10.5,"*Given I am signed in as `maintenance`
+*And I am not an owner of a log
+*And I am not an admin
+*When I try to delete that log
+*Then I see ""Forbidden""
+*And the log remains on the list
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am signed in as `maintenance`
+*And I am not an owner of a log
+*And I am not an admin
+*When I try to delete that log
+*Then I see ""Forbidden""
+*And the log remains on the list
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F10-AC012
+Test,Hover a vehicle listing,SK-F11-US11.1,"*Given I am an authenticated user with the `admin` or `maintenance` role on `Vehicles.vue`
+*When I hover a `vehicle` list item for `1` second
+*Then an `ImagesTooltip` shows that vehicle's first `VehicleImage`
+*And the tooltip has a thick white border and class `oc-cta`
+*And the tooltip follows the cursor horizontally but not vertically
+*And moving the cursor onto the tooltip leaves it open.","*Given I am an authenticated user with the `admin` or `maintenance` role on `Vehicles.vue`
+*When I hover a `vehicle` list item for `1` second
+*Then an `ImagesTooltip` shows that vehicle's first `VehicleImage`
+*And the tooltip has a thick white border and class `oc-cta`
+*And the tooltip follows the cursor horizontally but not vertically
+*And moving the cursor onto the tooltip leaves it open.",SK-F11-AC001
+Test,Press the vehicle image tooltip,SK-F11-US11.1,"*Given the `ImagesTooltip` for a `vehicle` is open
+*When I press the tooltip
+*Then a modal opens whose `ImagesDetails` lists every `VehicleImage` for that `vehicle_id` from `GET /vehicle-t3/vehicleimage/vehicle/:vehicleId`
+*And pressing Image Content expands that image in the center of the screen with its `date` above it
+*And < shows the previous image unless this is the first image
+*And > shows the next image unless this is the last image
+*And the image context menu has no option to save the image
+*And the image list scrolls inside the modal instead of expanding the page.","*Given the `ImagesTooltip` for a `vehicle` is open
+*When I press the tooltip
+*Then a modal opens whose `ImagesDetails` lists every `VehicleImage` for that `vehicle_id` from `GET /vehicle-t3/vehicleimage/vehicle/:vehicleId`
+*And pressing Image Content expands that image in the center of the screen with its `date` above it
+*And < shows the previous image unless this is the first image
+*And > shows the next image unless this is the last image
+*And the image context menu has no option to save the image
+*And the image list scrolls inside the modal instead of expanding the page.",SK-F11-AC002
+Test,Close the vehicle image modal,SK-F11-US11.1,"*Given the vehicle image modal is open
+*When I press outside the modal or I press X on the modal
+*Then the modal closes and no `VehicleImage` is deleted.","*Given the vehicle image modal is open
+*When I press outside the modal or I press X on the modal
+*Then the modal closes and no `VehicleImage` is deleted.",SK-F11-AC003
+Test,Vehicle has no images,SK-F11-US11.1,"*Given I am an authenticated user with the `admin` or `maintenance` role
+*When I `GET /vehicle-t3/vehicleimage/vehicle/:vehicleId` for a `vehicle` with no images
+*Then I receive `404` `{ ""message"": ""This vehicle <:vehicleId> doesn't have any images"" }`.","*Given I am an authenticated user with the `admin` or `maintenance` role
+*When I `GET /vehicle-t3/vehicleimage/vehicle/:vehicleId` for a `vehicle` with no images
+*Then I receive `404` `{ ""message"": ""This vehicle <:vehicleId> doesn't have any images"" }`.",SK-F11-AC004
+Test,Drag a valid image onto Vehicle Images,SK-F11-US11.2,"*Given I am an authenticated user with the `admin` or `maintenance` role viewing the Vehicle Images `ImagesContainer` on `Maintenance.vue`
+*When I drag a `png`/`apng`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or `bmp` under `25` Megabytes into the container
+*Then a `POST /vehicle-t3/vehicleimage/` is sent
+*And I receive `201` `{ ""message"": ""New image created with id=<id>"" }`
+*And the stored image is `png` and is attached with that vehicle's `vehicle_id`
+*And an image larger than `10` Megabytes is compressed to less than `10` Megabytes before it is stored
+*And a missing `date` is taken from the image metadata, or from today's date when the metadata has none
+*And the grid reloads without a page reload.","*Given I am an authenticated user with the `admin` or `maintenance` role viewing the Vehicle Images `ImagesContainer` on `Maintenance.vue`
+*When I drag a `png`/`apng`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or `bmp` under `25` Megabytes into the container
+*Then a `POST /vehicle-t3/vehicleimage/` is sent
+*And I receive `201` `{ ""message"": ""New image created with id=<id>"" }`
+*And the stored image is `png` and is attached with that vehicle's `vehicle_id`
+*And an image larger than `10` Megabytes is compressed to less than `10` Megabytes before it is stored
+*And a missing `date` is taken from the image metadata, or from today's date when the metadata has none
+*And the grid reloads without a page reload.",SK-F11-AC005
+Test,Press inside the Vehicle Images container,SK-F11-US11.2,"*Given I am viewing the Vehicle Images `ImagesContainer`
+*When I press inside the container but not on an image
+*Then I see From Cloud and From Computer
+*And From Cloud has class `oc-cta`.","*Given I am viewing the Vehicle Images `ImagesContainer`
+*When I press inside the container but not on an image
+*Then I see From Cloud and From Computer
+*And From Cloud has class `oc-cta`.",SK-F11-AC006
+Test,Upload from the cloud,SK-F11-US11.2,"*Given the From Cloud dialog is open
+*When I choose one or more allowed files from Google Drive, Dropbox, or OneDrive
+*Then each file is checked against the allowed types and the `25` Megabyte limit
+*And a progress bar shows the uploads
+*And a valid file is `POST`ed to `/vehicle-t3/vehicleimage/`
+*And pressing outside the dialog emphasizes it
+*And pressing X in the top-right of the dialog closes it.","*Given the From Cloud dialog is open
+*When I choose one or more allowed files from Google Drive, Dropbox, or OneDrive
+*Then each file is checked against the allowed types and the `25` Megabyte limit
+*And a progress bar shows the uploads
+*And a valid file is `POST`ed to `/vehicle-t3/vehicleimage/`
+*And pressing outside the dialog emphasizes it
+*And pressing X in the top-right of the dialog closes it.",SK-F11-AC007
+Test,Upload from the computer,SK-F11-US11.2,"*Given I pressed From Computer
+*When I choose one or more allowed files in the system file picker
+*Then each file is checked against the allowed types and the `25` Megabyte limit
+*And a valid file is `POST`ed to `/vehicle-t3/vehicleimage/`.","*Given I pressed From Computer
+*When I choose one or more allowed files in the system file picker
+*Then each file is checked against the allowed types and the `25` Megabyte limit
+*And a valid file is `POST`ed to `/vehicle-t3/vehicleimage/`.",SK-F11-AC008
+Test,Reject an invalid vehicle image,SK-F11-US11.2,"*Given I am choosing a file for the Vehicle Images `ImagesContainer`
+*When the file is over `25` Megabytes or is not an allowed type
+*Then I see a `<v-alert type=""error"">`
+*And no `POST` is sent
+*And the upload dialog stays open.","*Given I am choosing a file for the Vehicle Images `ImagesContainer`
+*When the file is over `25` Megabytes or is not an allowed type
+*Then I see a `<v-alert type=""error"">`
+*And no `POST` is sent
+*And the upload dialog stays open.",SK-F11-AC009
+Test,Duplicate vehicle image,SK-F11-US11.2,"*Given a `VehicleImage` already exists with an `image` and `vehicle_id`
+*When I send a `POST /vehicle-t3/vehicleimage/` with that same `image` and `vehicle_id`
+*Then I receive `409` `{ ""message"": ""Image with these details already exists!"" }`.","*Given a `VehicleImage` already exists with an `image` and `vehicle_id`
+*When I send a `POST /vehicle-t3/vehicleimage/` with that same `image` and `vehicle_id`
+*Then I receive `409` `{ ""message"": ""Image with these details already exists!"" }`.",SK-F11-AC010
+Test,Vehicle image request is missing a required field,SK-F11-US11.2,"*Given I am authenticated and the vehicle image is missing `image` or `vehicle_id`
+*When I send a `POST /vehicle-t3/vehicleimage/`
+*Then I receive `400` `{ ""message"": ""Malformed request. Please make sure everything in the form is properly formatted!"" }`.","*Given I am authenticated and the vehicle image is missing `image` or `vehicle_id`
+*When I send a `POST /vehicle-t3/vehicleimage/`
+*Then I receive `400` `{ ""message"": ""Malformed request. Please make sure everything in the form is properly formatted!"" }`.",SK-F11-AC011
+Test,Signed out user uploads a vehicle image,SK-F11-US11.2,"*Given I am an unauthenticated user
+*When I send a `POST /vehicle-t3/vehicleimage/`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.","*Given I am an unauthenticated user
+*When I send a `POST /vehicle-t3/vehicleimage/`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.",SK-F11-AC012
+Test,Overwrite a vehicle image,SK-F11-US11.2,"*Given I am an authenticated user
+*When I send a `PUT` request for a `VehicleImage`
+*Then I receive `403` `{ ""message"": ""PUT and overwriting requests are not allowed to image entries"" }`.","*Given I am an authenticated user
+*When I send a `PUT` request for a `VehicleImage`
+*Then I receive `403` `{ ""message"": ""PUT and overwriting requests are not allowed to image entries"" }`.",SK-F11-AC013
+Test,Show delete on a vehicle image,SK-F11-US11.3,"*Given I am an authenticated user with the `admin` or `maintenance` role viewing a `VehicleImage` inside the Vehicle Images `ImagesContainer` on `Maintenance.vue`
+*When the image is shown
+*Then X appears in its top-right corner and colors what is beneath it in negative color.","*Given I am an authenticated user with the `admin` or `maintenance` role viewing a `VehicleImage` inside the Vehicle Images `ImagesContainer` on `Maintenance.vue`
+*When the image is shown
+*Then X appears in its top-right corner and colors what is beneath it in negative color.",SK-F11-AC014
+Test,Delete one vehicle image,SK-F11-US11.3,"*Given X is shown on a `VehicleImage` inside that `ImagesContainer`
+*When I press X
+*Then a `DELETE /vehicle-t3/vehicleimage/:id` is sent for that image only
+*And I receive `204` with an empty body
+*And that image is gone from the grid
+*And the grid refreshes without a page reload.","*Given X is shown on a `VehicleImage` inside that `ImagesContainer`
+*When I press X
+*Then a `DELETE /vehicle-t3/vehicleimage/:id` is sent for that image only
+*And I receive `204` with an empty body
+*And that image is gone from the grid
+*And the grid refreshes without a page reload.",SK-F11-AC015
+Test,Close an expanded vehicle image,SK-F11-US11.3,"*Given a `VehicleImage` is expanded
+*When I press X on the expanded image or I press outside it
+*Then the overlay closes and no `DELETE` is sent.","*Given a `VehicleImage` is expanded
+*When I press X on the expanded image or I press outside it
+*Then the overlay closes and no `DELETE` is sent.",SK-F11-AC016
+Test,Admin deletes any vehicle image,SK-F11-US11.3,"*Given I am an authenticated user with the `admin` role
+*When I `DELETE /vehicle-t3/vehicleimage/:id` for a `VehicleImage` I did not create
+*Then I receive `204` with an empty body.","*Given I am an authenticated user with the `admin` role
+*When I `DELETE /vehicle-t3/vehicleimage/:id` for a `VehicleImage` I did not create
+*Then I receive `204` with an empty body.",SK-F11-AC017
+Test,Signed out user deletes a vehicle image,SK-F11-US11.3,"*Given I am an unauthenticated user
+*When I send a `DELETE /vehicle-t3/vehicleimage/:id`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.","*Given I am an unauthenticated user
+*When I send a `DELETE /vehicle-t3/vehicleimage/:id`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.",SK-F11-AC018
+Test,Delete a missing vehicle image,SK-F11-US11.3,"*Given I am an authenticated user with the `admin` or `maintenance` role
+*When I `DELETE /vehicle-t3/vehicleimage/:id` and no image has that `id`
+*Then I receive `404` `{ ""message"": ""No image was found for id=<id>"" }`.","*Given I am an authenticated user with the `admin` or `maintenance` role
+*When I `DELETE /vehicle-t3/vehicleimage/:id` and no image has that `id`
+*Then I receive `404` `{ ""message"": ""No image was found for id=<id>"" }`.",SK-F11-AC019
+Test,Note form shows its images,SK-F11-US11.4,"*Given I am an authenticated user viewing `NoteForm.vue` in Add or Edit mode
+*When the note has `NoteImages`
+*Then Drop or Upload Image Here shows a grid of `ImagesDetails` for `NoteImages` with that `note`'s `note_id`
+*And the grid items are about `25`px apart
+*And the grid scrolls inside the container instead of expanding the page
+*And the images come from `GET /vehicle-t3/noteimage/note/:noteId`.","*Given I am an authenticated user viewing `NoteForm.vue` in Add or Edit mode
+*When the note has `NoteImages`
+*Then Drop or Upload Image Here shows a grid of `ImagesDetails` for `NoteImages` with that `note`'s `note_id`
+*And the grid items are about `25`px apart
+*And the grid scrolls inside the container instead of expanding the page
+*And the images come from `GET /vehicle-t3/noteimage/note/:noteId`.",SK-F11-AC020
+Test,Expand a note image,SK-F11-US11.4,"*Given a `NoteImage` is shown in that grid
+*When I press Image Content
+*Then the image expands in the center of the screen with its `date` above it
+*And < and > move through that note's images and stop at the first and last image
+*And the image context menu has no option to save the image.","*Given a `NoteImage` is shown in that grid
+*When I press Image Content
+*Then the image expands in the center of the screen with its `date` above it
+*And < and > move through that note's images and stop at the first and last image
+*And the image context menu has no option to save the image.",SK-F11-AC021
+Test,Close an expanded note image,SK-F11-US11.4,"*Given a `NoteImage` is expanded
+*When I press outside the overlay or I press X on the expanded image
+*Then the overlay closes and no `DELETE` is sent.","*Given a `NoteImage` is expanded
+*When I press outside the overlay or I press X on the expanded image
+*Then the overlay closes and no `DELETE` is sent.",SK-F11-AC022
+Test,Note has no images,SK-F11-US11.4,"*Given I am viewing `NoteForm.vue` for a `note` with no `NoteImages`
+*When the container finishes loading
+*Then the `ImagesContainer` shows Drop or Upload Image Here
+*And `ImagesDetails` shows No images
+*And `GET /vehicle-t3/noteimage/note/:noteId` returns `404` `{ ""message"": ""This note <:noteId> doesn't have any images"" }`.","*Given I am viewing `NoteForm.vue` for a `note` with no `NoteImages`
+*When the container finishes loading
+*Then the `ImagesContainer` shows Drop or Upload Image Here
+*And `ImagesDetails` shows No images
+*And `GET /vehicle-t3/noteimage/note/:noteId` returns `404` `{ ""message"": ""This note <:noteId> doesn't have any images"" }`.",SK-F11-AC023
+Test,Drag a valid image onto a note,SK-F11-US11.5,"*Given I am an authenticated user viewing `NoteForm.vue` in Add or Edit mode for a `note` I am creating or that I created
+*When I drag a `png`/`apng`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or `bmp` under `25` Megabytes into Drop or Upload Image Here
+*Then a `POST /vehicle-t3/noteimage/` is sent
+*And I receive `201` `{ ""message"": ""New image created with id=<id>"" }`
+*And the stored image is `png` and is attached with that note's `note_id`
+*And an image larger than `10` Megabytes is compressed to less than `10` Megabytes before it is stored
+*And the grid reloads without a page reload.","*Given I am an authenticated user viewing `NoteForm.vue` in Add or Edit mode for a `note` I am creating or that I created
+*When I drag a `png`/`apng`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or `bmp` under `25` Megabytes into Drop or Upload Image Here
+*Then a `POST /vehicle-t3/noteimage/` is sent
+*And I receive `201` `{ ""message"": ""New image created with id=<id>"" }`
+*And the stored image is `png` and is attached with that note's `note_id`
+*And an image larger than `10` Megabytes is compressed to less than `10` Megabytes before it is stored
+*And the grid reloads without a page reload.",SK-F11-AC024
+Test,Press inside the note image container,SK-F11-US11.5,"*Given I am viewing the note's `ImagesContainer`
+*When I press inside the container but not on an image
+*Then I see From Cloud and From Computer.","*Given I am viewing the note's `ImagesContainer`
+*When I press inside the container but not on an image
+*Then I see From Cloud and From Computer.",SK-F11-AC025
+Test,Reject an invalid note image,SK-F11-US11.5,"*Given I am choosing a file for the note's `ImagesContainer`
+*When the file is over `25` Megabytes or is not an allowed type
+*Then I see a `<v-alert type=""error"">`
+*And no `POST` is sent
+*And the upload dialog stays open.","*Given I am choosing a file for the note's `ImagesContainer`
+*When the file is over `25` Megabytes or is not an allowed type
+*Then I see a `<v-alert type=""error"">`
+*And no `POST` is sent
+*And the upload dialog stays open.",SK-F11-AC026
+Test,Duplicate note image,SK-F11-US11.5,"*Given a `NoteImage` already exists with an `image` and `note_id`
+*When I send a `POST /vehicle-t3/noteimage/` with that same `image` and `note_id`
+*Then I receive `409` `{ ""message"": ""Image with these details already exists!"" }`.","*Given a `NoteImage` already exists with an `image` and `note_id`
+*When I send a `POST /vehicle-t3/noteimage/` with that same `image` and `note_id`
+*Then I receive `409` `{ ""message"": ""Image with these details already exists!"" }`.",SK-F11-AC027
+Test,Note image request is missing a required field,SK-F11-US11.5,"*Given I am authenticated and the note image is missing `image` or `note_id`
+*When I send a `POST /vehicle-t3/noteimage/`
+*Then I receive `400` `{ ""message"": ""Malformed request. Please make sure everything in the form is properly formatted!"" }`.","*Given I am authenticated and the note image is missing `image` or `note_id`
+*When I send a `POST /vehicle-t3/noteimage/`
+*Then I receive `400` `{ ""message"": ""Malformed request. Please make sure everything in the form is properly formatted!"" }`.",SK-F11-AC028
+Test,Signed out user uploads a note image,SK-F11-US11.5,"*Given I am an unauthenticated user
+*When I send a `POST /vehicle-t3/noteimage/`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.","*Given I am an unauthenticated user
+*When I send a `POST /vehicle-t3/noteimage/`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.",SK-F11-AC029
+Test,Overwrite a note image,SK-F11-US11.5,"*Given I am an authenticated user
+*When I send a `PUT` request for a `NoteImage`
+*Then I receive `403` `{ ""message"": ""PUT and overwriting requests are not allowed to image entries"" }`.","*Given I am an authenticated user
+*When I send a `PUT` request for a `NoteImage`
+*Then I receive `403` `{ ""message"": ""PUT and overwriting requests are not allowed to image entries"" }`.",SK-F11-AC030
+Test,Delete a note image from the note form,SK-F11-US11.6,"*Given I am an authenticated user viewing `NoteForm.vue` in Add or Edit mode for a `note` I am creating or that I created
+*When I press X on a `NoteImage` inside the `ImagesContainer`
+*Then X colors what is beneath it in negative color
+*And a `DELETE /vehicle-t3/noteimage/:id` is sent for that image only
+*And I receive `204` with an empty body
+*And the grid refreshes without a page reload.","*Given I am an authenticated user viewing `NoteForm.vue` in Add or Edit mode for a `note` I am creating or that I created
+*When I press X on a `NoteImage` inside the `ImagesContainer`
+*Then X colors what is beneath it in negative color
+*And a `DELETE /vehicle-t3/noteimage/:id` is sent for that image only
+*And I receive `204` with an empty body
+*And the grid refreshes without a page reload.",SK-F11-AC031
+Test,User or driver deletes someone else's note image,SK-F11-US11.6,"*Given I am an authenticated user with the `user` or `driver` role
+*When I `DELETE /vehicle-t3/noteimage/:id` for a `NoteImage` on a `note` I did not create
+*Then I receive `403` `{ ""message"": ""Please contact a system administrator for assistance."" }`.","*Given I am an authenticated user with the `user` or `driver` role
+*When I `DELETE /vehicle-t3/noteimage/:id` for a `NoteImage` on a `note` I did not create
+*Then I receive `403` `{ ""message"": ""Please contact a system administrator for assistance."" }`.",SK-F11-AC032
+Test,Maintenance deletes a note image,SK-F11-US11.6,"*Given I am an authenticated user with the `maintenance` role
+*When I `DELETE /vehicle-t3/noteimage/:id` for a `NoteImage` I created or for a `NoteImage` on a maintenance request
+*Then I receive `204` with an empty body.","*Given I am an authenticated user with the `maintenance` role
+*When I `DELETE /vehicle-t3/noteimage/:id` for a `NoteImage` I created or for a `NoteImage` on a maintenance request
+*Then I receive `204` with an empty body.",SK-F11-AC033
+Test,Admin deletes any note image,SK-F11-US11.6,"*Given I am an authenticated user with the `admin` role
+*When I `DELETE /vehicle-t3/noteimage/:id` for any `NoteImage`
+*Then I receive `204` with an empty body.","*Given I am an authenticated user with the `admin` role
+*When I `DELETE /vehicle-t3/noteimage/:id` for any `NoteImage`
+*Then I receive `204` with an empty body.",SK-F11-AC034
+Test,Close an expanded note image without deleting,SK-F11-US11.6,"*Given a `NoteImage` is expanded from `NoteForm.vue`
+*When I press X on the expanded image
+*Then the overlay closes and no `DELETE` is sent.","*Given a `NoteImage` is expanded from `NoteForm.vue`
+*When I press X on the expanded image
+*Then the overlay closes and no `DELETE` is sent.",SK-F11-AC035
+Test,Selected vehicle shows its images,SK-F11-US11.7,"*Given I am an authenticated user on `Landing.vue` filling out `RequestForm.vue`
+*When I select a `vehicle`
+*Then an `ImagesBox` titled Image(s) shows an `ImagesDetails` of that vehicle's `VehicleImages`
+*And the images come from `GET /vehicle-t3/vehicleimage/vehicle/:vehicleId`
+*And pressing Image Content expands the image
+*And < and > step through that vehicle's images.","*Given I am an authenticated user on `Landing.vue` filling out `RequestForm.vue`
+*When I select a `vehicle`
+*Then an `ImagesBox` titled Image(s) shows an `ImagesDetails` of that vehicle's `VehicleImages`
+*And the images come from `GET /vehicle-t3/vehicleimage/vehicle/:vehicleId`
+*And pressing Image Content expands the image
+*And < and > step through that vehicle's images.",SK-F11-AC036
+Test,Request form does not delete vehicle images,SK-F11-US11.7,"*Given the `ImagesBox` for the selected `vehicle` is showing
+*When I press a control inside that box, including X on an expanded image
+*Then no `DELETE` is sent.","*Given the `ImagesBox` for the selected `vehicle` is showing
+*When I press a control inside that box, including X on an expanded image
+*Then no `DELETE` is sent.",SK-F11-AC037
+Test,Hover an area listing,SK-F11-US11.8,"*Given I am an authenticated user with the `admin` or `maintenance` role on `Areas.vue`
+*When I hover an `area` list item for `1` second
+*Then an `ImagesTooltip` shows that area's first `AreaImage`
+*And the tooltip has a thick white border and class `oc-cta`
+*And the tooltip follows the cursor horizontally but not vertically
+*And moving the cursor onto the tooltip leaves it open.","*Given I am an authenticated user with the `admin` or `maintenance` role on `Areas.vue`
+*When I hover an `area` list item for `1` second
+*Then an `ImagesTooltip` shows that area's first `AreaImage`
+*And the tooltip has a thick white border and class `oc-cta`
+*And the tooltip follows the cursor horizontally but not vertically
+*And moving the cursor onto the tooltip leaves it open.",SK-F11-AC038
+Test,Press the area image tooltip,SK-F11-US11.8,"*Given the `ImagesTooltip` for an `area` is open
+*When I press the tooltip
+*Then a modal opens whose `ImagesDetails` lists every `AreaImage` for that `area_id` from `GET /vehicle-t3/areaimage/area/:areaId`
+*And pressing Image Content expands that image with its `date` above it
+*And < and > step through that area's images and stop at the first and last image.","*Given the `ImagesTooltip` for an `area` is open
+*When I press the tooltip
+*Then a modal opens whose `ImagesDetails` lists every `AreaImage` for that `area_id` from `GET /vehicle-t3/areaimage/area/:areaId`
+*And pressing Image Content expands that image with its `date` above it
+*And < and > step through that area's images and stop at the first and last image.",SK-F11-AC039
+Test,Close the area image modal,SK-F11-US11.8,"*Given the area image modal is open
+*When I press outside the modal or I press X on the modal
+*Then the modal closes and no `AreaImage` is deleted.","*Given the area image modal is open
+*When I press outside the modal or I press X on the modal
+*Then the modal closes and no `AreaImage` is deleted.",SK-F11-AC040
+Test,Area has no images,SK-F11-US11.8,"*Given I am an authenticated user with the `admin` or `maintenance` role
+*When I `GET /vehicle-t3/areaimage/area/:areaId` for an `area` with no images
+*Then I receive `404` `{ ""message"": ""This area <:areaId> doesn't have any images"" }`.","*Given I am an authenticated user with the `admin` or `maintenance` role
+*When I `GET /vehicle-t3/areaimage/area/:areaId` for an `area` with no images
+*Then I receive `404` `{ ""message"": ""This area <:areaId> doesn't have any images"" }`.",SK-F11-AC041
+Test,Drag a valid image onto an area,SK-F11-US11.9,"*Given I am an authenticated user with the `admin` or `maintenance` role viewing `AreaForm.vue` in Add or Edit mode
+*When I drag a `png`/`apng`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or `bmp` under `25` Megabytes into Drop or Upload Image Here
+*Then a `POST /vehicle-t3/areaimage/` is sent
+*And I receive `201` `{ ""message"": ""New image created with id=<id>"" }`
+*And the stored image is `png` and is attached with that area's `area_id`
+*And an image larger than `10` Megabytes is compressed to less than `10` Megabytes before it is stored
+*And the grid reloads without a page reload.","*Given I am an authenticated user with the `admin` or `maintenance` role viewing `AreaForm.vue` in Add or Edit mode
+*When I drag a `png`/`apng`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or `bmp` under `25` Megabytes into Drop or Upload Image Here
+*Then a `POST /vehicle-t3/areaimage/` is sent
+*And I receive `201` `{ ""message"": ""New image created with id=<id>"" }`
+*And the stored image is `png` and is attached with that area's `area_id`
+*And an image larger than `10` Megabytes is compressed to less than `10` Megabytes before it is stored
+*And the grid reloads without a page reload.",SK-F11-AC042
+Test,Press inside the area image container,SK-F11-US11.9,"*Given I am viewing the area's `ImagesContainer`
+*When I press inside the container but not on an image
+*Then I see From Cloud and From Computer.","*Given I am viewing the area's `ImagesContainer`
+*When I press inside the container but not on an image
+*Then I see From Cloud and From Computer.",SK-F11-AC043
+Test,Reject an invalid area image,SK-F11-US11.9,"*Given I am choosing a file for the area's `ImagesContainer`
+*When the file is over `25` Megabytes or is not an allowed type
+*Then I see a `<v-alert type=""error"">`
+*And no `POST` is sent
+*And the upload dialog stays open.","*Given I am choosing a file for the area's `ImagesContainer`
+*When the file is over `25` Megabytes or is not an allowed type
+*Then I see a `<v-alert type=""error"">`
+*And no `POST` is sent
+*And the upload dialog stays open.",SK-F11-AC044
+Test,Duplicate area image,SK-F11-US11.9,"*Given an `AreaImage` already exists with an `image` and `area_id`
+*When I send a `POST /vehicle-t3/areaimage/` with that same `image` and `area_id`
+*Then I receive `409` `{ ""message"": ""Image with these details already exists!"" }`.","*Given an `AreaImage` already exists with an `image` and `area_id`
+*When I send a `POST /vehicle-t3/areaimage/` with that same `image` and `area_id`
+*Then I receive `409` `{ ""message"": ""Image with these details already exists!"" }`.",SK-F11-AC045
+Test,Signed out user uploads an area image,SK-F11-US11.9,"*Given I am an unauthenticated user
+*When I send a `POST /vehicle-t3/areaimage/`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.","*Given I am an unauthenticated user
+*When I send a `POST /vehicle-t3/areaimage/`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.",SK-F11-AC046
+Test,Overwrite an area image,SK-F11-US11.9,"*Given I am an authenticated user
+*When I send a `PUT` request for an `AreaImage`
+*Then I receive `403` `{ ""message"": ""PUT and overwriting requests are not allowed to image entries"" }`.","*Given I am an authenticated user
+*When I send a `PUT` request for an `AreaImage`
+*Then I receive `403` `{ ""message"": ""PUT and overwriting requests are not allowed to image entries"" }`.",SK-F11-AC047
+Test,Delete one area image,SK-F11-US11.10,"*Given I am an authenticated user with the `admin` or `maintenance` role viewing `AreaForm.vue` in Add or Edit mode
+*When I press X on an `AreaImage` inside the `ImagesContainer`
+*Then X colors what is beneath it in negative color
+*And a `DELETE /vehicle-t3/areaimage/:id` is sent for that image only
+*And I receive `204` with an empty body
+*And the grid refreshes without a page reload.","*Given I am an authenticated user with the `admin` or `maintenance` role viewing `AreaForm.vue` in Add or Edit mode
+*When I press X on an `AreaImage` inside the `ImagesContainer`
+*Then X colors what is beneath it in negative color
+*And a `DELETE /vehicle-t3/areaimage/:id` is sent for that image only
+*And I receive `204` with an empty body
+*And the grid refreshes without a page reload.",SK-F11-AC048
+Test,Close an expanded area image,SK-F11-US11.10,"*Given an `AreaImage` is expanded from `AreaForm.vue`
+*When I press X on the expanded image or I press outside it
+*Then the overlay closes and no `DELETE` is sent.","*Given an `AreaImage` is expanded from `AreaForm.vue`
+*When I press X on the expanded image or I press outside it
+*Then the overlay closes and no `DELETE` is sent.",SK-F11-AC049
+Test,Admin deletes any area image,SK-F11-US11.10,"*Given I am an authenticated user with the `admin` role
+*When I `DELETE /vehicle-t3/areaimage/:id` for an `AreaImage` I did not create
+*Then I receive `204` with an empty body.","*Given I am an authenticated user with the `admin` role
+*When I `DELETE /vehicle-t3/areaimage/:id` for an `AreaImage` I did not create
+*Then I receive `204` with an empty body.",SK-F11-AC050
+Test,Signed out user deletes an area image,SK-F11-US11.10,"*Given I am an unauthenticated user
+*When I send a `DELETE /vehicle-t3/areaimage/:id`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.","*Given I am an unauthenticated user
+*When I send a `DELETE /vehicle-t3/areaimage/:id`
+*Then I receive `401` `{ ""message"": ""Please sign in. If you think this is a mistake, contact your system administrator"" }`.",SK-F11-AC051
+Test,Selected area shows its images,SK-F11-US11.11,"*Given I am an authenticated user filling out `RequestForm.vue`
+*When I select an `area`
+*Then an `ImagesBox` titled Image(s) shows an `ImagesDetails` of that area's `AreaImages`
+*And the images come from `GET /vehicle-t3/areaimage/area/:areaId`
+*And pressing Image Content expands the image
+*And < and > step through that area's images.","*Given I am an authenticated user filling out `RequestForm.vue`
+*When I select an `area`
+*Then an `ImagesBox` titled Image(s) shows an `ImagesDetails` of that area's `AreaImages`
+*And the images come from `GET /vehicle-t3/areaimage/area/:areaId`
+*And pressing Image Content expands the image
+*And < and > step through that area's images.",SK-F11-AC052
+Test,Request form does not delete area images,SK-F11-US11.11,"*Given the `ImagesBox` for the selected `area` is showing
+*When I press a control inside that box, including X on an expanded image
+*Then no `DELETE` is sent.
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given the `ImagesBox` for the selected `area` is showing
+*When I press a control inside that box, including X on an expanded image
+*Then no `DELETE` is sent.
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F11-AC053
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.1,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I log in
+*And the `Landing.vue` has loaded
+*And a `GET` request is sent to get all vehicles
+*Then the list displays all vehicles available to reserve","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I log in
+*And the `Landing.vue` has loaded
+*And a `GET` request is sent to get all vehicles
+*Then the list displays all vehicles available to reserve",SK-F12-AC001
+Test,User clicks a vehicle in the `Available Vehicles` list,SK-F12-US12.1,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I click a list item
+*Then the `Vehicle Request From` component will have vehicle details filled out
+*And no API request is sent","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I click a list item
+*Then the `Vehicle Request From` component will have vehicle details filled out
+*And no API request is sent",SK-F12-AC002
+Test,User views `Available Vehicles` list,SK-F12-US12.1,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I view the `Available Vehicles` list
+*Then every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I view the `Available Vehicles` list
+*Then every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`",SK-F12-AC003
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.2,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I log in
+*And the `Landing.vue` has loaded
+*And a `GET` request is sent to get all vehicles
+*And a `GET` request is sent to get all requests with my requesterId
+*Then I see all the vehicles associated with my requests","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I log in
+*And the `Landing.vue` has loaded
+*And a `GET` request is sent to get all vehicles
+*And a `GET` request is sent to get all requests with my requesterId
+*Then I see all the vehicles associated with my requests",SK-F12-AC004
+Test,User clicks on a list item,SK-F12-US12.2,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I click one of the vehicles that I have reserved
+*Then I am sent to the `Requests.vue`
+*And no API request is sent","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I click one of the vehicles that I have reserved
+*Then I am sent to the `Requests.vue`
+*And no API request is sent",SK-F12-AC005
+Test,User views `Your Reserved Vehicles` list,SK-F12-US12.2,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I view the `My` Reserved Vehicles list
+*Then I see all my reserved vehicles is listed with their `License`, `Make`, `Model`, `Year`, `Image`","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I view the `My` Reserved Vehicles list
+*Then I see all my reserved vehicles is listed with their `License`, `Make`, `Model`, `Year`, `Image`",SK-F12-AC006
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.3,"*Given I am a (`admin` or `maintenance`)
+*When I log in
+*And a `GET` request is sent to get all vehicles
+*Then the list displays all vehicles currently reserved for maintenance work","*Given I am a (`admin` or `maintenance`)
+*When I log in
+*And a `GET` request is sent to get all vehicles
+*Then the list displays all vehicles currently reserved for maintenance work",SK-F12-AC007
+Test,User clicks a list item,SK-F12-US12.3,"*Given I am a (`admin` or `maintenance`)
+*When I click on a vehicle in the `Vehicles Currently in Service`
+*Then I am redirected to the `Maintenance.vue` for the selected vehicle
+*And no API request is sent","*Given I am a (`admin` or `maintenance`)
+*When I click on a vehicle in the `Vehicles Currently in Service`
+*Then I am redirected to the `Maintenance.vue` for the selected vehicle
+*And no API request is sent",SK-F12-AC008
+Test,User views `Vehicles In Service` list,SK-F12-US12.3,"*Given I am a (`admin` or `mainentance`)
+*When I view the `Vehicles In Service` list
+*Then every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button","*Given I am a (`admin` or `mainentance`)
+*When I view the `Vehicles In Service` list
+*Then every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button",SK-F12-AC009
+Test,User clicks `Info Icon` button,SK-F12-US12.3,"*Given I am a (`admin` or `mainentance`)
+*When I click the `Info Icon` button for a list item in the `Vehicles In Service` list
+*Then I am redirected to the `Maintenance.vue` page for the selected vehicle","*Given I am a (`admin` or `mainentance`)
+*When I click the `Info Icon` button for a list item in the `Vehicles In Service` list
+*Then I am redirected to the `Maintenance.vue` page for the selected vehicle",SK-F12-AC010
+Test,User clicks the form toggle switch,SK-F12-US12.4,"*Given I am a (`admin` or `maintenance`)
+*When I view the `Vehicle Request Form` component
+*And I click the toggle button
+*Then the request form component switches to the `Maintenance Request Form` component
+*And no API request is sent","*Given I am a (`admin` or `maintenance`)
+*When I view the `Vehicle Request Form` component
+*And I click the toggle button
+*Then the request form component switches to the `Maintenance Request Form` component
+*And no API request is sent",SK-F12-AC011
+Test,User correctly fills out the `Vehicle Request Form`,SK-F12-US12.5,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I fill out the `Vehicle Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a vehicle request
+*And returns `201` with a payload of `{""message"": ""human readable message""}`
+*And component is reset for another request","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I fill out the `Vehicle Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a vehicle request
+*And returns `201` with a payload of `{""message"": ""human readable message""}`
+*And component is reset for another request",SK-F12-AC012
+Test,User incorrectly fills out the `Vehicle Request Form`,SK-F12-US12.5,"*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I fill out the `Vehicle Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a vehicle request
+*And returns `400` with a payload of `{""message"": ""human readable message""}`","*Given I am a (`admin`, `mainentance`, `driver`, or `user`)
+*When I fill out the `Vehicle Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a vehicle request
+*And returns `400` with a payload of `{""message"": ""human readable message""}`",SK-F12-AC013
+Test,User correctly fills out the `Maintenance Request Form`,SK-F12-US12.6,"*Given I am a (`admin` or `mainentance`)
+*When I fill out the `Maintenance Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a maintenance request
+*And returns `201` with a payload of `{""message"": ""human readable message""}`
+*And component is reset for another request","*Given I am a (`admin` or `mainentance`)
+*When I fill out the `Maintenance Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a maintenance request
+*And returns `201` with a payload of `{""message"": ""human readable message""}`
+*And component is reset for another request",SK-F12-AC014
+Test,User incorrectly fills out the `Maintenance Request Form`,SK-F12-US12.6,"*Given I am a (`admin` or `mainentance`)
+*When I fill out the `Maintenance Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a maintenance request
+*And returns `400` with a payload of `{""message"": ""human readable message""}`","*Given I am a (`admin` or `mainentance`)
+*When I fill out the `Maintenance Request Form` component
+*And click `submit`
+*Then a `POST` request is sent to create a maintenance request
+*And returns `400` with a payload of `{""message"": ""human readable message""}`",SK-F12-AC015
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.7,"*Given I am a `admin`
+*When I log in
+*And the `Landing.vue` loads
+*And a `GET` request is sent
+*And returns a `200` code with a payload of `{""message"":""humman readable message""}`
+*Then a list of all reserved vehicles displays","*Given I am a `admin`
+*When I log in
+*And the `Landing.vue` loads
+*And a `GET` request is sent
+*And returns a `200` code with a payload of `{""message"":""humman readable message""}`
+*Then a list of all reserved vehicles displays",SK-F12-AC016
+Test,User views `Reserved Vehicles` list,SK-F12-US12.7,"*Given I am a `admin`
+*When I view the `All` Reserved Vehicles list
+*Then every reserved vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button","*Given I am a `admin`
+*When I view the `All` Reserved Vehicles list
+*Then every reserved vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button",SK-F12-AC017
+Test,User clicks `Info Icon` button,SK-F12-US12.7,"*Given I am a `admin`
+*When I click the `Info Icon` button for a list item in the `All` Reserved Vehicles list
+*Then I am redirected to the `Requests.vue` page for the selected vehicle
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Given I am a `admin`
+*When I click the `Info Icon` button for a list item in the `All` Reserved Vehicles list
+*Then I am redirected to the `Requests.vue` page for the selected vehicle
+*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F12-AC018
+Test,Admin creates an area,SK-F13-US13.1,"*Given I am signed in as `admin`
+*When I open Areas and press Create area
+*And I enter a name and a notice email
+*And I save
+*Then the list shows that area with that name and notice email","*Given I am signed in as `admin`
+*When I open Areas and press Create area
+*And I enter a name and a notice email
+*And I save
+*Then the list shows that area with that name and notice email",SK-F13-AC001
+Test,Duplicate area name,SK-F13-US13.1,"*Given I am signed in as `admin`
+*And an area already has the name ""North Campus""
+*When I create another area named ""North Campus""
+*Then I see ""Area name already in use!""
+*And a second area is not created","*Given I am signed in as `admin`
+*And an area already has the name ""North Campus""
+*When I create another area named ""North Campus""
+*Then I see ""Area name already in use!""
+*And a second area is not created",SK-F13-AC002
+Test,Blank area,SK-F13-US13.1,"*Given I am signed in as `admin`
+*When I press Create area and save with the name or notice email empty
+*Then I see ""Area is incomplete!""
+*And no area is added","*Given I am signed in as `admin`
+*When I press Create area and save with the name or notice email empty
+*Then I see ""Area is incomplete!""
+*And no area is added",SK-F13-AC003
+Test,Admin reads the list,SK-F13-US13.2,"*Given I am signed in as `admin`
+*And an area exists
+*When I open Areas
+*Then I see that area's name and notice email","*Given I am signed in as `admin`
+*And an area exists
+*When I open Areas
+*Then I see that area's name and notice email",SK-F13-AC004
+Test,Admin updates an area,SK-F13-US13.3,"*Given I am signed in as `admin`
+*And an area exists
+*When I change the notice email and save
+*Then the list shows the new notice email","*Given I am signed in as `admin`
+*And an area exists
+*When I change the notice email and save
+*Then the list shows the new notice email",SK-F13-AC005
+Test,Admin deletes an unused area,SK-F13-US13.4,"*Given I am signed in as `admin`
+*And an area exists that no vehicle reference
+*When I delete that area
+*Then it does not appear on the list","*Given I am signed in as `admin`
+*And an area exists that no vehicle reference
+*When I delete that area
+*Then it does not appear on the list",SK-F13-AC006
+Test,Area still in use,SK-F13-US13.4,"*Given I am signed in as `admin`
+*And a vehicle references an area
+*When I delete that area
+*Then I see ""Area is in use!""
+*And the area remains on the list","*Given I am signed in as `admin`
+*And a vehicle references an area
+*When I delete that area
+*Then I see ""Area is in use!""
+*And the area remains on the list",SK-F13-AC007
+Test,Maintenance cannot open areas,SK-F13-US13.5,"*Given I am signed in as `maintenance`
+*When I go to `/areas`
+*Then I do not see the area list","*Given I am signed in as `maintenance`
+*When I go to `/areas`
+*Then I do not see the area list",SK-F13-AC008
+Test,Driver cannot open areas,SK-F13-US13.5,"*Given I am signed in as `driver`
+*When I go to `/areas`
+*Then I do not see the area list
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am signed in as `driver`
+*When I go to `/areas`
+*Then I do not see the area list
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F13-AC009

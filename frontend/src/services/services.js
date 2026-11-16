@@ -10,7 +10,9 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const user = Utils.getStore("user");
 
-  if (user?.token) {
+  const existingAuthorization = config.headers?.Authorization || config.headers?.authorization;
+
+  if (user?.token && !existingAuthorization) {
     config.headers.Authorization = `Bearer ${user.token}`;
   }
 
@@ -25,8 +27,10 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const message = error.response?.data?.message || "";
+    const url = String(error.config?.url || "").split("?")[0];
+    const isCredentialPost = /(^|\/)(login|register)$/.test(url);
 
-    if (error.response?.status === 401 || /Unauthorized/i.test(message)) {
+    if (!isCredentialPost && (error.response?.status === 401 || /Unauthorized/i.test(message))) {
       Utils.removeItem("user");
       if (router.hasRoute("login")) {
         router.push({ name: "login" });

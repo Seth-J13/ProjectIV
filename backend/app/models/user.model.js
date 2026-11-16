@@ -22,18 +22,23 @@ export default (sequelize, Sequelize) => {
       },
       password: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       role: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      googleSub: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true,
       },
     },
     {
       tableName: "users",
       timestamps: false,
       defaultScope: {
-        attributes: { exclude: ["password"] },
+        attributes: { exclude: ["password", "googleSub"] },
       },
     }
   );
