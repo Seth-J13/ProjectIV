@@ -24,7 +24,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | ---------------- | ---------- | ---------------------------------------------- |
 | `sessionId`      | INTEGER PK | Auto-increment                                 |
 | `token`          | STRING     | Required, unique; value returned to the client |
-| `email`          | STRING     | Required                                       |
+| `email`          | STRING     | Required. An admin email change updates that user's session emails and leaves the token valid. |
 | `expirationDate` | DATE       | Required; 24 hours from login                  |
 | `userId`         | INTEGER FK | Required; references `users.id`                |
 
@@ -43,20 +43,20 @@ Update this file when a feature that defines schema merges to `dev`.
 
 ### `Vehicles` Table
 
-| Field                 | Type           | Rules                                 |
-| --------------------- | -------------- | ------------------------------------- |
-| `vin`                 | INTEGER PK     | Primary Key, Must be 17 numbers (0-9) |
-| `make`                | VARCHAR(30)    | Required                              |
-| `model`               | VARCHAR(65)    | Required                              |
-| `year`                | INTEGER        | Required                              |
-| `purchased_date`      | DATE           | Required; Cannot be in the future     |
-| `color`               | VARCHAR(20)    | NULLABLE;                             |
-| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
-| `tag_exp_month`       | DATE           | Required                              |
-| `area_id`             | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
-| `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
-| `available`           | BIT            | Required                              |
-| `mileage`             | INTEGER        | NULLABLE, Non-negative                |
+| Field                 | Type        | Rules                                 |
+| --------------------- | ----------- | ------------------------------------- |
+| `vin`                 | INTEGER PK  | Primary Key, Must be 17 numbers (0-9) |
+| `make`                | VARCHAR(30) | Required                              |
+| `model`               | VARCHAR(65) | Required                              |
+| `year`                | INTEGER     | Required                              |
+| `purchased_date`      | DATE        | Required; Cannot be in the future     |
+| `color`               | VARCHAR(20) | NULLABLE;                             |
+| `license_plate_num`   | VARCHAR(8)  | NULLABLE; Unique                      |
+| `tag_exp_month`       | DATE        | Required                              |
+| `area_id`             | INTEGER FK  | Foreign Key, NOT NULLABLE             |
+| `most_recent_dest_id` | INTEGER     | NULLABLE;                             |
+| `available`           | BIT         | Required                              |
+| `mileage`             | INTEGER     | NULLABLE, Non-negative                |
 
 ### `Maintenance_Info` Table
 

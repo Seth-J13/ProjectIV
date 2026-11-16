@@ -1,11 +1,32 @@
 <script setup>
+import { onMounted, onUnmounted, ref, computed } from "vue";
+import { useRoute } from "vue-router";
+import MenuBar from "./components/MenuBar.vue";
+
+const route = useRoute();
+const showMenu = computed(() => route.name !== "login");
+const snackbar = ref(false);
+
+function onLoginSuccess() {
+  snackbar.value = true;
+}
+
+onMounted(() => {
+  window.addEventListener("login-successful", onLoginSuccess);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("login-successful", onLoginSuccess);
+});
 </script>
 
 <template>
   <v-app>
+    <MenuBar v-if="showMenu" />
     <v-main>
       <router-view />
     </v-main>
+    <v-snackbar v-model="snackbar" color="success" :timeout="3000">Login successful!</v-snackbar>
   </v-app>
 </template>
 

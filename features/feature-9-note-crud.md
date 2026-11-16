@@ -7,7 +7,7 @@
 **Updated:** "2026-11-03"
 **Input:** Application must support the creation, reading, updating, and deleting of many request notes that can be attached to requests to denote different statuses of a future, active, or returned vehicle reservation.
 **Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 8 -- Requests CRUD](feature-8-requests-crud.md), [Feature 13 -- User Management](feature-13-User-Management.md), [Feature 10 -- Vehicle Service Log CRUD](feature-10-vehicle-service-log-crud.md)
-**Related:** `frontend/RequestDetails.vue`, `frontend/Maintenance.vue`, `frontend/components/NotesList.vue`, `frontend/tests/NoteForm.test.js`, `frontend/tests/NoteDetails.test.js`
+**Related:** `frontend/RequestDetails.vue`, `frontend/Maintenance.vue`, `frontend/components/NotesList.vue`, `frontend/components/NoteForm.vue`, `frontend/tests/NotesList.test.js`, `frontend/tests/NoteForm.test.js`
 
 ---
 
@@ -95,7 +95,7 @@
 - POST `Notes` with the exact same `text` and `request_id` -> `409`
 - no `Requests` exist but `Notes` exist -> don't render orphaned notes
 - DELETE `Request` with attached `Notes` -> CASCADE DELETE so attached `Notes` are deleted too
-- Malformed date in `Notes` entry -> `NoteForm` and `NoteDetails` for that entry default to today's date
+- Malformed date in `Notes` entry -> `NoteForm` and `NoteList` for that entry default to today's date
 
 ## Success Criteria
 
@@ -159,7 +159,7 @@ This feature uses the `Notes` endpoints below.
 
 ### Read Notes (`GET /vehicle-t3/notes`)
 
-**Success:** (`200`): the next batch of at most `3` `notes`, sorted by the most recent `date`. `offset` is the number of `notes` already retrieved. Missing `offset` → `offset` defaults to `0`. Fewer than `3` `notes` in the array means that batch is the last one. `[]` means no `notes` remain.
+**Success:** (`200`): the next batch of at most `3` `notes`, sorted by the most recent `date`. `offset` is the number of `notes` already retrieved. Missing `offset` -> `offset` defaults to `0`. Fewer than `3` `notes` in the array means that batch is the last one. `[]` means no `notes` remain.
 
 `GET /vehicle-t3/notes?offset=0`
 
@@ -306,7 +306,7 @@ This feature uses the `Notes` endpoints below.
 **Not found:** (`404`) `{ "message": "This user <userId> hasn't contributed to any notes" }`
 **Server error:** (`500`) `{ "message": "…" }`.
 
-### Add Note (`POST /vehicle-t3/notes`)
+### Add Note (`POST /vehicle-t3/notes/`)
 
 **Request body:** (fields the add request sends):
 
@@ -330,9 +330,9 @@ This feature uses the `Notes` endpoints below.
 }
 ```
 
-Missing `maintenance_request` → `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` → `400` bad request.
-Duplicate `request_id` and `text` (combined) → `409` conflict.
+Missing `maintenance_request` -> `maintenance_request` defaults to `false`
+Missing `reason`, `request_id`, `text` -> `400` bad request.
+Duplicate `request_id` and `text` (combined) -> `409` conflict.
 
 **Server error:** (`500`) `{ "message": "…" }`.
 
@@ -362,9 +362,9 @@ Duplicate `request_id` and `text` (combined) → `409` conflict.
 }
 ```
 
-Missing `maintenance_request` → `maintenance_request` defaults to `false`
-Missing `reason`, `request_id`, `text` → `400` bad request.
-Duplicate `request_id` and `text` (combined) → `409` conflict.
+Missing `maintenance_request` -> `maintenance_request` defaults to `false`
+Missing `reason`, `request_id`, `text` -> `400` bad request.
+Duplicate `request_id` and `text` (combined) -> `409` conflict.
 
 **Unauthorized:** (`403`) Forbidden
 **Server error:** (`500`) `{ "message": "…" }`.
@@ -447,9 +447,9 @@ Duplicate `request_id` and `text` (combined) → `409` conflict.
 }
 ```
 
-Missing `date` → `date` defaults to current date
-Missing `note_id`, `contributor_id`, `created_note` → `400` bad request.
-Two contributions on the same `note_id` being `true` → `409` conflict.
+Missing `date` -> `date` defaults to current date
+Missing `note_id`, `contributor_id`, `created_note` -> `400` bad request.
+Two contributions on the same `note_id` being `true` -> `409` conflict.
 
 **Server error:** (`500`) `{ "message": "…" }`.
 
@@ -520,7 +520,7 @@ Two contributions on the same `note_id` being `true` → `409` conflict.
 **Not found:** (`404`) `{ "message": "No contributions on note=<noteId>" }`
 **Server error:** (`500`) `{ "message": "…" }`.
 
-Quoted messages that tests must match:
+Quoted messages that tests must match if no other message is specified:
 
 | Situation        | Status | `message`                                                                           |
 | ---------------- | ------ | ----------------------------------------------------------------------------------- |
@@ -545,7 +545,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 - Container: <v-list>
 - Heading: [varies based on embed location]
 - Primary action: **+ New Note** when on **Embed** mode (embedded on Forms), not present when in **List** mode (for a display list). Opens a `<NoteForm>` component named **Note Form** Use class `oc-cta` on **+ New Note**, **Note Form** component, and **Add** button (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Pressing with list item body opens <NoteDetails> component named **Note** using class `oc-cta` on **Note**.
+- Pressing with list item body opens <NoteForm> component named **Note** using class `oc-cta` on **Note**.
 - Display interactive search bar in **List** mode named `Search`. Used to search `note` title and text content.
 - Display `notes` as <v-card> items inside rows separated by a horizontal line each. The following columns should be in each card:
   **Note ID** -- The identifying number of the `note` ("#`id`")
@@ -562,7 +562,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 
 ### Note Form Component
 
-The `Note` Form contains the following information:
+The `NoteForm` component contains the following information:
 
 - **Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is/will-be attached to
 - **Date** -- `MM/DD/YYYY` format of the _earliest_ `Contribution` tied to this note.
@@ -927,7 +927,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 9 from @features/feature-9-note-crud.md on branch `feature/9-note-crud`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.

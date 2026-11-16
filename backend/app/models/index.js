@@ -1,12 +1,18 @@
 import { Sequelize } from "sequelize";
 import sequelize from "../config/sequelizeInstance.js";
+import userModel from "./user.model.js";
+import sessionModel from "./session.model.js";
+import driverModel from "./driver.model.js";
 
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-import driverModel from "./driver.model.js";
-
+db.user = userModel(sequelize, Sequelize);
+db.session = sessionModel(sequelize, Sequelize);
 db.driver = driverModel(sequelize, Sequelize);
+
+db.user.hasMany(db.session, { foreignKey: "userId" });
+db.session.belongsTo(db.user, { foreignKey: "userId" });
 
 export default db;

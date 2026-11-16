@@ -34,7 +34,7 @@ jest.unstable_mockModule("google-auth-library", () => ({
       });
     }
   },
-}), { virtual: true });
+}));
 
 const { default: request } = await import("supertest");
 const { default: app } = await import("../server.js");

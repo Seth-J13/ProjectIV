@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "./views/Home.vue";
 import Drivers from "./views/Drivers.vue";
 import Utils from "./config/utils.js";
 
@@ -8,13 +7,18 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home,
+      name: "login",
+      component: () => import("./views/Login.vue"),
     },
     {
-      path: "/login",
-      name: "login",
-      component: { template: "<div>Login</div>" },
+      path: "/landing",
+      name: "landing",
+      component: () => import("./views/Landing.vue"),
+    },
+    {
+      path: "/users",
+      name: "users",
+      component: () => import("./views/UserManagement.vue"),
     },
     {
       path: "/drivers",
@@ -23,24 +27,24 @@ const router = createRouter({
     },
     {
       path: "/:pathMatch(.*)*",
-      redirect: { name: "home" },
+      redirect: { name: "login" },
     },
   ],
 });
 
 router.beforeEach((to) => {
-  if (to.name !== "drivers") {
-    return true;
-  }
-
   const user = Utils.getStore("user");
 
-  if (!user) {
+  if (!user && to.name !== "login") {
     return { name: "login" };
   }
 
-  if (user.role !== "admin") {
-    return router.hasRoute("landing") ? { name: "landing" } : { name: "home" };
+  if (to.name === "users" && user?.role !== "admin") {
+    return { name: "landing" };
+  }
+
+  if (to.name === "drivers" && user && user.role !== "admin") {
+    return { name: "landing" };
   }
 
   return true;
