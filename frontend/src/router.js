@@ -1,3 +1,4 @@
+import { h } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import Utils from "./config/utils.js";
 
@@ -20,6 +21,17 @@ const router = createRouter({
       component: () => import("./views/UserManagement.vue"),
     },
     {
+      path: "/vehicles",
+      name: "vehicleManagement",
+      component: () => import("./views/Vehicle.vue"),
+    },
+    {
+      // Stub until Feature 5 adds Maintenance.vue.
+      path: "/maintenance/:vin",
+      name: "maintenance",
+      component: { render: () => h("div", "Maintenance") },
+    },
+    {
       path: "/:pathMatch(.*)*",
       redirect: { name: "login" },
     },
@@ -34,6 +46,10 @@ router.beforeEach((to) => {
   }
 
   if (to.name === "users" && user?.role !== "admin") {
+    return { name: "landing" };
+  }
+
+  if (to.name === "vehicleManagement" && !["admin", "maintenance"].includes(user?.role)) {
     return { name: "landing" };
   }
 

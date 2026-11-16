@@ -46,7 +46,7 @@ Update this file when a feature that defines schema merges to `dev`.
 
 | Field                 | Type        | Rules                                 |
 | --------------------- | ----------- | ------------------------------------- |
-| `vin`                 | INTEGER PK  | Primary Key, Must be 17 numbers (0-9) |
+| `vin`                 | STRING(17) PK | Primary Key; 17 digits (0-9). Stored as string so leading zeros and full width are preserved. |
 | `make`                | VARCHAR(30) | Required                              |
 | `model`               | VARCHAR(65) | Required                              |
 | `year`                | INTEGER     | Required                              |

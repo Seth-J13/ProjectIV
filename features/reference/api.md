@@ -1,6 +1,6 @@
 # API Reference
 
-**Status:** Feature 1 auth, Feature 2 Google login, and Feature 3 user management are implemented. Mount path is `/api`.
+**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, and Feature 4 vehicle CRUD are implemented. Mount path is `/api`.
 
 Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": "..." }`. Protected routes read `Authorization: Bearer <session token>`.
 
@@ -14,6 +14,16 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `POST` | `/api/logout` | Yes (`Bearer` session token) | Delete the caller's current session | Feature 1 |
 | `GET` | `/api/users` | Yes (`Bearer` session token, role `admin`) | List every user's account fields | Feature 3 |
 | `PUT` | `/api/users/:id` | Yes (`Bearer` session token, role `admin`) | Update one user's name, email, and role | Feature 3 |
+| `GET` | `/api/vehicle-t3/vehicles/` | Yes (`admin` or `maintenance`) | List all vehicles | Feature 4 |
+| `GET` | `/api/vehicle-t3/vehicles/:vin` | Yes (`admin` or `maintenance`) | Get one vehicle by VIN | Feature 4 |
+| `PUT` | `/api/vehicle-t3/vehicles/` | Yes (`admin` or `maintenance`) | Create a vehicle | Feature 4 |
+| `POST` | `/api/vehicle-t3/vehicles/:vin` | Yes (`admin` or `maintenance`) | Update a vehicle | Feature 4 |
+| `DELETE` | `/api/vehicle-t3/vehicles/:vin` | Yes (`admin` or `maintenance`) | Delete a vehicle | Feature 4 |
+| `GET` | `/api/vehicle-t3/fuels/` | Yes (`admin` or `maintenance`) | List fuel types | Feature 4 |
+| `POST` | `/api/vehicle-t3/fuels/` | Yes (`admin` or `maintenance`) | Create a fuel type | Feature 4 |
+| `GET` | `/api/vehicle-t3/maintenance-info` | Yes (`admin` or `maintenance`) | Look up maintenance info by `make`, `model`, `year` | Feature 4 |
+| `PUT` | `/api/vehicle-t3/maintenance-info` | Yes (`admin` or `maintenance`) | Create maintenance info for `make`, `model`, `year` | Feature 4 |
+| `GET` | `/api/vehicle-t3/areas/` | Yes (`admin` or `maintenance`) | List areas for vehicle forms/filters | Feature 4 |
 
 A missing or expired Bearer token returns **401** `{ "message": "Unauthorized!" }` and the handler does not run.
 
@@ -118,3 +128,40 @@ Success is **200** and the same flat user object as a list item. `password` and 
 | User id does not exist | 404 | `User with id={id} not found.` |
 
 The **400**, **403**, **404**, and **409** cases do not change the user.
+
+### Feature 4 — Vehicle CRUD (`/api/vehicle-t3`)
+
+Roles other than `admin` and `maintenance` receive **401** `{ "message": "Unauthorized user" }`.
+
+**Create vehicle body (`PUT /vehicles/`):**
+
+```json
+{
+  "vin": "12345671234567123",
+  "make": "Honda",
+  "model": "Accord",
+  "year": 2014,
+  "purchased_date": "2015/12/16",
+  "color": "White",
+  "license_plate_num": "ABC344",
+  "tag_exp_month": "2016/5/25",
+  "area_id": 5,
+  "most_recent_dest_id": null,
+  "available": 1,
+  "mileage": 0
+}
+```
+
+`vin` is stored as a 17-digit string. Create success is **201** `{ "message": "Successfully created vehicle." }`. Update success is **201** `{ "message": "Successfully updated vehicle." }`. List success is **200** `{ "message": "Successfully retreived all vehicles", "vehicles": [...] }`.
+
+| Situation | Status | `message` |
+| --- | --- | --- |
+| Missing required vehicle field | 400 | `(attribute) is required` |
+| Year outside 1900–current year | 400 | `Select a year between 1900-Today` |
+| Duplicate VIN on create | 409 | `A vehicle with this VIN already exists.` |
+| Duplicate license plate | 409 | `A vehicle already has license number (plate)` |
+| Vehicle VIN not found | 404 | `Vehicle with vin={vin} not found.` |
+
+**Create fuel:** `POST /fuels/` body `{ "fuel_type": "87 Octane" }` → **201** `{ "message": "Successfully created fuel type.", "fuel_id": 1, "fuel_type": "87 Octane" }`.
+
+**Create maintenance info:** `PUT /maintenance-info?make=&model=&year=` with body fields `fuel_type_id`, `fuel_capacity`, `recommended_tire_psi`, `tire_type` (and optional `oil_viscosity`, default `5W4`) → **201** `{ "message": "Successfully created maintenance-info." }`.
