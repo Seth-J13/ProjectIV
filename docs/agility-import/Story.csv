@@ -1,0 +1,456 @@
+AssetType,Name,Scope,Description,Reference,Super,Parent
+Story,US-1.1: Sign in,Speckit App,"As a/the not signed-in user
+I want press Login with a valid email and password
+So that I reach a signed-in screen with an active session
+
+Spec: features/feature-1-User-Auth-&-Session-Management.md
+Story ID: SK-F1-US1.1
+Branch: feature/1-*",SK-F1-US1.1,SK-F1-EPIC,User Auth & Session Management
+Story,US-1.2: Stay signed in across page loads,Speckit App,"As a/the signed-in user
+I want my session to persist when I open the signed-in screen and when I refresh it
+So that I do not have to sign in again
+
+Spec: features/feature-1-User-Auth-&-Session-Management.md
+Story ID: SK-F1-US1.2
+Branch: feature/1-*",SK-F1-US1.2,SK-F1-EPIC,User Auth & Session Management
+Story,US-1.3: Sign out,Speckit App,"As a/the signed-in user
+I want sign out
+So that no one else can use my account on a shared device
+
+Spec: features/feature-1-User-Auth-&-Session-Management.md
+Story ID: SK-F1-US1.3
+Branch: feature/1-*",SK-F1-US1.3,SK-F1-EPIC,User Auth & Session Management
+Story,US-1.4: Create account,Speckit App,"As a/the not signed-in user
+I want be able to create an account
+So that I can sign in
+
+Spec: features/feature-1-User-Auth-&-Session-Management.md
+Story ID: SK-F1-US1.4
+Branch: feature/1-*",SK-F1-US1.4,SK-F1-EPIC,User Auth & Session Management
+Story,US-2.1: Continue with Google,Speckit App,"As a/the not signed-in user
+I want press **Continue with Google** on the Login screen
+So that Google authenticates me, keeps my sign-in data, and I reach the signed-in screen with a session
+
+Spec: features/feature-2-Google-Auth.md
+Story ID: SK-F2-US2.1
+Branch: feature/2-*",SK-F2-US2.1,SK-F2-EPIC,Google Auth
+Story,US-2.2: Sign in again with the same Google account,Speckit App,"As a/the user who already continued with Google
+I want press **Continue with Google** again
+So that I get a session on the same account
+
+Spec: features/feature-2-Google-Auth.md
+Story ID: SK-F2-US2.2
+Branch: feature/2-*",SK-F2-US2.2,SK-F2-EPIC,Google Auth
+Story,US-2.3: Keep email/password accounts separate,Speckit App,"As a/the user who already has an email and password account
+I want Google sign-in to leave that account alone
+So that another sign-in method cannot take over my account
+
+Spec: features/feature-2-Google-Auth.md
+Story ID: SK-F2-US2.3
+Branch: feature/2-*",SK-F2-US2.3,SK-F2-EPIC,Google Auth
+Story,US-2.4: Stay signed out when Google does not confirm,Speckit App,"As a/the not signed-in user
+I want remain on Login if I cancel Google or Google does not confirm me
+So that I am signed in only after Google authentication succeeds
+
+Spec: features/feature-2-Google-Auth.md
+Story ID: SK-F2-US2.4
+Branch: feature/2-*",SK-F2-US2.4,SK-F2-EPIC,Google Auth
+Story,US-2.5: Authorize protected routes,Speckit App,"As a/the user signed in with Google
+I want protected backend routes to accept my session and reject a caller with no session
+So that Google sign-in is what unlocks those routes
+
+Spec: features/feature-2-Google-Auth.md
+Story ID: SK-F2-US2.5
+Branch: feature/2-*",SK-F2-US2.5,SK-F2-EPIC,Google Auth
+Story,US-3.3: Keep the page admin-only,Speckit App,"As a/the user who is not an admin
+I want user management to stay closed
+So that I cannot view or change someone else's account
+
+Spec: features/feature-3-User-Management.md
+Story ID: SK-F3-US3.3
+Branch: feature/3-*",SK-F3-US3.3,SK-F3-EPIC,User Management
+Story,US-4.1: Add a new vehicle as a `admin` role,Speckit App,"As a/the authenticated user with `admin` role
+I want add a new vehicle
+So that a new vehicle can be reserved
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.1
+Branch: feature/4-*",SK-F4-US4.1,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.2: Add a new vehicle as a `maintenance` role,Speckit App,"As a/the authenticated user with `maintenance` role
+I want add a new vehicle
+So that a new vehicle can be reserved
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.2
+Branch: feature/4-*",SK-F4-US4.2,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.3: Edit a vehicle as a `maintenance` or `admin` role,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want edit a vehicle
+So that a vehicle currently in the system can have different information
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.3
+Branch: feature/4-*",SK-F4-US4.3,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.4: Delete a vehicle as a `maintenance` or `admin` role,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want delete a vehicle
+So that a vehicle currently in the system will be removed from the system
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.4
+Branch: feature/4-*",SK-F4-US4.4,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.5: View all vehicles as a `maintenance` or `admin` role,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want view a list of all vehicles in the system
+So that I can manage all vehicles
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.5
+Branch: feature/4-*",SK-F4-US4.5,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.6: Filter vehicle list as a `maintenance` or `admin` role,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want filter which vehicles are listed
+So that I can view all vehicles that match the filters
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.6
+Branch: feature/4-*",SK-F4-US4.6,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.7: Vehicle maintenance as a `maintenance` or `admin`,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want click a maintenance button
+So that I can be taken to the maintenance page to view the selected vehicle's maintenance needs
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.7
+Branch: feature/4-*",SK-F4-US4.7,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.8: View vehicle image as a `maintenance` or `admin`,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want hover over vehicle
+So that I can view the vehicle's images if they exists
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.8
+Branch: feature/4-*",SK-F4-US4.8,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.9: Confirm create new `maintenance-info` as a `maintenance` or `admin`,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want be able to confirm if I want to make a new maintenance info
+So that I can prevent uncessary creations of maintenance info
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.9
+Branch: feature/4-*",SK-F4-US4.9,SK-F4-EPIC,Vehicle CRUD
+Story,US-4.10: Confirm create new `fuel type` as a `maintenance` or `admin`,Speckit App,"As a/the authenticated user with a `maintenance` or `admin` role
+I want be able to confirm if I want to make a new fuel type
+So that I can prevent uncessary creations of fuel types
+
+Spec: features/feature-4-Vehicle-CRUD.md
+Story ID: SK-F4-US4.10
+Branch: feature/4-*",SK-F4-US4.10,SK-F4-EPIC,Vehicle CRUD
+Story,US-5.1: User views a vehicle's maintenance page,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want view a vehicle's maintenance information consisting of `Maintenance Notes` and `Vehicle Information`
+So that I can see basic information about the vehicle and what needs to be worked on
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.1
+Branch: feature/5-*",SK-F5-US5.1,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.2: User adds a maintenance note,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want add a maintenance note to a vehicle
+So that I can add to the service requests for the vehicle
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.2
+Branch: feature/5-*",SK-F5-US5.2,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.3: User edits a maintenance note,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want edit a maintenance note
+So that I can change add, change, or delete any information on the service note
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.3
+Branch: feature/5-*",SK-F5-US5.3,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.4: User deletes a maintenance note,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want delete completed service requests
+So that I can remove todo service requests from the `Service Request List`
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.4
+Branch: feature/5-*",SK-F5-US5.4,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.5: User updates the car's mileage,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want update the mileage of the car
+So that the system has a accurate mileage for the vehicle I am viewing
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.5
+Branch: feature/5-*",SK-F5-US5.5,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.6: User selects a service note,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want click a service note and view a modal with that note's information
+So that I can see specific details about the maintenance request to do better work on the vehicle
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.6
+Branch: feature/5-*",SK-F5-US5.6,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.7: User clicks the `View Service Logs` button,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want view the service logs for this vehicle
+So that I can see the logs created for this vehicle
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.7
+Branch: feature/5-*",SK-F5-US5.7,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.8: User clicks the `Back` button,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want return to the Vehicle.vue page
+So that I can browse the other vehicles
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.8
+Branch: feature/5-*",SK-F5-US5.8,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.9: User clicks the `Edit Maintenance Info` button,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want edit the maintenance info for this type of vehicle
+So that I correct mistakes or update for new information
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.9
+Branch: feature/5-*",SK-F5-US5.9,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-5.10: User clicks the `Manage Fuels` button,Speckit App,"As a/the authenticated user with (`admin` or `maintenance`) role
+I want manage the fuel types for vehicles
+So that I can add, edit, or delete fuels
+
+Spec: features/feature-5-Maintenance-Info-CRUD.md
+Story ID: SK-F5-US5.10
+Branch: feature/5-*",SK-F5-US5.10,SK-F5-EPIC,Maintenance Info CRUD
+Story,US-6.1: View Current Destinations,Speckit App,"As a/the authenticated user with administrator role
+I want see a list of all destinations
+So that I know which destinations exist.
+
+Spec: features/feature-6-destination-crud.md
+Story ID: SK-F6-US6.1
+Branch: feature/6-*",SK-F6-US6.1,SK-F6-EPIC,Destination CRUD
+Story,US-6.2: Destination Details,Speckit App,"As a/the authenticated user with administrator role
+I want see the details of a selected destinations
+So that I can know all its information.
+
+Spec: features/feature-6-destination-crud.md
+Story ID: SK-F6-US6.2
+Branch: feature/6-*",SK-F6-US6.2,SK-F6-EPIC,Destination CRUD
+Story,US-6.3: Add Destination,Speckit App,"As a/the authenticated user with administrator role
+I want add destinations to my `Destinations` list
+So that I can use it for stuff later.
+
+Spec: features/feature-6-destination-crud.md
+Story ID: SK-F6-US6.3
+Branch: feature/6-*",SK-F6-US6.3,SK-F6-EPIC,Destination CRUD
+Story,US-6.4: Remove Destination,Speckit App,"As a/the authenticated user with administrator role
+I want remove destinations to my `Destinations` list
+So that I can manage relevant information and list size.
+
+Spec: features/feature-6-destination-crud.md
+Story ID: SK-F6-US6.4
+Branch: feature/6-*",SK-F6-US6.4,SK-F6-EPIC,Destination CRUD
+Story,US-6.5: Destinations Search Bar,Speckit App,"As a/the authenticated user with administrator role
+I want search for destinations by name or by address
+So that I don't have to scroll or paginate to find the destinations I want.
+
+Spec: features/feature-6-destination-crud.md
+Story ID: SK-F6-US6.5
+Branch: feature/6-*",SK-F6-US6.5,SK-F6-EPIC,Destination CRUD
+Story,US-6.6: Edit Destination,Speckit App,"As a/the authenticated user with administrator role
+I want edit destinations from my `Destinations` list
+So that I can correct incorrect information.
+
+Spec: features/feature-6-destination-crud.md
+Story ID: SK-F6-US6.6
+Branch: feature/6-*",SK-F6-US6.6,SK-F6-EPIC,Destination CRUD
+Story,US-7.1: Create drivers,Speckit App,"As a/the signed-in admin user
+I want create named drivers
+So that I can give admins a list of drivers to assign
+
+Spec: features/feature-7-Driver-CRUD.md
+Story ID: SK-F7-US7.1
+Branch: feature/7-*",SK-F7-US7.1,SK-F7-EPIC,Driver Crud
+Story,US-7.2: View my drivers,Speckit App,"As a/the signed-in admin user
+I want see all of my drivers on one screen
+So that I can see
+
+Spec: features/feature-7-Driver-CRUD.md
+Story ID: SK-F7-US7.2
+Branch: feature/7-*",SK-F7-US7.2,SK-F7-EPIC,Driver Crud
+Story,US-7.3: Manage driver rows,Speckit App,"As a/the signed-in admin user
+I want each driver row to show **edit** and **delete** actions
+So that I can manage drivers without leaving the drivers view
+
+Spec: features/feature-7-Driver-CRUD.md
+Story ID: SK-F7-US7.3
+Branch: feature/7-*",SK-F7-US7.3,SK-F7-EPIC,Driver Crud
+Story,US-7.4: Rename and delete drivers,Speckit App,"As a/the signed-in admin user
+I want rename or delete a driver
+So that I can keep my workspace organized
+
+Spec: features/feature-7-Driver-CRUD.md
+Story ID: SK-F7-US7.4
+Branch: feature/7-*",SK-F7-US7.4,SK-F7-EPIC,Driver Crud
+Story,US-7.5: Search drivers,Speckit App,"As a/the signed-in admin user
+I want to search for drivers containing certain key characters
+So that I can quickly find which driver I'm looking for
+
+Spec: features/feature-7-Driver-CRUD.md
+Story ID: SK-F7-US7.5
+Branch: feature/7-*",SK-F7-US7.5,SK-F7-EPIC,Driver Crud
+Story,US-8.1: Create a normal request,Speckit App,"As a/the signed-in user
+I want create a trip request by choosing a vehicle, driver, destination, dates/times, and number of riders
+So that a vehicle trip can be scheduled
+
+Spec: features/feature-8-Requests-Crud.md
+Story ID: SK-F8-US8.1
+Branch: feature/8-*",SK-F8-US8.1,SK-F8-EPIC,Request Management
+Story,US-8.2: Create a maintenance request,Speckit App,"As a/the signed-in user
+I want schedule maintenance for a vehicle by choosing a vehicle and a start date/time
+So that the vehicle is marked as unavailable for that time
+
+Spec: features/feature-8-Requests-Crud.md
+Story ID: SK-F8-US8.2
+Branch: feature/8-*",SK-F8-US8.2,SK-F8-EPIC,Request Management
+Story,US-8.3: View requests,Speckit App,"As a/the signed-in user
+I want see my requests on one screen (admins see all requests)
+So that I can track what has been scheduled
+
+Spec: features/feature-8-Requests-Crud.md
+Story ID: SK-F8-US8.3
+Branch: feature/8-*",SK-F8-US8.3,SK-F8-EPIC,Request Management
+Story,US-8.4: Manage request rows,Speckit App,"As a/the signed-in user
+I want each request row to show **edit** and **delete** actions
+So that I can manage requests without leaving the requests view
+
+Spec: features/feature-8-Requests-Crud.md
+Story ID: SK-F8-US8.4
+Branch: feature/8-*",SK-F8-US8.4,SK-F8-EPIC,Request Management
+Story,US-8.5: Edit and delete requests,Speckit App,"As a/the signed-in user
+I want edit or delete a request I own (admins: any request)
+So that I can fix mistakes or cancel a request
+
+Spec: features/feature-8-Requests-Crud.md
+Story ID: SK-F8-US8.5
+Branch: feature/8-*",SK-F8-US8.5,SK-F8-EPIC,Request Management
+Story,US-8.6: Filter requests,Speckit App,"As a/the signed-in user
+I want filter requests by active/inactive and by request type
+So that I can quickly find the request I'm looking for
+
+Spec: features/feature-8-Requests-Crud.md
+Story ID: SK-F8-US8.6
+Branch: feature/8-*",SK-F8-US8.6,SK-F8-EPIC,Request Management
+Story,US-9.1: See Notes on Requests,Speckit App,"As a/the authenticated user
+I want see every `note` attached to a `request` inside the request itself
+So that I get more information about a vehicle reservation.
+
+Spec: features/feature-9-note-crud.md
+Story ID: SK-F9-US9.1
+Branch: feature/9-*",SK-F9-US9.1,SK-F9-EPIC,Note CRUD
+Story,US-9.2: Remove Notes,Speckit App,"As a/the authenticated user
+I want remove `notes` attached to `requests` according to my `role` permissions
+So that I can manage how much extra information is included on a `request`.
+
+Spec: features/feature-9-note-crud.md
+Story ID: SK-F9-US9.2
+Branch: feature/9-*",SK-F9-US9.2,SK-F9-EPIC,Note CRUD
+Story,US-9.3: Create Notes,Speckit App,"As a/the authenticated user
+I want add more than one `note` to a `request` according to my `role` permissions
+So that I can add extra information to a `request`.
+
+Spec: features/feature-9-note-crud.md
+Story ID: SK-F9-US9.3
+Branch: feature/9-*",SK-F9-US9.3,SK-F9-EPIC,Note CRUD
+Story,US-9.4: Edit Notes,Speckit App,"As a/the authenticated user
+I want edit the `notes` attached to `requests` according to my `role` permissions
+So that I can correct incorrect information.
+
+Spec: features/feature-9-note-crud.md
+Story ID: SK-F9-US9.4
+Branch: feature/9-*",SK-F9-US9.4,SK-F9-EPIC,Note CRUD
+Story,US-9.5: Admin Notes Management,Speckit App,"As a/the authenticated user
+I want perform management, sorting, grouping, and more on various `notes` lists
+So that I can easily manage and modify `note` information.
+
+Spec: features/feature-9-note-crud.md
+Story ID: SK-F9-US9.5
+Branch: feature/9-*",SK-F9-US9.5,SK-F9-EPIC,Note CRUD
+Story,US-10.1: Create Vehicle logs,Speckit App,"As a/the maintenance User or admin
+I want create vehicle service logs
+So that I can record when a vehicle was serviced, what was fixed, and whether the service was completed.
+
+Spec: features/feature-10-Vehicle-Service-CRUD copy.md
+Story ID: SK-F10-US10.1
+Branch: feature/10-*",SK-F10-US10.1,SK-F10-EPIC,Vehicle Service Log
+Story,US-10.2: Vehicle logs Ownership permissions,Speckit App,"As a/the owner of the maintenance log or an admin
+I want assign ownership and permissions on a maintenance log to others.
+So that Only authorized users can modify vehicle logs they worked on.
+
+Spec: features/feature-10-Vehicle-Service-CRUD copy.md
+Story ID: SK-F10-US10.2
+Branch: feature/10-*",SK-F10-US10.2,SK-F10-EPIC,Vehicle Service Log
+Story,US-10.3: Read Vehicle Logs,Speckit App,"As a/the maintenance User or admin
+I want View Vehicle service logs for all vehicles
+So that we can see when a vehicle was serviced, what was fixed, and if it was completed or not
+
+Spec: features/feature-10-Vehicle-Service-CRUD copy.md
+Story ID: SK-F10-US10.3
+Branch: feature/10-*",SK-F10-US10.3,SK-F10-EPIC,Vehicle Service Log
+Story,US-10.4: Modify Vehicle Log,Speckit App,"As a/the owner of the maintenance log or an Admin
+I want modify vehicle logs
+So that I can fix any mistakes and Update maintenance information as needed
+
+Spec: features/feature-10-Vehicle-Service-CRUD copy.md
+Story ID: SK-F10-US10.4
+Branch: feature/10-*",SK-F10-US10.4,SK-F10-EPIC,Vehicle Service Log
+Story,US-10.5: Delete Vehicle Logs,Speckit App,"As a/the Vehicle log System
+I want maintenance logs older than 18 months to be deleted automatically
+So that unnecessary records are removed and database storage is reduced.
+
+Spec: features/feature-10-Vehicle-Service-CRUD copy.md
+Story ID: SK-F10-US10.5
+Branch: feature/10-*",SK-F10-US10.5,SK-F10-EPIC,Vehicle Service Log
+Story,US-12.1: View Available Vehicles,Speckit App,"As a/the (`admin`, `maintenance`, `driver`, or `user`)
+I want View all vehicles that are available for reservation
+So that I can see my options of available vehicles
+
+Spec: features/feature-12-Landing-Vue.md
+Story ID: SK-F12-US12.1
+Branch: feature/12-*",SK-F12-US12.1,SK-F12-EPIC,Landing Vue
+Story,US-12.2: View `Your Reserved Vehicles`,Speckit App,"As a/the (`admin`, `driver`, `maintenance` or `user`)
+I want see a list of vehicles that I have reserved
+So that I can manage my reservation requests
+
+Spec: features/feature-12-Landing-Vue.md
+Story ID: SK-F12-US12.2
+Branch: feature/12-*",SK-F12-US12.2,SK-F12-EPIC,Landing Vue
+Story,US-12.3: View Vehicles Currently in Service,Speckit App,"As a/the (`admin`, or `maintenance`)
+I want view a list of vehicles that are currently in service
+So that I know which vehicles are needing to be serviced and can manage them
+
+Spec: features/feature-12-Landing-Vue.md
+Story ID: SK-F12-US12.3
+Branch: feature/12-*",SK-F12-US12.3,SK-F12-EPIC,Landing Vue
+Story,US-12.4: Toggle between Vehicle Request Form and Maintenance Request,Speckit App,"As a/the (`admin`, `maintenance`)
+I want toggle between different `Vehicle Request Form` and `Maintenance Request`
+So that I can make different requests as needed
+
+Spec: features/feature-12-Landing-Vue.md
+Story ID: SK-F12-US12.4
+Branch: feature/12-*",SK-F12-US12.4,SK-F12-EPIC,Landing Vue
+Story,US-12.5: View `Vehicle Request Form` component,Speckit App,"As a/the (`admin`, `maintenance`, `driver`, and `user`)
+I want view the `Vehicle Request Form` component
+So that I can make a request for to reserve a vehicle
+
+Spec: features/feature-12-Landing-Vue.md
+Story ID: SK-F12-US12.5
+Branch: feature/12-*",SK-F12-US12.5,SK-F12-EPIC,Landing Vue
+Story,US-12.6: View `Maintenance Request Form` component,Speckit App,"As a/the (`admin`, `maintenance`)
+I want view the `Maintenance Request Form` component
+So that I can make a request for to reserve a vehicle for maintenance
+
+Spec: features/feature-12-Landing-Vue.md
+Story ID: SK-F12-US12.6
+Branch: feature/12-*",SK-F12-US12.6,SK-F12-EPIC,Landing Vue
+Story,US-12.7: View `Reserved Vehicles`,Speckit App,"As a/the `admin`
+I want see a list of all vehicle requests
+So that I can manage all reservation requests
+
+Spec: features/feature-12-Landing-Vue.md
+Story ID: SK-F12-US12.7
+Branch: feature/12-*",SK-F12-US12.7,SK-F12-EPIC,Landing Vue
+Story,US-13.5: Block other roles,Speckit App,"As a/the application
+I want refuse area changes from anyone who is not an admin
+So that only an admin maintains the area directory
+
+Spec: features/feature-13-Area-CRUD.md
+Story ID: SK-F13-US13.5
+Branch: feature/13-*",SK-F13-US13.5,SK-F13-EPIC,Area

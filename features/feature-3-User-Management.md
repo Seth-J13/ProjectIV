@@ -50,18 +50,18 @@
 
 ### Functional Requirements
 
-- **FR-001**: A signed-in user with role `admin` MUST be able to open route `/users` (route name `users`). The page heading MUST be **User Management**.
-- **FR-002**: MenuBar MUST show a **User Management** link only when the signed-in user's role is `admin`. That link navigates to `/users`.
-- **FR-003**: The page MUST list every user. Each row MUST show `firstName`, `lastName`, `email`, and `role`. The list MUST be ordered by `lastName` A–Z.
-- **FR-004**: User data shown or returned by this feature MUST be only `id`, `firstName`, `lastName`, `email`, and `role`. Responses and the page MUST NOT include `password`, `googleSub`, a session token, or any other credential.
-- **FR-005**: An admin MUST be able to edit one user's `firstName`, `lastName`, `email`, and `role` from this page. Role MUST be one of `user`, `driver`, `maintenance`, or `admin`. Save MUST stay on `/users` and the list MUST show the saved values.
-- **FR-006**: Editable fields are required. An empty first name, last name, or email, or a role outside the four allowed values, MUST return **400** and MUST NOT change the user.
-- **FR-007**: Saving an email that already belongs to a different user MUST return **409** with message **"Email already in use!"** and MUST NOT change the user.
-- **FR-008**: An admin MUST NOT change their own role. That request MUST return **400** with message **"You cannot change your own role."** and MUST leave the role unchanged. The same admin MAY still update their own first name, last name, and email.
-- **FR-009**: This feature MUST NOT set or clear `password` or `googleSub`, and MUST NOT create or delete a user or a session. Changing `email` MUST update that user's `sessions.email` values and MUST leave session tokens valid.
-- **FR-010**: A signed-in user whose role is `user`, `driver`, or `maintenance` MUST NOT see **User Management**. Opening `/users` MUST redirect them to `/landing`. User APIs MUST return **403** with message **"Admin access required."** and MUST NOT return or change user rows.
-- **FR-011**: A missing or expired Bearer token on a user API MUST return **401**. The frontend MUST clear the session and redirect to Login, the same as Feature 1.
-- **FR-012**: An unknown user id on edit MUST return **404** with message **"User with id={id} not found."** and MUST NOT change any user.
+**FR-001**: A signed-in user with role `admin` MUST be able to open route `/users` (route name `users`). The page heading MUST be **User Management**.
+**FR-002**: MenuBar MUST show a **User Management** link only when the signed-in user's role is `admin`. That link navigates to `/users`.
+**FR-003**: The page MUST list every user. Each row MUST show `firstName`, `lastName`, `email`, and `role`. The list MUST be ordered by `lastName` A–Z.
+**FR-004**: User data shown or returned by this feature MUST be only `id`, `firstName`, `lastName`, `email`, and `role`. Responses and the page MUST NOT include `password`, `googleSub`, a session token, or any other credential.
+**FR-005**: An admin MUST be able to edit one user's `firstName`, `lastName`, `email`, and `role` from this page. Role MUST be one of `user`, `driver`, `maintenance`, or `admin`. Save MUST stay on `/users` and the list MUST show the saved values.
+**FR-006**: Editable fields are required. An empty first name, last name, or email, or a role outside the four allowed values, MUST return **400** and MUST NOT change the user.
+**FR-007**: Saving an email that already belongs to a different user MUST return **409** with message **"Email already in use!"** and MUST NOT change the user.
+**FR-008**: An admin MUST NOT change their own role. That request MUST return **400** with message **"You cannot change your own role."** and MUST leave the role unchanged. The same admin MAY still update their own first name, last name, and email.
+**FR-009**: This feature MUST NOT set or clear `password` or `googleSub`, and MUST NOT create or delete a user or a session. Changing `email` MUST update that user's `sessions.email` values and MUST leave session tokens valid.
+**FR-010**: A signed-in user whose role is `user`, `driver`, or `maintenance` MUST NOT see **User Management**. Opening `/users` MUST redirect them to `/landing`. User APIs MUST return **403** with message **"Admin access required."** and MUST NOT return or change user rows.
+**FR-011**: A missing or expired Bearer token on a user API MUST return **401**. The frontend MUST clear the session and redirect to Login, the same as Feature 1.
+**FR-012**: An unknown user id on edit MUST return **404** with message **"User with id={id} not found."** and MUST NOT change any user.
 
 ---
 
@@ -91,11 +91,11 @@
 
 ## Success Criteria
 
-- **SC-001**: Every Gherkin scenario has at least one automated test before merge.
-- **SC-002**: An admin can open `/users` and see every account's first name, last name, email, and role.
-- **SC-003**: An admin can edit those fields, and the list shows the saved values.
-- **SC-004**: A user, driver, or maintenance account cannot open the page or change user data.
-- **SC-005**: Passwords, Google subjects, and session tokens are never shown or returned.
+**SC-001**: Every Gherkin scenario has at least one automated test before merge.
+**SC-002**: An admin can open `/users` and see every account's first name, last name, email, and role.
+**SC-003**: An admin can edit those fields, and the list shows the saved values.
+**SC-004**: A user, driver, or maintenance account cannot open the page or change user data.
+**SC-005**: Passwords, Google subjects, and session tokens are never shown or returned.
 
 ---
 
@@ -115,8 +115,8 @@ Feature 3 lets an admin read and update account fields for any user. It does not
 
 ## Key Entities
 
-- **User**: Feature 1 account. This feature lists and edits first name, last name, email, and role. Password and Google subject stay hidden.
-- **Session**: Feature 1 record. This feature does not list or delete sessions. An email change updates the matching `sessions.email` values and keeps the token.
+**User**: Feature 1 account. This feature lists and edits first name, last name, email, and role. Password and Google subject stay hidden.
+**Session**: Feature 1 record. This feature does not list or delete sessions. An email change updates the matching `sessions.email` values and keeps the token.
 
 ---
 
@@ -178,9 +178,9 @@ Missing or expired Bearer token remains Feature 1 **401**.
 - Each row has **Edit**, which opens a dialog filled with that user's current values
 - Dialog fields: **First name**, **Last name**, **Email**, and **Role** (choices `user`, `driver`, `maintenance`, `admin`)
 - Dialog primary action: **Save**
-- **Cancel** closes the dialog and does not save
-- **Save success:** snackbar **"User updated."**, dialog closes, the list shows the new values, and the route stays `users`
-- **Error:** show the API `message` (including **"Email already in use!"** and **"You cannot change your own role."**) and keep the dialog open
+  **Cancel** closes the dialog and does not save
+  **Save success:** snackbar **"User updated."**, dialog closes, the list shows the new values, and the route stays `users`
+  **Error:** show the API `message` (including **"Email already in use!"** and **"You cannot change your own role."**) and keep the dialog open
 
 ### App chrome — `MenuBar`
 
@@ -222,72 +222,72 @@ This feature does **not** add tables or columns. It uses `users` and `sessions` 
 
 #### Scenario: Admin opens user management
 
-- **Given** I am signed in as an admin
-- **And** at least one other account exists
-- **When** I open **User Management**
-- **Then** I land on `/users`
-- **And** I see each account's first name, last name, email, and role
-- **And** I do not see a password
+**Given** I am signed in as an admin
+**And** at least one other account exists
+**When** I open **User Management**
+**Then** I land on `/users`
+**And** I see each account's first name, last name, email, and role
+**And** I do not see a password
 
 #### Scenario: Refresh user management
 
-- **Given** I am signed in as an admin on `/users`
-- **When** I refresh the page
-- **Then** I remain on `/users`
-- **And** I still see each account's first name, last name, email, and role
+**Given** I am signed in as an admin on `/users`
+**When** I refresh the page
+**Then** I remain on `/users`
+**And** I still see each account's first name, last name, email, and role
 
 ### US-3.2 — Edit user data
 
 #### Scenario: Admin edits a user
 
-- **Given** I am signed in as an admin on `/users`
-- **And** another account is listed
-- **When** I press **Edit** on that account
-- **And** I change the first name, last name, email, and role
-- **And** I press **Save**
-- **Then** I see **"User updated."**
-- **And** the list shows the new first name, last name, email, and role
-- **And** I remain on `/users`
+**Given** I am signed in as an admin on `/users`
+**And** another account is listed
+**When** I press **Edit** on that account
+**And** I change the first name, last name, email, and role
+**And** I press **Save**
+**Then** I see **"User updated."**
+**And** the list shows the new first name, last name, email, and role
+**And** I remain on `/users`
 
 #### Scenario: Email already in use
 
-- **Given** I am signed in as an admin
-- **And** two accounts exist with different emails
-- **When** I save the first account with the second account's email
-- **Then** the response is **409** with message **"Email already in use!"**
-- **And** the first account is unchanged
+**Given** I am signed in as an admin
+**And** two accounts exist with different emails
+**When** I save the first account with the second account's email
+**Then** the response is **409** with message **"Email already in use!"**
+**And** the first account is unchanged
 
 #### Scenario: Admin cannot change own role
 
-- **Given** I am signed in as an admin
-- **When** I save my own account with a role other than `admin`
-- **Then** the response is **400** with message **"You cannot change your own role."**
-- **And** my role is still `admin`
+**Given** I am signed in as an admin
+**When** I save my own account with a role other than `admin`
+**Then** the response is **400** with message **"You cannot change your own role."**
+**And** my role is still `admin`
 
 ### US-3.3 — Keep the page admin-only
 
 #### Scenario: Non-admin cannot open user management
 
-- **Given** I am signed in with a role other than `admin`
-- **Then** I do not see **User Management**
-- **When** I open `/users`
-- **Then** I am redirected to `/landing`
-- **And** I do not see the user list
+**Given** I am signed in with a role other than `admin`
+**Then** I do not see **User Management**
+**When** I open `/users`
+**Then** I am redirected to `/landing`
+**And** I do not see the user list
 
 #### Scenario: Non-admin cannot edit a user
 
-- **Given** I am signed in with a role other than `admin`
-- **And** another account exists
-- **When** I update that account through the user API
-- **Then** the response is **403** with message **"Admin access required."**
-- **And** that account is unchanged
+**Given** I am signed in with a role other than `admin`
+**And** another account exists
+**When** I update that account through the user API
+**Then** the response is **403** with message **"Admin access required."**
+**And** that account is unchanged
 
 #### Scenario: Missing session cannot view users
 
-- **Given** I have no session token
-- **When** I request the user list
-- **Then** the response is **401**
-- **And** no user data is returned
+**Given** I have no session token
+**When** I request the user list
+**Then** the response is **401**
+**And** no user data is returned
 
 ---
 

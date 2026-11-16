@@ -1,0 +1,628 @@
+AssetType,Name,Parent,Description,ExpectedResults,Reference
+Test,Admin signs in,SK-F1-US1.1,,,SK-F1-AC001
+Test,User signs in,SK-F1-US1.1,,,SK-F1-AC002
+Test,Driver signs in,SK-F1-US1.1,,,SK-F1-AC003
+Test,Maintenance signs in,SK-F1-US1.1,,,SK-F1-AC004
+Test,Bad email,SK-F1-US1.1,,,SK-F1-AC005
+Test,Bad password,SK-F1-US1.1,,,SK-F1-AC006
+Test,Opening the signed-in screen,SK-F1-US1.2,,,SK-F1-AC007
+Test,Refresh pages,SK-F1-US1.2,,,SK-F1-AC008
+Test,Logging out,SK-F1-US1.3,,,SK-F1-AC009
+Test,Creating new account,SK-F1-US1.4,,,SK-F1-AC010
+Test,Email already in use,SK-F1-US1.4,"*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F1-AC011
+Test,New Google user signs in,SK-F2-US2.1,,,SK-F2-AC001
+Test,Sign-in data stays on Google,SK-F2-US2.1,,,SK-F2-AC002
+Test,Refresh after Google sign-in,SK-F2-US2.1,,,SK-F2-AC003
+Test,Logging out a Google session,SK-F2-US2.1,,,SK-F2-AC004
+Test,Same Google account signs in again,SK-F2-US2.2,,,SK-F2-AC005
+Test,Email already has a password account,SK-F2-US2.3,,,SK-F2-AC006
+Test,Password login cannot open a Google account,SK-F2-US2.3,,,SK-F2-AC007
+Test,User cancels Google,SK-F2-US2.4,,,SK-F2-AC008
+Test,Google rejects the sign-in,SK-F2-US2.4,,,SK-F2-AC009
+Test,Google account has no name,SK-F2-US2.4,,,SK-F2-AC010
+Test,Google session authorizes a protected route,SK-F2-US2.5,,,SK-F2-AC011
+Test,Protected route rejects a missing session,SK-F2-US2.5,"*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F2-AC012
+Test,Non-admin cannot open user management,SK-F3-US3.3,,,SK-F3-AC006
+Test,Non-admin cannot edit a user,SK-F3-US3.3,,,SK-F3-AC007
+Test,Missing session cannot view users,SK-F3-US3.3,"*Reference updates for this feature: `features/reference/api.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/api.md`, `features/reference/behavior.md`",SK-F3-AC008
+Test,User clicks the add button,SK-F4-US4.1,,,SK-F4-AC001
+Test,"User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes",SK-F4-US4.1,,,SK-F4-AC002
+Test,"User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist",SK-F4-US4.1,,,SK-F4-AC003
+Test,User inputs a `fuel type` into the combobox that doesn't exist,SK-F4-US4.1,,,SK-F4-AC004
+Test,User inputs valid information into the `Add Vehicle` modal,SK-F4-US4.1,,,SK-F4-AC005
+Test,User inputs invalid information into `Add Vehicle` modal,SK-F4-US4.1,,,SK-F4-AC006
+Test,User inputs valid information into the `Add Vehicle` modal but a record already exists,SK-F4-US4.1,,,SK-F4-AC007
+Test,User clicks the add button,SK-F4-US4.2,,,SK-F4-AC008
+Test,User clicks the add button,SK-F4-US4.2,,,SK-F4-AC009
+Test,"User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist",SK-F4-US4.2,,,SK-F4-AC010
+Test,User inputs valid information into the `Add Vehicle` modal,SK-F4-US4.2,,,SK-F4-AC011
+Test,User inputs invalid information into `Add Vehicle` modal,SK-F4-US4.2,,,SK-F4-AC012
+Test,User inputs valid information into the `Add Vehicle` modal but a record already exists,SK-F4-US4.2,,,SK-F4-AC013
+Test,User inputs valid information into the `Add Vehicle` modal,SK-F4-US4.2,,,SK-F4-AC014
+Test,User inputs invalid information into `Add Vehicle` modal,SK-F4-US4.2,,,SK-F4-AC015
+Test,User inputs valid information into the `Add Vehicle` modal but a record already exists,SK-F4-US4.2,,,SK-F4-AC016
+Test,User clicks the edit icon button,SK-F4-US4.3,,,SK-F4-AC017
+Test,"User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist",SK-F4-US4.3,,,SK-F4-AC018
+Test,User inputs valid information into the `Edit Vehicle` modal,SK-F4-US4.3,,,SK-F4-AC019
+Test,User inputs invalid information into `Edit Vehicle` modal,SK-F4-US4.3,,,SK-F4-AC020
+Test,User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number,SK-F4-US4.3,,,SK-F4-AC021
+Test,User clicks the delete icon button,SK-F4-US4.4,,,SK-F4-AC022
+Test,User clicks the delete icon button but no vehicle exists in the database,SK-F4-US4.4,,,SK-F4-AC023
+Test,There no vehicles to display in the vehicle list,SK-F4-US4.5,,,SK-F4-AC024
+Test,User first loads the Vehicle page,SK-F4-US4.5,,,SK-F4-AC025
+Test,User adds a new vehicle,SK-F4-US4.5,,,SK-F4-AC026
+Test,User edits a vehicle in the list,SK-F4-US4.5,,,SK-F4-AC027
+Test,Vehicle does not have a color value,SK-F4-US4.5,,,SK-F4-AC028
+Test,Vehicle does not have a license plate number value,SK-F4-US4.5,,,SK-F4-AC029
+Test,User chooses from the year drop down filter,SK-F4-US4.6,,,SK-F4-AC030
+Test,User chooses from the area drop down filter,SK-F4-US4.6,,,SK-F4-AC031
+Test,User begins to type in the `Make` filter,SK-F4-US4.6,,,SK-F4-AC032
+Test,User begins to type in the `Model` filter,SK-F4-US4.6,,,SK-F4-AC033
+Test,User begins to type in the `Color` filter,SK-F4-US4.6,,,SK-F4-AC034
+Test,User begins to type in the `License` filter,SK-F4-US4.6,,,SK-F4-AC035
+Test,User chooses from the `From Purchase Date` date filter,SK-F4-US4.6,,,SK-F4-AC036
+Test,User chooses from the `Before Purchase Date` date filter,SK-F4-US4.6,,,SK-F4-AC037
+Test,User clicks the `Maintenance` icon button,SK-F4-US4.7,,,SK-F4-AC038
+Test,User hovers over a vehicle list item as a `maintenance` or `admin`,SK-F4-US4.8,,,SK-F4-AC039
+Test,`Confirm Create New Maintenance Info` modal opens,SK-F4-US4.9,,,SK-F4-AC040
+Test,User clicks the `cancel` button,SK-F4-US4.9,,,SK-F4-AC041
+Test,User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed,SK-F4-US4.9,,,SK-F4-AC042
+Test,User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open,SK-F4-US4.9,,,SK-F4-AC043
+Test,`Confirm Create New Fuel Type` modal opens,SK-F4-US4.10,,,SK-F4-AC044
+Test,User clicks the `cancel` button,SK-F4-US4.10,,,SK-F4-AC045
+Test,User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed,SK-F4-US4.10,,,SK-F4-AC046
+Test,User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open,SK-F4-US4.10,"*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F4-AC047
+Test,User has just loaded the `Maintenance.vue`,SK-F5-US5.1,,,SK-F5-AC001
+Test,User has just viewed the action buttons,SK-F5-US5.1,,,SK-F5-AC002
+Test,User has just viewed the maintenance info for the vehicle,SK-F5-US5.1,,,SK-F5-AC003
+Test,User clicks the `Add Note` button,SK-F5-US5.2,,,SK-F5-AC004
+Test,User inputs valid text into the subject text field,SK-F5-US5.2,,,SK-F5-AC005
+Test,User inputs no text into the subject text field,SK-F5-US5.2,,,SK-F5-AC006
+Test,User inputs valid text into the description field,SK-F5-US5.2,,,SK-F5-AC007
+Test,User inputs invalid text into the description field,SK-F5-US5.2,,,SK-F5-AC008
+Test,User inputs too many characters into the description field,SK-F5-US5.2,,,SK-F5-AC009
+Test,User clicks the `Cancel` button,SK-F5-US5.2,,,SK-F5-AC010
+Test,User inputs valid input into the `Add Maintenance Note` modal,SK-F5-US5.2,,,SK-F5-AC011
+Test,User inputs invalid input into the `Add Maintenance Note` modal,SK-F5-US5.2,,,SK-F5-AC012
+Test,User clicks the `Edit Note` icon button,SK-F5-US5.3,,,SK-F5-AC013
+Test,`Edit Maintenance Note` modal opens,SK-F5-US5.3,,,SK-F5-AC014
+Test,User inputs valid text into the subject text field,SK-F5-US5.3,,,SK-F5-AC015
+Test,User deletes previous input and does not input any text into the subject text field,SK-F5-US5.3,,,SK-F5-AC016
+Test,User inputs text into the description field,SK-F5-US5.3,,,SK-F5-AC017
+Test,User inputs invalid text into the description field,SK-F5-US5.3,,,SK-F5-AC018
+Test,User inputs too many characters into the description field,SK-F5-US5.3,,,SK-F5-AC019
+Test,User clicks the `Cancel` button,SK-F5-US5.3,,,SK-F5-AC020
+Test,User inputs valid input into the `Edit Maintenance Note` modal,SK-F5-US5.3,,,SK-F5-AC021
+Test,User inputs invalid input into the `Edit Maintenance Note` modal,SK-F5-US5.3,,,SK-F5-AC022
+Test,User clicks the `Delete Note` icon button,SK-F5-US5.4,,,SK-F5-AC023
+Test,User clicks `cancel` button,SK-F5-US5.4,,,SK-F5-AC024
+Test,User clicks `confirm` button,SK-F5-US5.4,,,SK-F5-AC025
+Test,User clicks `update mileage` button,SK-F5-US5.5,,,SK-F5-AC026
+Test,`Update Mileage` modal opens,SK-F5-US5.5,,,SK-F5-AC027
+Test,User inputs a `NaN` mileage,SK-F5-US5.5,,,SK-F5-AC028
+Test,User inputs a low mileage,SK-F5-US5.5,,,SK-F5-AC029
+Test,User clicks the `cancel` button,SK-F5-US5.5,,,SK-F5-AC030
+Test,User clicks the `confirm` button,SK-F5-US5.5,,,SK-F5-AC031
+Test,User selects a service note,SK-F5-US5.6,,,SK-F5-AC032
+Test,User clicks the `view service logs` button,SK-F5-US5.7,,,SK-F5-AC033
+Test,User clicks the `Back` button,SK-F5-US5.8,,,SK-F5-AC034
+Test,User clicks `edit maintenance info` button,SK-F5-US5.9,,,SK-F5-AC035
+Test,`Edit Maintenance Info` modal opens,SK-F5-US5.9,,,SK-F5-AC036
+Test,User enters valid input for all fields,SK-F5-US5.9,,,SK-F5-AC037
+Test,"User inputs a `make`, `model`, and `year` that don't exist in the database",SK-F5-US5.9,,,SK-F5-AC038
+Test,User deletes previous input for any input field and does not add new input,SK-F5-US5.9,,,SK-F5-AC039
+Test,User inputs a fuel type that doesn't exist,SK-F5-US5.9,,,SK-F5-AC040
+Test,User selects a fuel type `Electric`,SK-F5-US5.9,,,SK-F5-AC041
+Test,User inputs a fuel capacity that is `NaN`,SK-F5-US5.9,,,SK-F5-AC042
+Test,User inputs a `negative` number into fuel capacity,SK-F5-US5.9,,,SK-F5-AC043
+Test,User inputs a number greater than `300`,SK-F5-US5.9,,,SK-F5-AC044
+Test,User enters oil viscosity,SK-F5-US5.9,,,SK-F5-AC045
+Test,User enters a `NaN` into Recommended Tire PSI,SK-F5-US5.9,,,SK-F5-AC046
+Test,User enters a number greater than `999.99` into Recommended Tire PSI,SK-F5-US5.9,,,SK-F5-AC047
+Test,User enters a `negative` number into Recommended Tire PSI,SK-F5-US5.9,,,SK-F5-AC048
+Test,User inputs into tire type,SK-F5-US5.9,,,SK-F5-AC049
+Test,"User clicks the `Update` button and only the `make`, `year`, and `model` are not in the database",SK-F5-US5.9,,,SK-F5-AC050
+Test,User clicks `Update` button and only the `fuel type` is not in the database,SK-F5-US5.9,,,SK-F5-AC051
+Test,"User clicks `Update` button and both the `fuel type` and `make`, `year`, and `model` are not in the database",SK-F5-US5.9,,,SK-F5-AC052
+Test,"User clicks confirms the `fuel type` and/or `make`, `year`, and `model`",SK-F5-US5.9,,,SK-F5-AC053
+Test,User clicks the `manage fuels` button,SK-F5-US5.10,,,SK-F5-AC054
+Test,User views the fuels table,SK-F5-US5.10,,,SK-F5-AC055
+Test,User clicks the `edit` fuel icon button,SK-F5-US5.10,,,SK-F5-AC056
+Test,User clicks the `cancel` button on the `Edit Fuel` modal,SK-F5-US5.10,,,SK-F5-AC057
+Test,User modifies the `fuel type` text field on the `Edit Fuel` modal,SK-F5-US5.10,,,SK-F5-AC058
+Test,User clicks the `update` button on the `Edit Fuel` modal,SK-F5-US5.10,,,SK-F5-AC059
+Test,User clicks the `Add Fuel` button,SK-F5-US5.10,,,SK-F5-AC060
+Test,User clicks the `cancel` button on the `Add Fuel` modal,SK-F5-US5.10,,,SK-F5-AC061
+Test,User modifies the `fuel type` text field on the `Add Fuel` modal,SK-F5-US5.10,,,SK-F5-AC062
+Test,User clicks the `Add` button on the `Add Fuel` modal,SK-F5-US5.10,,,SK-F5-AC063
+Test,User clicks the `Delete` button on the `View Fuel Management` modal,SK-F5-US5.10,,,SK-F5-AC064
+Test,User clicks the `Back` button on the `View Fuel Management` modal,SK-F5-US5.10,"*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F5-AC065
+Test,Admin views DestinationList,SK-F6-US6.1,"*Given I am an authenticated admin user
+*When I navigate to `DestinationList.vue`
+*Then I am allowed to see the Manage Destinations list described in Screen Requirements with everything on it.","*Given I am an authenticated admin user
+*When I navigate to `DestinationList.vue`
+*Then I am allowed to see the Manage Destinations list described in Screen Requirements with everything on it.",SK-F6-AC001
+Test,Other role views DestinationList,SK-F6-US6.1,"*Given I am an authenticated user with a role other than `admin`
+*When I navigate to `DestinationList.vue`
+*Then I am immediately redirected to the landing page.","*Given I am an authenticated user with a role other than `admin`
+*When I navigate to `DestinationList.vue`
+*Then I am immediately redirected to the landing page.",SK-F6-AC002
+Test,No entries exist in Destinations table,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When the `Destinations` table is empty
+*Then I see text inside the Manage Destinations list saying `""No destinations yet. Add a destination to view its details.""`","*Given I am viewing the Manage Destinations list
+*When the `Destinations` table is empty
+*Then I see text inside the Manage Destinations list saying `""No destinations yet. Add a destination to view its details.""`",SK-F6-AC003
+Test,Less than 5 entries exist in Destinations table,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When there exist between `1` and `5` (inclusive) entries in the `Destinations` table
+*Then I can see every existing row and its details as per the Screen Requirements.","*Given I am viewing the Manage Destinations list
+*When there exist between `1` and `5` (inclusive) entries in the `Destinations` table
+*Then I can see every existing row and its details as per the Screen Requirements.",SK-F6-AC004
+Test,More than 5 entries exist in Destinations table,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When there exist more than `5` entries in the `Destinations` table
+*Then I can see the first `5` entries of the `Destinations` table and their details listed
+*And I can scroll to the bottom of the page to automatically load the next `5` entries of the `Destinations` table into the list.","*Given I am viewing the Manage Destinations list
+*When there exist more than `5` entries in the `Destinations` table
+*Then I can see the first `5` entries of the `Destinations` table and their details listed
+*And I can scroll to the bottom of the page to automatically load the next `5` entries of the `Destinations` table into the list.",SK-F6-AC005
+Test,Back to Top button hidden when at top of page,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When I am viewing the top of the page
+*Then I cannot see the Top ↑ button.","*Given I am viewing the Manage Destinations list
+*When I am viewing the top of the page
+*Then I cannot see the Top ↑ button.",SK-F6-AC006
+Test,Back to Top button shown when scrolling down,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When I scroll down on the view
+*Then I can see the Top ↑ button.","*Given I am viewing the Manage Destinations list
+*When I scroll down on the view
+*Then I can see the Top ↑ button.",SK-F6-AC007
+Test,Press Back to Top button,SK-F6-US6.2,"*Given I am viewing the Manage Destinations list
+*When I press the Top ↑ button
+*Then I scroll to the top of the page
+*And the Manage Destinations list is entirely unaffected.","*Given I am viewing the Manage Destinations list
+*When I press the Top ↑ button
+*Then I scroll to the top of the page
+*And the Manage Destinations list is entirely unaffected.",SK-F6-AC008
+Test,Press New Destination,SK-F6-US6.3,"*Given I am viewing the Manage Destinations list
+*When I press the + New Destination
+*Then I see the `DestinationForm` component open in Add mode","*Given I am viewing the Manage Destinations list
+*When I press the + New Destination
+*Then I see the `DestinationForm` component open in Add mode",SK-F6-AC009
+Test,Press outside DestinationForm component (add),SK-F6-US6.3,"*Given I am viewing the `DestinationForm` component in Add mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen","*Given I am viewing the `DestinationForm` component in Add mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen",SK-F6-AC010
+Test,Send add request with invalid form data,SK-F6-US6.3,"*Given I have filled out any field in the `DestinationForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent","*Given I have filled out any field in the `DestinationForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent",SK-F6-AC011
+Test,Send add request with a missing required field,SK-F6-US6.3,"*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Zip
+*When I press the Add button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent","*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Zip
+*When I press the Add button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent",SK-F6-AC012
+Test,Send add request with valid form data,SK-F6-US6.3,"*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload","*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload",SK-F6-AC013
+Test,Signed out user makes add request,SK-F6-US6.3,"*Given I am an unauthenticated user
+*When I send a `POST` request to the `Destinations` table with or without valid data
+*Then I receive a `401` response code and message","*Given I am an unauthenticated user
+*When I send a `POST` request to the `Destinations` table with or without valid data
+*Then I receive a `401` response code and message",SK-F6-AC014
+Test,Press Delete icon,SK-F6-US6.4,"*Given I am viewing the Manage Destinations list
+*When I press the Delete icon
+*Then a Delete Destination dialog appears","*Given I am viewing the Manage Destinations list
+*When I press the Delete icon
+*Then a Delete Destination dialog appears",SK-F6-AC015
+Test,Press outside Delete confirmation dialog,SK-F6-US6.4,"*Given I am viewing the Delete Destination dialog
+*When I press anywhere outside the Delete Destination dialog
+*Then the Delete Destination dialog closes
+*And no request is sent","*Given I am viewing the Delete Destination dialog
+*When I press anywhere outside the Delete Destination dialog
+*Then the Delete Destination dialog closes
+*And no request is sent",SK-F6-AC016
+Test,Press Cancel inside Delete confirmation dialog,SK-F6-US6.4,"*Given I am viewing the Delete Destination dialog
+*When I press the Cancel button
+*Then the Delete Destination dialog closes
+*And no request is sent","*Given I am viewing the Delete Destination dialog
+*When I press the Cancel button
+*Then the Delete Destination dialog closes
+*And no request is sent",SK-F6-AC017
+Test,Press Delete inside Delete confirmation dialog,SK-F6-US6.4,"*Given I am viewing the Delete Destination dialog
+*When I press the Delete button
+*Then the Delete Destination dialog closes
+*And the selected destination no longer exists in the table
+*And I receive a `204` status code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen saying `""Successfully deleted Destination!""`
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload","*Given I am viewing the Delete Destination dialog
+*When I press the Delete button
+*Then the Delete Destination dialog closes
+*And the selected destination no longer exists in the table
+*And I receive a `204` status code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen saying `""Successfully deleted Destination!""`
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload",SK-F6-AC018
+Test,No rendering Search Bar when no destinations exist,SK-F6-US6.5,"*Given I am viewing the Manage Destination list
+*When no entries exist in the `Destinations` table
+*Then I do not see a search bar in the view","*Given I am viewing the Manage Destination list
+*When no entries exist in the `Destinations` table
+*Then I do not see a search bar in the view",SK-F6-AC019
+Test,Search Bar rendering when destinations exist,SK-F6-US6.5,"*Given I am viewing the Manage Destination list
+*When entries exist in the `Destinations` table
+*Then I see a search bar in the view","*Given I am viewing the Manage Destination list
+*When entries exist in the `Destinations` table
+*Then I see a search bar in the view",SK-F6-AC020
+Test,No search attribute selected,SK-F6-US6.5,"*Given I leave the search-attribute selection of the search bar empty
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' Name.","*Given I leave the search-attribute selection of the search bar empty
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' Name.",SK-F6-AC021
+Test,Search attribute selected,SK-F6-US6.5,"*Given I select City in the search-attribute selection of the search bar
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' City attribute.","*Given I select City in the search-attribute selection of the search bar
+*When I type in the search bar
+*Then the Manage Destination list items reactively filter based on whether the content of the search bar is found as a substring in the destinations' City attribute.",SK-F6-AC022
+Test,Press Edit icon,SK-F6-US6.6,"*Given I am viewing the Manage Destinations list
+*When I press the Edit icon on a destination
+*Then I see the `DestinationForm` component open in Edit mode
+*And the input fields of the `DestinationForm` component contain the correct details of the selected destination","*Given I am viewing the Manage Destinations list
+*When I press the Edit icon on a destination
+*Then I see the `DestinationForm` component open in Edit mode
+*And the input fields of the `DestinationForm` component contain the correct details of the selected destination",SK-F6-AC023
+Test,Press outside DestinationForm component (edit),SK-F6-US6.6,"*Given I am viewing the `DestinationForm` component in Edit mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen","*Given I am viewing the `DestinationForm` component in Edit mode
+*When I press anywhere outside the `DestinationForm` component
+*Then the fields within the `DestinationForm` component are cleared
+*And I no longer see the `DestinationForm` component on screen",SK-F6-AC024
+Test,Send edit request with invalid form data,SK-F6-US6.6,"*Given I have filled out any field in the `DestinationForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent","*Given I have filled out any field in the `DestinationForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent",SK-F6-AC025
+Test,Send edit request with a missing required field,SK-F6-US6.6,"*Given I have filled out all the fields in the `DestinationForm` component in Edit mode except for Zip
+*When I press the Save button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent","*Given I have filled out all the fields in the `DestinationForm` component in Edit mode except for Zip
+*When I press the Save button
+*Then I see an error beneath Zip that says `Required`
+*And no request is sent",SK-F6-AC026
+Test,Send edit request with valid form data,SK-F6-US6.6,"*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Save button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload","*Given I have filled out all the fields in the `DestinationForm` component in Add mode except for Address Line 2 with valid form data as per the Screen Requirements
+*When I press the Save button
+*Then I receive a `201` response code
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And the message box gets destroyed automatically after `3` seconds
+*And the Manage Destinations list reloads without requiring a page reload",SK-F6-AC027
+Test,Non-admin user makes update request,SK-F6-US6.6,"*Given I am any authenticated non-admin user
+*When I send a `PUT` request to the `Destinations` table with or without valid data
+*Then I receive a `403` response code and message
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am any authenticated non-admin user
+*When I send a `PUT` request to the `Destinations` table with or without valid data
+*Then I receive a `403` response code and message
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F6-AC028
+Test,Admin creates a new driver,SK-F7-US7.1,,,SK-F7-AC001
+Test,Admin creates a driver with an empty name,SK-F7-US7.1,,,SK-F7-AC002
+Test,Admin creates a driver with an empty license status,SK-F7-US7.1,,,SK-F7-AC003
+Test,Admin creates a driver without license expiration date,SK-F7-US7.1,,,SK-F7-AC004
+Test,Admin creates a driver without availability,SK-F7-US7.1,,,SK-F7-AC005
+Test,No drivers exist,SK-F7-US7.2,,,SK-F7-AC006
+Test,driver rows show edit and delete actions,SK-F7-US7.3,,,SK-F7-AC007
+Test,Admin edits a driver,SK-F7-US7.4,,,SK-F7-AC008
+Test,Admin deletes a driver,SK-F7-US7.4,,,SK-F7-AC009
+Test,Search bar appears with drivers,SK-F7-US7.5,,,SK-F7-AC010
+Test,search bar appears with no drivers,SK-F7-US7.5,,,SK-F7-AC011
+Test,Admin types in driver search bar,SK-F7-US7.5,,,SK-F7-AC012
+Test,Admin types in driver search bar 2,SK-F7-US7.5,,,SK-F7-AC013
+Test,Unauthenticated user accesses the drivers view,SK-F7-US7.5,,,SK-F7-AC014
+Test,Unauthenticated API request to drivers,SK-F7-US7.5,"*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F7-AC015
+Test,User creates a trip request,SK-F8-US8.1,,,SK-F8-AC001
+Test,Trip form shows vehicle details,SK-F8-US8.1,,,SK-F8-AC002
+Test,User creates a trip request with a missing required field,SK-F8-US8.1,,,SK-F8-AC003
+Test,User creates a trip request with an end before the start,SK-F8-US8.1,,,SK-F8-AC004
+Test,User creates a trip request with an invalid number of people,SK-F8-US8.1,,,SK-F8-AC005
+Test,User creates a request referencing a nonexistent vehicle,SK-F8-US8.1,,,SK-F8-AC006
+Test,Unauthenticated user accesses the requests view,SK-F8-US8.1,,,SK-F8-AC023
+Test,Unauthenticated API request to requests,SK-F8-US8.1,"*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F8-AC024
+Test,Admin creates a maintenance request,SK-F8-US8.2,,,SK-F8-AC007
+Test,Maintenance form hides trip-only fields,SK-F8-US8.2,,,SK-F8-AC008
+Test,Maintenance request without a start date,SK-F8-US8.2,,,SK-F8-AC009
+Test,Non-admin cannot create a maintenance request,SK-F8-US8.2,,,SK-F8-AC010
+Test,Requests view loads with existing requests,SK-F8-US8.3,,,SK-F8-AC011
+Test,User does not see other users' requests,SK-F8-US8.3,,,SK-F8-AC012
+Test,Admin sees all requests,SK-F8-US8.3,,,SK-F8-AC013
+Test,No requests exist,SK-F8-US8.3,,,SK-F8-AC014
+Test,Request rows show edit and delete actions,SK-F8-US8.4,,,SK-F8-AC015
+Test,User edits a request,SK-F8-US8.5,,,SK-F8-AC016
+Test,User deletes a request,SK-F8-US8.5,,,SK-F8-AC017
+Test,User cannot edit another user's request,SK-F8-US8.5,,,SK-F8-AC018
+Test,User cannot delete another user's request,SK-F8-US8.5,,,SK-F8-AC019
+Test,Admin edits any request,SK-F8-US8.5,,,SK-F8-AC020
+Test,Active-only filter,SK-F8-US8.6,,,SK-F8-AC021
+Test,Request type filter,SK-F8-US8.6,,,SK-F8-AC022
+Test,Landing View Request Form Note List Embed,SK-F9-US9.1,"*Given I am an authenticated user
+*When I navigate to `Landing.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of any Request Form on the page with the title Notes.","*Given I am an authenticated user
+*When I navigate to `Landing.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of any Request Form on the page with the title Notes.",SK-F9-AC001
+Test,Vehicle Maintenance Note List Embed,SK-F9-US9.1,"*Given I am an authenticated user with `maintenance` or `admin` role on `Vehicles.vue`
+*When I press the wrench list icon to navigate to `Maintenance.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*And the Vehicle Maintenance Notes list contains every `note` that both has `maintenance_request` set to `true` and has the same `request_id` as any `request` containing the same `vehicle_id` as the `vin` of the `vehicle` selected to get to `Maintenance.vue`.","*Given I am an authenticated user with `maintenance` or `admin` role on `Vehicles.vue`
+*When I press the wrench list icon to navigate to `Maintenance.vue`
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*And the Vehicle Maintenance Notes list contains every `note` that both has `maintenance_request` set to `true` and has the same `request_id` as any `request` containing the same `vehicle_id` as the `vin` of the `vehicle` selected to get to `Maintenance.vue`.",SK-F9-AC002
+Test,More than 3 Notes in a Note List,SK-F9-US9.1,"*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*Then the Notes List tries to `GET` and display another batch of 3 notes without refreshing the whole page
+*And they overflowing with a scroll bar inside the <v-list> rather than expanding the page.","*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*Then the Notes List tries to `GET` and display another batch of 3 notes without refreshing the whole page
+*And they overflowing with a scroll bar inside the <v-list> rather than expanding the page.",SK-F9-AC003
+Test,Less than 3 list items left to GET,SK-F9-US9.1,"*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*And the batch of list items is smaller 3
+*Then the Notes List does not try to retrieve any more `notes`.","*Given I am an authenticated user
+*When I view a Notes List in List or Embed mode
+*And I reach the bottom of the Notes List
+*And the batch of list items is smaller 3
+*Then the Notes List does not try to retrieve any more `notes`.",SK-F9-AC004
+Test,Press on list item body,SK-F9-US9.1,"*Given I am an authenticated user
+*When I press on the body (not action icons) of a Notes List list item
+*Then the Note details dialog opens holding the correct information from that selected `note`.","*Given I am an authenticated user
+*When I press on the body (not action icons) of a Notes List list item
+*Then the Note details dialog opens holding the correct information from that selected `note`.",SK-F9-AC005
+Test,Press on list item action icon,SK-F9-US9.1,"*Given I am an authenticated user
+*When I press an action icon on a Notes List list item
+*Then that action is performed in accordance with later Acceptance Criteria.","*Given I am an authenticated user
+*When I press an action icon on a Notes List list item
+*Then that action is performed in accordance with later Acceptance Criteria.",SK-F9-AC006
+Test,Press anywhere outside Note dialog,SK-F9-US9.1,"*Given I am an authenticated user with any <v-dialog> open from interacting with Notes List list items
+*When I press anywhere outside the dialog
+*Or I press the Close button
+*Then the Note dialog closes and nothing is changed.","*Given I am an authenticated user with any <v-dialog> open from interacting with Notes List list items
+*When I press anywhere outside the dialog
+*Or I press the Close button
+*Then the Note dialog closes and nothing is changed.",SK-F9-AC007
+Test,User selects Delete icon on Notes List item,SK-F9-US9.2,"*Given I am an authenticated user viewing a Notes List belonging to a request I own
+*When I select the Delete icon on a list item row's Actions section
+*Then I see a confirmation dialog titled Delete appear with two options: Cancel and Delete.","*Given I am an authenticated user viewing a Notes List belonging to a request I own
+*When I select the Delete icon on a list item row's Actions section
+*Then I see a confirmation dialog titled Delete appear with two options: Cancel and Delete.",SK-F9-AC008
+Test,User cancels Delete,SK-F9-US9.2,"*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Cancel button
+*Then the confirmation dialog closes and nothing else happens.","*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Cancel button
+*Then the confirmation dialog closes and nothing else happens.",SK-F9-AC009
+Test,User confirms Delete,SK-F9-US9.2,"*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Delete button
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And all `Contributiors` entries tied to this `note` are deleted as well.
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List.","*Given I am an authenticated user viewing the Delete Confirmation dialog
+*When I select the Delete button
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And all `Contributiors` entries tied to this `note` are deleted as well.
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List.",SK-F9-AC010
+Test,Maintenance deletes from Maintenance Requests Notes List,SK-F9-US9.2,"*Given I am an authenticated user with `maintenance` or `admin` role on `Maintenance.vue`
+*When I confirm Delete on a `note` from the Vehicle Maintenance Notes list
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List
+*And a `vehicle service log` is created with the `text` content of the deleted `note` and uploaded to the `vehicle service logs` table as per Feature 10.","*Given I am an authenticated user with `maintenance` or `admin` role on `Maintenance.vue`
+*When I confirm Delete on a `note` from the Vehicle Maintenance Notes list
+*Then I can see the Notes List component in Embed mode embedded at the bottom of `Maintenance.vue` titled Vehicle Maintenance Notes
+*Then the selected `note` is removed from the `Notes` table
+*And the confirmation dialog closes
+*And the selected `note` no longer appears in the Notes List
+*And a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the Notes List
+*And a `vehicle service log` is created with the `text` content of the deleted `note` and uploaded to the `vehicle service logs` table as per Feature 10.",SK-F9-AC011
+Test,Press New Note from Request form,SK-F9-US9.3,"*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `false`.","*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `false`.",SK-F9-AC012
+Test,Press New Note from Maintenance Request form,SK-F9-US9.3,"*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `true`.","*Given I am viewing a Notes List in Embed mode
+*When I press the + New Note
+*Then I see the `NoteForm` component open in Add mode with `maintenance_request` toggled to `true`.",SK-F9-AC013
+Test,Press Cancel from Request form (add),SK-F9-US9.3,"*Given I am viewing the Add Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the Add Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC014
+Test,Press outside NoteForm component (add),SK-F9-US9.3,"*Given I am viewing the `NoteForm` component in Add mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the `NoteForm` component in Add mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC015
+Test,Send add request with invalid form data,SK-F9-US9.3,"*Given I have filled out any field in the `NoteForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.","*Given I have filled out any field in the `NoteForm` component in Add mode with invalid form data as per the Screen Requirements
+*When I press the Add button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.",SK-F9-AC016
+Test,Send add request with a missing required field,SK-F9-US9.3,"*Given I have filled out all the fields in the `NoteForm` component in Add mode except for Subject
+*When I press the Add button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.","*Given I have filled out all the fields in the `NoteForm` component in Add mode except for Subject
+*When I press the Add button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.",SK-F9-AC017
+Test,Send add request with valid form data,SK-F9-US9.3,"*Given I have filled out all the fields in the `NoteForm` component in Add mode with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the new `note` is added as an entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.","*Given I have filled out all the fields in the `NoteForm` component in Add mode with valid form data as per the Screen Requirements
+*When I press the Add button
+*Then I receive a `201` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `201` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the new `note` is added as an entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.",SK-F9-AC018
+Test,Signed out user makes add request,SK-F9-US9.3,"*Given I am an unauthenticated user
+*When I send a `POST` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.","*Given I am an unauthenticated user
+*When I send a `POST` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.",SK-F9-AC019
+Test,Press Edit icon on Notes List item,SK-F9-US9.4,"*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.","*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.",SK-F9-AC020
+Test,Press Edit icon from Maintenance Request list,SK-F9-US9.4,"*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.","*Given I am viewing a Notes List in Embed mode
+*When I press the Edit icon on a list item row's Actions section
+*Then I see the `NoteForm` component open in Edit mode with the form information already filled out.",SK-F9-AC021
+Test,Press Cancel from Request form (edit),SK-F9-US9.4,"*Given I am viewing the Edit Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the Edit Note dialog
+*When I press the Cancel button
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC022
+Test,Press outside NoteForm component (edit),SK-F9-US9.4,"*Given I am viewing the `NoteForm` component in Edit mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.","*Given I am viewing the `NoteForm` component in Edit mode
+*When I press anywhere outside the `NoteForm` component
+*Then the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.",SK-F9-AC023
+Test,Send edit request with invalid form data,SK-F9-US9.4,"*Given I have filled out any field in the `NoteForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.","*Given I have filled out any field in the `NoteForm` component in Edit mode with invalid form data as per the Screen Requirements
+*When I press the Save button
+*Then beneath each field containing invalid form data, I see an error with a human-readable explanation of how the data is malformed
+*And no request is sent.",SK-F9-AC024
+Test,Send edit request with a missing required field,SK-F9-US9.4,"*Given I have filled out all the fields in the `NoteForm` component in Edit mode except for Subject
+*When I press the Save button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.","*Given I have filled out all the fields in the `NoteForm` component in Edit mode except for Subject
+*When I press the Save button
+*Then I see an error beneath Subject that says `Required`
+*And no request is sent.",SK-F9-AC025
+Test,Send edit request with valid form data,SK-F9-US9.4,"*Given I have filled out all the fields in the `NoteForm` component in Edit mode with valid form data as per the Screen Requirements
+*When I press the Edit button
+*Then I receive a `200` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `200` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the changes to the `note` are reflected in its entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.","*Given I have filled out all the fields in the `NoteForm` component in Edit mode with valid form data as per the Screen Requirements
+*When I press the Edit button
+*Then I receive a `200` response code
+*And the fields within the `NoteForm` component are cleared
+*And I no longer see the `NoteForm` component on screen.
+*And a success message appears in a small, closable, elevated `div` at the bottom of the screen with the `200` response message
+*And an entry gets logged in the `Contributors` table with my ID as the `contributor_id`, the new `note` as the `note_id`, `created_note` set to true, and today's date as the `date`
+*And the Notes List reloads without requiring a page reload
+*And the changes to the `note` are reflected in its entry in the `Notes` table
+*And the success message box gets destroyed automatically after `3` seconds.",SK-F9-AC026
+Test,Signed out user makes edit request,SK-F9-US9.4,"*Given I am an unauthenticated user
+*When I send a `PUT` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.","*Given I am an unauthenticated user
+*When I send a `PUT` request to the `Notes` table with or without valid data
+*Then I receive a `401` response code and message.",SK-F9-AC027
+Test,View Note Creation List for User Management,SK-F9-US9.5,"*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` created by that user.","*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` created by that user.",SK-F9-AC028
+Test,View Note Contribution List for User Management,SK-F9-US9.5,"*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` that user has contributed to.","*Given I am an authenticated user with the `admin` role
+*When I view a `user`'s profile as described in Feature 13
+*Then I see a Notes List component embedded at the bottom of the profile page
+*And the list contains every `note` that user has contributed to.",SK-F9-AC029
+Test,Admin super-permissions on any list,SK-F9-US9.5,"*Given I am viewing any `note` or Note List, including ones I didn't create
+*When I try to create, read, update, or delete it or items on it
+*Then I am allowed to
+*And form validation rules hold consistent like in previous Acceptance Criteria.
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Given I am viewing any `note` or Note List, including ones I didn't create
+*When I try to create, read, update, or delete it or items on it
+*Then I am allowed to
+*And form validation rules hold consistent like in previous Acceptance Criteria.
+*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F9-AC030
+Test,Maintenance creates a log,SK-F10-US10.1,,,SK-F10-AC001
+Test,Admin creates a log,SK-F10-US10.1,,,SK-F10-AC002
+Test,Blank log,SK-F10-US10.1,,,SK-F10-AC003
+Test,Owner assigns another owner,SK-F10-US10.2,,,SK-F10-AC004
+Test,Non-owner cannot modify,SK-F10-US10.2,,,SK-F10-AC005
+Test,Maintenance reads the logs,SK-F10-US10.3,,,SK-F10-AC006
+Test,Admin reads the logs,SK-F10-US10.3,,,SK-F10-AC007
+Test,Driver cannot open the page,SK-F10-US10.3,,,SK-F10-AC008
+Test,Owner updates a log,SK-F10-US10.4,,,SK-F10-AC009
+Test,Admin updates any log,SK-F10-US10.4,,,SK-F10-AC010
+Test,Log older than 18 months is removed,SK-F10-US10.5,,,SK-F10-AC011
+Test,Non-owner cannot delete,SK-F10-US10.5,"*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F10-AC012
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.1,,,SK-F12-AC001
+Test,User clicks a vehicle in the `Available Vehicles` list,SK-F12-US12.1,,,SK-F12-AC002
+Test,User views `Available Vehicles` list,SK-F12-US12.1,,,SK-F12-AC003
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.2,,,SK-F12-AC004
+Test,User clicks on a list item,SK-F12-US12.2,,,SK-F12-AC005
+Test,User views `Your Reserved Vehicles` list,SK-F12-US12.2,,,SK-F12-AC006
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.3,,,SK-F12-AC007
+Test,User clicks a list item,SK-F12-US12.3,,,SK-F12-AC008
+Test,User views `Vehicles In Service` list,SK-F12-US12.3,,,SK-F12-AC009
+Test,User clicks `Info Icon` button,SK-F12-US12.3,,,SK-F12-AC010
+Test,User clicks the form toggle switch,SK-F12-US12.4,,,SK-F12-AC011
+Test,User correctly fills out the `Vehicle Request Form`,SK-F12-US12.5,,,SK-F12-AC012
+Test,User incorrectly fills out the `Vehicle Request Form`,SK-F12-US12.5,,,SK-F12-AC013
+Test,User correctly fills out the `Maintenance Request Form`,SK-F12-US12.6,,,SK-F12-AC014
+Test,User incorrectly fills out the `Maintenance Request Form`,SK-F12-US12.6,,,SK-F12-AC015
+Test,User logs in and `Landing.vue` is loaded,SK-F12-US12.7,,,SK-F12-AC016
+Test,User views `Reserved Vehicles` list,SK-F12-US12.7,,,SK-F12-AC017
+Test,User clicks `Info Icon` button,SK-F12-US12.7,"*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`",SK-F12-AC018
+Test,Maintenance cannot open areas,SK-F13-US13.5,,,SK-F13-AC008
+Test,Driver cannot open areas,SK-F13-US13.5,"*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`","*Reference updates for this feature: `features/reference/api.md`, `features/reference/data-model.md`, `features/reference/behavior.md`",SK-F13-AC009

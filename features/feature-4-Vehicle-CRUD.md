@@ -118,52 +118,55 @@
 
 ### Functional Requirements
 
-- **FR-001**: System **MUST** list all vehicles
-- **FR-002**: User **MUST** be able to input filters and the list update as filters are being inputted
-- **FR-003**: System **MUST** make a `POST` request when a new vehicle has been added
-- **FR-004**: System **MUST** make a `PUT` request when a user updates a vehicle's information
-- **FR-005**: System **MUST** make a `DELETE` request when a user deletes a vehicle from the database
-- **FR-006**: System **MUST** make a `GET` request when first loading the page or re-retrieving vehicles after making a `update` or `delete`
-- **FR-007**: System **MUST NOT** allow any roles other than `admin` and `maintenance` to access this page
-- **FR-008**: System **Must** send user to the Maintenance page with the selected vehicle's details pulled up
-- **FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Department` for each vehicle
-- **FR-010**: System **MUST** display a vehicle's images if at least one is available from the `VehicleImages` table
-- **FR-011**: System **MUST** use `Confirm Create New Maintenance Info` component
-- **FR-012**: System **MUST** use `Confirm Create New Fuel Type` component
+**FR-001**: System **MUST** list all vehicles
+**FR-002**: User **MUST** be able to input filters and the list update as filters are being inputted
+**FR-003**: System **MUST** make a `POST` request when a new vehicle has been added
+**FR-004**: System **MUST** make a `PUT` request when a user updates a vehicle's information
+**FR-005**: System **MUST** make a `DELETE` request when a user deletes a vehicle from the database
+**FR-006**: System **MUST** make a `GET` request when first loading the page or re-retrieving vehicles after making a `update` or `delete`
+**FR-007**: System **MUST NOT** allow any roles other than `admin` and `maintenance` to access this page
+**FR-008**: System **Must** send user to the Maintenance page with the selected vehicle's details pulled up
+**FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Department` for each vehicle
+**FR-010**: System **MUST** display a vehicle's images if at least one is available from the `VehicleImages` table
+**FR-011**: System **MUST** use `Confirm Create New Maintenance Info` component
+**FR-012**: System **MUST** use `Confirm Create New Fuel Type` component
 
 ---
 
 ## Assumptions
 
-- **What already exists**:
-  - `feature-1-User-Auth-&-Session-Management`
-  - `feature-2-Google-Auth`
-  - `feature-3-Department-CRUD`
-  - `MenuBar.vue`
-- **What you are deliberately not building yet**
-  - `feature-5-Maintenance-Info-CRUD`
-  - `Maintenance.vue`
-  - `feature-8-Requests-CRUD`: Assume that requests will be added later, for data model see `features/references/data-model.md`
-  - `Requests.vue`
-  - `feature-11-Images`: Assume that images will be added later, for data model see `features/references/data-model.md`
+**What already exists**:
+
+- `feature-1-User-Auth-&-Session-Management`
+- `feature-2-Google-Auth`
+- `feature-3-Department-CRUD`
+- `MenuBar.vue`
+  **What you are deliberately not building yet**
+- `feature-5-Maintenance-Info-CRUD`
+- `Maintenance.vue`
+- `feature-8-Requests-CRUD`: Assume that requests will be added later, for data model see `features/references/data-model.md`
+- `Requests.vue`
+- `feature-11-Images`: Assume that images will be added later, for data model see `features/references/data-model.md`
 
 ## Edge Cases
 
-- **Empty required field**
-  - `Text Fields`: `</v-alert>` to notify user that a empty field is required to be filled
-  - `Radio Buttons`: `</v-alert>` to notify user that a selection needs to be made
-  - `Date Picker`: `</v-alert>` to notify user that a correct date must be picked
-  - `Combo Box`: `</v-alert>` to notify user that a selection needs to be made
+**Empty required field**
 
-- **Duplicate Inputs**
-  - Throw `400` restapi error and send a `</v-alert>` to notify user that the input is invalid or already exists
+- `Text Fields`: `</v-alert>` to notify user that a empty field is required to be filled
+- `Radio Buttons`: `</v-alert>` to notify user that a selection needs to be made
+- `Date Picker`: `</v-alert>` to notify user that a correct date must be picked
+- `Combo Box`: `</v-alert>` to notify user that a selection needs to be made
+
+**Duplicate Inputs**
+
+- Throw `400` restapi error and send a `</v-alert>` to notify user that the input is invalid or already exists
 
 ## Success Criteria
 
-- **SC-001**: Every Gherkin scenario has at least one automated test before merge
-- **SC-002**: Every functional requirement is met
-- **SC-003**: Frontend, `Vehicle.vue` is the only .vue created for this feature doc
-- **SC-004**: Backend, all routes, models, and controllers are created and configured correctly with authorization
+**SC-001**: Every Gherkin scenario has at least one automated test before merge
+**SC-002**: Every functional requirement is met
+**SC-003**: Frontend, `Vehicle.vue` is the only .vue created for this feature doc
+**SC-004**: Backend, all routes, models, and controllers are created and configured correctly with authorization
 
 ---
 
@@ -179,9 +182,9 @@ Feature 1 and 2 establishes identity
 
 ## Key Entities
 
-- **User**: registered account (name, email, username, role)
-- **Session**: server-side record tying a JWT token to a user; expires after 24 hours.
-- **Vehicles**: server-side record of all vehicles in the database
+**User**: registered account (name, email, username, role)
+**Session**: server-side record tying a JWT token to a user; expires after 24 hours.
+**Vehicles**: server-side record of all vehicles in the database
 
 ---
 
@@ -294,19 +297,20 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 **Add / Edit Modal**
 
-- **Add Vehicle** button opens the add dialog (`oc-cta`), **Edit Icon Button** - Pencil opens the edit dialog (`oc-cta`)
-  - Fields:
-    - `License`- Text field
-    - `Make`- Combo box
-    - `Model`- Combo box
-    - `Year`- Drop down with values from 1900 to present year
-    - `Color`- Text field
-    - `Area`- Drop down with all areas
-    - `Purchase Date` - Calendar Picker
-    - `Tag Expiration Month` - Calendar Picker
-    - `Fuel Type` - Combo box
-    - `Fuel Capacity` - Stepper
-    - `Recommended Tire PSI` - Stepper
+**Add Vehicle** button opens the add dialog (`oc-cta`), **Edit Icon Button** - Pencil opens the edit dialog (`oc-cta`)
+
+- Fields:
+  - `License`- Text field
+  - `Make`- Combo box
+  - `Model`- Combo box
+  - `Year`- Drop down with values from 1900 to present year
+  - `Color`- Text field
+  - `Area`- Drop down with all areas
+  - `Purchase Date` - Calendar Picker
+  - `Tag Expiration Month` - Calendar Picker
+  - `Fuel Type` - Combo box
+  - `Fuel Capacity` - Stepper
+  - `Recommended Tire PSI` - Stepper
 
 **Image**
 
@@ -338,69 +342,69 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User clicks the add button
 
-- **Given** I am on the Vehicles.vue as a `admin`
-- **When** click the `Add` button
-- **Then** a add vehicle modal pops up
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `admin`
+**When** click the `Add` button
+**Then** a add vehicle modal pops up
+**And** no API request is sent
 
 #### Scenario: User inputs a `make`, `model`, and `year` that doesn't exist and a `fuel type` that doesn't exist into the comboboxes
 
-- **Given** I have searched for a `make`, `model`, `year`, and `fuel type`
-- **And** the inputted `make`, `model`, and `year` do not exist in the database
-- **And** the inputted `fuel type` does not exist in the database
-- **When** I click `Add Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
-- **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha payload containing `{"message": "Successfully fuel type."}`
-- **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha payload containing `{"message": "Successfully created vehicle."}`
+**Given** I have searched for a `make`, `model`, `year`, and `fuel type`
+**And** the inputted `make`, `model`, and `year` do not exist in the database
+**And** the inputted `fuel type` does not exist in the database
+**When** I click `Add Vehicle` a new vehicle
+**Then** a `POST` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+**And** a `POST`API request is sent to the server
+**And** returns a value of `201` witha payload containing `{"message": "Successfully fuel type."}`
+**And** a `POST`API request is sent to the server
+**And** returns a value of `201` witha payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
 
-- **Given** I have searched for a `make`, `model`, and `year`
-- **And** the inputted `make`, `model`, and `year` do not exist in the database
-- **When** I click `Add Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
-- **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha payload containing `{"message": "Successfully created vehicle."}`
+**Given** I have searched for a `make`, `model`, and `year`
+**And** the inputted `make`, `model`, and `year` do not exist in the database
+**When** I click `Add Vehicle` a new vehicle
+**Then** a `POST` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+**And** a `POST`API request is sent to the server
+**And** returns a value of `201` witha payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs a `fuel type` into the combobox that doesn't exist
 
-- **Given** I have searched for a `fuel type`
-- **And** the inputted `fuel type` does not exist in the database
-- **When** I click `Add Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel-type."}`
-- **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+**Given** I have searched for a `fuel type`
+**And** the inputted `fuel type` does not exist in the database
+**When** I click `Add Vehicle` a new vehicle
+**Then** a `POST` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel-type."}`
+**And** a `POST`API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** the `Add Vehicle` modal closes
-- **And** a `PUT` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** the `Add Vehicle` modal closes
+**And** a `PUT` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs invalid information into `Add Vehicle` modal
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have incorrectly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
-- **And** a no API request is sent
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have incorrectly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+**And** a no API request is sent
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** the `Add Vehicle` modal closes
-- **And** a `PUT` API request is sent to the server
-- **And** returns a value of `409` with a payload containing a `human readable error message`
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** the `Add Vehicle` modal closes
+**And** a `PUT` API request is sent to the server
+**And** returns a value of `409` with a payload containing a `human readable error message`
 
 ---
 
@@ -408,76 +412,76 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User clicks the add button
 
-- **Given** I am on the Vehicles.vue as a `maintenance`
-- **When** click the `Add` button
-- **Then** a add vehicle modal pops up
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance`
+**When** click the `Add` button
+**Then** a add vehicle modal pops up
+**And** no API request is sent
 
 #### Scenario: User clicks the add button
 
-- **Given** I am on the Vehicles.vue as a `maintenance`
-- **When** click the `Add` button
-- **Then** a add vehicle modal pops up
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance`
+**When** click the `Add` button
+**Then** a add vehicle modal pops up
+**And** no API request is sent
 
 #### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
 
-- **Given** I have searched for a `make`, `model`, and `year`
-- **And** the inputted `make`, `model`, and `year` do not exist in the database
-- **When** I click `Add Vehicle` a new vehicle
-- **Then** the `Confirm Create New Maintenance Info` modal opens
+**Given** I have searched for a `make`, `model`, and `year`
+**And** the inputted `make`, `model`, and `year` do not exist in the database
+**When** I click `Add Vehicle` a new vehicle
+**Then** the `Confirm Create New Maintenance Info` modal opens
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** the `Add Vehicle` modal closes
-- **And** a `PUT` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** the `Add Vehicle` modal closes
+**And** a `PUT` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs invalid information into `Add Vehicle` modal
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have incorrectly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
-- **And** a no API request is sent
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have incorrectly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+**And** a no API request is sent
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** the `Add Vehicle` modal closes
-- **And** a `PUT` API request is sent to the server
-- **And** returns a value of `409` with a payload containing a `human readable error message`
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** the `Add Vehicle` modal closes
+**And** a `PUT` API request is sent to the server
+**And** returns a value of `409` with a payload containing a `human readable error message`
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** the `Add Vehicle` modal closes
-- **And** a `PUT` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** the `Add Vehicle` modal closes
+**And** a `PUT` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User inputs invalid information into `Add Vehicle` modal
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have incorrectly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
-- **And** a no API request is sent
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have incorrectly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+**And** a no API request is sent
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
 
-- **Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Add Vehicle` button
-- **Then** the `Add Vehicle` modal closes
-- **And** a `PUT` API request is sent to the server
-- **And** returns a value of `409` with a payload containing a `human readable error message`
+**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Add Vehicle` button
+**Then** the `Add Vehicle` modal closes
+**And** a `PUT` API request is sent to the server
+**And** returns a value of `409` with a payload containing a `human readable error message`
 
 ---
 
@@ -485,47 +489,47 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User clicks the edit icon button
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** click the `Edit` icon button
-- **Then** a edit vehicle modal pops up
-- **And** all form values are filled out with vehicle information
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** click the `Edit` icon button
+**Then** a edit vehicle modal pops up
+**And** all form values are filled out with vehicle information
+**And** no API request is sent
 
 #### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
 
-- **Given** I have searched for a `make`, `model`, and `year`
-- **And** the inputted `make`, `model`, and `year` do not exist in the database
-- **When** I click `Update Vehicle` a new vehicle
-- **Then** a `POST` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
-- **And** a `POST`API request is sent to the server
-- **And** returns a value of `201` witha payload containing `{"message": "Successfully updated vehicle."}`
+**Given** I have searched for a `make`, `model`, and `year`
+**And** the inputted `make`, `model`, and `year` do not exist in the database
+**When** I click `Update Vehicle` a new vehicle
+**Then** a `POST` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+**And** a `POST`API request is sent to the server
+**And** returns a value of `201` witha payload containing `{"message": "Successfully updated vehicle."}`
 
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal
 
-- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Update Vehicle` button
-- **Then** the `Update Vehicle` modal closes
-- **And** a `POST` API request is sent to the server
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully updated vehicle."}`
+**Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Update Vehicle` button
+**Then** the `Update Vehicle` modal closes
+**And** a `POST` API request is sent to the server
+**And** returns a value of `201` with a payload containing `{"message": "Successfully updated vehicle."}`
 
 #### Scenario: User inputs invalid information into `Edit Vehicle` modal
 
-- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
-- **And** I have incorrectly inputted values into the form
-- **When** I click the `Update Vehicle` button
-- **Then** a `</v-alert>` pops up saying `An error occured processing your form.`
-- **And** a no API request is sent
+**Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+**And** I have incorrectly inputted values into the form
+**When** I click the `Update Vehicle` button
+**Then** a `</v-alert>` pops up saying `An error occured processing your form.`
+**And** a no API request is sent
 
 #### Scenario: User inputs valid information into the `Edit Vehicle` modal but a vehicle with a different VIN has the same licesnse plate number
 
-- **Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
-- **And** I have correctly inputted values into the form
-- **When** I click the `Update Vehicle` button
-- **Then** the `Edit Vehicle` modal closes
-- **And** a `POST` API request is sent to the server
-- **And** returns a value of `409` with a payload containing a `human readable error message`
+**Given** I have clicked the `Edit` icon button and I am viewing the `Edit Vehicle` modal
+**And** I have correctly inputted values into the form
+**When** I click the `Update Vehicle` button
+**Then** the `Edit Vehicle` modal closes
+**And** a `POST` API request is sent to the server
+**And** returns a value of `409` with a payload containing a `human readable error message`
 
 ---
 
@@ -533,17 +537,17 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User clicks the delete icon button
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** click the `Delete` icon button
-- **Then** a `DELETE` API request is sent to the server
-- **And** removes the selected vehicle with matching VIN
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** click the `Delete` icon button
+**Then** a `DELETE` API request is sent to the server
+**And** removes the selected vehicle with matching VIN
 
 #### Scenario: User clicks the delete icon button but no vehicle exists in the database
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** click the `Delete` icon button
-- **Then** a `DELETE` API request is sent to the server
-- **And** returns a `500` error with payload containing `{"message": "human readable error"}`
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** click the `Delete` icon button
+**Then** a `DELETE` API request is sent to the server
+**And** returns a `500` error with payload containing `{"message": "human readable error"}`
 
 ---
 
@@ -551,61 +555,61 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: There no vehicles to display in the vehicle list
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I load the page
-- **And** a `GET` API request is sent to the server
-- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** there are not vechiles to display
-- **Then** the list will display the headers of the list table with no vehicles in the list
-- **And** a `</v-alert>` pops up saying `No vehicles to display`
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I load the page
+**And** a `GET` API request is sent to the server
+**And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+**And** there are not vechiles to display
+**Then** the list will display the headers of the list table with no vehicles in the list
+**And** a `</v-alert>` pops up saying `No vehicles to display`
 
 #### Scenario: User first loads the Vehicle page
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I first view the page
-- **Then** a `GET` API request is sent to the server
-- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** list of all vehicles in the database are shown
-- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
-- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I first view the page
+**Then** a `GET` API request is sent to the server
+**And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+**And** list of all vehicles in the database are shown
+**And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+**And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
 #### Scenario: User adds a new vehicle
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I add a new vehicle
-- **Then** a `GET` API request is sent to the server
-- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** the frontend re-retreives all vehicles in the database
-- **And** lists out all retreived vehicles in a list
-- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
-- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I add a new vehicle
+**Then** a `GET` API request is sent to the server
+**And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+**And** the frontend re-retreives all vehicles in the database
+**And** lists out all retreived vehicles in a list
+**And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+**And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
 #### Scenario: User edits a vehicle in the list
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I edit a selected vehicle
-- **Then** a `GET` API request is sent to the server
-- **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
-- **And** the frontend re-retreives all vehicles in the database
-- **And** lists out all retreived vehicles in a list
-- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
-- **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I edit a selected vehicle
+**Then** a `GET` API request is sent to the server
+**And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
+**And** the frontend re-retreives all vehicles in the database
+**And** lists out all retreived vehicles in a list
+**And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+**And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
 #### Scenario: Vehicle does not have a color value
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **And** a vehicle does not have a color value
-- **When** the list loads the vehicle list item
-- **Then** the value for null will be replaced with `No Color`
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**And** a vehicle does not have a color value
+**When** the list loads the vehicle list item
+**Then** the value for null will be replaced with `No Color`
+**And** no API request is sent
 
 #### Scenario: Vehicle does not have a license plate number value
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **And** a vehicle does not have a license plate number value
-- **When** the list loads the vehicle list item
-- **Then** the value for null will be replaced with `No License Plate`
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**And** a vehicle does not have a license plate number value
+**When** the list loads the vehicle list item
+**Then** the value for null will be replaced with `No License Plate`
+**And** no API request is sent
 
 ---
 
@@ -613,75 +617,75 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User chooses from the year drop down filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I select a value from the year drop down filter
-- **Then** the drop down field shows the selected value
-- **And** the frontend shows only the vehicles with that year
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I select a value from the year drop down filter
+**Then** the drop down field shows the selected value
+**And** the frontend shows only the vehicles with that year
+**And** still applying all other filters
+**And** no API request is sent
 
 #### Scenario: User chooses from the area drop down filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I select a value from the area drop down filter
-- **Then** the drop down field shows the selected value
-- **And** the frontend shows only the vehicles with that area
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I select a value from the area drop down filter
+**Then** the drop down field shows the selected value
+**And** the frontend shows only the vehicles with that area
+**And** still applying all other filters
+**And** no API request is sent
 
 #### Scenario: User begins to type in the `Make` filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I begin to type in the `Make` filter combo box
-- **Then** the frontend shows only the matching vehicles
-- **And** continues to update the list as I type in the field
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I begin to type in the `Make` filter combo box
+**Then** the frontend shows only the matching vehicles
+**And** continues to update the list as I type in the field
+**And** still applying all other filters
+**And** no API request is sent
 
 #### Scenario: User begins to type in the `Model` filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I begin to type in the `Model` filter combo box
-- **Then** the frontend shows only the matching vehicles
-- **And** continues to update the list as I type in the field
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I begin to type in the `Model` filter combo box
+**Then** the frontend shows only the matching vehicles
+**And** continues to update the list as I type in the field
+**And** still applying all other filters
+**And** no API request is sent
 
 #### Scenario: User begins to type in the `Color` filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I begin to type in the `Color` filter text field
-- **Then** the frontend shows only the matching vehicles
-- **And** continues to update the list as I type in the field
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I begin to type in the `Color` filter text field
+**Then** the frontend shows only the matching vehicles
+**And** continues to update the list as I type in the field
+**And** still applying all other filters
+**And** no API request is sent
 
 #### Scenario: User begins to type in the `License` filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I begin to type in the `License` filter text field
-- **Then** the frontend shows only the matching vehicles
-- **And** continues to update the list as I type in the field
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I begin to type in the `License` filter text field
+**Then** the frontend shows only the matching vehicles
+**And** continues to update the list as I type in the field
+**And** still applying all other filters
+**And** no API request is sent
 
 #### Scenario: User chooses from the `From Purchase Date` date filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I select a date from the `From Purchase Date` date filter
-- **Then** the selected date shows in the field
-- **And** the frontend shows only the vehicles purchased after or on the selected date to that current day
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I select a date from the `From Purchase Date` date filter
+**Then** the selected date shows in the field
+**And** the frontend shows only the vehicles purchased after or on the selected date to that current day
+**And** still applying all other filters
+**And** no API request is sent
 
 #### Scenario: User chooses from the `Before Purchase Date` date filter
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I select a date from the `Before Purchase Date` date filter
-- **Then** the selected date shows in the field
-- **And** the frontend shows only the vehicles purchased before or on the selected date
-- **And** still applying all other filters
-- **And** no API request is sent
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I select a date from the `Before Purchase Date` date filter
+**Then** the selected date shows in the field
+**And** the frontend shows only the vehicles purchased before or on the selected date
+**And** still applying all other filters
+**And** no API request is sent
 
 ---
 
@@ -689,10 +693,10 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User clicks the `Maintenance` icon button
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I click the `Maintenance` icon button
-- **Then** I am taken to `Maintenance.vue`
-- **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I click the `Maintenance` icon button
+**Then** I am taken to `Maintenance.vue`
+**And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
 ---
 
@@ -700,88 +704,88 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User hovers over a vehicle list item as a `maintenance` or `admin`
 
-- **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-- **When** I hover over a vehicle in the table
-- **Then** I see a popup of the first image holding this vehicle's vin if one is available in the `VehicleImages` table
-- **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
+**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
+**When** I hover over a vehicle in the table
+**Then** I see a popup of the first image holding this vehicle's vin if one is available in the `VehicleImages` table
+**And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
 ### US-4.9 — Confirm create new `maintenance-info` as a `maintenance` or `admin`
 
 #### Scenario: `Confirm Create New Maintenance Info` modal opens
 
-- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
-- **When** I view the `Display` question
-- **Then** I see in the question `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
-- **And** no API request is sent
+**Given** I am viewing the `Confirm Create New Maintenance Info` modal
+**When** I view the `Display` question
+**Then** I see in the question `Do you want to create a new maintenance info of {make}, {model}, and {year}?`
+**And** no API request is sent
 
 #### Scenario: User clicks the `cancel` button
 
-- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
-- **When** I click the `cancel` button
-- **Then** the modal closes
-- **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
-- **And** no API request is sent
+**Given** I am viewing the `Confirm Create New Maintenance Info` modal
+**When** I click the `cancel` button
+**Then** the modal closes
+**And** returns to the `Add Vehicle` or `Edit Vehicle` modal
+**And** no API request is sent
 
 #### Scenario: User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed
 
-- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
-- **And** the `Confirm Create New Fuel Type` modal is closed
-- **When** I click the `confirm` button
-- **Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
-- **And** a `POST` API request is sent to the server to create a new maintenance info
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
-- **And** a `POST`API request is sent to the server to create a new vehicle
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+**Given** I am viewing the `Confirm Create New Maintenance Info` modal
+**And** the `Confirm Create New Fuel Type` modal is closed
+**When** I click the `confirm` button
+**Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+**And** a `POST` API request is sent to the server to create a new maintenance info
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+**And** a `POST`API request is sent to the server to create a new vehicle
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open
 
-- **Given** I am viewing the `Confirm Create New Maintenance Info` modal
-- **And** the `Confirm Create New Fuel Type` modal is open
-- **When** I click the `confirm` button
-- **Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
-- **And** a `POST` API request is sent to the server to create a new maintenance info
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
-- **And** a `POST`API request is sent to the server to create a fuel type
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
-- **And** a `POST`API request is sent to the server to create a new vehicle
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+**Given** I am viewing the `Confirm Create New Maintenance Info` modal
+**And** the `Confirm Create New Fuel Type` modal is open
+**When** I click the `confirm` button
+**Then** the `Confirm Create New Maintenance Info` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+**And** a `POST` API request is sent to the server to create a new maintenance info
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created maintenance-info."}`
+**And** a `POST`API request is sent to the server to create a fuel type
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
+**And** a `POST`API request is sent to the server to create a new vehicle
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 ### US-4.10 — Confirm create new `fuel type` as a `maintenance` or `admin`
 
 #### Scenario: `Confirm Create New Fuel Type` modal opens
 
-- **Given** I am viewing the `Confirm Create New Fuel Type` modal
-- **When** I view the `Display` question
-- **Then** I see in the question `Do you want to create a new fuel type of {fuel_type}?`
-- **And** no API request is sent
+**Given** I am viewing the `Confirm Create New Fuel Type` modal
+**When** I view the `Display` question
+**Then** I see in the question `Do you want to create a new fuel type of {fuel_type}?`
+**And** no API request is sent
 
 #### Scenario: User clicks the `cancel` button
 
-- **Given** I am viewing the `Confirm Create New Fuel Type` modal
-- **When** I click the `cancel` button
-- **Then** the modal closes
-- **And** returns to the `Add Vehicle` or `Edit Vehicle` modal
-- **And** no API request is sent
+**Given** I am viewing the `Confirm Create New Fuel Type` modal
+**When** I click the `cancel` button
+**Then** the modal closes
+**And** returns to the `Add Vehicle` or `Edit Vehicle` modal
+**And** no API request is sent
 
 #### Scenario: User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed
 
-- **Given** I am viewing the `Confirm Create New Fuel Type` modal
-- **And** the `Confirm Create New Maintenance Info` is not open
-- **When** I click the `confirm` button
-- **Then** the `Confirm Create New Fuel Type` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
-- **And** a `POST` API request is sent to the server to create a new maintenance info
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
-- **And** a `POST`API request is sent to the server to create a new vehicle
-- **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
+**Given** I am viewing the `Confirm Create New Fuel Type` modal
+**And** the `Confirm Create New Maintenance Info` is not open
+**When** I click the `confirm` button
+**Then** the `Confirm Create New Fuel Type` closes and the `Add Vehicle` or `Edit Vehicle` modal as well
+**And** a `POST` API request is sent to the server to create a new maintenance info
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created fuel type."}`
+**And** a `POST`API request is sent to the server to create a new vehicle
+**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
 #### Scenario: User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open
 
-- **Given** I am viewing the `Confirm Create New Fuel Type` modal
-- **And** the `Confirm Create New Maintenance Info` is open
-- **When** I click the `confirm` button
-- **Then** the `Confirm Create New Fuel Type` closes
-- **And** the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
-- **And** no API request is sent
+**Given** I am viewing the `Confirm Create New Fuel Type` modal
+**And** the `Confirm Create New Maintenance Info` is open
+**When** I click the `confirm` button
+**Then** the `Confirm Create New Fuel Type` closes
+**And** the `Confirm Create New Maintenance Info` modal appears behind the `Confirm Create New Fuel Type` modal
+**And** no API request is sent
 
 ---
 
