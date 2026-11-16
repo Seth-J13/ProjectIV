@@ -1,6 +1,6 @@
 # API Reference
 
-**Status:** Feature 1 auth and Feature 2 Google login are implemented. Mount path is `/api`.
+**Status:** Feature 1 auth, Feature 2 Google login, and Feature 3 user management are implemented. Mount path is `/api`.
 
 Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": "..." }`. Protected routes read `Authorization: Bearer <session token>`.
 
@@ -12,8 +12,10 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `POST` | `/api/login` | No (Basic email:password) | Sign in and create or reuse a session | Feature 1 |
 | `POST` | `/api/google` | No | Verify a Google ID token, then create or reuse a user and session | Feature 2 |
 | `POST` | `/api/logout` | Yes (`Bearer` session token) | Delete the caller's current session | Feature 1 |
+| `GET` | `/api/users` | Yes (`Bearer` session token, role `admin`) | List every user's account fields | Feature 3 |
+| `PUT` | `/api/users/:id` | Yes (`Bearer` session token, role `admin`) | Update one user's name, email, and role | Feature 3 |
 
-`POST /api/google` does not use `authenticate`. A session token from email/password login or from Google login authorizes `POST /api/logout`. A missing or expired Bearer token returns **401** and the logout handler does not run.
+A missing or expired Bearer token returns **401** `{ "message": "Unauthorized!" }` and the handler does not run.
 
 ### `POST /api/register`
 
@@ -75,3 +77,44 @@ A later Google sign-in for the same `googleSub` returns the same user id and reu
 Success: `{ "message": "Logged out successfully." }`
 
 The session row for that Bearer token is deleted.
+
+### `GET /api/users`
+
+Admin only. Success is a JSON array ordered by `lastName` A–Z. Each item is only:
+
+```json
+{
+  "id": 1,
+  "firstName": "Danny",
+  "lastName": "Devito",
+  "email": "DDevito@example.com",
+  "role": "user"
+}
+```
+
+`password`, `googleSub`, and session tokens are not included. A signed-in role other than `admin` is **403** `{ "message": "Admin access required." }` and returns no rows.
+
+### `PUT /api/users/:id`
+
+Admin only. Body:
+
+```json
+{
+  "firstName": "Danny",
+  "lastName": "Devito",
+  "email": "DDevito@example.com",
+  "role": "driver"
+}
+```
+
+Success is **200** and the same flat user object as a list item. `password` and `googleSub` in the body are ignored and are not changed. Changing `email` updates that user's `sessions.email` values and leaves the session tokens valid.
+
+| Situation | Status | `message` |
+| --- | --- | --- |
+| Signed in, role is not `admin` | 403 | `Admin access required.` |
+| Empty first name, last name, or email, or a role other than `user`, `driver`, `maintenance`, or `admin` | 400 | `First name, last name, email, and a valid role are required.` |
+| Admin changes their own role | 400 | `You cannot change your own role.` |
+| Email already belongs to another user | 409 | `Email already in use!` |
+| User id does not exist | 404 | `User with id={id} not found.` |
+
+The **400**, **403**, **404**, and **409** cases do not change the user.
