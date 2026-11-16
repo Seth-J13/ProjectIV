@@ -551,7 +551,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
   **Note ID** -- The identifying number of the `note` ("#`id`")
   **Request ID** -- The identifying number of the `request` the `note` is attached to ("R: `request_id`")
   **Subject** -- The first 20 characters of the `note` `reason` (if 20 exist) followed by ellipsis ("this is not a mainte...")
-  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
+  **Actions** -**Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
 - Row cards are displayed in the list in batches of `3` at a time. Scrolling down inside the container loads the next batch beneath the current one.
 - List entries are, by default, sorted by the most recently created (`date`)
 
@@ -564,27 +564,27 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 
 The `NoteForm` component contains the following information:
 
-- **Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is/will-be attached to
-- **Date** -- `MM/DD/YYYY` format of the _earliest_ `Contribution` tied to this note.
+**Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is/will-be attached to
+**Date** -- `MM/DD/YYYY` format of the _earliest_ `Contribution` tied to this note.
 
 Primary Action: Fill out a form with the following fields (auto-filled if in **Edit** mode):
 
-- **Subject** -- accepts string of length 254 or less; trim whitespaces in beginning/end; sent to backend as `reason`.
-- **Description** -- `TEXT` input; sent to the backend as `text`.
-- **Drop or Upload Image Here** -- eventually allows users to upload images to their notes. Implement this frame, but don't add functionality until Feature 11.
+**Subject** -- accepts string of length 254 or less; trim whitespaces in beginning/end; sent to backend as `reason`.
+**Description** -- `TEXT` input; sent to the backend as `text`.
+**Drop or Upload Image Here** -- eventually allows users to upload images to their notes. Implement this frame, but don't add functionality until Feature 11.
 
 **Edit State**
 
 - Header: **Edit Note**
-- **Cancel** button clears all fields in the current form and closes the component, sending no request to the backend.
-- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
-- **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
+  **Cancel** button clears all fields in the current form and closes the component, sending no request to the backend.
+  **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
+  **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
 
 **Add State**
 
 - Header: **Add Note**
-- **Cancel** button clears all fields in the current form and closes the component
-- **Add** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
+  **Cancel** button clears all fields in the current form and closes the component
+  **Add** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
 
 **Implementation note:** no view or frontend-route for `Notes`; `Notes` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
 
@@ -595,13 +595,13 @@ The `Note` Details contain the following information:
 Header: **Note**
 Body:
 
-- **Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is attached to
-- **Date** -- `MM/DD/YYYY` format of the date the `note` was written/last-updated on.
-- **Subject** -- the reason a `note` was submitted.
-- **Description** -- Textual details of the note.
-- **Image(s)** -- eventually will be images a user uploaded to their note. Implement this frame, but don't add functionality until Feature 11.
-- **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
-- **Close** -- closes the dialog
+**Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is attached to
+**Date** -- `MM/DD/YYYY` format of the date the `note` was written/last-updated on.
+**Subject** -- the reason a `note` was submitted.
+**Description** -- Textual details of the note.
+**Image(s)** -- eventually will be images a user uploaded to their note. Implement this frame, but don't add functionality until Feature 11.
+**Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
+**Close** -- closes the dialog
 
 **Implementation note:** no view or frontend-route for `Notes`; `Notes` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
 

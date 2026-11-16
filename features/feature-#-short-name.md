@@ -23,6 +23,7 @@
 **Acceptance scenarios:** see ### US-N.N (eg. ### US-1.1) under Acceptance Criteria
 
 ### US-1.2: ...
+
 **As a**
 **I want to**
 **So that**
@@ -38,16 +39,16 @@
 ### Functional Requirements
 
 #### eg. (**FR-001**: Users MUST authenticate with **username** + **password** (not email-only login).)
+
 #### The specifics on what it is supposed to do
 
-- **FR-001**: <System MUST>
-- **FR-002**: <Users MUST be able to ...>
-- **FR-003**: <... MUST NOT ...>
+**FR-001**: <System MUST>
+**FR-002**: <Users MUST be able to ...>
+**FR-003**: <... MUST NOT ...>
+
 - etc...
 
 ---
-
-
 
 ## Assumptions
 
@@ -62,8 +63,8 @@
 
 ## Success Criteria
 
-- **SC-001**: Every Gherkin scenario has at least one automated test before merge
-- **SC-002**: <measurable outcome for this feature>
+**SC-001**: Every Gherkin scenario has at least one automated test before merge
+**SC-002**: <measurable outcome for this feature>
 
 ---
 
@@ -79,20 +80,20 @@ Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
 
 ## Key Entities
 
-- **User**: registered account (name, email, username, role); owns future lists and todos.
-- **Session**: server-side record tying a JWT token to a user; expires after 24 hours.
+**User**: registered account (name, email, username, role); owns future lists and todos.
+**Session**: server-side record tying a JWT token to a user; expires after 24 hours.
 
 ---
 
-
-
 ## Data Model Requirements
+
 ### Look under ./backend/app/models/(file name).js
+
 - This shows the table you will need to model
 
 ## VVV Example table (Change or Delete) VVV
-### `users` table
 
+### `users` table
 
 | Field      | Type        | Rules                              |
 | ---------- | ----------- | ---------------------------------- |
@@ -110,52 +111,45 @@ Feature 1 establishes identity; Features 2–3 enforce per-user data boundaries.
 
 ## Acceptance Criteria (Gherkin)
 
-
-
 ### US-1.1 — {Related Functional Requirement}
-
-
 
 #### Scenario: {What is happening or has happend}
 
-- **Given** {Where are you on the website?}
-- **When** {Main action?}
-- **And** {What additional action did you take?}
-- **Then** {Website response}
-- **And** {additional response}
-- **And** 
-- **etc...** 
-
+**Given** {Where are you on the website?}
+**When** {Main action?}
+**And** {What additional action did you take?}
+**Then** {Website response}
+**And** {additional response}
+**And**
+**etc...**
 
 ## VVV Example AC (Change or Delete) VVV
+
 #### Scenario: User submits registration with missing email
 
-- **Given** I am on the registration page
-- **When** I leave the email field empty
-- **And** I submit the form
-- **Then** inline validation blocks the request
-- **And** I see the message **"Email is required."**
-- **And** no API request is sent
+**Given** I am on the registration page
+**When** I leave the email field empty
+**And** I submit the form
+**Then** inline validation blocks the request
+**And** I see the message **"Email is required."**
+**And** no API request is sent
+
 ## ^^^ (Change or Delete) ^^^
 
 ---
 
-
-
 ### US-N.2 — {Related Functional Requirement}
 
+#### Scenario:
 
-
-#### Scenario: 
-
-- **Given** 
-- **And** 
-- **When** 
-- **And** 
-- **Then** 
-- **And** 
-- **And**
-- **And** 
+**Given**
+**And**
+**When**
+**And**
+**Then**
+**And**
+**And**
+**And**
 
 ---
 

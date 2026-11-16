@@ -83,20 +83,20 @@
 
 ### Functional Requirements
 
-- **FR-001**: All request endpoints MUST require a valid session (`authenticate` middleware).
-- **FR-002**: Every request MUST have a `requestType` of `trip` or `maintenance`. Required fields depend on the type (see Request Types below).
-- **FR-003**: `requesterId` MUST be set server-side from `req.user.id`; it MUST NOT be accepted from the client body.
-- **FR-004**: `vehicleId`, `driverId`, and `destId` (when provided) MUST reference existing records; otherwise respond `400`.
-- **FR-005**: `endDate`/`endTime` MUST NOT be earlier than `startDate`/`startTime`; otherwise respond `400`.
-- **FR-006**: `numPeople` MUST be a positive integer for `trip` requests.
-- **FR-007**: This feature MUST deliver request CRUD and a **single-view** requests UI in `Requests.vue` (dialog-based add/edit/delete). No sidebar/main split.
-- **FR-008**: The vehicle's license, make, and model MUST be displayed in the form and rows, derived from `vehicleId` (not entered by the user, not stored on the request).
-- **FR-009**: Driver and destination MUST be chosen through dropdown menus populated from `GET /drivers` and `GET /destinations`.
-- **FR-010**: Date and time MUST be chosen through calendar/time pickers, not free-text.
-- **FR-011**: Signed-out users MUST NOT have access to any `/requests` routes.
-- **FR-012**: A user MUST NOT read, edit, or delete another user's request unless they are an administrator.
-- **FR-013**: `currentlyActive` MUST default to `true` on creation.
-- **FR-014**: `requestor_id` MUST automatically default to the signed-in user.
+**FR-001**: All request endpoints MUST require a valid session (`authenticate` middleware).
+**FR-002**: Every request MUST have a `requestType` of `trip` or `maintenance`. Required fields depend on the type (see Request Types below).
+**FR-003**: `requesterId` MUST be set server-side from `req.user.id`; it MUST NOT be accepted from the client body.
+**FR-004**: `vehicleId`, `driverId`, and `destId` (when provided) MUST reference existing records; otherwise respond `400`.
+**FR-005**: `endDate`/`endTime` MUST NOT be earlier than `startDate`/`startTime`; otherwise respond `400`.
+**FR-006**: `numPeople` MUST be a positive integer for `trip` requests.
+**FR-007**: This feature MUST deliver request CRUD and a **single-view** requests UI in `Requests.vue` (dialog-based add/edit/delete). No sidebar/main split.
+**FR-008**: The vehicle's license, make, and model MUST be displayed in the form and rows, derived from `vehicleId` (not entered by the user, not stored on the request).
+**FR-009**: Driver and destination MUST be chosen through dropdown menus populated from `GET /drivers` and `GET /destinations`.
+**FR-010**: Date and time MUST be chosen through calendar/time pickers, not free-text.
+**FR-011**: Signed-out users MUST NOT have access to any `/requests` routes.
+**FR-012**: A user MUST NOT read, edit, or delete another user's request unless they are an administrator.
+**FR-013**: `currentlyActive` MUST default to `true` on creation.
+**FR-014**: `requestor_id` MUST automatically default to the signed-in user.
 
 ### Request Types
 
@@ -134,10 +134,10 @@
 
 ## Success Criteria
 
-- **SC-001**: Every Gherkin scenario has at least one automated test before merge.
-- **SC-002**: A signed-in user can create (both types), view, edit, and delete requests on one screen.
-- **SC-003**: A user cannot see or modify another user's requests (unless admin).
-- **SC-004**: `npm test` passes for the request API and requests-view behavior.
+**SC-001**: Every Gherkin scenario has at least one automated test before merge.
+**SC-002**: A signed-in user can create (both types), view, edit, and delete requests on one screen.
+**SC-003**: A user cannot see or modify another user's requests (unless admin).
+**SC-004**: `npm test` passes for the request API and requests-view behavior.
 
 ---
 
@@ -245,13 +245,13 @@ Requests are owned by the user who created them (`requesterId`).
   **Component** (`ListRequestForm.vue`) This will be in the admin landing page. There should be a switch that toggles between seeing the trip requests and the maintenance requests.
 - Search Bar: The form should also have a search bar for the admin to search for specific requests in the database.
 - Display requests as rows (e.g. `<v-list>` or table): each row shows the **request type**, **vehicle** (license, make, model), **date range**, and, for trips, **destination** and **driver**. Rows have icon actions:
-  - **Edit** icon — opens edit `<v-dialog>` pre-filled with current values; **Save** / **Cancel**
-  - **Delete** icon — opens confirmation `<v-dialog>`
+  **Edit** icon — opens edit `<v-dialog>` pre-filled with current values; **Save** / **Cancel**
+  **Delete** icon — opens confirmation `<v-dialog>`
 - Icon-only row actions use `size="small"` and accessible `aria-label`s (**Edit request**, **Delete request**).
-- **Filter controls:** an **Active only** toggle and a type selector (**All** / **Trip** / **Maintenance**) above the list.
-- **Empty state:** **"No requests yet. Create a request."** when no accessible requests exist.
-- **Loading state:** skeleton or progress indicator while requests, vehicles, drivers, and destinations are fetching.
-- **Error state:** `<v-alert type="error">` for API failures.
+  **Filter controls:** an **Active only** toggle and a type selector (**All** / **Trip** / **Maintenance**) above the list.
+  **Empty state:** **"No requests yet. Create a request."** when no accessible requests exist.
+  **Loading state:** skeleton or progress indicator while requests, vehicles, drivers, and destinations are fetching.
+  **Error state:** `<v-alert type="error">` for API failures.
 
 ### [Form: Trip Requests] Component Name `TripRequestForm.vue`
 
@@ -259,14 +259,14 @@ Requests are owned by the user who created them (`requesterId`).
 
 - Heading: **Requests**
 - Primary action: **+ New request** opens a `<v-dialog>`. The dialog starts with a request-type selector (**Trip** / **Maintenance**) and shows the matching form. **Create** / **Cancel** buttons. Use class `oc-cta` on **Create** and **+ New request** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- **Trip form fields:** vehicle dropdown (shows license, make, model), driver dropdown, destination dropdown, start date + time pickers, end date + time pickers, number of people.
+  **Trip form fields:** vehicle dropdown (shows license, make, model), driver dropdown, destination dropdown, start date + time pickers, end date + time pickers, number of people.
 
 ### [Form: Maintenance Requests] Component Name `MaintenanceRequestForm.vue`
 
 **Component** (`MaintenanceRequestForm.vue`) — embedded into Maintenance and Admin's Landing Page.
 Maintenance's and Admin's landing page both have a toggle switch that lets them switch between the two components. You don't have to implement that, just know those pages will have both maintenance and trip requests.
 
-- **Maintenance form fields:** vehicle dropdown (shows license, make, model), start date + time picker. _(Maintenance has no driver, destination, or rider-count fields.)_
+**Maintenance form fields:** vehicle dropdown (shows license, make, model), start date + time picker. _(Maintenance has no driver, destination, or rider-count fields.)_
 
 **Implementation note:** one route/view for requests; request CRUD dialogs are child components or inline `<v-dialog>` blocks in `Requests.vue` unless the team splits presentational dialogs later. Trip request form will be added to the `User-Landing.vue`. Maintenance request form will be added to `Maintenacne-Landing.vue`. The admin will have a form that lists all requests and has a form slider. The slider will change the observable list from the Trip requests to the Maintenance requests that are in the database.
 
@@ -278,9 +278,9 @@ Maintenance's and Admin's landing page both have a toggle switch that lets them 
 
 ## Key Entities
 
-- **request**: a scheduled vehicle use, either a `trip` or a `maintenance` block.
-- **requester**: the authenticated user who created the request.
-- **admin**: authenticated administrator permitted to view and modify all requests and create maintenance requests.
+**request**: a scheduled vehicle use, either a `trip` or a `maintenance` block.
+**requester**: the authenticated user who created the request.
+**admin**: authenticated administrator permitted to view and modify all requests and create maintenance requests.
 
 ---
 
@@ -313,54 +313,54 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 #### Scenario: User creates a trip request
 
-- **Given** I am signed in
-- **And** a vehicle, a driver, and a destination exist
-- **When** I click **+ New request**
-- **And** I select the type **Trip**
-- **And** I choose a vehicle, a driver, and a destination from the dropdowns
-- **And** I pick a start date/time and an end date/time from the calendars
-- **And** I enter the number of people `6`
-- **And** I confirm the dialog
-- **Then** the API returns `201` with a request object containing `requestId`, `requestType`, `vehicle`, `driver`, `destination`, dates/times, and `numPeople`
-- **And** the new request appears in the requests view
-- **And** the add-request dialog closes
+**Given** I am signed in
+**And** a vehicle, a driver, and a destination exist
+**When** I click **+ New request**
+**And** I select the type **Trip**
+**And** I choose a vehicle, a driver, and a destination from the dropdowns
+**And** I pick a start date/time and an end date/time from the calendars
+**And** I enter the number of people `6`
+**And** I confirm the dialog
+**Then** the API returns `201` with a request object containing `requestId`, `requestType`, `vehicle`, `driver`, `destination`, dates/times, and `numPeople`
+**And** the new request appears in the requests view
+**And** the add-request dialog closes
 
 #### Scenario: Trip form shows vehicle details
 
-- **Given** I am signed in
-- **And** vehicle `ABC-1234` (Ford Transit) exists
-- **When** I select that vehicle in the trip form
-- **Then** I see its license, make, and model displayed
+**Given** I am signed in
+**And** vehicle `ABC-1234` (Ford Transit) exists
+**When** I select that vehicle in the trip form
+**Then** I see its license, make, and model displayed
 
 #### Scenario: User creates a trip request with a missing required field
 
-- **Given** I am signed in
-- **When** I open the new request dialog with type **Trip**
-- **And** I leave the driver, destination, or any date empty
-- **And** I attempt to confirm
-- **Then** inline validation blocks the request
-- **And** I see the message **"<field> is required."**
-- **And** no API request is sent
+**Given** I am signed in
+**When** I open the new request dialog with type **Trip**
+**And** I leave the driver, destination, or any date empty
+**And** I attempt to confirm
+**Then** inline validation blocks the request
+**And** I see the message **"<field> is required."**
+**And** no API request is sent
 
 #### Scenario: User creates a trip request with an end before the start
 
-- **Given** I am signed in
-- **When** I submit a trip request whose end date/time is before its start date/time
-- **Then** the API returns `400` with `{ "message": "end must be after start." }`
-- **And** the error is displayed in a `<v-alert type="error">`
+**Given** I am signed in
+**When** I submit a trip request whose end date/time is before its start date/time
+**Then** the API returns `400` with `{ "message": "end must be after start." }`
+**And** the error is displayed in a `<v-alert type="error">`
 
 #### Scenario: User creates a trip request with an invalid number of people
 
-- **Given** I am signed in
-- **When** I submit a trip request with `numPeople` of `0`
-- **Then** the API returns `400` with `{ "message": "number of people must be at least 1." }`
-- **And** the error is displayed in a `<v-alert type="error">`
+**Given** I am signed in
+**When** I submit a trip request with `numPeople` of `0`
+**Then** the API returns `400` with `{ "message": "number of people must be at least 1." }`
+**And** the error is displayed in a `<v-alert type="error">`
 
 #### Scenario: User creates a request referencing a nonexistent vehicle
 
-- **Given** I am signed in
-- **When** I `POST /requests` with a `vehicleId` that does not exist
-- **Then** the API returns `400` with `{ "message": "vehicle does not exist." }`
+**Given** I am signed in
+**When** I `POST /requests` with a `vehicleId` that does not exist
+**Then** the API returns `400` with `{ "message": "vehicle does not exist." }`
 
 ---
 
@@ -368,38 +368,38 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 #### Scenario: Admin creates a maintenance request
 
-- **Given** I am signed in as an admin
-- **And** vehicle `ABC-1234` exists
-- **When** I click **+ New request**
-- **And** I select the type **Maintenance**
-- **And** I choose vehicle `ABC-1234`
-- **And** I pick a start date from the calendar
-- **And** I confirm the dialog
-- **Then** the API returns `201` with a request object whose `requestType` is `maintenance`
-- **And** `driverId`, `destId`, and `numPeople` are null
-- **And** the request appears in the requests view
+**Given** I am signed in as an admin
+**And** vehicle `ABC-1234` exists
+**When** I click **+ New request**
+**And** I select the type **Maintenance**
+**And** I choose vehicle `ABC-1234`
+**And** I pick a start date from the calendar
+**And** I confirm the dialog
+**Then** the API returns `201` with a request object whose `requestType` is `maintenance`
+**And** `driverId`, `destId`, and `numPeople` are null
+**And** the request appears in the requests view
 
 #### Scenario: Maintenance form hides trip-only fields
 
-- **Given** I am signed in as an admin
-- **When** I select the type **Maintenance** in the new request dialog
-- **Then** I see the vehicle dropdown and the start date/time picker
-- **And** I do not see the driver, destination, or number-of-people fields
+**Given** I am signed in as an admin
+**When** I select the type **Maintenance** in the new request dialog
+**Then** I see the vehicle dropdown and the start date/time picker
+**And** I do not see the driver, destination, or number-of-people fields
 
 #### Scenario: Maintenance request without a start date
 
-- **Given** I am signed in as an admin
-- **When** I open the dialog with type **Maintenance** and leave the start date empty
-- **And** I attempt to confirm
-- **Then** inline validation blocks the request
-- **And** I see the message **"start date is required."**
-- **And** no API request is sent
+**Given** I am signed in as an admin
+**When** I open the dialog with type **Maintenance** and leave the start date empty
+**And** I attempt to confirm
+**Then** inline validation blocks the request
+**And** I see the message **"start date is required."**
+**And** no API request is sent
 
 #### Scenario: Non-admin cannot create a maintenance request
 
-- **Given** I am signed in as a non-admin user
-- **When** I `POST /requests` with `requestType` `maintenance`
-- **Then** the API returns `403` with an unauthorized message
+**Given** I am signed in as a non-admin user
+**When** I `POST /requests` with `requestType` `maintenance`
+**Then** the API returns `403` with an unauthorized message
 
 ---
 
@@ -407,32 +407,32 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 #### Scenario: Requests view loads with existing requests
 
-- **Given** I am signed in
-- **And** I own two requests
-- **When** I navigate to the requests view
-- **Then** both requests appear in the requests view
-- **And** each row shows the request type, vehicle, and dates with edit and delete icon actions
+**Given** I am signed in
+**And** I own two requests
+**When** I navigate to the requests view
+**Then** both requests appear in the requests view
+**And** each row shows the request type, vehicle, and dates with edit and delete icon actions
 
 #### Scenario: User does not see other users' requests
 
-- **Given** I am signed in as a non-admin user
-- **And** another user owns a request
-- **When** I navigate to the requests view
-- **Then** I do not see the other user's request
+**Given** I am signed in as a non-admin user
+**And** another user owns a request
+**When** I navigate to the requests view
+**Then** I do not see the other user's request
 
 #### Scenario: Admin sees all requests
 
-- **Given** I am signed in as an admin
-- **And** several users own requests
-- **When** I navigate to the requests view
-- **Then** I see every user's requests
+**Given** I am signed in as an admin
+**And** several users own requests
+**When** I navigate to the requests view
+**Then** I see every user's requests
 
 #### Scenario: No requests exist
 
-- **Given** I am signed in
-- **And** I have no requests
-- **When** I navigate to the requests view
-- **Then** I see **"No requests yet. Create a request."**
+**Given** I am signed in
+**And** I have no requests
+**When** I navigate to the requests view
+**Then** I see **"No requests yet. Create a request."**
 
 ---
 
@@ -440,11 +440,11 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 #### Scenario: Request rows show edit and delete actions
 
-- **Given** I am signed in
-- **And** I own a request
-- **When** I view the requests view
-- **Then** the row shows an **Edit request** icon action
-- **And** the row shows a **Delete request** icon action
+**Given** I am signed in
+**And** I own a request
+**When** I view the requests view
+**Then** the row shows an **Edit request** icon action
+**And** the row shows a **Delete request** icon action
 
 ---
 
@@ -452,43 +452,43 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 #### Scenario: User edits a request
 
-- **Given** I am signed in
-- **And** I own a trip request with `numPeople` `6`
-- **When** I click the edit icon on that row
-- **And** I change `numPeople` to `4` in the edit dialog
-- **And** I confirm
-- **Then** the API returns `200` with the updated request object
-- **And** the requests view shows `4` people for that request
+**Given** I am signed in
+**And** I own a trip request with `numPeople` `6`
+**When** I click the edit icon on that row
+**And** I change `numPeople` to `4` in the edit dialog
+**And** I confirm
+**Then** the API returns `200` with the updated request object
+**And** the requests view shows `4` people for that request
 
 #### Scenario: User deletes a request
 
-- **Given** I am signed in
-- **And** I own a request
-- **When** I click the delete icon on that row
-- **And** I confirm the delete dialog
-- **Then** the API returns `204`
-- **And** the request is removed from the requests view
+**Given** I am signed in
+**And** I own a request
+**When** I click the delete icon on that row
+**And** I confirm the delete dialog
+**Then** the API returns `204`
+**And** the request is removed from the requests view
 
 #### Scenario: User cannot edit another user's request
 
-- **Given** I am signed in as a non-admin user
-- **And** another user owns request `41`
-- **When** I `PUT /requests/41`
-- **Then** the API returns `404`
+**Given** I am signed in as a non-admin user
+**And** another user owns request `41`
+**When** I `PUT /requests/41`
+**Then** the API returns `404`
 
 #### Scenario: User cannot delete another user's request
 
-- **Given** I am signed in as a non-admin user
-- **And** another user owns request `41`
-- **When** I `DELETE /requests/41`
-- **Then** the API returns `404`
+**Given** I am signed in as a non-admin user
+**And** another user owns request `41`
+**When** I `DELETE /requests/41`
+**Then** the API returns `404`
 
 #### Scenario: Admin edits any request
 
-- **Given** I am signed in as an admin
-- **And** another user owns request `41`
-- **When** I `PUT /requests/41` with valid changes
-- **Then** the API returns `200` with the updated request object
+**Given** I am signed in as an admin
+**And** another user owns request `41`
+**When** I `PUT /requests/41` with valid changes
+**Then** the API returns `200` with the updated request object
 
 ---
 
@@ -496,17 +496,17 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 #### Scenario: Active-only filter
 
-- **Given** I am signed in
-- **And** I own one active request and one inactive request
-- **When** I turn on the **Active only** toggle
-- **Then** the list contains only the active request
+**Given** I am signed in
+**And** I own one active request and one inactive request
+**When** I turn on the **Active only** toggle
+**Then** the list contains only the active request
 
 #### Scenario: Request type filter
 
-- **Given** I am signed in as an admin
-- **And** a trip request and a maintenance request exist
-- **When** I select **Maintenance** in the type selector
-- **Then** the list contains only the maintenance request
+**Given** I am signed in as an admin
+**And** a trip request and a maintenance request exist
+**When** I select **Maintenance** in the type selector
+**Then** the list contains only the maintenance request
 
 ---
 
@@ -514,15 +514,15 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 #### Scenario: Unauthenticated user accesses the requests view
 
-- **Given** I have no session in `localStorage`
-- **When** I navigate to the requests view
-- **Then** I am redirected to the login page
+**Given** I have no session in `localStorage`
+**When** I navigate to the requests view
+**Then** I am redirected to the login page
 
 #### Scenario: Unauthenticated API request to requests
 
-- **Given** I have no valid session token
-- **When** I request `GET /requests`
-- **Then** the API returns `401` with an unauthorized message
+**Given** I have no valid session token
+**When** I request `GET /requests`
+**Then** the API returns `401` with an unauthorized message
 
 ---
 

@@ -17,7 +17,7 @@
 
 ### US-11.1: See VehicleImage on Vehicle listings
 
-**As an** authenticated user with the `admin` or `maintenance` role
+**As a** authenticated user with the `admin` or `maintenance` role
 **I want to** see every `VehicleImage` attached to a `vehicle`
 **So that** I know which `vehicle` I'm looking at.
 
@@ -27,7 +27,7 @@
 
 ### US-11.2: Create VehicleImage on Vehicle listings
 
-**As an** authenticated user with the `admin` or `maintenance` role
+**As a** authenticated user with the `admin` or `maintenance` role
 **I want to** add more than one `VehicleImage` to a `vehicle`
 **So that** I can help others know what `vehicle` they're looking at.
 
@@ -37,7 +37,7 @@
 
 ### US-11.3: Delete VehicleImage on Vehicle listings
 
-**As an** authenticated user with the `admin` or `maintenance` role
+**As a** authenticated user with the `admin` or `maintenance` role
 **I want to** remove a `VehicleImage` from a `vehicle`
 **So that** I can replace incorrect `VehicleImages`.
 
@@ -47,7 +47,7 @@
 
 ### US-11.4: See NoteImage on Note details
 
-**As an** authenticated user
+**As a** authenticated user
 **I want to** see every `NoteImage` attached to a `note`
 **So that** I know more information about the note I'm looking at.
 
@@ -57,7 +57,7 @@
 
 ### US-11.5: Create NoteImage on Note details
 
-**As an** authenticated user
+**As a** authenticated user
 **I want to** add more than one `NoteImage` to a `note`
 **So that** I can give others more information about the note.
 
@@ -67,7 +67,7 @@
 
 ### US-11.6: Delete NoteImage on Note
 
-**As an** authenticated user
+**As a** authenticated user
 **I want to** remove a `NoteImage` from a `note` according to my role permissions
 **So that** I can replace incorrect `NoteImages`.
 
@@ -77,7 +77,7 @@
 
 ### US-11.7: See VehicleImage on Request Form
 
-**As an** authenticated user filling out the `RequestForm.vue` component
+**As a** authenticated user filling out the `RequestForm.vue` component
 **I want to** see the `VehicleImage` of my selected `vehicle`
 **So that** I know I've selected the correct `vehicle`.
 
@@ -87,7 +87,7 @@
 
 ### US-11.8: See AreaImage on Area listings
 
-**As an** authenticated user with the `admin` or `maintenance` role
+**As a** authenticated user with the `admin` or `maintenance` role
 **I want to** see every `AreaImage` attached to an `area`
 **So that** I know which `area` I'm looking at.
 
@@ -97,7 +97,7 @@
 
 ### US-11.9: Create AreaImage on Area listings
 
-**As an** authenticated user with the `admin` or `maintenance` role
+**As a** authenticated user with the `admin` or `maintenance` role
 **I want to** add more than one `AreaImage` to an `area`
 **So that** I can help others know what `area` they're looking at.
 
@@ -107,7 +107,7 @@
 
 ### US-11.10: Delete AreaImage on Area listings
 
-**As an** authenticated user with the `admin` or `maintenance` role
+**As a** authenticated user with the `admin` or `maintenance` role
 **I want to** remove an `AreaImage` from an `area`
 **So that** I can replace incorrect `AreaImages`.
 
@@ -117,7 +117,7 @@
 
 ### US-11.11: See AreaImage on Request Form
 
-**As an** authenticated user filling out the `RequestForm.vue` component
+**As a** authenticated user filling out the `RequestForm.vue` component
 **I want to** see the `AreaImage` of my selected `area`
 **So that** I know I've selected the correct `area`.
 
@@ -188,9 +188,9 @@ Each image is owned by its parent. A `NoteImage` is owned by a `note`, a `Vehicl
 
 **Image** [type]s:
 
-- **NoteImage**: Entity containing visual and date information attached to a `note`.
-- **VehicleImage**: Entity containing visual and date information attached to a `vehicle`.
-- **AreaImage**: Entity containing visual and date information attached to an `area`.
+**NoteImage**: Entity containing visual and date information attached to a `note`.
+**VehicleImage**: Entity containing visual and date information attached to a `vehicle`.
+**AreaImage**: Entity containing visual and date information attached to an `area`.
 
 ---
 
@@ -375,8 +375,8 @@ imagesDetails contained inside imagesContainer and imagesBox
 - Primary action: **Drop or Upload Image Here** inside container. **ImagesDetails** components each containing their own image associated with the viewed entity displayed in a grid inside container. Use class `oc-cta` on whole container (per [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc)).
 - Dragging an image file into the container auto `POST`s a new `[type]Image` entry based on where the component is embedded.
 - Pressing inside container (but not in an image) presents two options.
-  - **From Cloud** -- w/ `oc-cta` class. Include **Google OAuth integration** for authentication. Modal has tabbed interface for **Google Drive**, **Dropbox**, and **OneDrive**, with a file browser for selection. Support drag-and-drop for local files, validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads with a progress bar. Use slots for UI customization and ensure the modal has proper focus trapping and accessibility. Pressing outside this dialog emphasizes the dialog, requiring to hit an `X` in the top-right corner to close it.
-  - **From Computer** -- System file-picker dialog. Validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads. Ensure the system dialog has proper focus trapping and accessibility.
+  **From Cloud** -- w/ `oc-cta` class. Include **Google OAuth integration** for authentication. Modal has tabbed interface for **Google Drive**, **Dropbox**, and **OneDrive**, with a file browser for selection. Support drag-and-drop for local files, validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads with a progress bar. Use slots for UI customization and ensure the modal has proper focus trapping and accessibility. Pressing outside this dialog emphasizes the dialog, requiring to hit an `X` in the top-right corner to close it.
+  **From Computer** -- System file-picker dialog. Validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads. Ensure the system dialog has proper focus trapping and accessibility.
 - Empty state in **ImagesContainer**: **Drop or Upload Image Here**
 - Loading state: skeleton or progress indicator while images are fetching.
 - Error state: `<v-alert type="error">` for API failures.
@@ -395,10 +395,10 @@ imagesDetails contained inside imagesContainer and imagesBox
 - Heading: [when expanded, show date of currently-viewed image above expanded image]
 - Primary action: Press left arrow and right arrow to navigate through list of images inside component. Press on image to expand it in center of screen. Press `X` on expanded image (or press outside it) to close. Use class `oc-cta` on whole container (per [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc)).
 - Wrap `[type]Images` in a L/R navigable list. The items below hold no text, labels are just the names of the elements:
-  - **Image Content** -- The image rendered inside the square container; clicking on **Image Content** opens a larger modal overlaying the screen with an expanded version of the selected `[type]Image`. Remove options from context menu related to saving the image.
-  - **X** -- An `X` in the top-right corner of each image container coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Only shown on expanded images or **if** the parent **ImagesDetails** component is embedded in an entity's creation/editing form/modal. Pressing this on the expanded `[type]Image` modal closes that modal. Pressing this on an image inside the **Image Content** sends a `DELETE` request for that image **only** if this component is embedded in an **ImagesContainer** on the entity's edit/add form/page (for example, `NoteImages` on `NoteForm.vue` in **Add** or **Edit** mode, `VehicleImages` on `Maintenance.vue`, and `AreaImages` on `AreaForm.vue`).
-  - **<** -- A `<` vertical-center and horizontal-left of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the previous image in the list (unless it's the 0th index).
-  - **>** -- A `>` vertical-center and horizontal-right of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the next image in the list (unless it's the final index).
+  **Image Content** -- The image rendered inside the square container; clicking on **Image Content** opens a larger modal overlaying the screen with an expanded version of the selected `[type]Image`. Remove options from context menu related to saving the image.
+  **X** -- An `X` in the top-right corner of each image container coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Only shown on expanded images or **if** the parent **ImagesDetails** component is embedded in an entity's creation/editing form/modal. Pressing this on the expanded `[type]Image` modal closes that modal. Pressing this on an image inside the **Image Content** sends a `DELETE` request for that image **only** if this component is embedded in an **ImagesContainer** on the entity's edit/add form/page (for example, `NoteImages` on `NoteForm.vue` in **Add** or **Edit** mode, `VehicleImages` on `Maintenance.vue`, and `AreaImages` on `AreaForm.vue`).
+  **<** -- A `<` vertical-center and horizontal-left of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the previous image in the list (unless it's the 0th index).
+  **>** -- A `>` vertical-center and horizontal-right of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the next image in the list (unless it's the final index).
 
 - Empty state in **ImagesDetails**: **No images**
 - Loading state: skeleton or progress indicator while images are fetching.

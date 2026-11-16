@@ -13,37 +13,37 @@
 
 ### US-10.1: Create Vehicle logs
 
-**As a** maintenance User or admin 
-**I want to** create vehicle service logs 
-**So that** I can record when a vehicle was serviced, what was fixed, and whether the service was completed. 
+**As a** maintenance User or admin
+**I want to** create vehicle service logs
+**So that** I can record when a vehicle was serviced, what was fixed, and whether the service was completed.
 
 **Priority:** P1
 **Independent test:** Sign in as maintenance, save a log with a service date, vehicle id, description, and completed status, and see that log listed for that vehicle.
 **Acceptance scenarios:** see ### US-10.1 under Acceptance Criteria
 
-### US-10.2: Vehicle logs Ownership permissions 
+### US-10.2: Vehicle logs Ownership permissions
 
-**As the** owner of the maintenance log or an admin 
-**I want to** assign ownership and permissions on a maintenance log to others. 
-**So that** Only authorized users can modify vehicle logs they worked on. 
+**As a** owner of the maintenance log or an admin
+**I want to** assign ownership and permissions on a maintenance log to others.
+**So that** Only authorized users can modify vehicle logs they worked on.
 
 **Priority:** P3
 **Independent test:** As the owner, add another user as an owner. A maintenance user who is not an owner and is not an admin cannot change that log.
 **Acceptance scenarios:** see ### US-10.2 under Acceptance Criteria
 
-### US-10.3: Read Vehicle Logs 
+### US-10.3: Read Vehicle Logs
 
 **As a** maintenance User or admin  
-**I want** View Vehicle service logs for all vehicles 
-**So that** we can see when a vehicle was serviced, what was fixed, and if it was completed or not 
+**I want** View Vehicle service logs for all vehicles
+**So that** we can see when a vehicle was serviced, what was fixed, and if it was completed or not
 
 **Priority:** P1
 **Independent test:** Sign in as maintenance, open the log list, and see the service date, vehicle id, description, completed status, and creator.
 **Acceptance scenarios:** see ### US-10.3 under Acceptance Criteria
 
-### US-10.4: Modify Vehicle Log 
+### US-10.4: Modify Vehicle Log
 
-**As the**  owner of the maintenance log or an Admin 
+**As a** owner of the maintenance log or an Admin
 **I want to** modify vehicle logs
 **So that** I can fix any mistakes and Update maintenance information as needed
 
@@ -51,12 +51,11 @@
 **Independent test:** As the owner, change the description and see the saved description on the log.
 **Acceptance scenarios:** see ### US-10.4 under Acceptance Criteria
 
+### US-10.5: Delete Vehicle Logs
 
-### US-10.5: Delete Vehicle Logs 
-
-**As a** Vehicle log System 
+**As a** Vehicle log System
 **I want to** maintenance logs older than 18 months to be deleted automatically
-**So that** unnecessary records are removed and database storage is reduced. 
+**So that** unnecessary records are removed and database storage is reduced.
 
 **Priority:** P1
 **Independent test:** A log whose service date is more than 18 months ago is removed and no longer appears on that vehicle’s logs.
@@ -71,6 +70,7 @@
 FR-001: Maintenance users and admins shall create vehicle logs.
 
 FR-002: A vehicle log shall contain:
+
 - service date
 - vehicle identifier
 - description
@@ -103,14 +103,13 @@ FR-010: Vehicle log creation and modification actions shall store timestamps.
 
 - Roles are user, driver, maintenance, and admin.
 
-- vehicle service log button or menu option already exists for accessing the Vehicle Service Log page. 
+- vehicle service log button or menu option already exists for accessing the Vehicle Service Log page.
 
 - Only maintenance and Admin see the View service log button to take them to the service log page
 
-- Every vehicle has a unique vin (vin). 
+- Every vehicle has a unique vin (vin).
 
-- the Vehicle that we are attempting to view a service log of exists 
-
+- the Vehicle that we are attempting to view a service log of exists
 
 ---
 
@@ -118,27 +117,22 @@ FR-010: Vehicle log creation and modification actions shall store timestamps.
 
 User attempts to create a vehicle service log that is blank -> `400` error.
 
-Non admin attempts to delete a service log -> `403` error 
+Non admin attempts to delete a service log -> `403` error
 
 Non admin or maintenance user attempts to access the vehicle service log page -> `403` error
-
-
-
-
 
 ---
 
 ## Success Criteria
 
-- **SC-001**: Every Gherkin scenario has at least one automated test before merge.
-- **SC-002**: Service log is able to be created 
-- **SC-003**: When a service log is created it is applied to the vehicle id 
-- **SC-004**: Service log is able to be read by maintenance and admin
-- **SC-005**: when reading a service log it we can find the service type, the description, the completion status, the creation date, the owners.
-- **SC-006**: A vehicle service log is able to be modified 
-- **SC-007**: Any modifications are changes are saved to the service log information. 
-- **SC-008**: When vehicle service logs are deleted they are removed they form the vehicle logs for the vehicle id it is connected to.
-
+**SC-001**: Every Gherkin scenario has at least one automated test before merge.
+**SC-002**: Service log is able to be created
+**SC-003**: When a service log is created it is applied to the vehicle id
+**SC-004**: Service log is able to be read by maintenance and admin
+**SC-005**: when reading a service log it we can find the service type, the description, the completion status, the creation date, the owners.
+**SC-006**: A vehicle service log is able to be modified
+**SC-007**: Any modifications are changes are saved to the service log information.
+**SC-008**: When vehicle service logs are deleted they are removed they form the vehicle logs for the vehicle id it is connected to.
 
 ---
 
@@ -146,29 +140,25 @@ Non admin or maintenance user attempts to access the vehicle service log page ->
 
 Vehicle logs are fleet records. A maintenance user or an admin may read every log. The creator is the first owner. Only an owner of that log, or an admin, may update it, delete it, or add another owner.
 
-
-| Rule | Requirement |
-| ---- | ----------- |
-| **Read scope** | Roles `maintenance` and `admin` may list every log and open any log by id. |
+| Rule             | Requirement                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Read scope**   | Roles `maintenance` and `admin` may list every log and open any log by id.                                                           |
 | **Create scope** | Roles `maintenance` and `admin` may create a log for an existing `vin`. The signed-in user is stored as `creatorId` and as an owner. |
-| **Write scope** | Update, manual delete, and adding an owner succeed only when the caller owns that log or has role `admin`. |
-| **Other roles** | Roles `user` and `driver` receive **403** on every vehicle-log route and do not see **View service log**. |
-| **Unknown log** | An allowed role asking for a missing log id receives **404**. |
-| **Retention** | A log whose service date is more than 18 months ago is deleted and does not appear in later lists. |
-
+| **Write scope**  | Update, manual delete, and adding an owner succeed only when the caller owns that log or has role `admin`.                           |
+| **Other roles**  | Roles `user` and `driver` receive **403** on every vehicle-log route and do not see **View service log**.                            |
+| **Unknown log**  | An allowed role asking for a missing log id receives **404**.                                                                        |
+| **Retention**    | A log whose service date is more than 18 months ago is deleted and does not appear in later lists.                                   |
 
 ## API Requirements
 
-
-| Method | Endpoint | Auth | Purpose |
-| ------ | -------- | ---- | ------- |
-| `POST` | `/api/vehicle-logs` | Yes, `maintenance` or `admin` | Create a log |
-| `GET` | `/api/vehicle-logs` | Yes, `maintenance` or `admin` | List logs |
-| `GET` | `/api/vehicle-logs/:id` | Yes, `maintenance` or `admin` | Read one log |
-| `PUT` | `/api/vehicle-logs/:id` | Yes, owner or `admin` | Update a log |
-| `DELETE` | `/api/vehicle-logs/:id` | Yes, `admin` | Delete a log |
-| `POST` | `/api/vehicle-logs/:id/owners` | Yes, owner or `admin` | Add an owner |
-
+| Method   | Endpoint                       | Auth                          | Purpose      |
+| -------- | ------------------------------ | ----------------------------- | ------------ |
+| `POST`   | `/api/vehicle-logs`            | Yes, `maintenance` or `admin` | Create a log |
+| `GET`    | `/api/vehicle-logs`            | Yes, `maintenance` or `admin` | List logs    |
+| `GET`    | `/api/vehicle-logs/:id`        | Yes, `maintenance` or `admin` | Read one log |
+| `PUT`    | `/api/vehicle-logs/:id`        | Yes, owner or `admin`         | Update a log |
+| `DELETE` | `/api/vehicle-logs/:id`        | Yes, `admin`                  | Delete a log |
+| `POST`   | `/api/vehicle-logs/:id/owners` | Yes, owner or `admin`         | Add an owner |
 
 **Create and update body:**
 
@@ -205,24 +195,22 @@ Vehicle logs are fleet records. A maintenance user or an admin may read every lo
 
 Quoted messages that tests must match:
 
-
-| Situation | Status | `message` |
-| --------- | ------ | --------- |
-| Missing or expired token | 401 | `Unauthorized` |
-| Role is `user` or `driver` | 403 | `Forbidden` |
-| Caller is not an owner and is not admin | 403 | `Forbidden` |
-| Unknown log id | 404 | `Vehicle log not found!` |
-| Unknown vehicle id | 404 | `Vehicle not found!` |
-| A required field is missing | 400 | `Vehicle log is incomplete!` |
-
+| Situation                               | Status | `message`                    |
+| --------------------------------------- | ------ | ---------------------------- |
+| Missing or expired token                | 401    | `Unauthorized`               |
+| Role is `user` or `driver`              | 403    | `Forbidden`                  |
+| Caller is not an owner and is not admin | 403    | `Forbidden`                  |
+| Unknown log id                          | 404    | `Vehicle log not found!`     |
+| Unknown vehicle id                      | 404    | `Vehicle not found!`         |
+| A required field is missing             | 400    | `Vehicle log is incomplete!` |
 
 ---
 
 ## Key Entities
 
-- **Vehicle log**: one service entry for an existing vehicle. It stores service date, vehicle id, description, completed status, creator, owners, and created and updated timestamps.
-- **User**: the signed-in account from Feature 1. Role `maintenance` or `admin` may create and read logs. The creator, any assigned owner, and any admin may update, delete, and assign owners.
-- **Vehicle**: not created by this feature. A log stores that vehicle’s id.
+**Vehicle log**: one service entry for an existing vehicle. It stores service date, vehicle id, description, completed status, creator, owners, and created and updated timestamps.
+**User**: the signed-in account from Feature 1. Role `maintenance` or `admin` may create and read logs. The creator, any assigned owner, and any admin may update, delete, and assign owners.
+**Vehicle**: not created by this feature. A log stores that vehicle’s id.
 
 ---
 
@@ -234,13 +222,13 @@ Quoted messages that tests must match:
 - Heading: **Vehicle Service Logs**
 - Table columns: **Service date**, **Vehicle**, **Description**, **Completed**, **Creator**
 - An empty list still shows the heading and **Create log**
-- **Create log** opens a dialog with **Service date**, **Vehicle**, **Description**, and **Completed** (all required)
+  **Create log** opens a dialog with **Service date**, **Vehicle**, **Description**, and **Completed** (all required)
 - Opening a row shows that log. An owner or an admin sees **Save**, **Delete**, and **Add owner**
-- **Save** writes the edited fields and the list shows the saved values
-- **Delete** removes the row from the list
-- **Add owner** asks for a user and adds that user as an owner
+  **Save** writes the edited fields and the list shows the saved values
+  **Delete** removes the row from the list
+  **Add owner** asks for a user and adds that user as an owner
 - A maintenance user who is not an owner and is not an admin does not see **Save**, **Delete**, or **Add owner**
-- **Error:** shows the API `message`, including **"Vehicle log is incomplete!"**, **"Vehicle not found!"**, **"Vehicle log not found!"**, and **"Forbidden"**
+  **Error:** shows the API `message`, including **"Vehicle log is incomplete!"**, **"Vehicle not found!"**, **"Vehicle log not found!"**, and **"Forbidden"**
 
 ### App chrome
 
@@ -255,28 +243,24 @@ This feature **owns** `vehicle_logs` and `vehicle_log_owners`. It stores `vin` a
 
 ### `vehicle_logs` table
 
-
-| Field | Type | Rules |
-| ----- | ---- | ----- |
-| `id` | INTEGER PK | Auto-increment |
-| `serviceDate` | DATE | Required |
-| `vin` | STRING | Required; references an existing vehicle |
-| `description` | TEXT | Required |
-| `completed` | BOOLEAN | Required |
-| `creatorId` | INTEGER FK | Required; references `users.id`. Set to the signed-in user on create |
-| `createdAt` | DATE | Set when the log is created |
-| `updatedAt` | DATE | Set when the log is created and on every update |
-
+| Field         | Type       | Rules                                                                |
+| ------------- | ---------- | -------------------------------------------------------------------- |
+| `id`          | INTEGER PK | Auto-increment                                                       |
+| `serviceDate` | DATE       | Required                                                             |
+| `vin`         | STRING     | Required; references an existing vehicle                             |
+| `description` | TEXT       | Required                                                             |
+| `completed`   | BOOLEAN    | Required                                                             |
+| `creatorId`   | INTEGER FK | Required; references `users.id`. Set to the signed-in user on create |
+| `createdAt`   | DATE       | Set when the log is created                                          |
+| `updatedAt`   | DATE       | Set when the log is created and on every update                      |
 
 ### `vehicle_log_owners` table
 
-
-| Field | Type | Rules |
-| ----- | ---- | ----- |
-| `id` | INTEGER PK | Auto-increment |
+| Field          | Type       | Rules                                  |
+| -------------- | ---------- | -------------------------------------- |
+| `id`           | INTEGER PK | Auto-increment                         |
 | `vehicleLogId` | INTEGER FK | Required; references `vehicle_logs.id` |
-| `userId` | INTEGER FK | Required; references `users.id` |
-
+| `userId`       | INTEGER FK | Required; references `users.id`        |
 
 The creator’s user id is inserted as the first owner row.
 
@@ -294,101 +278,101 @@ The creator’s user id is inserted as the first owner row.
 
 #### Scenario: Maintenance creates a log
 
-- **Given** I am signed in as `maintenance`
-- **And** a vehicle exists
-- **When** I open **Vehicle Service Logs** and press **Create log**
-- **And** I enter a service date, that vehicle, a description, and a completed status
-- **And** I save
-- **Then** the list shows that log for that vehicle id
-- **And** I am the creator
-- **And** I am an owner
+**Given** I am signed in as `maintenance`
+**And** a vehicle exists
+**When** I open **Vehicle Service Logs** and press **Create log**
+**And** I enter a service date, that vehicle, a description, and a completed status
+**And** I save
+**Then** the list shows that log for that vehicle id
+**And** I am the creator
+**And** I am an owner
 
 #### Scenario: Admin creates a log
 
-- **Given** I am signed in as `admin`
-- **And** a vehicle exists
-- **When** I create a log for that vehicle with a service date, description, and completed status
-- **Then** the log is stored for that vehicle id
+**Given** I am signed in as `admin`
+**And** a vehicle exists
+**When** I create a log for that vehicle with a service date, description, and completed status
+**Then** the log is stored for that vehicle id
 
 #### Scenario: Blank log
 
-- **Given** I am signed in as `maintenance`
-- **When** I press **Create log** and save with a required field empty
-- **Then** I see **"Vehicle log is incomplete!"**
-- **And** no log is added
+**Given** I am signed in as `maintenance`
+**When** I press **Create log** and save with a required field empty
+**Then** I see **"Vehicle log is incomplete!"**
+**And** no log is added
 
 ### US-10.2 — Vehicle logs Ownership permissions
 
 #### Scenario: Owner assigns another owner
 
-- **Given** I am signed in as the owner of a vehicle log
-- **And** another user exists
-- **When** I add that user as an owner
-- **Then** that user can modify the log
+**Given** I am signed in as the owner of a vehicle log
+**And** another user exists
+**When** I add that user as an owner
+**Then** that user can modify the log
 
 #### Scenario: Non-owner cannot modify
 
-- **Given** I am signed in as `maintenance`
-- **And** I am not an owner of a log
-- **And** I am not an admin
-- **When** I try to update that log
-- **Then** I see **"Forbidden"**
-- **And** the log is unchanged
+**Given** I am signed in as `maintenance`
+**And** I am not an owner of a log
+**And** I am not an admin
+**When** I try to update that log
+**Then** I see **"Forbidden"**
+**And** the log is unchanged
 
 ### US-10.3 — Read Vehicle Logs
 
 #### Scenario: Maintenance reads the logs
 
-- **Given** I am signed in as `maintenance`
-- **And** a vehicle log exists
-- **When** I open **Vehicle Service Logs**
-- **Then** I see its service date, vehicle id, description, completed status, and creator
+**Given** I am signed in as `maintenance`
+**And** a vehicle log exists
+**When** I open **Vehicle Service Logs**
+**Then** I see its service date, vehicle id, description, completed status, and creator
 
 #### Scenario: Admin reads the logs
 
-- **Given** I am signed in as `admin`
-- **And** a vehicle log exists
-- **When** I open **Vehicle Service Logs**
-- **Then** I see that log
+**Given** I am signed in as `admin`
+**And** a vehicle log exists
+**When** I open **Vehicle Service Logs**
+**Then** I see that log
 
 #### Scenario: Driver cannot open the page
 
-- **Given** I am signed in as `driver`
-- **When** I go to `/vehicle-logs`
-- **Then** I do not see the log list
+**Given** I am signed in as `driver`
+**When** I go to `/vehicle-logs`
+**Then** I do not see the log list
 
 ### US-10.4 — Modify Vehicle Log
 
 #### Scenario: Owner updates a log
 
-- **Given** I am signed in as the owner of a vehicle log
-- **When** I change the description and save
-- **Then** the list shows the new description
+**Given** I am signed in as the owner of a vehicle log
+**When** I change the description and save
+**Then** the list shows the new description
 
 #### Scenario: Admin updates any log
 
-- **Given** I am signed in as `admin`
-- **And** I am not the creator of a log
-- **When** I change the completed status and save
-- **Then** the log shows the new completed status
+**Given** I am signed in as `admin`
+**And** I am not the creator of a log
+**When** I change the completed status and save
+**Then** the log shows the new completed status
 
 ### US-10.5 — Delete Vehicle Logs
 
 #### Scenario: Log older than 18 months is removed
 
-- **Given** a vehicle log has a service date more than 18 months ago
-- **When** retention runs
-- **Then** that log is deleted
-- **And** it does not appear on that vehicle’s logs
+**Given** a vehicle log has a service date more than 18 months ago
+**When** retention runs
+**Then** that log is deleted
+**And** it does not appear on that vehicle’s logs
 
 #### Scenario: Non-owner cannot delete
 
-- **Given** I am signed in as `maintenance`
-- **And** I am not an owner of a log
-- **And** I am not an admin
-- **When** I try to delete that log
-- **Then** I see **"Forbidden"**
-- **And** the log remains on the list
+**Given** I am signed in as `maintenance`
+**And** I am not an owner of a log
+**And** I am not an admin
+**When** I try to delete that log
+**Then** I see **"Forbidden"**
+**And** the log remains on the list
 
 ---
 
@@ -396,22 +380,20 @@ The creator’s user id is inserted as the first owner row.
 
 Each scenario above must map to at least one automated test.
 
-
-| Story | Scenario | Test file | Test name |
-| ----- | -------- | --------- | --------- |
-| US-10.1 | Maintenance creates a log | `frontend/tests/VehicleLog.test.js` | `it("Maintenance creates a log")` |
-| US-10.1 | Admin creates a log | `backend/tests/vehicleLog.test.js` | `it("Admin creates a log")` |
-| US-10.1 | Blank log | `backend/tests/vehicleLog.test.js` | `it("Blank log")` |
-| US-10.2 | Owner assigns another owner | `backend/tests/vehicleLog.test.js` | `it("Owner assigns another owner")` |
-| US-10.2 | Non-owner cannot modify | `backend/tests/vehicleLog.test.js` | `it("Non-owner cannot modify")` |
-| US-10.3 | Maintenance reads the logs | `frontend/tests/VehicleLog.test.js` | `it("Maintenance reads the logs")` |
-| US-10.3 | Admin reads the logs | `frontend/tests/VehicleLog.test.js` | `it("Admin reads the logs")` |
-| US-10.3 | Driver cannot open the page | `frontend/tests/VehicleLog.test.js` | `it("Driver cannot open the page")` |
-| US-10.4 | Owner updates a log | `frontend/tests/VehicleLog.test.js` | `it("Owner updates a log")` |
-| US-10.4 | Admin updates any log | `backend/tests/vehicleLog.test.js` | `it("Admin updates any log")` |
-| US-10.5 | Log older than 18 months is removed | `backend/tests/vehicleLog.test.js` | `it("Log older than 18 months is removed")` |
-| US-10.5 | Non-owner cannot delete | `backend/tests/vehicleLog.test.js` | `it("Non-owner cannot delete")` |
-
+| Story   | Scenario                            | Test file                           | Test name                                   |
+| ------- | ----------------------------------- | ----------------------------------- | ------------------------------------------- |
+| US-10.1 | Maintenance creates a log           | `frontend/tests/VehicleLog.test.js` | `it("Maintenance creates a log")`           |
+| US-10.1 | Admin creates a log                 | `backend/tests/vehicleLog.test.js`  | `it("Admin creates a log")`                 |
+| US-10.1 | Blank log                           | `backend/tests/vehicleLog.test.js`  | `it("Blank log")`                           |
+| US-10.2 | Owner assigns another owner         | `backend/tests/vehicleLog.test.js`  | `it("Owner assigns another owner")`         |
+| US-10.2 | Non-owner cannot modify             | `backend/tests/vehicleLog.test.js`  | `it("Non-owner cannot modify")`             |
+| US-10.3 | Maintenance reads the logs          | `frontend/tests/VehicleLog.test.js` | `it("Maintenance reads the logs")`          |
+| US-10.3 | Admin reads the logs                | `frontend/tests/VehicleLog.test.js` | `it("Admin reads the logs")`                |
+| US-10.3 | Driver cannot open the page         | `frontend/tests/VehicleLog.test.js` | `it("Driver cannot open the page")`         |
+| US-10.4 | Owner updates a log                 | `frontend/tests/VehicleLog.test.js` | `it("Owner updates a log")`                 |
+| US-10.4 | Admin updates any log               | `backend/tests/vehicleLog.test.js`  | `it("Admin updates any log")`               |
+| US-10.5 | Log older than 18 months is removed | `backend/tests/vehicleLog.test.js`  | `it("Log older than 18 months is removed")` |
+| US-10.5 | Non-owner cannot delete             | `backend/tests/vehicleLog.test.js`  | `it("Non-owner cannot delete")`             |
 
 ## Agent implementation request
 
