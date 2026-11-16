@@ -5,8 +5,8 @@
 **Status:** Draft
 **Created:** 2026-10-24
 **Input:** This feature is a vehicle management to view, add, update, and delete vehicles
-**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth),
-**Required for future use:** [Feature 5 -- Maintenance Info CRUD](feature-5-Maintenance-Info-CRUD), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD), [Feature 11 -- Images](feature-11-Images)
+**Depends on:** [Feature 1 -- User Auth & Session Management](feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature 3 -- Area CRUD](feature-2-Area-CRUD.md)
+**Required for future use:** [Feature 5 -- Maintenance Info CRUD](feature-5-Maintenance-Info-CRUD.md), [Feature 8 -- Requests CRUD](feature-8-Requests-CRUD.md), [Feature 11 -- Images](feature-11-images-crud.md)
 
 ---
 
@@ -86,10 +86,10 @@
 
 **As a** authenticated user with a `maintenance` or `admin` role
 **I want to** hover over vehicle
-**So that** I can view the vehicle's image if one exists
+**So that** I can view the vehicle's images if they exists
 
 **Priority:** P3
-**Independent test:** I hover over a vehicle and the image is displayed
+**Independent test:** I hover over a vehicle and the first image containing the vehicle's VIN is displayed
 **Acceptance scenarios:** see ### US-4.8 under Acceptance Criteria
 
 ### US-4.9: Confirm create new `maintenance-info` as a `maintenance` or `admin`
@@ -127,7 +127,7 @@
 - **FR-007**: System **MUST NOT** allow any roles other than `admin` and `maintenance` to access this page
 - **FR-008**: System **Must** send user to the Maintenance page with the selected vehicle's details pulled up
 - **FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Department` for each vehicle
-- **FR-010**: System **MUST** display a vehicle image if one is available from the `Images` table
+- **FR-010**: System **MUST** display a vehicle's images if at least one is available from the `VehicleImages` table
 - **FR-011**: System **MUST** use `Confirm Create New Maintenance Info` component
 - **FR-012**: System **MUST** use `Confirm Create New Fuel Type` component
 
@@ -146,7 +146,6 @@
   - `feature-8-Requests-CRUD`: Assume that requests will be added later, for data model see `features/references/data-model.md`
   - `Requests.vue`
   - `feature-11-Images`: Assume that images will be added later, for data model see `features/references/data-model.md`
-  - `Images.vue`
 
 ## Edge Cases
 
@@ -190,20 +189,20 @@ Feature 1 and 2 establishes identity
 
 ### `Vehicles` Table
 
-| Field                 | Type           | Rules                                 |
-| --------------------- | -------------- | ------------------------------------- |
-| `vin`                 | INTEGER PK     | Primary Key, Must be 17 numbers (0-9) |
-| `make`                | VARCHAR(30)    | Required                              |
-| `model`               | VARCHAR(65)    | Required                              |
-| `year`                | INTEGER        | Required                              |
-| `purchased_date`      | DATE           | Required; Cannot be in the future     |
-| `color`               | VARCHAR(20)    | NULLABLE;                             |
-| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
-| `tag_exp_month`       | DATE           | Required                              |
-| `area_id`             | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
-| `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
-| `available`           | BIT            | Required                              |
-| `mileage`             | INTEGER        | NULLABLE, Non-negative                |
+| Field                 | Type        | Rules                                 |
+| --------------------- | ----------- | ------------------------------------- |
+| `vin`                 | INTEGER PK  | Primary Key, Must be 17 numbers (0-9) |
+| `make`                | VARCHAR(30) | Required                              |
+| `model`               | VARCHAR(65) | Required                              |
+| `year`                | INTEGER     | Required                              |
+| `purchased_date`      | DATE        | Required; Cannot be in the future     |
+| `color`               | VARCHAR(20) | NULLABLE;                             |
+| `license_plate_num`   | VARCHAR(8)  | NULLABLE; Unique                      |
+| `tag_exp_month`       | DATE        | Required                              |
+| `area_id`             | INTEGER FK  | Foreign Key, NOT NULLABLE             |
+| `most_recent_dest_id` | INTEGER     | NULLABLE;                             |
+| `available`           | BIT         | Required                              |
+| `mileage`             | INTEGER     | NULLABLE, Non-negative                |
 
 ---
 
@@ -703,7 +702,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 - **Given** I am on the Vehicles.vue as a `maintenance` or `admin`
 - **When** I hover over a vehicle in the table
-- **Then** I view a image of the vehicle if one is available in the `Images` table
+- **Then** I see a popup of the first image holding this vehicle's vin if one is available in the `VehicleImages` table
 - **And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
 
 ### US-4.9 — Confirm create new `maintenance-info` as a `maintenance` or `admin`
@@ -845,7 +844,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 4 from @features/feature-4-Vehicle-CRUD.md on branch `feature/4-Vehicle-CRUD`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.

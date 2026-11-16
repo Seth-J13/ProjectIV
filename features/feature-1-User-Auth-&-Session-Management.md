@@ -79,12 +79,12 @@
 
 ## Edge Cases
 
-- Unknown email on login → **401** `"User not found!"`
-- Wrong password on login → **401** `"Invalid password!"`
-- Empty email or password on login → request blocked or **401** with a clear message
-- Missing or expired Bearer token on protected API → **401**; frontend clears `user` and redirects to Login
-- Duplicate email on create account → **409** `"Email already in use!"`; user stays on Login and is not signed in
-- Empty required field on create account → request blocked with a clear message
+- Unknown email on login -> **401** `"User not found!"`
+- Wrong password on login -> **401** `"Invalid password!"`
+- Empty email or password on login -> request blocked or **401** with a clear message
+- Missing or expired Bearer token on protected API -> **401**; frontend clears `user` and redirects to Login
+- Duplicate email on create account -> **409** `"Email already in use!"`; user stays on Login and is not signed in
+- Empty required field on create account -> request blocked with a clear message
 
 ---
 
@@ -103,7 +103,6 @@
 
 Feature 1 starts and ends the caller’s own session and creates only the caller’s own account. It does not return another user’s profile or token.
 
-
 | Rule                  | Requirement                                                                                                                                   |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Read scope**        | Login and create-account success return **only** the authenticating user’s profile fields and token.                                          |
@@ -111,18 +110,15 @@ Feature 1 starts and ends the caller’s own session and creates only the caller
 | **Create scope**      | Create account inserts one `users` row and one `sessions` row for that new user. This feature does not create vehicle or request rows.        |
 | **Cross-user access** | No endpoint in this feature returns another user’s password or session token.                                                                 |
 | **UI scope**          | MenuBar shows the signed-in user’s initials, name, and email from `localStorage` `user`. `/landing` shows the same placeholder to every role. |
-| **Later features**    | Vehicle and request APIs must never expose another user’s private vehicles or requests. Cross-user → `404` (not `403`).                       |
-
+| **Later features**    | Vehicle and request APIs must never expose another user’s private vehicles or requests. Cross-user -> `404` (not `403`).                      |
 
 ## API Requirements
-
 
 | Method | Endpoint        | Auth                      | Purpose                               |
 | ------ | --------------- | ------------------------- | ------------------------------------- |
 | `POST` | `/api/register` | No                        | Create an account and a session       |
 | `POST` | `/api/login`    | No (Basic email:password) | Sign in and create or reuse a session |
 | `POST` | `/api/logout`   | Yes (`Bearer` token)      | End the caller’s current session      |
-
 
 **Login:** `Authorization: Basic <base64(email:password)>`. JSON body is not required for credential check.
 
@@ -156,13 +152,11 @@ Feature 1 starts and ends the caller’s own session and creates only the caller
 
 Quoted messages that tests must match:
 
-
 | Situation            | Status | `message`               |
 | -------------------- | ------ | ----------------------- |
 | Unknown email        | 401    | `User not found!`       |
 | Wrong password       | 401    | `Invalid password!`     |
 | Email already in use | 409    | `Email already in use!` |
-
 
 ---
 
@@ -207,7 +201,6 @@ This feature **owns** `users` and `sessions`.
 
 ### `users` table
 
-
 | Field       | Type       | Rules                                                                             |
 | ----------- | ---------- | --------------------------------------------------------------------------------- |
 | `id`        | INTEGER PK | Auto-increment                                                                    |
@@ -217,9 +210,7 @@ This feature **owns** `users` and `sessions`.
 | `password`  | STRING     | Required; bcrypt hash only — never store plaintext                                |
 | `role`      | STRING     | Required; `user`, `driver`, `maintenance`, or `admin`. Create account sets `user` |
 
-
 ### `sessions` table
-
 
 | Field            | Type       | Rules                                          |
 | ---------------- | ---------- | ---------------------------------------------- |
@@ -228,7 +219,6 @@ This feature **owns** `users` and `sessions`.
 | `email`          | STRING     | Required                                       |
 | `expirationDate` | DATE       | Required; 24 hours from login                  |
 | `userId`         | INTEGER FK | Required; references `users.id`                |
-
 
 ### Associations
 
@@ -351,7 +341,6 @@ This feature **owns** `users` and `sessions`.
 
 Each scenario above must map to at least one automated test.
 
-
 | Story  | Scenario                     | Test file                      | Test name                            |
 | ------ | ---------------------------- | ------------------------------ | ------------------------------------ |
 | US-1.1 | Admin signs in               | `frontend/tests/Login.test.js` | `it("Admin signs in")`               |
@@ -366,7 +355,6 @@ Each scenario above must map to at least one automated test.
 | US-1.4 | Creating new account         | `frontend/tests/Login.test.js` | `it("Creating new account")`         |
 | US-1.4 | Email already in use         | `backend/tests/auth.test.js`   | `it("Email already in use")`         |
 
-
 ## Agent implementation request
 
 Copy when asking Cursor to implement this feature (`@` this file):
@@ -374,7 +362,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 1 from @features/feature-1-User-Auth-&-Session-Management.md on branch `feature/1-user-auth`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.
@@ -385,14 +373,14 @@ Do not implement behavior listed under Out of Scope.
 
 ## Definition of Done
 
-- [ ] Backend and frontend implemented per this spec (**FR-00N** satisfied)
-- [ ] **Success Criteria (SC-00N)** met
-- [ ] All mapped tests pass (`npm test`)
-- [ ] Test Coverage Map complete
-- [ ] Test traceability (file headers, nested `describe` / `it`, audit commands in this spec)
-- [ ] `features/reference/data-model.md` updated (if schema changed)
-- [ ] `features/reference/api.md` updated (if API changed)
-- [ ] `features/reference/behavior.md` updated (if product rules changed)
+- [x] Backend and frontend implemented per this spec (**FR-00N** satisfied)
+- [x] **Success Criteria (SC-00N)** met
+- [x] All mapped tests pass (`npm test`)
+- [x] Test Coverage Map complete
+- [x] Test traceability (file headers, nested `describe` / `it`, audit commands in this spec)
+- [x] `features/reference/data-model.md` updated (if schema changed)
+- [x] `features/reference/api.md` updated (if API changed)
+- [x] `features/reference/behavior.md` updated (if product rules changed)
 
 ---
 
@@ -406,4 +394,3 @@ Do not implement behavior listed under Out of Scope.
 - Choosing `driver`, `maintenance`, or `admin` from the Create Account dialog
 - Password reset, email verification, and profile editing
 - Google sign-in ([Feature 2](./feature-2-Google-Auth.md))
-

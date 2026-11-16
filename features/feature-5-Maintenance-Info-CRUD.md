@@ -1021,7 +1021,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 5 from @features/feature-5-Maintenance-Info-CRUD.md on branch `feature/5-Maintenance-Info-CRUD`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.
