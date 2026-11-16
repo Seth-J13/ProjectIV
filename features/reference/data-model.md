@@ -39,7 +39,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | `addr_line_1`     | VARCHAR(255)            | Required                            |
 | `addr_line_2`     | VARCHAR(255)            | Nullable                            |
 | `dest_name`       | VARCHAR(255)            | Required                            |
-| `last_visited_on` | DATE                    | Nullable                            |
+| `last_visited_on` | DATE                    | Nullable. API responses expose it as `last_visited` (`YYYY-MM-DD`), or `null` when empty or in the future. The `requests` association is deferred to Feature 8, so the Sequelize model does not declare it yet. |
 
 ### `Vehicles` Table
 

@@ -118,3 +118,60 @@ Success is **200** and the same flat user object as a list item. `password` and 
 | User id does not exist | 404 | `User with id={id} not found.` |
 
 The **400**, **403**, **404**, and **409** cases do not change the user.
+
+## Destinations
+
+Mounted at `/vehicle-t3/destinations` and `/api/vehicle-t3/destinations`. Flat JSON. Errors are `{ "message": "…" }`. These routes do not include user fields.
+
+Any signed-in user may list, read, and create. Only an admin may update or delete. A missing bearer token is **401** `{ "message": "Please sign in. If you think this is a mistake, contact your system administrator" }`. A signed-in role other than `admin` on update or delete is **403** `{ "message": "Please contact a system administrator for assistance." }`.
+
+`GET /vehicle-t3/destinations` returns at most 5 rows. `offset` selects the next batch. Rows are ordered by `last_visited_on` descending, and a null or future `last_visited_on` sorts after visited rows. Each item:
+
+```json
+{
+  "id": 1,
+  "zip": "12345-0001",
+  "city": "Omaha",
+  "state": "Nebraska",
+  "addr_line_1": "69420 Appleberry Lane",
+  "addr_line_2": null,
+  "dest_name": "ur mom's house",
+  "last_visited": "2026-10-25"
+}
+```
+
+`last_visited` is `last_visited_on` as `YYYY-MM-DD`, or `null` when that date is empty or in the future.
+
+### `POST /vehicle-t3/destinations/`
+
+```json
+{
+  "zip": "12345-0001",
+  "city": "Omaha",
+  "state": "Nebraska",
+  "addr_line_1": "69420 Appleberry Lane",
+  "addr_line_2": null,
+  "dest_name": "ur mom's house"
+}
+```
+
+Success is **201** `{ "message": "New destination created with id=<id>" }`.
+
+### `GET /vehicle-t3/destinations/:destinationId`
+
+Success is **200** and one object in the list shape above.
+
+### `PUT /vehicle-t3/destinations/:destinationId`
+
+Same body as create. `last_visited_on`, when sent, must be `YYYY-M-D`. Success is **201** `{ "message": "Destination updated with id=<id>" }`. A missing date leaves the stored `last_visited_on` unchanged.
+
+### `DELETE /vehicle-t3/destinations/:destinationId`
+
+Success is **204** with an empty body.
+
+| Situation | Status | `message` |
+| --- | --- | --- |
+| Missing required field, a value longer than the column, or a bad `last_visited_on` | 400 | `Malformed request. Please make sure everything in the form is properly formatted!` |
+| Zip is not `#####` or `#####-####` | 400 | `Zip code must be formatted like ##### or #####-####` |
+| Same `zip`, `city`, `state`, `addr_line_1`, and `addr_line_2` already exists | 409 | `Destination with this address already exists!` |
+| Id does not exist | 404 | `No destination was found for id=<id>` |

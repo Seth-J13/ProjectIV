@@ -1,3 +1,12 @@
+if (!("innerText" in Element.prototype)) {
+  Object.defineProperty(Element.prototype, "innerText", {
+    configurable: true,
+    get() {
+      return this.textContent;
+    },
+  });
+}
+
 global.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
