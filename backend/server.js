@@ -4,6 +4,8 @@ import cors from "cors";
 import morgan from "morgan";
 import db from "./app/models/index.js";
 import logger from "./app/config/logger.js";
+// TEMPORARY — remove with Feature 13 Area CRUD
+import seedTempAreas from "./app/seed/tempAreas.js";
 
 const shouldAlterSchema =
   process.env.SEQUELIZE_SYNC_ALTER === "true" ||
@@ -15,10 +17,12 @@ const syncOptions = shouldAlterSchema ? { alter: true } : {};
 if (process.env.NODE_ENV !== "test") {
   db.sequelize
     .sync(syncOptions)
-    .then(() => {
+    .then(async () => {
       if (syncOptions.alter) {
         logger.info("Database sync completed with alter: true.");
       }
+      // TEMPORARY — remove with Feature 13 Area CRUD
+      await seedTempAreas();
     })
     .catch((err) => {
       logger.error(`Database sync failed: ${err.message}`);
