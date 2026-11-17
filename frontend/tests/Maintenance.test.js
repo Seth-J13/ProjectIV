@@ -653,7 +653,9 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
       await cancel.trigger("click");
       await flush();
 
-      expect(wrapper.text()).not.toMatch(/Update Mileage/i);
+      // Gherkin: modal closes and input clears. The page still has the Update Mileage action button.
+      expect(wrapper.find("#mileage-dialog").exists()).toBe(false);
+      expect(wrapper.vm?.newMileage ?? "").toBe("");
       expect(apiCallCount()).toBe(before);
     });
   });
@@ -663,8 +665,8 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
       const { wrapper } = await mountMaintenance();
       const before = apiCallCount();
 
-      const row = wrapper.findAll("*").find((n) => n.text().includes("Check tires"));
-      expect(row).toBeTruthy();
+      const row = wrapper.find('[data-note-subject="Check tires"]');
+      expect(row.exists()).toBe(true);
       await row.trigger("click");
       await flush();
 

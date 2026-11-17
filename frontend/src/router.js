@@ -26,10 +26,16 @@ const router = createRouter({
       component: () => import("./views/Vehicle.vue"),
     },
     {
-      // Stub until Feature 5 adds Maintenance.vue.
-      path: "/maintenance/:vin",
+      path: "/maintenance-info/:vin?",
       name: "maintenance",
-      component: { render: () => h("div", "Maintenance") },
+      component: () => import("./views/Maintenance.vue"),
+      props: true,
+    },
+    {
+      // Stub until the Vehicle Service Log feature adds its view.
+      path: "/vehicle-service-logs/:vehicle_id?",
+      name: "vehicleServiceLogs",
+      component: { render: () => h("div", "Vehicle Service Logs") },
     },
     {
       path: "/:pathMatch(.*)*",
@@ -49,7 +55,10 @@ router.beforeEach((to) => {
     return { name: "landing" };
   }
 
-  if (to.name === "vehicleManagement" && !["admin", "maintenance"].includes(user?.role)) {
+  if (
+    ["vehicleManagement", "maintenance", "vehicleServiceLogs"].includes(to.name) &&
+    !["admin", "maintenance"].includes(user?.role)
+  ) {
     return { name: "landing" };
   }
 

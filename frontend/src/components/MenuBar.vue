@@ -69,6 +69,14 @@ async function logout() {
     >
       Vehicles
     </v-btn>
+    <v-btn
+      v-if="['admin', 'maintenance'].includes(user?.role)"
+      variant="text"
+      type="button"
+      @click="router.push({ name: 'maintenance' })"
+    >
+      Maintenance
+    </v-btn>
     <v-spacer />
     <v-menu>
       <template #activator="{ props }">

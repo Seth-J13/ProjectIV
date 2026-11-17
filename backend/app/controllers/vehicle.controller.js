@@ -368,7 +368,10 @@ exports.createMaintenanceInfo = async (req, res) => {
 
 exports.findAreas = async (_req, res) => {
   try {
-    const areas = await db.area.findAll({ order: [["name", "ASC"]] });
+    const areas = await db.area.findAll({
+      attributes: ["id", "name"],
+      order: [["name", "ASC"]],
+    });
     return res.send(areas);
   } catch (error) {
     logger.error(`findAreas failed: ${error.message}`);

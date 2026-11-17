@@ -116,7 +116,12 @@ function areaName(vehicle) {
 const hoveredImage = computed(() => {
   const vehicle = vehicles.value.find((item) => item.vin === hoveredVin.value);
   const image = vehicle?.image || vehicle?.images?.[0];
-  return image?.url ?? image ?? null;
+  const src = image?.url ?? (typeof image === "string" ? image : null);
+  // Block file:// URLs — browsers reject them from http:// pages.
+  if (!src || String(src).startsWith("file:")) {
+    return null;
+  }
+  return src;
 });
 
 function apiMessage(error, fallback) {
@@ -204,6 +209,8 @@ function isBaseFormValid() {
   const model = String(f.model ?? "").trim();
   const license = String(f.license_plate_num ?? "").trim();
   const color = String(f.color ?? "").trim();
+  const year = Number(f.year);
+  const areaId = f.area_id == null || f.area_id === "" ? null : Number(f.area_id);
 
   return (
     (isEditMode.value || /^\d{17}$/.test(String(f.vin ?? "").trim())) &&
@@ -211,10 +218,10 @@ function isBaseFormValid() {
     make.length <= 30 &&
     model.length > 0 &&
     model.length <= 65 &&
-    Number.isInteger(f.year) &&
-    f.year >= 1900 &&
-    f.year <= currentYear &&
-    f.area_id != null &&
+    Number.isInteger(year) &&
+    year >= 1900 &&
+    year <= currentYear &&
+    Number.isInteger(areaId) &&
     !!f.purchased_date &&
     f.purchased_date <= today() &&
     !!f.tag_exp_month &&
@@ -225,12 +232,15 @@ function isBaseFormValid() {
 
 function isMaintenanceInfoFormValid() {
   const f = form.value;
+  const fuelCapacity = Number(f.fuel_capacity);
+  const tirePsi = Number(f.recommended_tire_psi);
   return (
     String(f.fuel_type ?? "").trim().length > 0 &&
-    Number.isFinite(f.fuel_capacity) &&
-    f.fuel_capacity >= 0 &&
-    Number.isFinite(f.recommended_tire_psi) &&
-    f.recommended_tire_psi >= 0
+    Number.isFinite(fuelCapacity) &&
+    fuelCapacity >= 0 &&
+    Number.isFinite(tirePsi) &&
+    tirePsi >= 0 &&
+    tirePsi <= 300
   );
 }
 
@@ -257,14 +267,14 @@ function vehiclePayload() {
   const f = form.value;
   return {
     vin: String(f.vin).trim(),
-    make: f.make.trim(),
-    model: f.model.trim(),
-    year: f.year,
+    make: String(f.make).trim(),
+    model: String(f.model).trim(),
+    year: Number(f.year),
     purchased_date: f.purchased_date,
     color: String(f.color ?? "").trim() || null,
     license_plate_num: String(f.license_plate_num ?? "").trim() || null,
     tag_exp_month: f.tag_exp_month,
-    area_id: f.area_id,
+    area_id: Number(f.area_id),
     most_recent_dest_id: f.most_recent_dest_id,
     available: f.available,
     mileage: f.mileage,
@@ -345,12 +355,12 @@ async function createAndSave() {
 
     if (needInfo) {
       await vehicleServices.createMaintenanceInfo({
-        make: form.value.make.trim(),
-        model: form.value.model.trim(),
-        year: form.value.year,
+        make: String(form.value.make).trim(),
+        model: String(form.value.model).trim(),
+        year: Number(form.value.year),
         fuel_type_id: fuel?.fuel_id,
-        fuel_capacity: form.value.fuel_capacity,
-        recommended_tire_psi: form.value.recommended_tire_psi,
+        fuel_capacity: Number(form.value.fuel_capacity),
+        recommended_tire_psi: Number(form.value.recommended_tire_psi),
         tire_type: DEFAULT_TIRE_TYPE,
       });
     }
@@ -569,10 +579,10 @@ onMounted(() => {
               <v-combobox v-model="form.fuel_type" :items="fuelNames" label="Fuel Type" />
             </v-col>
             <v-col cols="12" md="6">
-              <v-number-input
-                v-model="form.fuel_capacity"
-                :min="0"
-                control-variant="stacked"
+              <v-text-field
+                v-model.number="form.fuel_capacity"
+                type="number"
+                min="0"
                 label="Fuel Capacity"
               />
             </v-col>
@@ -580,6 +590,9 @@ onMounted(() => {
               <v-number-input
                 v-model="form.recommended_tire_psi"
                 :min="0"
+                :max="300"
+                :step="1"
+                :precision="2"
                 control-variant="stacked"
                 label="Recommended Tire PSI"
               />

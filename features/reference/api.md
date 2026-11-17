@@ -165,3 +165,24 @@ Roles other than `admin` and `maintenance` receive **401** `{ "message": "Unauth
 **Create fuel:** `POST /fuels/` body `{ "fuel_type": "87 Octane" }` → **201** `{ "message": "Successfully created fuel type.", "fuel_id": 1, "fuel_type": "87 Octane" }`.
 
 **Create maintenance info:** `PUT /maintenance-info?make=&model=&year=` with body fields `fuel_type_id`, `fuel_capacity`, `recommended_tire_psi`, `tire_type` (and optional `oil_viscosity`, default `5W4`) → **201** `{ "message": "Successfully created maintenance-info." }`.
+
+### Feature 5 — Maintenance Info CRUD (`/api/vehicle-t3`)
+
+Same `admin` / `maintenance` guard as Feature 4 (`401` `Unauthorized user` otherwise).
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/maintenance-infos?make=&model=&year=` | Read maintenance info (alias of Feature 4 `GET /maintenance-info`) |
+| `PUT` | `/maintenance-infos?make=&model=&year=` | Update maintenance info → **200** `{ "message": "Successfully updated maintenance-info." }` |
+| `POST` | `/maintenance-info/` | Create maintenance info → **201** |
+| `GET` | `/requests/:vehicle_id` | Requests for a vehicle VIN |
+| `GET` | `/notes/:request_id` | Notes for a request |
+| `POST` | `/notes/` | Create note → **201** `{ "message": "Successfully created maintenance note.", "note_id": … }` |
+| `PUT` | `/notes/:note_id` | Update note → **201** |
+| `DELETE` | `/notes/:note_id` | Delete note → **200** `Successfully deleted…` |
+| `POST` | `/vehicle-service-logs/` | Create service log when completing a note → **201** |
+| `PUT` | `/vehicles/:vin` | Partial update (mileage and/or make/model/year) → **200** |
+| `PUT` | `/fuels/:fuel_id` | Update fuel type → **200** |
+| `DELETE` | `/fuels/:fuel_id` | Delete fuel type → **200** |
+
+Missing `request_id` on create note returns **404**. Missing note/fuel/vehicle returns **404**.
