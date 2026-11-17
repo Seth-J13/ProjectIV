@@ -82,17 +82,7 @@
 **Independent test:** I click the maintenance button and I am redirected to the maintenance page with the selected vehicle pulled up to view
 **Acceptance scenarios:** see ### US-4.7 under Acceptance Criteria
 
-### US-4.8: View vehicle image as a `maintenance` or `admin`
-
-**As a** authenticated user with a `maintenance` or `admin` role
-**I want to** hover over vehicle
-**So that** I can view the vehicle's images if they exists
-
-**Priority:** P3
-**Independent test:** I hover over a vehicle and the first image containing the vehicle's VIN is displayed
-**Acceptance scenarios:** see ### US-4.8 under Acceptance Criteria
-
-### US-4.9: Confirm create new `maintenance-info` as a `maintenance` or `admin`
+### US-4.8: Confirm create new `maintenance-info` as a `maintenance` or `admin`
 
 **As a** authenticated user with a `maintenance` or `admin` role
 **I want to** be able to confirm if I want to make a new maintenance info
@@ -100,9 +90,9 @@
 
 **Priority:** P1
 **Independent test:** I try to add a vehicle with a `make`, `model`, and `year` not in the database and the `Confirm Create New Maintenance Info` modal opens
-**Acceptance scenarios:** see ### US-4.9 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-4.8 under Acceptance Criteria
 
-### US-4.10: Confirm create new `fuel type` as a `maintenance` or `admin`
+### US-4.9: Confirm create new `fuel type` as a `maintenance` or `admin`
 
 **As a** authenticated user with a `maintenance` or `admin` role
 **I want to** be able to confirm if I want to make a new fuel type
@@ -110,7 +100,7 @@
 
 **Priority:** P2
 **Independent test:** I try to add a vehicle with a `fuel type` not in the database and the `Confirm Create New Fuel Type` modal opens
-**Acceptance scenarios:** see ### US-4.10 under Acceptance Criteria
+**Acceptance scenarios:** see ### US-4.9 under Acceptance Criteria
 
 ---
 
@@ -127,9 +117,8 @@
 **FR-007**: System **MUST NOT** allow any roles other than `admin` and `maintenance` to access this page
 **FR-008**: System **Must** send user to the Maintenance page with the selected vehicle's details pulled up
 **FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Department` for each vehicle
-**FR-010**: System **MUST** display a vehicle's images if at least one is available from the `VehicleImages` table
-**FR-011**: System **MUST** use `Confirm Create New Maintenance Info` component
-**FR-012**: System **MUST** use `Confirm Create New Fuel Type` component
+**FR-010**: System **MUST** use `Confirm Create New Maintenance Info` component
+**FR-011**: System **MUST** use `Confirm Create New Fuel Type` component
 
 ---
 
@@ -417,45 +406,12 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 **Then** a add vehicle modal pops up
 **And** no API request is sent
 
-#### Scenario: User clicks the add button
-
-**Given** I am on the Vehicles.vue as a `maintenance`
-**When** click the `Add` button
-**Then** a add vehicle modal pops up
-**And** no API request is sent
-
 #### Scenario: User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist
 
 **Given** I have searched for a `make`, `model`, and `year`
 **And** the inputted `make`, `model`, and `year` do not exist in the database
 **When** I click `Add Vehicle` a new vehicle
 **Then** the `Confirm Create New Maintenance Info` modal opens
-
-#### Scenario: User inputs valid information into the `Add Vehicle` modal
-
-**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-**And** I have correctly inputted values into the form
-**When** I click the `Add Vehicle` button
-**Then** the `Add Vehicle` modal closes
-**And** a `PUT` API request is sent to the server
-**And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
-
-#### Scenario: User inputs invalid information into `Add Vehicle` modal
-
-**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-**And** I have incorrectly inputted values into the form
-**When** I click the `Add Vehicle` button
-**Then** a `</v-alert>` pops up saying `An error occured processing your form.`
-**And** a no API request is sent
-
-#### Scenario: User inputs valid information into the `Add Vehicle` modal but a record already exists
-
-**Given** I have clicked the `Add` button and I am viewing the `Add Vehicle` modal
-**And** I have correctly inputted values into the form
-**When** I click the `Add Vehicle` button
-**Then** the `Add Vehicle` modal closes
-**And** a `PUT` API request is sent to the server
-**And** returns a value of `409` with a payload containing a `human readable error message`
 
 #### Scenario: User inputs valid information into the `Add Vehicle` modal
 
@@ -700,16 +656,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 ---
 
-### US-4.8 — View vehicle image as a `maintenance` or `admin`
-
-#### Scenario: User hovers over a vehicle list item as a `maintenance` or `admin`
-
-**Given** I am on the Vehicles.vue as a `maintenance` or `admin`
-**When** I hover over a vehicle in the table
-**Then** I see a popup of the first image holding this vehicle's vin if one is available in the `VehicleImages` table
-**And** the selected vehicle's VIN is sent in the `path` for the `Maintenance.vue` to use
-
-### US-4.9 — Confirm create new `maintenance-info` as a `maintenance` or `admin`
+### US-4.8 — Confirm create new `maintenance-info` as a `maintenance` or `admin`
 
 #### Scenario: `Confirm Create New Maintenance Info` modal opens
 
@@ -750,7 +697,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 **And** a `POST`API request is sent to the server to create a new vehicle
 **And** returns a value of `201` with a payload containing `{"message": "Successfully created vehicle."}`
 
-### US-4.10 — Confirm create new `fuel type` as a `maintenance` or `admin`
+### US-4.9 — Confirm create new `fuel type` as a `maintenance` or `admin`
 
 #### Scenario: `Confirm Create New Fuel Type` modal opens
 
@@ -793,51 +740,50 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 Each scenario above must map to at least one automated test.
 
-| Story   | Scenario                                                                                                                          | Test file                        | Test name                                                                                                                                 |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| US-4.1  | User clicks the add button                                                                                                        | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")`                                                                                                        |
-| US-4.1  | User inputs a missing `make`, `model`, `year`, and `fuel type`                                                                   | `backend/tests/vehicles.test.js` | `it("User inputs a missing `make`, `model`, `year`, and `fuel type`")`                                                                   |
-| US-4.1  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
-| US-4.1  | User inputs a `fuel type` into the combobox that doesn't exist                                                                    | `backend/tests/vehicles.test.js` | `it("User inputs a `fuel type` into the combobox that doesn't exist")`                                                                    |
-| US-4.1  | User inputs valid information into the `Add Vehicle` modal                                                                        | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")`                                                                        |
-| US-4.1  | User inputs invalid information into `Add Vehicle` modal                                                                          | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")`                                                                          |
-| US-4.1  | User inputs valid information into the `Add Vehicle` modal but a record already exists                                            | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")`                                            |
-| US-4.2  | User clicks the add button                                                                                                        | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")`                                                                                                        |
-| US-4.2  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `frontend/tests/Vehicle.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
-| US-4.2  | User inputs valid information into the `Add Vehicle` modal                                                                        | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")`                                                                        |
-| US-4.2  | User inputs invalid information into `Add Vehicle` modal                                                                          | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")`                                                                          |
-| US-4.2  | User inputs valid information into the `Add Vehicle` modal but a record already exists                                            | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")`                                            |
-| US-4.3  | User clicks the edit icon button                                                                                                  | `frontend/tests/Vehicle.test.js` | `it("User clicks the edit icon button")`                                                                                                  |
-| US-4.3  | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist                                                  | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`                                                  |
-| US-4.3  | User inputs valid information into the `Edit Vehicle` modal                                                                       | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal")`                                                                       |
-| US-4.3  | User inputs invalid information into `Edit Vehicle` modal                                                                         | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Edit Vehicle` modal")`                                                                         |
-| US-4.3  | Valid `Edit Vehicle` input duplicates another VIN's license plate                                                                | `backend/tests/vehicles.test.js` | `it("Valid `Edit Vehicle` input duplicates another VIN's license plate")`                                                                |
-| US-4.4  | User clicks the delete icon button                                                                                                | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button")`                                                                                                |
-| US-4.4  | User clicks the delete icon button but no vehicle exists in the database                                                          | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button but no vehicle exists in the database")`                                                          |
-| US-4.5  | There no vehicles to display in the vehicle list                                                                                  | `frontend/tests/Vehicle.test.js` | `it("There no vehicles to display in the vehicle list")`                                                                                  |
-| US-4.5  | User first loads the Vehicle page                                                                                                 | `frontend/tests/Vehicle.test.js` | `it("User first loads the Vehicle page")`                                                                                                 |
-| US-4.5  | User adds a new vehicle                                                                                                           | `frontend/tests/Vehicle.test.js` | `it("User adds a new vehicle")`                                                                                                           |
-| US-4.5  | User edits a vehicle in the list                                                                                                  | `frontend/tests/Vehicle.test.js` | `it("User edits a vehicle in the list")`                                                                                                  |
-| US-4.5  | Vehicle does not have a color value                                                                                               | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a color value")`                                                                                               |
-| US-4.5  | Vehicle does not have a license plate number value                                                                                | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a license plate number value")`                                                                                |
-| US-4.6  | User chooses from the year drop down filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User chooses from the year drop down filter")`                                                                                       |
-| US-4.6  | User chooses from the area drop down filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User chooses from the area drop down filter")`                                                                                       |
-| US-4.6  | User begins to type in the `Make` filter                                                                                          | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Make` filter")`                                                                                          |
-| US-4.6  | User begins to type in the `Model` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Model` filter")`                                                                                         |
-| US-4.6  | User begins to type in the `Color` filter                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Color` filter")`                                                                                         |
-| US-4.6  | User begins to type in the `License` filter                                                                                       | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `License` filter")`                                                                                       |
-| US-4.6  | User chooses from the `From Purchase Date` date filter                                                                            | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `From Purchase Date` date filter")`                                                                            |
-| US-4.6  | User chooses from the `Before Purchase Date` date filter                                                                          | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `Before Purchase Date` date filter")`                                                                          |
-| US-4.7  | User clicks the `Maintenance` icon button                                                                                         | `frontend/tests/Vehicle.test.js` | `it("User clicks the `Maintenance` icon button")`                                                                                         |
-| US-4.8  | User hovers over a vehicle list item as a `maintenance` or `admin`                                                                | `frontend/tests/Vehicle.test.js` | `it("User hovers over a vehicle list item as a `maintenance`or`admin`")`                                                                  |
-| US-4.9  | `Confirm Create New Maintenance Info` modal opens                                                                                 | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Maintenance Info\` modal opens")`                                                                               |
-| US-4.9  | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
-| US-4.9  | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed                                                 | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal closed")`                                                   |
-| US-4.9  | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open                                                   | `backend/tests/vehicles.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal open")`                                                     |
-| US-4.10 | `Confirm Create New Fuel Type` modal opens                                                                                        | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Fuel Type\` modal opens")`                                                                                      |
-| US-4.10 | User clicks the `cancel` button                                                                                                   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                                                                   |
-| US-4.10 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed                                          | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal closed")`                                            |
-| US-4.10 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open                                            | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal open")`                                              |
+| Story  | Scenario                                                                                 | Test file                        | Test name                                                                                      |
+| ------ | ---------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| US-4.1 | User clicks the add button                                                               | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")`                                                             |
+| US-4.1 | User inputs a missing `make`, `model`, `year`, and `fuel type`                           | `backend/tests/vehicles.test.js` | `it("User inputs a missing `make`, `model`, `year`, and `fuel type`")`                         |
+| US-4.1 | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist         | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`       |
+| US-4.1 | User inputs a `fuel type` into the combobox that doesn't exist                           | `backend/tests/vehicles.test.js` | `it("User inputs a `fuel type` into the combobox that doesn't exist")`                         |
+| US-4.1 | User inputs valid information into the `Add Vehicle` modal                               | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")`                             |
+| US-4.1 | User inputs invalid information into `Add Vehicle` modal                                 | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")`                               |
+| US-4.1 | User inputs valid information into the `Add Vehicle` modal but a record already exists   | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")` |
+| US-4.2 | User clicks the add button                                                               | `frontend/tests/Vehicle.test.js` | `it("User clicks the add button")`                                                             |
+| US-4.2 | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist         | `frontend/tests/Vehicle.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`       |
+| US-4.2 | User inputs valid information into the `Add Vehicle` modal                               | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal")`                             |
+| US-4.2 | User inputs invalid information into `Add Vehicle` modal                                 | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Add Vehicle` modal")`                               |
+| US-4.2 | User inputs valid information into the `Add Vehicle` modal but a record already exists   | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Add Vehicle` modal but a record already exists")` |
+| US-4.3 | User clicks the edit icon button                                                         | `frontend/tests/Vehicle.test.js` | `it("User clicks the edit icon button")`                                                       |
+| US-4.3 | User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist         | `backend/tests/vehicles.test.js` | `it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist")`       |
+| US-4.3 | User inputs valid information into the `Edit Vehicle` modal                              | `backend/tests/vehicles.test.js` | `it("User inputs valid information into the `Edit Vehicle` modal")`                            |
+| US-4.3 | User inputs invalid information into `Edit Vehicle` modal                                | `frontend/tests/Vehicle.test.js` | `it("User inputs invalid information into `Edit Vehicle` modal")`                              |
+| US-4.3 | Valid `Edit Vehicle` input duplicates another VIN's license plate                        | `backend/tests/vehicles.test.js` | `it("Valid `Edit Vehicle` input duplicates another VIN's license plate")`                      |
+| US-4.4 | User clicks the delete icon button                                                       | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button")`                                                     |
+| US-4.4 | User clicks the delete icon button but no vehicle exists in the database                 | `backend/tests/vehicles.test.js` | `it("User clicks the delete icon button but no vehicle exists in the database")`               |
+| US-4.5 | There no vehicles to display in the vehicle list                                         | `frontend/tests/Vehicle.test.js` | `it("There no vehicles to display in the vehicle list")`                                       |
+| US-4.5 | User first loads the Vehicle page                                                        | `frontend/tests/Vehicle.test.js` | `it("User first loads the Vehicle page")`                                                      |
+| US-4.5 | User adds a new vehicle                                                                  | `frontend/tests/Vehicle.test.js` | `it("User adds a new vehicle")`                                                                |
+| US-4.5 | User edits a vehicle in the list                                                         | `frontend/tests/Vehicle.test.js` | `it("User edits a vehicle in the list")`                                                       |
+| US-4.5 | Vehicle does not have a color value                                                      | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a color value")`                                                    |
+| US-4.5 | Vehicle does not have a license plate number value                                       | `frontend/tests/Vehicle.test.js` | `it("Vehicle does not have a license plate number value")`                                     |
+| US-4.6 | User chooses from the year drop down filter                                              | `frontend/tests/Vehicle.test.js` | `it("User chooses from the year drop down filter")`                                            |
+| US-4.6 | User chooses from the area drop down filter                                              | `frontend/tests/Vehicle.test.js` | `it("User chooses from the area drop down filter")`                                            |
+| US-4.6 | User begins to type in the `Make` filter                                                 | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Make` filter")`                                               |
+| US-4.6 | User begins to type in the `Model` filter                                                | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Model` filter")`                                              |
+| US-4.6 | User begins to type in the `Color` filter                                                | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `Color` filter")`                                              |
+| US-4.6 | User begins to type in the `License` filter                                              | `frontend/tests/Vehicle.test.js` | `it("User begins to type in the `License` filter")`                                            |
+| US-4.6 | User chooses from the `From Purchase Date` date filter                                   | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `From Purchase Date` date filter")`                                 |
+| US-4.6 | User chooses from the `Before Purchase Date` date filter                                 | `frontend/tests/Vehicle.test.js` | `it("User chooses from the `Before Purchase Date` date filter")`                               |
+| US-4.7 | User clicks the `Maintenance` icon button                                                | `frontend/tests/Vehicle.test.js` | `it("User clicks the `Maintenance` icon button")`                                              |
+| US-4.8 | `Confirm Create New Maintenance Info` modal opens                                        | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Maintenance Info\` modal opens")`                                    |
+| US-4.8 | User clicks the `cancel` button                                                          | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                        |
+| US-4.8 | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed        | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed")`        |
+| US-4.8 | User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open          | `backend/tests/vehicles.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open")`          |
+| US-4.9 | `Confirm Create New Fuel Type` modal opens                                               | `frontend/tests/Vehicle.test.js` | `it("\`Confirm Create New Fuel Type\` modal opens")`                                           |
+| US-4.9 | User clicks the `cancel` button                                                          | `frontend/tests/Vehicle.test.js` | `it("User clicks the `cancel` button")`                                                        |
+| US-4.9 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed")` |
+| US-4.9 | User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open   | `frontend/tests/Vehicle.test.js` | `it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open")`   |
 
 ---
 

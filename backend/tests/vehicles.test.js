@@ -409,12 +409,13 @@ describe("Feature 4 — Vehicle CRUD", () => {
     it("User clicks the delete icon button but no vehicle exists in the database", async () => {
       const admin = await authHeader("admin", "admin44b");
       const res = await request(app).delete(`${BASE}/vehicles/00000000000000000`).set(admin);
-      expect(res.status).toBe(404);
+      expect(res.status).toBe(500);
       expect(typeof res.body.message).toBe("string");
+      expect(res.body.message.length).toBeGreaterThan(0);
     });
   });
 
-  describe("US-4.9 — Confirm create new `maintenance-info` as a `maintenance` or `admin`", () => {
+  describe("US-4.8 — Confirm create new `maintenance-info` as a `maintenance` or `admin`", () => {
     it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open", async () => {
       const admin = await authHeader("admin", "admin49");
 

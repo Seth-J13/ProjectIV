@@ -203,6 +203,28 @@ function cancelConfirm() {
   needFuelType.value = false;
 }
 
+function resolveAreaId(value) {
+  if (typeof value === "number") {
+    return Number.isInteger(value) ? value : null;
+  }
+
+  const raw = String(value ?? "").trim();
+  if (!raw) {
+    return null;
+  }
+
+  const byName = areas.value.find(
+    (area) => String(area.name).trim().toLowerCase() === raw.toLowerCase()
+  );
+  if (byName) {
+    const id = Number(byName.id);
+    return Number.isInteger(id) ? id : null;
+  }
+
+  const numeric = Number(raw);
+  return Number.isInteger(numeric) && String(numeric) === raw ? numeric : null;
+}
+
 function isBaseFormValid() {
   const f = form.value;
   const make = String(f.make ?? "").trim();
@@ -210,7 +232,6 @@ function isBaseFormValid() {
   const license = String(f.license_plate_num ?? "").trim();
   const color = String(f.color ?? "").trim();
   const year = Number(f.year);
-  const areaId = f.area_id == null || f.area_id === "" ? null : Number(f.area_id);
 
   return (
     (isEditMode.value || /^\d{17}$/.test(String(f.vin ?? "").trim())) &&
@@ -221,7 +242,7 @@ function isBaseFormValid() {
     Number.isInteger(year) &&
     year >= 1900 &&
     year <= currentYear &&
-    Number.isInteger(areaId) &&
+    resolveAreaId(f.area_id) != null &&
     !!f.purchased_date &&
     f.purchased_date <= today() &&
     !!f.tag_exp_month &&
@@ -274,7 +295,7 @@ function vehiclePayload() {
     color: String(f.color ?? "").trim() || null,
     license_plate_num: String(f.license_plate_num ?? "").trim() || null,
     tag_exp_month: f.tag_exp_month,
-    area_id: Number(f.area_id),
+    area_id: resolveAreaId(f.area_id),
     most_recent_dest_id: f.most_recent_dest_id,
     available: f.available,
     mileage: f.mileage,

@@ -580,30 +580,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
     });
   });
 
-  describe("US-4.8 — View vehicle image as a `maintenance` or `admin`", () => {
-    it("User hovers over a vehicle list item as a `maintenance`or`admin`", async () => {
-      await mountVehicle("admin", [
-        { ...sampleVehicles[0], images: ["https://example.com/honda.jpg", "https://example.com/second.jpg"] },
-        sampleVehicles[1],
-      ]);
-      expect(wrapper.find("img").exists()).toBe(false);
-
-      await wrapper.findAll("tbody tr")[0].trigger("mouseenter");
-
-      const image = wrapper.find("img");
-      expect(image.exists()).toBe(true);
-      expect(image.attributes("src")).toBe("https://example.com/honda.jpg");
-      expect(wrapper.find("tbody img").exists()).toBe(false);
-
-      await wrapper.findAll("tbody tr")[0].trigger("mouseleave");
-      expect(wrapper.find("img").exists()).toBe(false);
-
-      await wrapper.findAll("tbody tr")[1].trigger("mouseenter");
-      expect(wrapper.find("img").exists()).toBe(false);
-    });
-  });
-
-  describe("US-4.9 — Confirm create new `maintenance-info` as a `maintenance` or `admin`", () => {
+  describe("US-4.8 — Confirm create new `maintenance-info` as a `maintenance` or `admin`", () => {
     async function openMaintenanceInfoConfirm(overrides = {}) {
       vehicleApi.getMaintenanceInfo.mockImplementation(notFound);
       await submitAddWith(overrides);
@@ -632,7 +609,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
       expect(apiCallCount()).toBe(before);
     });
 
-    it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal closed", async () => {
+    it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal closed", async () => {
       await mountVehicle("admin");
       await openMaintenanceInfoConfirm();
       expect(wrapper.vm.showConfirmFuelType).toBe(false);
@@ -655,7 +632,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
       expect(wrapper.vm.showVehicleDialog).toBe(false);
     });
 
-    it("User clicks the `confirm`button with`Confirm Create New Fuel Type` modal open", async () => {
+    it("User clicks the `confirm` button with `Confirm Create New Fuel Type` modal open", async () => {
       await mountVehicle("admin");
       await openMaintenanceInfoConfirm({ "Fuel Type": "E85" });
       expect(wrapper.vm.showConfirmFuelType).toBe(true);
@@ -673,7 +650,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
     });
   });
 
-  describe("US-4.10 — Confirm create new `fuel type` as a `maintenance` or `admin`", () => {
+  describe("US-4.9 — Confirm create new `fuel type` as a `maintenance` or `admin`", () => {
     it("`Confirm Create New Fuel Type` modal opens", async () => {
       await mountVehicle("maintenance");
       await submitAddWith({ "Fuel Type": "E85", Make: "Honda", Model: "Accord", Year: 2014 });
@@ -697,7 +674,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
       expect(apiCallCount()).toBe(before);
     });
 
-    it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal closed", async () => {
+    it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal closed", async () => {
       await mountVehicle("maintenance");
       await submitAddWith({ "Fuel Type": "E85", Make: "Honda", Model: "Accord", Year: 2014 });
       expect(wrapper.vm.showConfirmMaintenanceInfo).toBe(false);
@@ -711,7 +688,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
       expect(wrapper.vm.showVehicleDialog).toBe(false);
     });
 
-    it("User clicks the `confirm`button with`Confirm Create New Maintenance Info` modal open", async () => {
+    it("User clicks the `confirm` button with `Confirm Create New Maintenance Info` modal open", async () => {
       await mountVehicle("maintenance");
       vehicleApi.getMaintenanceInfo.mockImplementation(notFound);
       await submitAddWith({ "Fuel Type": "E85" });

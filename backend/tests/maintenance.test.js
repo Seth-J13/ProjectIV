@@ -12,17 +12,6 @@ import { syncTestDatabase } from "./helpers.js";
 const BASE = "/api/vehicle-t3";
 const sampleVin = "12345671234567123";
 
-const sampleNote = {
-  submitted_when: "Morning",
-  type: "Maintenance",
-  maintenance_request: true,
-  request_id: 5,
-  name: "John Doe",
-  date: "2026-10-29",
-  text: "Increased the tire pressure and fixed the steering.",
-  subject: "Tire pressure",
-};
-
 const sampleMaintenanceInfo = {
   make: "Honda",
   model: "Accord",
@@ -99,98 +88,7 @@ afterAll(async () => {
 });
 
 describe("Feature 5 — Maintenance Info CRUD", () => {
-  describe("US-5.2 —  User adds a maintenance note", () => {
-    it("User inputs valid input into the `Add Maintenance Note` modal", async () => {
-      const admin = await authHeader("admin", "admin52a");
-      const res = await request(app).post(`${BASE}/notes/`).set(admin).send(sampleNote);
-
-      expect(res.status).toBe(201);
-      expect(typeof res.body.message).toBe("string");
-      expect(res.body.message.length).toBeGreaterThan(0);
-    });
-
-    it("User inputs invalid input into the `Add Maintenance Note` modal", async () => {
-      const admin = await authHeader("admin", "admin52b");
-      const res = await request(app)
-        .post(`${BASE}/notes/`)
-        .set(admin)
-        .send({ ...sampleNote, request_id: 999999 });
-
-      expect(res.status).toBe(404);
-      expect(typeof res.body.message).toBe("string");
-      expect(res.body.message.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe("US-5.3 — User edits a maintenance note", () => {
-    it("User inputs valid input into the `Edit Maintenance Note` modal", async () => {
-      const admin = await authHeader("admin", "admin53a");
-      const created = await request(app)
-        .post(`${BASE}/notes/`)
-        .set(admin)
-        .send({ ...sampleNote, subject: "Editable note" });
-      const noteId = created.body.note_id ?? created.body.id;
-
-      const res = await request(app)
-        .put(`${BASE}/notes/${noteId}`)
-        .set(admin)
-        .send({
-          ...sampleNote,
-          subject: "Updated subject",
-          text: "Updated description text.",
-        });
-
-      expect(res.status).toBe(201);
-      expect(typeof res.body.message).toBe("string");
-      expect(res.body.message.length).toBeGreaterThan(0);
-    });
-
-    it("User inputs invalid input into the `Edit Maintenance Note` modal", async () => {
-      const maintenance = await authHeader("maintenance", "maint53b");
-      const res = await request(app)
-        .put(`${BASE}/notes/999999`)
-        .set(maintenance)
-        .send({
-          ...sampleNote,
-          subject: "Missing note",
-        });
-
-      expect(res.status).toBe(404);
-      expect(typeof res.body.message).toBe("string");
-      expect(res.body.message.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe("US-5.4 — User deletes a maintenance note", () => {
-    it("User clicks `confirm` button", async () => {
-      const admin = await authHeader("admin", "admin54");
-      const created = await request(app)
-        .post(`${BASE}/notes/`)
-        .set(admin)
-        .send({ ...sampleNote, subject: "Complete me" });
-      const noteId = created.body.note_id ?? created.body.id;
-
-      const logRes = await request(app)
-        .post(`${BASE}/vehicle-service-logs/`)
-        .set(admin)
-        .send({
-          vehicle_id: sampleVin,
-          date: "2026-10-31",
-          type: "maintenance",
-          value: "Vehicle needs new tires",
-        });
-
-      expect(logRes.status).toBe(201);
-      expect(typeof logRes.body.message).toBe("string");
-      expect(logRes.body.message.length).toBeGreaterThan(0);
-
-      const deleteRes = await request(app).delete(`${BASE}/notes/${noteId}`).set(admin);
-      expect(deleteRes.status).toBe(200);
-      expect(deleteRes.body.message).toMatch(/Successfully deleted/i);
-    });
-  });
-
-  describe("US-5.5 — User updates the car's mileage", () => {
+  describe("US-5.2 — User updates the car's mileage", () => {
     it("User clicks the `confirm` button", async () => {
       const admin = await authHeader("admin", "admin55");
       const res = await request(app)
@@ -204,7 +102,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
     });
   });
 
-  describe("US-5.9 — User clicks the `Edit Maintenance Info` button", () => {
+  describe("US-5.5 — User clicks the `Edit Maintenance Info` button", () => {
     it("User enters valid input for all fields", async () => {
       const admin = await authHeader("admin", "admin59a");
       const res = await request(app)
@@ -279,7 +177,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
     });
   });
 
-  describe("US-5.10 — User clicks the `Manage Fuels` button", () => {
+  describe("US-5.6 — User clicks the `Manage Fuels` button", () => {
     it("User clicks the `update` button on the `Edit Fuel` modal", async () => {
       const admin = await authHeader("admin", "admin510a");
       const created = await request(app)

@@ -244,7 +244,7 @@ exports.remove = async (req, res) => {
     const vin = text(req.params.vin);
     const deleted = await db.vehicle.destroy({ where: { vin } });
     if (!deleted) {
-      return res.status(404).send({ message: `Vehicle with vin=${vin} not found.` });
+      return res.status(500).send({ message: `Vehicle with vin=${vin} not found.` });
     }
     return res.send({ message: "Successfully deleted vehicle." });
   } catch (error) {

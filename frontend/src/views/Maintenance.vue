@@ -469,6 +469,48 @@ function infoPayload(fuelId) {
   };
 }
 
+async function maintenanceKeyExists() {
+  const f = maintenanceForm.value;
+  const make = String(f.make).trim();
+  const model = String(f.model).trim();
+  const year = Number(f.year);
+
+  try {
+    const response = await maintenanceServices.getMaintenanceInfo(make, model, year);
+    const info = response.data?.maintenanceInfo ?? response.data;
+    return (
+      !!info &&
+      sameText(info.make, make) &&
+      sameText(info.model, model) &&
+      Number(info.year) === year
+    );
+  } catch (error) {
+    if (error.response?.status === 404) return false;
+    throw error;
+  }
+}
+
+async function useExistingMaintenanceInfo() {
+  const f = maintenanceForm.value;
+  saving.value = true;
+
+  try {
+    await maintenanceServices.updateVehicle(props.vin, {
+      make: String(f.make).trim(),
+      model: String(f.model).trim(),
+      year: Number(f.year),
+    });
+    resetInfoDialogs();
+    showAlert("page", "success", "Successfully updated maintenance info.");
+    await loadPage();
+    await loadFuels();
+  } catch (error) {
+    showAlert("page", "error", apiMessage(error, "Could not update maintenance info."));
+  } finally {
+    saving.value = false;
+  }
+}
+
 async function submitInfo() {
   infoSubmitted.value = true;
 
@@ -480,6 +522,18 @@ async function submitInfo() {
   const infoMissing = infoKeyChanged();
   const fuelMissing = !findFuel(maintenanceForm.value.fuel_type);
 
+  if (infoMissing) {
+    try {
+      if (await maintenanceKeyExists()) {
+        await useExistingMaintenanceInfo();
+        return;
+      }
+    } catch (error) {
+      showAlert("modal", "error", apiMessage(error, "Could not update maintenance info."));
+      return;
+    }
+  }
+
   if (infoMissing || fuelMissing) {
     needMaintenanceInfo.value = infoMissing;
     needFuelType.value = fuelMissing;
@@ -490,18 +544,6 @@ async function submitInfo() {
   }
 
   await saveInfo();
-}
-
-async function newInfoExists() {
-  const f = maintenanceForm.value;
-
-  try {
-    await maintenanceServices.getMaintenanceInfo(String(f.make).trim(), String(f.model).trim(), f.year);
-    return true;
-  } catch (error) {
-    if (error.response?.status === 404) return false;
-    throw error;
-  }
 }
 
 async function saveInfo() {
@@ -525,7 +567,7 @@ async function saveInfo() {
     const payload = infoPayload(fuel?.fuel_id);
 
     if (needInfo) {
-      if (!(await newInfoExists())) {
+      if (!(await maintenanceKeyExists())) {
         await maintenanceServices.createMaintenanceInfo(payload);
       }
       await maintenanceServices.updateVehicle(props.vin, {
