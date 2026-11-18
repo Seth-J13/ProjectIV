@@ -22,6 +22,11 @@ const router = createRouter({
       component: () => import('./views/UserManagement.vue'),
     },
     {
+      path: '/destinations',
+      name: 'destinations',
+      component: () => import('./views/DestinationList.vue'),
+    },
+    {
       path: '/drivers',
       name: 'drivers',
       component: Drivers,
@@ -63,7 +68,10 @@ router.beforeEach((to) => {
   }
 
   if (
-    (to.name === 'users' || to.name === 'drivers' || to.name === 'areas') &&
+    (to.name === 'users' ||
+      to.name === 'destinations' ||
+      to.name === 'drivers' ||
+      to.name === 'areas') &&
     user?.role !== 'admin'
   ) {
     return { name: 'landing' };

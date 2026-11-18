@@ -70,6 +70,14 @@ async function logout() {
       v-if="user?.role === 'admin'"
       variant="text"
       type="button"
+      @click="router.push({ name: 'destinations' })"
+    >
+      Destinations
+    </v-btn>
+    <v-btn
+      v-if="user?.role === 'admin'"
+      variant="text"
+      type="button"
       @click="router.push({ name: 'drivers' })"
     >
       Drivers
