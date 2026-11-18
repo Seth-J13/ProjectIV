@@ -202,8 +202,8 @@ This feature uses the `Destinations` endpoints below.
 }
 ```
 
-Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` → `400` bad request.
-Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `409` conflict.
+Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` -> `400` bad request.
+Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` -> `409` conflict.
 
 **Success** (`201`)
 **Server error:** `500` `{ "message": "…" }`.
@@ -225,9 +225,9 @@ Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `
 }
 ```
 
-Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` → `400` bad request.
-Malformed `zip`, `city`, `state`, `addr_line_1`, `dest_name`, `last_visited_on` → `400` bad request.
-Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` → `409` conflict.
+Missing `zip`, `city`, `state`, `addr_line_1`, `dest_name` -> `400` bad request.
+Malformed `zip`, `city`, `state`, `addr_line_1`, `dest_name`, `last_visited_on` -> `400` bad request.
+Duplicate combination `zip`, `city`, `state`, `addr_line_1`, `addr_line_2` -> `409` conflict.
 
 **Success** (`201`)
 **Server error:** `500` `{ "message": "…" }`.
@@ -275,7 +275,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 - Icon-only row action uses `size="small"` and accessible `aria-label` (**Edit**) and (**Delete**).
 - Rows are displayed in the list in batches of `5` at a time. Scrolling down loads the next batch beneath the current one.
 - List entries are, by default, sorted by the most recent `last_visited_on` (excluding future)
-- **Top ↑** displayed upon arriving at the bottom of the page. Pressing this button scrolls to the top but does not clear the destinations list
+  **Top ↑** displayed upon arriving at the bottom of the page. Pressing this button scrolls to the top but does not clear the destinations list
 
 - Empty state: **"No destinations yet. Add a destination to view its details."** when no destinations exist in the database.
 - Loading state: skeleton or progress indicator while enrollments are fetching.
@@ -294,14 +294,14 @@ Primary Action: Fill out a form with the following fields:
 **Edit State**
 
 - Header: **Edit Destination**
-- **Cancel** button clears all fields in the current form and closes the component
-- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
+  **Cancel** button clears all fields in the current form and closes the component
+  **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
 
 **Add State**
 
 - Header: **Add Destination**
-- **Cancel** button clears all fields in the current form and closes the component
-- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
+  **Cancel** button clears all fields in the current form and closes the component
+  **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
 
 **Implementation note:** one route/view for `Destinations`; `Destinations` dialogs are child components or inline `<v-dialog>` blocks in `DestinationList.vue` unless the team splits presentational dialogs later.
 
@@ -587,7 +587,7 @@ Copy when asking Cursor to implement this feature (`@` this file):
 ```text
 Implement Feature 6 from @features/feature-6-destination-crud.md on branch `feature/6-destination-crud`.
 
-Follow layer order in @features/framework.md (models → routes → backend tests → frontend → frontend tests).
+Follow layer order in @features/framework.md (models -> routes -> backend tests -> frontend -> frontend tests).
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.

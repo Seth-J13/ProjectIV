@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1,2,4,5,6,7,9,10,12,13 applied.
+**Status:** Features 1,2,4,5 (plus related tables for notes/requests/service logs used by Feature 5),6,7,9,10,12,13 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
@@ -18,13 +18,14 @@ Update this file when a feature that defines schema merges to `dev`.
 | `role`      | STRING     | Required; `user`, `driver`, `maintenance`, or `admin`. Create account sets `user`                                                                                    |
 | `googleSub` | STRING     | Nullable, unique when set. Google `sub` from the verified token. Required for accounts created by **Continue with Google**.                                          |
 
+
 ### `sessions` table
 
 | Field            | Type       | Rules                                          |
 | ---------------- | ---------- | ---------------------------------------------- |
 | `sessionId`      | INTEGER PK | Auto-increment                                 |
 | `token`          | STRING     | Required, unique; value returned to the client |
-| `email`          | STRING     | Required                                       |
+| `email`          | STRING     | Required. An admin email change updates that user's session emails and leaves the token valid. |
 | `expirationDate` | DATE       | Required; 24 hours from login                  |
 | `userId`         | INTEGER FK | Required; references `users.id`                |
 
@@ -43,20 +44,20 @@ Update this file when a feature that defines schema merges to `dev`.
 
 ### `Vehicles` Table
 
-| Field                 | Type           | Rules                                 |
-| --------------------- | -------------- | ------------------------------------- |
-| `vin`                 | INTEGER PK     | Primary Key, Must be 17 numbers (0-9) |
-| `make`                | VARCHAR(30)    | Required                              |
-| `model`               | VARCHAR(65)    | Required                              |
-| `year`                | INTEGER        | Required                              |
-| `purchased_date`      | DATE           | Required; Cannot be in the future     |
-| `color`               | VARCHAR(20)    | NULLABLE;                             |
-| `license_plate_num`   | VARCHAR(8)     | NULLABLE; Unique                      |
-| `tag_exp_month`       | DATE           | Required                              |
-| `area_id`             | VARCHAR(30) FK | Foreign Key, NOT NULLABLE             |
-| `most_recent_dest_id` | INTEGER        | NULLABLE;                             |
-| `available`           | BIT            | Required                              |
-| `mileage`             | INTEGER        | NULLABLE, Non-negative                |
+| Field                 | Type        | Rules                                 |
+| --------------------- | ----------- | ------------------------------------- |
+| `vin`                 | STRING(17) PK | Primary Key; 17 digits (0-9). Stored as string so leading zeros and full width are preserved. |
+| `make`                | VARCHAR(30) | Required                              |
+| `model`               | VARCHAR(65) | Required                              |
+| `year`                | INTEGER     | Required                              |
+| `purchased_date`      | DATE        | Required; Cannot be in the future     |
+| `color`               | VARCHAR(20) | NULLABLE;                             |
+| `license_plate_num`   | VARCHAR(8)  | NULLABLE; Unique                      |
+| `tag_exp_month`       | DATE        | Required                              |
+| `area_id`             | INTEGER FK  | Foreign Key, NOT NULLABLE             |
+| `most_recent_dest_id` | INTEGER     | NULLABLE;                             |
+| `available`           | BIT         | Required                              |
+| `mileage`             | INTEGER     | NULLABLE, Non-negative                |
 
 ### `Maintenance_Info` Table
 
@@ -146,7 +147,7 @@ Feature 8. Dates and times are stored as strings so values such as `2026-11-10` 
 | `requestId` | INTEGER PK | Auto-increment |
 | `requestType` | ENUM | Required; `trip` or `maintenance` |
 | `requesterId` | INTEGER | Required; set from the signed-in user |
-| `vehicleId` | INTEGER | Required |
+| `vehicleId` | STRING(17) | Required; the vehicle VIN. The request API still accepts and returns a numeric id when the VIN is numeric |
 | `driverId` | INTEGER | Required for `trip`; null for `maintenance` |
 | `destId` | INTEGER | Required for `trip`; null for `maintenance` |
 | `startDate` | STRING | Required for `trip`; optional for `maintenance` |

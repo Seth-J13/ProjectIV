@@ -36,10 +36,9 @@ async function authHeader(role, username = role) {
   }
 
   const user = await db.user.create({
-    fName: "Ada",
-    lName: username,
+    firstName: "Ada",
+    lastName: username,
     email: `${username}@example.com`,
-    username,
     password: "hashed-password",
     role,
   });
@@ -61,10 +60,15 @@ function requestIds(body) {
 
 async function seedCatalog() {
   await db.vehicle.create({
-    vehicleId: 12,
-    license: "ABC-1234",
+    vin: "12",
     make: "Ford",
     model: "Transit",
+    year: 2024,
+    purchased_date: "2024-01-01",
+    license_plate_num: "ABC-1234",
+    tag_exp_month: "2026-12-01",
+    area_id: 1,
+    available: true,
   });
   await db.driver.create({ driverId: 3, name: "Jane Doe" });
   await db.destination.create({ destId: 7, name: "State Capitol" });

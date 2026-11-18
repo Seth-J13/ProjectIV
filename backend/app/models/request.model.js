@@ -5,7 +5,7 @@ export default (sequelize, DataTypes) => {
       requestId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
       requestType: { type: DataTypes.ENUM("trip", "maintenance"), allowNull: false },
       requesterId: { type: DataTypes.INTEGER, allowNull: false },
-      vehicleId: { type: DataTypes.INTEGER, allowNull: false },
+      vehicleId: { type: DataTypes.STRING(17), allowNull: false },
       driverId: { type: DataTypes.INTEGER, allowNull: true },
       destId: { type: DataTypes.INTEGER, allowNull: true },
       startDate: { type: DataTypes.STRING, allowNull: true },

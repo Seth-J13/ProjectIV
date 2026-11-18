@@ -32,9 +32,29 @@ function stamp(date, time) {
   return new Date(`${date}T${time || "00:00"}`);
 }
 
+function vehicleKey(vehicleId) {
+  return String(vehicleId);
+}
+
+function vehicleView(vehicle) {
+  if (!vehicle) {
+    return null;
+  }
+
+  const vin = String(vehicle.vin);
+  const vehicleId = /^[0-9]+$/.test(vin) ? Number(vin) : vin;
+
+  return {
+    vehicleId,
+    license: vehicle.license_plate_num ?? null,
+    make: vehicle.make,
+    model: vehicle.model,
+  };
+}
+
 async function present(row) {
   const plain = row.get({ plain: true });
-  const vehicle = await db.vehicle.findByPk(plain.vehicleId);
+  const vehicle = await db.vehicle.findByPk(vehicleKey(plain.vehicleId));
   const driver = plain.driverId == null ? null : await db.driver.findByPk(plain.driverId);
   const destination = plain.destId == null ? null : await db.destination.findByPk(plain.destId);
 
@@ -45,14 +65,7 @@ async function present(row) {
     vehicleId: plain.vehicleId,
     driverId: plain.driverId ?? null,
     destId: plain.destId ?? null,
-    vehicle: vehicle
-      ? {
-          vehicleId: vehicle.vehicleId,
-          license: vehicle.license,
-          make: vehicle.make,
-          model: vehicle.model,
-        }
-      : null,
+    vehicle: vehicleView(vehicle),
     driver: driver ? { driverId: driver.driverId, name: driver.name } : null,
     destination: destination ? { destId: destination.destId, name: destination.name } : null,
     startDate: plain.startDate,
@@ -134,11 +147,13 @@ async function readPayload(body, requestType) {
     value.numPeople = people;
   }
 
-  const vehicle = await db.vehicle.findByPk(vehicleId);
+  const vehicle = await db.vehicle.findByPk(vehicleKey(vehicleId));
 
   if (!vehicle) {
     return { error: "vehicle does not exist." };
   }
+
+  value.vehicleId = vehicle.vin;
 
   if (requestType === "maintenance") {
     if (!value.endDate && value.startDate) {
@@ -166,8 +181,8 @@ async function readPayload(body, requestType) {
 
 exports.findVehicles = async (_req, res) => {
   try {
-    const vehicles = await db.vehicle.findAll({ order: [["vehicleId", "ASC"]] });
-    return res.send(vehicles);
+    const vehicles = await db.vehicle.findAll({ order: [["vin", "ASC"]] });
+    return res.send(vehicles.map(vehicleView));
   } catch (error) {
     logger.error(error.message);
     return res.status(500).send({ message: "Unable to load vehicles." });

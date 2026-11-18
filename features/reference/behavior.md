@@ -1,21 +1,6 @@
 # Behavior & Rules Reference
 
-**Living snapshot** of product rules currently in force on `dev`.
-
-Feature 8 request rules are in force on this branch. See the OC CS Speckit repo’s `features/reference/behavior.md` for the intended shape (rule → enforcement → provenance).
-
-| Rule | Enforcement | Provenance |
-| --- | --- | --- |
-| A request route requires a bearer token. | `401` `{ "message": "Unauthorized!" }` | Feature 8 FR-001 |
-| `requesterId` is the signed-in user. A client-supplied id is ignored. | Set in `request.controller.js` create | Feature 8 FR-003 |
-| Trip end must be after start. | `400` `{ "message": "end must be after start." }` | Feature 8 FR-005 |
-| Trip `numPeople` must be an integer of at least 1. | `400` `{ "message": "number of people must be at least 1." }` | Feature 8 FR-006 |
-| Unknown vehicle | `400` `{ "message": "vehicle does not exist." }` | Feature 8 FR-004 |
-| Only an admin can create `maintenance`. | `403` `{ "message": "Admin access required." }` | Feature 8 US-8.2 |
-| A non-admin sees and changes only their own requests. Another user’s id is `404`. | `getAccessibleRequestOrNull` | Feature 8 US-8.3, US-8.5 |
-| An admin sees and can edit every request. | List and update skip the owner filter | Feature 8 US-8.3, US-8.5 |
-| Delete succeeds with `204`. | `request.controller.js` remove | Feature 8 US-8.5 |
-| The requests screen requires a stored user and redirects to `login` otherwise. | `router.js` `beforeEach` | Feature 8 authentication scenario |
+**Living snapshot** of product rules currently enforced by the app.
 
 These files answer: *"What rules does the app enforce right now?"*  
 They do **not** authorize new scope — implement only from `features/feature-*.md`.
@@ -25,3 +10,48 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | [api.md](./api.md) | Routes / payloads |
 | [data-model.md](./data-model.md) | Tables / columns |
 | **This file** | Ownership, sort, validation, UI rules |
+
+| Rule | Enforcement | Introduced |
+| --- | --- | --- |
+| Email and password sign-in | `POST /api/login` with Basic auth. Unknown email → **401** `User not found!`. Wrong password → **401** `Invalid password!`. | Feature 1 |
+| Create account | First name, last name, email, and password are required. Role is `user`. Duplicate email → **409** `Email already in use!` and no new session. | Feature 1 |
+| Session lifetime | Server session expires after 24 hours. Login reuses a non-expired session for that user before issuing a new token. | Feature 1 |
+| Logout | `POST /api/logout` deletes only the caller's current session, then the client clears `localStorage` `user` and returns to Login. | Feature 1 |
+| Protected routes | `authenticate` requires `Authorization: Bearer <session token>`. Missing or expired token → **401** and the handler does not run. The client clears `user` and returns to Login. | Feature 1 |
+| Signed-in screen | `/landing` shows only `This feature has not been implemented yet` for every role. | Feature 1 |
+| Login screen | Route `/` (`login`) keeps Email, Password, **Login** (`oc-cta`), and **Create Account**. Success stores the payload in `localStorage` `user` and shows snackbar `Login successful!` on email login. | Feature 1 |
+| Continue with Google | Secondary **Continue with Google** button. Email and Password are not required. The button uses `VITE_GOOGLE_CLIENT_ID` and Google Identity Services (`openid`, `email`, and `profile` only). The ID token is posted to `POST /api/google` and is not stored in `localStorage`. | Feature 2 |
+| Google system of record | A new `googleSub` creates one user with role `user`, a null password, and the verified email and name. The app does not store a Google access token, refresh token, or password. Success JSON omits `password` and `googleSub`. | Feature 2 |
+| Same Google account | A later sign-in for the same `googleSub` does not insert a second user. Session create-or-reuse follows Feature 1. | Feature 2 |
+| Password account stays separate | Verified Google email that already belongs to a user with a password and no `googleSub` → **409** `Email already in use!`. That row is not changed and no session starts. | Feature 2 |
+| Google-only account rejects password login | Email/password login when `password` is null → **401** `Invalid password!`. No session starts. | Feature 2 |
+| Google failure and cancel | Missing ID token → **400** `Google sign-in failed.`. Invalid, expired, wrong-audience, or unverified token → **401** `Google sign-in failed.`. No given name or family name → **400** `Google did not provide a name.`. Cancel stays on Login with `Google sign-in was cancelled.` and no `user` in `localStorage`. | Feature 2 |
+| Google client secret | `GOOGLE_CLIENT_SECRET` is read only on the server. It is not sent to the browser, included in API responses, or written to logs. | Feature 2 |
+| Google session on protected routes | A Bearer token from `POST /api/google` authorizes protected routes the same way as an email/password session. | Feature 2 |
+| MenuBar | Signed-in initials, name, and email come from `localStorage` `user`. **Logout** ends that session and returns to Login. Hidden on the Login route. **User Management** is shown only when `role` is `admin` and opens `/users`. **Vehicles** and **Maintenance** are shown when `role` is `admin` or `maintenance` and open `/vehicles` and `/maintenance-info`. | Feature 1, Feature 3, Feature 4, Feature 5 |
+| User list | An admin on `/users` sees every account's first name, last name, email, and role, ordered by last name A–Z. Password, `googleSub`, and tokens are not shown. | Feature 3 |
+| Edit user | **Edit** opens the current values. **Save** sends first name, last name, email, and role (`user`, `driver`, `maintenance`, or `admin`), stays on `/users`, and shows `User updated.`. **Cancel** closes the dialog without saving. | Feature 3 |
+| Admin cannot change own role | Saving the signed-in admin with a different role → **400** `You cannot change your own role.` The role stays `admin`. The same admin may still change their own name and email. | Feature 3 |
+| Duplicate email on edit | Saving an email that belongs to a different user → **409** `Email already in use!`. That user is unchanged. | Feature 3 |
+| Non-admin user management | Roles `user`, `driver`, and `maintenance` do not see **User Management**. Opening `/users` redirects to `/landing`. User APIs return **403** `Admin access required.` and do not return or change rows. | Feature 3 |
+| Unknown user | `PUT /api/users/:id` for a missing id → **404** `User with id={id} not found.` | Feature 3 |
+| Email change keeps the session | Updating a user's email writes the new email onto that user's session rows and does not replace the token. | Feature 3 |
+| Vehicle page access | `/vehicles` (`vehicleManagement`) is limited to `admin` and `maintenance`. Other signed-in roles are sent to `/landing`. Vehicle APIs for other roles return **401** `Unauthorized user`. | Feature 4 |
+| Vehicle ownership | Vehicles are not owned by a user. Any `admin` or `maintenance` session may list, create, update, and delete any vehicle. | Feature 4 |
+| Vehicle create verbs | Creating a vehicle uses `PUT /api/vehicle-t3/vehicles/`. Updating uses `POST /api/vehicle-t3/vehicles/:vin`. | Feature 4 |
+| Vehicle client validation | Invalid Add/Edit Vehicle form input shows `An error occured processing your form.` and does not call the API. | Feature 4 |
+| New maintenance info / fuel type confirm | Adding a vehicle with a new make/model/year opens **Confirm Add New Maintenance Info?**. A new fuel type opens **Confirm Add New Fuel Type?**. Cancel returns to the Add/Edit modal with no API call. Confirm creates fuel (when needed), then maintenance info, then the vehicle. | Feature 4 |
+| Vehicle list filters | Year, Make, Model, Color, Area, License, From Purchase Date, and Before Purchase Date filter the loaded vehicle list on the client as values change. | Feature 4 |
+| Maintenance navigation | The Maintenance action on a vehicle row opens route `maintenance` with that vehicle's VIN in the path and does not send an API request. | Feature 4 |
+| Maintenance page access | `/maintenance-info/:vin?` (`maintenance`) is limited to `admin` and `maintenance`. | Feature 5 |
+| Maintenance notes | Notes belong to a request for the selected vehicle. Add/edit validate subject and description (max 255). Completing a note creates a vehicle service log, then deletes the note. | Feature 5 |
+| Mileage update | Update Mileage requires a whole number greater than the current mileage, then `PUT /api/vehicle-t3/vehicles/:vin`. | Feature 5 |
+| Fuel management | Manage Fuels can add, edit, and delete fuel types used by maintenance info. | Feature 5 |
+| Service logs / Back | View Service Logs opens `vehicleServiceLogs`. Back returns to `vehicleManagement`. | Feature 5 |
+| Request routes require a session | Missing bearer token on `/api/requests` returns `401` `{ "message": "Unauthorized!" }` | Feature 8 |
+| Request owner | `requesterId` is the signed-in user. A client-supplied id is ignored | Feature 8 |
+| Trip schedule | End before start returns `400` `{ "message": "end must be after start." }`. `numPeople` below 1 returns `400` `{ "message": "number of people must be at least 1." }` | Feature 8 |
+| Request references | An unknown vehicle returns `400` `{ "message": "vehicle does not exist." }` | Feature 8 |
+| Maintenance requests | Only an admin can create `maintenance`. Other roles receive `403` `{ "message": "Admin access required." }` | Feature 8 |
+| Request visibility | A non-admin sees and changes only their own requests. Another user's id is `404`. An admin sees and can edit every request | Feature 8 |
+| Requests screen | Signed-out users opening `requests` go to login | Feature 8 |
