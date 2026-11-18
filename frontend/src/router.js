@@ -1,5 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
+<<<<<<< HEAD
+import Home from "./views/Home.vue";
 import Drivers from "./views/Drivers.vue";
+=======
+>>>>>>> 7e0f16e29febe48b6cbfd8b1dfb3e2c8664dbcdf
 import Utils from "./config/utils.js";
 
 const router = createRouter({
@@ -21,6 +25,11 @@ const router = createRouter({
       component: () => import("./views/UserManagement.vue"),
     },
     {
+      path: "/login",
+      name: "login",
+      component: { template: "<div>Login</div>" },
+    },
+    {
       path: "/drivers",
       name: "drivers",
       component: Drivers,
@@ -33,6 +42,20 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
+<<<<<<< HEAD
+  if (to.name !== "drivers") {
+    return true;
+  }
+
+  const user = Utils.getStore("user");
+
+  if (!user) {
+    return { name: "login" };
+  }
+
+  if (user.role !== "admin") {
+    return router.hasRoute("landing") ? { name: "landing" } : { name: "home" };
+=======
   const user = Utils.getStore("user");
 
   if (!user && to.name !== "login") {
@@ -41,10 +64,7 @@ router.beforeEach((to) => {
 
   if (to.name === "users" && user?.role !== "admin") {
     return { name: "landing" };
-  }
-
-  if (to.name === "drivers" && user && user.role !== "admin") {
-    return { name: "landing" };
+>>>>>>> 7e0f16e29febe48b6cbfd8b1dfb3e2c8664dbcdf
   }
 
   return true;

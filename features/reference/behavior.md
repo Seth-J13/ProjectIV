@@ -1,6 +1,20 @@
 # Behavior & Rules Reference
 
+<<<<<<< HEAD
+**Living snapshot** of product rules currently in force on `dev`.
+
+| Rule | Enforcement | Introduced |
+| --- | --- | --- |
+| Driver reads require a session | `GET /api/vehicle-t3` returns `401` without a bearer token | Feature 7 |
+| Only admins create, update, or delete drivers | Non-admin writes return `403` `{ "message": "Admin access required." }`. Drivers are not owned by a user. Signed-in non-admins are sent to `landing` when that route exists | Feature 7 |
+| Driver id must be an integer | Non-numeric `driver_id` returns `400` | Feature 7 |
+| License status, expiration, and availability are required | Missing or blank values return `400`. Status and availability must be one of the allowed values | Feature 7 |
+| A blank driver name is rejected | Whitespace-only `name` returns `400`. The drivers form blocks it before the request | Feature 7 |
+| Drivers screen is admin-only | Signed-out users go to login. Signed-in non-admins go home | Feature 7 |
+| Find filters the list | The **Find** box keeps rows whose id, name, or license status contains the text | Feature 7 |
+=======
 **Living snapshot** of product rules currently enforced by the app.
+>>>>>>> 7e0f16e29febe48b6cbfd8b1dfb3e2c8664dbcdf
 
 These files answer: *"What rules does the app enforce right now?"*  
 They do **not** authorize new scope — implement only from `features/feature-*.md`.
@@ -36,10 +50,3 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | Non-admin user management | Roles `user`, `driver`, and `maintenance` do not see **User Management**. Opening `/users` redirects to `/landing`. User APIs return **403** `Admin access required.` and do not return or change rows. | Feature 3 |
 | Unknown user | `PUT /api/users/:id` for a missing id → **404** `User with id={id} not found.` | Feature 3 |
 | Email change keeps the session | Updating a user's email writes the new email onto that user's session rows and does not replace the token. | Feature 3 |
-| Driver reads require a session | `GET /api/vehicle-t3` returns `401` without a bearer token | Feature 7 |
-| Only admins create, update, or delete drivers | Non-admin writes return `403` `{ "message": "Admin access required." }`. Drivers are not owned by a user | Feature 7 |
-| Driver id must be an integer | Non-numeric `driver_id` returns `400` | Feature 7 |
-| License status, expiration, and availability are required | Missing or blank values return `400`. Status and availability must be one of the allowed values | Feature 7 |
-| A blank driver name is rejected | Whitespace-only `name` returns `400`. The drivers form blocks it before the request | Feature 7 |
-| Drivers screen is admin-only | Signed-out users go to login. Signed-in non-admins go to landing | Feature 7 |
-| Find filters the list | The **Find** box keeps rows whose id, name, or license status contains the text | Feature 7 |
