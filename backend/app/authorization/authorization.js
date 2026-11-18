@@ -43,6 +43,19 @@ export function requireAdmin(req, res, next) {
   return next();
 }
 
+export function requireAreaAdmin(req, res, next) {
+  if (req.user?.role !== "admin") {
+    return res.status(403).send({ message: "Forbidden" });
+  }
+
+  return next();
+}
+
+export async function getAreaOrNull(areaId) {
+  const area = await db.area.findByPk(areaId);
+  return area ?? null;
+}
+
 export async function getAccessibleDriversOrNull(req, driverId) {
   if (!req.user) {
     return null;

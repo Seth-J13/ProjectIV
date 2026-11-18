@@ -28,7 +28,7 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | Google failure and cancel | Missing ID token → **400** `Google sign-in failed.`. Invalid, expired, wrong-audience, or unverified token → **401** `Google sign-in failed.`. No given name or family name → **400** `Google did not provide a name.`. Cancel stays on Login with `Google sign-in was cancelled.` and no `user` in `localStorage`. | Feature 2 |
 | Google client secret | `GOOGLE_CLIENT_SECRET` is read only on the server. It is not sent to the browser, included in API responses, or written to logs. | Feature 2 |
 | Google session on protected routes | A Bearer token from `POST /api/google` authorizes protected routes the same way as an email/password session. | Feature 2 |
-| MenuBar | Signed-in initials, name, and email come from `localStorage` `user`. **Logout** ends that session and returns to Login. Hidden on the Login route. **User Management** is shown only when `role` is `admin` and opens `/users`. | Feature 1, Feature 3 |
+| MenuBar | Signed-in initials, name, and email come from `localStorage` `user`. **Logout** ends that session and returns to Login. Hidden on the Login route. **User Management** is shown only when `role` is `admin` and opens `/users`. **Areas** is shown only when `role` is `admin` and opens `/areas`. | Feature 1, Feature 3, Feature 13 |
 | User list | An admin on `/users` sees every account's first name, last name, email, and role, ordered by last name A–Z. Password, `googleSub`, and tokens are not shown. | Feature 3 |
 | Edit user | **Edit** opens the current values. **Save** sends first name, last name, email, and role (`user`, `driver`, `maintenance`, or `admin`), stays on `/users`, and shows `User updated.`. **Cancel** closes the dialog without saving. | Feature 3 |
 | Admin cannot change own role | Saving the signed-in admin with a different role → **400** `You cannot change your own role.` The role stays `admin`. The same admin may still change their own name and email. | Feature 3 |
@@ -43,3 +43,8 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | A blank driver name is rejected | Whitespace-only `name` returns `400`. The drivers form blocks it before the request | Feature 7 |
 | Drivers screen is admin-only | Signed-out users go to login. Signed-in non-admins go to `/landing` | Feature 7 |
 | Find filters the list | The **Find** box keeps rows whose id, name, or license status contains the text | Feature 7 |
+| Areas are admin-only | Roles `user`, `driver`, and `maintenance` do not see **Areas**. Opening `/areas` redirects to `/landing`. Area APIs return **403** `Forbidden` and do not return or change rows | Feature 13 |
+| Area name and notice email | `name` is required, unique, and at most 30 characters. `noticeEmail` is required. A blank name or notice email is **400** `Area is incomplete!`. A duplicate name is **409** `Area name already in use!` and no second row is created | Feature 13 |
+| Area list | An admin on `/areas` sees every area's name and notice email. **Create area** stays available when the list is empty. Opening a row shows **Save** and **Delete** | Feature 13 |
+| Delete an unused area | Delete succeeds with `Area deleted.` and the row leaves the list. If a vehicle still has that `area_id`, delete returns **409** `Area is in use!` and the area remains | Feature 13 |
+| Unknown area | An admin request for a missing area id returns **404** `Area not found!` | Feature 13 |

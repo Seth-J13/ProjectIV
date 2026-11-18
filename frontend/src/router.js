@@ -26,6 +26,11 @@ const router = createRouter({
       component: Drivers,
     },
     {
+      path: "/areas",
+      name: "areas",
+      component: () => import("./views/Areas.vue"),
+    },
+    {
       path: "/:pathMatch(.*)*",
       redirect: { name: "login" },
     },
@@ -39,7 +44,7 @@ router.beforeEach((to) => {
     return { name: "login" };
   }
 
-  if ((to.name === "users" || to.name === "drivers") && user?.role !== "admin") {
+  if ((to.name === "users" || to.name === "drivers" || to.name === "areas") && user?.role !== "admin") {
     return { name: "landing" };
   }
 

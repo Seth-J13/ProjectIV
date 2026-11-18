@@ -37,6 +37,11 @@ function openUserManagement() {
   return router.push({ name: "users" });
 }
 
+function openAreas() {
+  router.currentRoute.value = router.resolve({ name: "areas" });
+  return router.push({ name: "areas" });
+}
+
 async function logout() {
   try {
     await authServices.logoutUser();
@@ -60,6 +65,14 @@ async function logout() {
       @click.stop.prevent="openUserManagement"
     >
       User Management
+    </v-btn>
+    <v-btn
+      v-if="user?.role === 'admin'"
+      variant="text"
+      type="button"
+      @click.stop.prevent="openAreas"
+    >
+      Areas
     </v-btn>
     <v-spacer />
     <v-menu>
