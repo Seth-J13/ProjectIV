@@ -1,12 +1,12 @@
-import apiClient from "./services.js";
+import apiClient from './services.js';
 
 export default {
   listAreas() {
-    return apiClient.get("areas");
+    return apiClient.get('areas');
   },
 
   createArea(area) {
-    return apiClient.post("areas", area);
+    return apiClient.post('areas', area);
   },
 
   updateArea(id, area) {

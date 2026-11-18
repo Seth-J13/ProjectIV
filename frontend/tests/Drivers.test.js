@@ -66,11 +66,35 @@ function buttonByText(text) {
   );
 }
 
-function inputByLabel(pattern) {
+function fieldByLabel(pattern) {
   const labels = [...document.querySelectorAll(".v-label, label")];
   const label = labels.find((element) => pattern.test(element.textContent.trim()));
-  const field = label?.closest(".v-input");
-  return field?.querySelector("input, textarea") ?? null;
+  return label?.closest(".v-input") ?? null;
+}
+
+function inputByLabel(pattern) {
+  return fieldByLabel(pattern)?.querySelector("input, textarea") ?? null;
+}
+
+async function chooseOption(pattern, optionText) {
+  const input = inputByLabel(pattern);
+  expect(input).toBeTruthy();
+  input.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+  await flushPromises();
+
+  const option = [...document.querySelectorAll(".v-list-item, [role='option']")].find(
+    (item) => item.textContent.replace(/\s+/g, " ").trim() === optionText
+  );
+
+  if (!option) {
+    const titles = [...document.querySelectorAll(".v-list-item, [role='option'], .v-overlay")].map((element) =>
+      element.textContent.replace(/\s+/g, " ").trim()
+    );
+    throw new Error(`No option "${optionText}". Found: ${titles.join(" | ")}`);
+  }
+
+  option.click();
+  await flushPromises();
 }
 
 function setControlValue(input, value) {
@@ -89,8 +113,10 @@ async function clickButton(text) {
 }
 
 function rowForDriver(driverId) {
-  const rows = [...document.querySelectorAll("tr, .v-list-item")];
-  return rows.find((row) => new RegExp(`\\b${driverId}\\b`).test(row.textContent));
+  const rows = [...document.querySelectorAll("tbody tr")];
+  return rows.find((row) =>
+    [...row.querySelectorAll("td")].some((cell) => cell.textContent.trim() === String(driverId))
+  );
 }
 
 async function mountDrivers() {
@@ -166,9 +192,9 @@ describe("Feature 7 — Driver Crud", () => {
       expect(availability).toBeTruthy();
 
       setControlValue(name, "Pat Driver");
-      setControlValue(licenseStatus, "active");
+      await chooseOption(/license status/i, "active");
       setControlValue(expiration, "05/2026");
-      setControlValue(availability, "available");
+      await chooseOption(/availability/i, "available");
       await flushPromises();
 
       const createButton = buttonByText("Create");
@@ -184,9 +210,9 @@ describe("Feature 7 — Driver Crud", () => {
         license_exp_date: "05/2026",
         availability: "available",
       });
-      expect(pageText()).toContain("active");
+      expect(pageText()).toContain("Active");
       expect(pageText()).toContain("05/2026");
-      expect(pageText()).toContain("available");
+      expect(pageText()).toContain("Available");
       expect(buttonByText("Create")).toBeUndefined();
     });
 
@@ -212,7 +238,7 @@ describe("Feature 7 — Driver Crud", () => {
       await clickButton("+ New driver");
       setControlValue(inputByLabel(/name/i), "Pat Driver");
       setControlValue(inputByLabel(/expiration/i), "05/2026");
-      setControlValue(inputByLabel(/availability/i), "available");
+      await chooseOption(/availability/i, "available");
       await flushPromises();
 
       await clickButton("Create");
@@ -226,8 +252,8 @@ describe("Feature 7 — Driver Crud", () => {
 
       await clickButton("+ New driver");
       setControlValue(inputByLabel(/name/i), "Pat Driver");
-      setControlValue(inputByLabel(/license status/i), "active");
-      setControlValue(inputByLabel(/availability/i), "available");
+      await chooseOption(/license status/i, "active");
+      await chooseOption(/availability/i, "available");
       await flushPromises();
 
       await clickButton("Create");
@@ -241,7 +267,7 @@ describe("Feature 7 — Driver Crud", () => {
 
       await clickButton("+ New driver");
       setControlValue(inputByLabel(/name/i), "Pat Driver");
-      setControlValue(inputByLabel(/license status/i), "active");
+      await chooseOption(/license status/i, "active");
       setControlValue(inputByLabel(/expiration/i), "05/2026");
       await flushPromises();
 
@@ -257,9 +283,9 @@ describe("Feature 7 — Driver Crud", () => {
       await clickButton("+ New driver");
       setControlValue(inputByLabel(/name/i), "Pat Driver");
       setControlValue(inputByLabel(/driver\s*_?id/i), "abc");
-      setControlValue(inputByLabel(/license status/i), "active");
+      await chooseOption(/license status/i, "active");
       setControlValue(inputByLabel(/expiration/i), "05/2026");
-      setControlValue(inputByLabel(/availability/i), "available");
+      await chooseOption(/availability/i, "available");
       await flushPromises();
 
       await clickButton("Create");
@@ -311,9 +337,9 @@ describe("Feature 7 — Driver Crud", () => {
       row.querySelector('[aria-label="Edit driver"]').click();
       await flushPromises();
 
-      const licenseStatus = inputByLabel(/license status/i);
-      expect(licenseStatus.value).toBe("suspended");
-      setControlValue(licenseStatus, "active");
+      const licenseStatus = fieldByLabel(/license status/i);
+      expect(licenseStatus.textContent).toContain("suspended");
+      await chooseOption(/license status/i, "active");
       await flushPromises();
 
       await clickButton("Save");
@@ -322,8 +348,8 @@ describe("Feature 7 — Driver Crud", () => {
       const [url, body] = apiClient.put.mock.calls[0];
       expect(String(url)).toContain("vehicle-t3/1");
       expect(body.license_status).toBe("active");
-      expect(pageText()).toContain("active");
-      expect(rowForDriver(1).textContent).not.toContain("suspended");
+      expect(pageText()).toContain("Active");
+      expect(rowForDriver(1).textContent).not.toContain("Suspended");
     });
 
     it("Admin deletes a driver", async () => {
@@ -373,7 +399,7 @@ describe("Feature 7 — Driver Crud", () => {
           {
             driver_id: 1,
             license_status: "active",
-            license_exp_date: "08/2030",
+            license_exp_date: "08/1999",
             availability: "available",
           },
         ],

@@ -1,13 +1,13 @@
-import db from "../models/index.js";
-import logger from "../config/logger.js";
+import db from '../models/index.js';
+import logger from '../config/logger.js';
 
 export async function authenticate(req, res, next) {
   try {
-    const header = req.headers.authorization || "";
+    const header = req.headers.authorization || '';
     const match = /^Bearer\s+(\S+)$/i.exec(header);
 
     if (!match) {
-      return res.status(401).send({ message: "Unauthorized!" });
+      return res.status(401).send({ message: 'Unauthorized!' });
     }
 
     const token = match[1];
@@ -19,7 +19,7 @@ export async function authenticate(req, res, next) {
     const expiresAt = session ? new Date(session.expirationDate).getTime() : 0;
 
     if (!session?.user || expiresAt < Date.now()) {
-      return res.status(401).send({ message: "Unauthorized!" });
+      return res.status(401).send({ message: 'Unauthorized!' });
     }
 
     req.user = {
@@ -31,21 +31,28 @@ export async function authenticate(req, res, next) {
     return next();
   } catch (error) {
     logger.error(`Authentication failed: ${error.message}`);
-    return res.status(401).send({ message: "Unauthorized!" });
+    return res.status(401).send({ message: 'Unauthorized!' });
   }
 }
 
 export function requireAdmin(req, res, next) {
-  if (req.user?.role !== "admin") {
-    return res.status(403).send({ message: "Admin access required." });
+  if (req.user?.role !== 'admin') {
+    return res.status(403).send({ message: 'Admin access required.' });
   }
 
   return next();
 }
 
+export function requireAdminOrMaintenance(req, res, next) {
+  if (req.user?.role !== 'admin' && req.user?.role !== 'maintenance') {
+    return res.status(401).send({ message: 'Unauthorized user' });
+  }
+  return next();
+}
+
 export function requireAreaAdmin(req, res, next) {
-  if (req.user?.role !== "admin") {
-    return res.status(403).send({ message: "Forbidden" });
+  if (req.user?.role !== 'admin') {
+    return res.status(403).send({ message: 'Forbidden' });
   }
 
   return next();

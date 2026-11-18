@@ -1,30 +1,30 @@
-export default (sequelize, DataTypes) => {
+export default (sequelize, Sequelize) => {
   const Area = sequelize.define(
-    "area",
+    'area',
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       name: {
-        type: DataTypes.STRING(30),
+        type: Sequelize.STRING(30),
         allowNull: false,
         unique: true,
       },
       logo: {
-        type: DataTypes.BLOB,
+        type: Sequelize.BLOB,
         allowNull: true,
       },
       noticeEmail: {
-        type: DataTypes.STRING(255),
+        type: Sequelize.STRING(255),
         allowNull: false,
       },
     },
     {
-      tableName: "areas",
+      tableName: 'areas',
       timestamps: false,
-    }
+    },
   );
 
   return Area;
