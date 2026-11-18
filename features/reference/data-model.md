@@ -158,6 +158,7 @@ Feature 8. Dates and times are stored as strings so values such as `2026-11-10` 
 | `currentlyActive` | BOOLEAN | Required; default `true` |
 
 Request dropdowns read `vehicles` (`vehicleId`, `license`, `make`, `model`), `drivers` (`driverId`, `name`), and `destinations` (`destId`, `name`). Those list columns are the Feature 8 API shape.
+
 ### `NoteImage` table
 
 | Field     | Type                    | Rules                                      |
