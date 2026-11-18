@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1,2,4,5 (plus related tables for notes/requests/service logs used by Feature 5),6,7,9,10,12,13 applied.
+**Status:** Features 1,2,4,5,6,7,9,10,12,13 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
@@ -18,16 +18,15 @@ Update this file when a feature that defines schema merges to `dev`.
 | `role`      | STRING     | Required; `user`, `driver`, `maintenance`, or `admin`. Create account sets `user`                                                                                    |
 | `googleSub` | STRING     | Nullable, unique when set. Google `sub` from the verified token. Required for accounts created by **Continue with Google**.                                          |
 
-
 ### `sessions` table
 
-| Field            | Type       | Rules                                          |
-| ---------------- | ---------- | ---------------------------------------------- |
-| `sessionId`      | INTEGER PK | Auto-increment                                 |
-| `token`          | STRING     | Required, unique; value returned to the client |
+| Field            | Type       | Rules                                                                                          |
+| ---------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| `sessionId`      | INTEGER PK | Auto-increment                                                                                 |
+| `token`          | STRING     | Required, unique; value returned to the client                                                 |
 | `email`          | STRING     | Required. An admin email change updates that user's session emails and leaves the token valid. |
-| `expirationDate` | DATE       | Required; 24 hours from login                  |
-| `userId`         | INTEGER FK | Required; references `users.id`                |
+| `expirationDate` | DATE       | Required; 24 hours from login                                                                  |
+| `userId`         | INTEGER FK | Required; references `users.id`                                                                |
 
 ### `destinations` table
 
@@ -40,24 +39,24 @@ Update this file when a feature that defines schema merges to `dev`.
 | `addr_line_1`     | VARCHAR(255)            | Required                            |
 | `addr_line_2`     | VARCHAR(255)            | Nullable                            |
 | `dest_name`       | VARCHAR(255)            | Required                            |
-| `last_visited_on` | DATE                    | Nullable                            |
+| `last_visited_on` | DATE                    | Nullable. API responses expose it as `last_visited` (`YYYY-MM-DD`), or `null` when empty or in the future. The `requests` association is deferred to Feature 8, so the Sequelize model does not declare it yet. |
 
 ### `Vehicles` Table
 
-| Field                 | Type        | Rules                                 |
-| --------------------- | ----------- | ------------------------------------- |
+| Field                 | Type          | Rules                                                                                         |
+| --------------------- | ------------- | --------------------------------------------------------------------------------------------- |
 | `vin`                 | STRING(17) PK | Primary Key; 17 digits (0-9). Stored as string so leading zeros and full width are preserved. |
-| `make`                | VARCHAR(30) | Required                              |
-| `model`               | VARCHAR(65) | Required                              |
-| `year`                | INTEGER     | Required                              |
-| `purchased_date`      | DATE        | Required; Cannot be in the future     |
-| `color`               | VARCHAR(20) | NULLABLE;                             |
-| `license_plate_num`   | VARCHAR(8)  | NULLABLE; Unique                      |
-| `tag_exp_month`       | DATE        | Required                              |
-| `area_id`             | INTEGER FK  | Foreign Key, NOT NULLABLE             |
-| `most_recent_dest_id` | INTEGER     | NULLABLE;                             |
-| `available`           | BIT         | Required                              |
-| `mileage`             | INTEGER     | NULLABLE, Non-negative                |
+| `make`                | VARCHAR(30)   | Required                                                                                      |
+| `model`               | VARCHAR(65)   | Required                                                                                      |
+| `year`                | INTEGER       | Required                                                                                      |
+| `purchased_date`      | DATE          | Required; Cannot be in the future                                                             |
+| `color`               | VARCHAR(20)   | NULLABLE;                                                                                     |
+| `license_plate_num`   | VARCHAR(8)    | NULLABLE; Unique                                                                              |
+| `tag_exp_month`       | DATE          | Required                                                                                      |
+| `area_id`             | INTEGER FK    | Foreign Key, NOT NULLABLE                                                                     |
+| `most_recent_dest_id` | INTEGER       | NULLABLE;                                                                                     |
+| `available`           | BIT           | Required                                                                                      |
+| `mileage`             | INTEGER       | NULLABLE, Non-negative                                                                        |
 
 ### `Maintenance_Info` Table
 
@@ -81,12 +80,13 @@ Update this file when a feature that defines schema merges to `dev`.
 
 ### `Drivers` table
 
-| Field              | Type   | Rules                                             |
-| ------------------ | ------ | ------------------------------------------------- |
-| `driver_id`        | INT PK | Required; Unique;                                 |
-| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`,       |
-| `license_exp_date` | date   | Required;                                         |
-| `availability`     | ENUM   | Required; `available`, `not available`, `on call` |
+| Field              | Type   | Rules                                               |
+| ------------------ | ------ | --------------------------------------------------- |
+| `driver_id`        | INT PK | Required; unique; supplied by the client            |
+| `name`             | STRING | Optional; trimmed. A blank name is rejected         |
+| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`          |
+| `license_exp_date` | STRING | Required; stored as entered (for example `05/2026`) |
+| `availability`     | ENUM   | Required; `available`, `not available`, `on call`   |
 
 ### `Notes` table
 
@@ -110,32 +110,32 @@ Update this file when a feature that defines schema merges to `dev`.
 
 ### `vehicle_logs` table
 
-| Field | Type | Rules |
-| ----- | ---- | ----- |
-| `id` | INTEGER PK | Auto-increment |
-| `serviceDate` | DATE | Required |
-| `vin` | STRING | Required; references an existing vehicle |
-| `description` | TEXT | Required |
-| `completed` | BOOLEAN | Required |
-| `creatorId` | INTEGER FK | Required; references `users.id`. Set to the signed-in user on create |
-| `createdAt` | DATE | Set when the log is created |
-| `updatedAt` | DATE | Set when the log is created and on every update |
+| Field         | Type       | Rules                                                                |
+| ------------- | ---------- | -------------------------------------------------------------------- |
+| `id`          | INTEGER PK | Auto-increment                                                       |
+| `serviceDate` | DATE       | Required                                                             |
+| `vin`         | STRING     | Required; references an existing vehicle                             |
+| `description` | TEXT       | Required                                                             |
+| `completed`   | BOOLEAN    | Required                                                             |
+| `creatorId`   | INTEGER FK | Required; references `users.id`. Set to the signed-in user on create |
+| `createdAt`   | DATE       | Set when the log is created                                          |
+| `updatedAt`   | DATE       | Set when the log is created and on every update                      |
 
 ### `vehicle_log_owners` table
 
-| Field | Type | Rules |
-| ----- | ---- | ----- |
-| `id` | INTEGER PK | Auto-increment |
+| Field          | Type       | Rules                                  |
+| -------------- | ---------- | -------------------------------------- |
+| `id`           | INTEGER PK | Auto-increment                         |
 | `vehicleLogId` | INTEGER FK | Required; references `vehicle_logs.id` |
-| `userId` | INTEGER FK | Required; references `users.id` |
+| `userId`       | INTEGER FK | Required; references `users.id`        |
 
 ### `Areas` table
 
-| Field | Type | Rules |
-| ----- | ---- | ----- |
-| `id` | INTEGER PK | Auto-increment. ERD `id` |
-| `name` | STRING(30) | Required, unique. ERD `name` |
-| `logo` | BLOB | Optional. ERD `logo` |
+| Field         | Type        | Rules                        |
+| ------------- | ----------- | ---------------------------- |
+| `id`          | INTEGER PK  | Auto-increment. ERD `id`     |
+| `name`        | STRING(30)  | Required, unique. ERD `name` |
+| `logo`        | BLOB        | Optional. ERD `logo`         |
 | `noticeEmail` | STRING(255) | Required. ERD `notice_email` |
 
 ### `requests` table
@@ -158,6 +158,32 @@ Feature 8. Dates and times are stored as strings so values such as `2026-11-10` 
 | `currentlyActive` | BOOLEAN | Required; default `true` |
 
 Request dropdowns read `vehicles` (`vehicleId`, `license`, `make`, `model`), `drivers` (`driverId`, `name`), and `destinations` (`destId`, `name`). Those list columns are the Feature 8 API shape.
+### `NoteImage` table
+
+| Field     | Type                    | Rules                                      |
+| --------- | ----------------------- | ------------------------------------------ |
+| `id`      | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
+| `image`   | BLOB                    | Required                                   |
+| `date`    | DATE                    | Derived from image metadata (or generated) |
+| `note_id` | INTEGER, FOREIGN KEY    | Required                                   |
+
+### `VehicleImage` table
+
+| Field        | Type                    | Rules                                      |
+| ------------ | ----------------------- | ------------------------------------------ |
+| `id`         | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
+| `image`      | BLOB                    | Required                                   |
+| `date`       | DATE                    | Derived from image metadata (or generated) |
+| `vehicle_id` | INTEGER, FOREIGN KEY    | Required; references `Vehicles.vin`        |
+
+### `AreaImage` table
+
+| Field     | Type                    | Rules                                      |
+| --------- | ----------------------- | ------------------------------------------ |
+| `id`      | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
+| `image`   | BLOB                    | Required                                   |
+| `date`    | DATE                    | Derived from image metadata (or generated) |
+| `area_id` | INTEGER, FOREIGN KEY    | Required                                   |
 
 ### Associations
 
@@ -189,3 +215,12 @@ Request dropdowns read `vehicles` (`vehicleId`, `license`, `make`, `model`), `dr
 -
 - `Destinations` hasMany `requests` ----| a destination can be included in many requests
 - `requests` belongsTo `Destinations` --| a request has between 0 and 1 destinations
+
+- `Notes` hasMany `NoteImage` ----| a note can have multiple images uploaded to it
+- `NoteImage` belongsTo `Notes` --| an image can only belong to one note at a time
+
+- `Vehicles` hasMany `VehicleImage` ---| a vehicle can have multiple images uploaded to it
+- `VehicleImage` belongsTo `Vehicles` -| an image can only belong to one note at a time
+
+- `Areas` hasMany `AreaImage` ----| an area can have multiple images uploaded to it
+- `AreaImage` belongsTo `Areas` --| an image can only belong to one note at a time

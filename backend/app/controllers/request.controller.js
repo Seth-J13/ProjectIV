@@ -66,8 +66,8 @@ async function present(row) {
     driverId: plain.driverId ?? null,
     destId: plain.destId ?? null,
     vehicle: vehicleView(vehicle),
-    driver: driver ? { driverId: driver.driverId, name: driver.name } : null,
-    destination: destination ? { destId: destination.destId, name: destination.name } : null,
+    driver: driver ? { driverId: driver.driver_id, name: driver.name } : null,
+    destination: destination ? { destId: destination.id, name: destination.dest_name } : null,
     startDate: plain.startDate,
     startTime: plain.startTime,
     endDate: plain.endDate,
@@ -191,8 +191,13 @@ exports.findVehicles = async (_req, res) => {
 
 exports.findDrivers = async (_req, res) => {
   try {
-    const drivers = await db.driver.findAll({ order: [["driverId", "ASC"]] });
-    return res.send(drivers);
+    const drivers = await db.driver.findAll({ order: [["driver_id", "ASC"]] });
+    return res.send(
+      drivers.map((driver) => ({
+        driverId: driver.driver_id,
+        name: driver.name,
+      }))
+    );
   } catch (error) {
     logger.error(error.message);
     return res.status(500).send({ message: "Unable to load drivers." });
@@ -201,8 +206,13 @@ exports.findDrivers = async (_req, res) => {
 
 exports.findDestinations = async (_req, res) => {
   try {
-    const destinations = await db.destination.findAll({ order: [["destId", "ASC"]] });
-    return res.send(destinations);
+    const destinations = await db.destination.findAll({ order: [["id", "ASC"]] });
+    return res.send(
+      destinations.map((destination) => ({
+        destId: destination.id,
+        name: destination.dest_name,
+      }))
+    );
   } catch (error) {
     logger.error(error.message);
     return res.status(500).send({ message: "Unable to load destinations." });

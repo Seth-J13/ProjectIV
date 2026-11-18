@@ -59,6 +59,11 @@ function requestIds(body) {
 }
 
 async function seedCatalog() {
+  await db.area.create({
+    id: 1,
+    name: "Campus",
+    noticeEmail: "campus@example.com",
+  });
   await db.vehicle.create({
     vin: "12",
     make: "Ford",
@@ -70,8 +75,21 @@ async function seedCatalog() {
     area_id: 1,
     available: true,
   });
-  await db.driver.create({ driverId: 3, name: "Jane Doe" });
-  await db.destination.create({ destId: 7, name: "State Capitol" });
+  await db.driver.create({
+    driver_id: 3,
+    name: "Jane Doe",
+    license_status: "active",
+    license_exp_date: "08/2028",
+    availability: "available",
+  });
+  await db.destination.create({
+    id: 7,
+    zip: "68508",
+    city: "Lincoln",
+    state: "Nebraska",
+    addr_line_1: "1445 K Street",
+    dest_name: "State Capitol",
+  });
 }
 
 describe("Feature 8 — Request Management", () => {

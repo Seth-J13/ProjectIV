@@ -275,7 +275,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 - Icon-only row action uses `size="small"` and accessible `aria-label` (**Edit**) and (**Delete**).
 - Rows are displayed in the list in batches of `5` at a time. Scrolling down loads the next batch beneath the current one.
 - List entries are, by default, sorted by the most recent `last_visited_on` (excluding future)
-  **Top ↑** displayed upon arriving at the bottom of the page. Pressing this button scrolls to the top but does not clear the destinations list
+- **Top ↑** displayed upon arriving at the bottom of the page. Pressing this button scrolls to the top but does not clear the destinations list
 
 - Empty state: **"No destinations yet. Add a destination to view its details."** when no destinations exist in the database.
 - Loading state: skeleton or progress indicator while enrollments are fetching.
@@ -294,20 +294,20 @@ Primary Action: Fill out a form with the following fields:
 **Edit State**
 
 - Header: **Edit Destination**
-  **Cancel** button clears all fields in the current form and closes the component
-  **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
+- **Cancel** button clears all fields in the current form and closes the component
+- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
 
 **Add State**
 
 - Header: **Add Destination**
-  **Cancel** button clears all fields in the current form and closes the component
-  **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
+- **Cancel** button clears all fields in the current form and closes the component
+- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Destinations` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
 
 **Implementation note:** one route/view for `Destinations`; `Destinations` dialogs are child components or inline `<v-dialog>` blocks in `DestinationList.vue` unless the team splits presentational dialogs later.
 
 **App chrome**
 
-- Existing `MenuBar`. This feature does not add or hide chrome.
+- Existing `MenuBar`. An admin sees a **Destinations** button that opens `/destinations`. Other roles do not see that button.
 
 ---
 
@@ -600,13 +600,13 @@ Do not implement behavior not in this spec.
 
 ## Definition of Done
 
-- [ ] Backend and frontend implemented per this spec (**FR-00N** satisfied)
-- [ ] **Success Criteria (SC-00N)** met
-- [ ] All mapped tests pass (`npm test`)
-- [ ] Test Coverage Map complete
-- [ ] `features/reference/data-model.md` updated (if schema changed)
-- [ ] `features/reference/api.md` updated (if API changed)
-- [ ] `features/reference/behavior.md` updated (if product rules changed)
+- [x] Backend and frontend implemented per this spec (**FR-00N** satisfied)
+- [x] **Success Criteria (SC-00N)** met
+- [x] All mapped tests pass (`npm test`)
+- [x] Test Coverage Map complete
+- [x] `features/reference/data-model.md` updated (if schema changed)
+- [x] `features/reference/api.md` updated (if API changed)
+- [x] `features/reference/behavior.md` updated (if product rules changed)
 
 ---
 

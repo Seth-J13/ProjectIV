@@ -20,7 +20,7 @@
 **So that** I get more information about a vehicle reservation.
 
 **Priority:** P1
-**Independent test:** On `Landing.vue`, see a request's notes in the embedded **Notes** list. On `Maintenance.vue`, see a **Vehicle Maintenance Notes** table (`Subject`, `Actions`, `Add Note`) loaded with `GET /vehicle-t3/notes/request/:requestId`, and open `View Maintenance Note` by selecting a row.
+**Independent test:** On `Landing.vue`, see a request's notes in the embedded **Notes** list, and on `Maintenance.vue` see **Vehicle Maintenance Notes** for the selected vehicle; each list loads at most 3 notes at a time, pressing a card body opens that note, and pressing outside or **Close** dismisses it with nothing changed.
 **Acceptance scenarios:** see ### US-9.1 under Acceptance Criteria
 
 ### US-9.2: Remove Notes
@@ -30,7 +30,7 @@
 **So that** I can manage how much extra information is included on a `request`.
 
 **Priority:** P1
-**Independent test:** On a request I own, confirm **Delete** and see that note and its contributions removed. On **Vehicle Maintenance Notes**, **Delete** opens `Complete Note`; **cancel** closes it, and **confirm** creates a service log then `DELETE /vehicle-t3/notes/note/:noteId` returns `204`.
+**Independent test:** On a request I own, confirm **Delete** and see that note and its contributions removed and the next note loaded; from **Vehicle Maintenance Notes**, a maintenance or admin user confirming **Delete** also uploads that note's `text` as a vehicle service log.
 **Acceptance scenarios:** see ### US-9.2 under Acceptance Criteria
 
 ### US-9.3: Create Notes
@@ -40,7 +40,7 @@
 **So that** I can add extra information to a `request`.
 
 **Priority:** P1
-**Independent test:** Press **Add Note** on **Vehicle Maintenance Notes**. Empty subject or description shows the required alert and sends nothing. More than 255 description characters shows `Too many inputted characters`. A valid note `POST`s `/vehicle-t3/notes/` and returns `201` with a contribution, then shows `Successfully created maintenance note.`
+**Independent test:** Press **+ New Note** on a request form (`maintenance_request` false) or a maintenance form (`maintenance_request` true), submit a valid **Subject** and **Description**, and see `201`, the form close, the new note in the list, and a contribution with `created_note` true.
 **Acceptance scenarios:** see ### US-9.3 under Acceptance Criteria
 
 ### US-9.4: Edit Notes
@@ -50,7 +50,7 @@
 **So that** I can correct incorrect information.
 
 **Priority:** P1
-**Independent test:** Press **Edit** on a maintenance note and see `subject` and `description` filled in. A valid **Update Note** `PUT`s `/vehicle-t3/notes/note/:noteId`, returns `200` with a contribution, and shows `Successfully updated maintenance note.`
+**Independent test:** Press **Edit** on a note, submit valid changes with the **Edit** button, and see `200`, the form close, the updated note in the list, and a contribution with `created_note` true and today's `date`.
 **Acceptance scenarios:** see ### US-9.4 under Acceptance Criteria
 
 ### US-9.5: Admin Notes Management
@@ -551,7 +551,7 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
   **Note ID** -- The identifying number of the `note` ("#`id`")
   **Request ID** -- The identifying number of the `request` the `note` is attached to ("R: `request_id`")
   **Subject** -- The first 20 characters of the `note` `reason` (if 20 exist) followed by ellipsis ("this is not a mainte...")
-  **Actions** -**Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
+  **Actions** -- **Edit** and **Delete** icons shown which open interaction/confirmation <v-dialogs> to perform their respective operations
 - Row cards are displayed in the list in batches of `3` at a time. Scrolling down inside the container loads the next batch beneath the current one.
 - List entries are, by default, sorted by the most recently created (`date`)
 
@@ -564,27 +564,27 @@ Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labe
 
 The `NoteForm` component contains the following information:
 
-**Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is/will-be attached to
-**Date** -- `MM/DD/YYYY` format of the _earliest_ `Contribution` tied to this note.
+- **Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is/will-be attached to
+- **Date** -- `MM/DD/YYYY` format of the _earliest_ `Contribution` tied to this note.
 
 Primary Action: Fill out a form with the following fields (auto-filled if in **Edit** mode):
 
-**Subject** -- accepts string of length 254 or less; trim whitespaces in beginning/end; sent to backend as `reason`.
-**Description** -- `TEXT` input; sent to the backend as `text`.
-**Drop or Upload Image Here** -- eventually allows users to upload images to their notes. Implement this frame, but don't add functionality until Feature 11.
+- **Subject** -- accepts string of length 254 or less; trim whitespaces in beginning/end; sent to backend as `reason`.
+- **Description** -- `TEXT` input; sent to the backend as `text`.
+- **Drop or Upload Image Here** -- eventually allows users to upload images to their notes. Implement this frame, but don't add functionality until Feature 11.
 
 **Edit State**
 
 - Header: **Edit Note**
-  **Cancel** button clears all fields in the current form and closes the component, sending no request to the backend.
-  **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
-  **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
+- **Cancel** button clears all fields in the current form and closes the component, sending no request to the backend.
+- **Save** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `PUT`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Save** button text becomes **Save** again and component closes.
+- **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
 
 **Add State**
 
 - Header: **Add Note**
-  **Cancel** button clears all fields in the current form and closes the component
-  **Add** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
+- **Cancel** button clears all fields in the current form and closes the component
+- **Add** first checks for validation as per these requirements and the Acceptance Critera, then changes the button text into a spinning load as it `POST`s the form data into the `Notes` entry currently being edited. As soon as a response is received from the backend, **Add** button text becomes **Add** again and component closes.
 
 **Implementation note:** no view or frontend-route for `Notes`; `Notes` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
 
@@ -595,59 +595,15 @@ The `Note` Details contain the following information:
 Header: **Note**
 Body:
 
-**Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is attached to
-**Date** -- `MM/DD/YYYY` format of the date the `note` was written/last-updated on.
-**Subject** -- the reason a `note` was submitted.
-**Description** -- Textual details of the note.
-**Image(s)** -- eventually will be images a user uploaded to their note. Implement this frame, but don't add functionality until Feature 11.
-**Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
-**Close** -- closes the dialog
+- **Request ID** -- "Request ID: " followed by the `request_id` of the `request` the `note` is attached to
+- **Date** -- `MM/DD/YYYY` format of the date the `note` was written/last-updated on.
+- **Subject** -- the reason a `note` was submitted.
+- **Description** -- Textual details of the note.
+- **Image(s)** -- eventually will be images a user uploaded to their note. Implement this frame, but don't add functionality until Feature 11.
+- **Last updated on** -- `MM/DD/YYYY` format of the date from the most recent `Contribution` tied to this `note`
+- **Close** -- closes the dialog
 
 **Implementation note:** no view or frontend-route for `Notes`; `Notes` dialogs are child components or inline `<v-dialog>` blocks in other views, embedded unless the team splits presentational dialogs later.
-
-### Vehicle Maintenance Notes on `Maintenance.vue`
-
-The **Vehicle Maintenance Notes** embed keeps the maintenance-note behavior from Feature 5. `subject` is sent as `reason`. `description` is sent as `text`. `maintenance_request` is `true`.
-
-The list shows the notes for the selected vehicle's requests. Those notes are loaded with `GET /vehicle-t3/notes/request/:requestId`. A new note is created with `POST /vehicle-t3/notes/`. An existing note is updated with `PUT /vehicle-t3/notes/note/:noteId`. A completed note is removed with `DELETE /vehicle-t3/notes/note/:noteId`.
-
-**Maintenance Notes table**
-
-- Header: `Subject`, `Actions`
-- Table item: `Subject`, **Edit** icon (opens `Edit Maintenance Note`), **Delete** icon (opens `Complete Note`)
-- `Add Note` button near the top of the table
-
-**View Maintenance Note**
-
-- Non-editable `subject` and `description`
-- `close` button
-
-**Add Maintenance Note**
-
-- Blank editable `subject` and `description`, an `add` button, and a `cancel` button
-- The characters still available sit just below the description box
-- More than `255` characters in `description` highlights the field, shows `Too many inputted characters`, and turns the remaining count red and negative. No request is sent
-- An empty `subject` on submit highlights the field and shows `"Subject is required."` No request is sent
-- An empty `description` on submit highlights the field and shows `"Description is required."` No request is sent
-- A valid submit sends `POST /vehicle-t3/notes/` and expects `201` with the contribution object from **Add Note**. The modal closes, and a green alert says `Successfully created maintenance note.`
-- A failed create returns `400` with `{ "message": "Malformed request. Please make sure everything in the form is properly formatted!" }`, and a red alert says `Could not create maintenance note.`
-
-**Edit Maintenance Note**
-
-- `subject` and `description` start filled with the selected note
-- `update` and `cancel` buttons
-- The same empty-field and `255`-character rules as **Add Maintenance Note**
-- A valid submit sends `PUT /vehicle-t3/notes/note/:noteId` and expects `200` with the contribution object from **Overwrite Note**. The modal closes, and a green alert says `Successfully updated maintenance note.`
-- A failed update returns `400` with `{ "message": "Malformed request. Please make sure everything in the form is properly formatted!" }`, and a red alert says `Could not create maintenance note.`
-
-**Complete Note**
-
-- Header: `Complete`
-- Text: `Confirm Completion?`
-- `cancel` closes the modal and sends no request
-- `confirm` creates a vehicle service log and expects `201` with `{ "message": "human readable message" }`, then sends `DELETE /vehicle-t3/notes/note/:noteId`, which returns `204` with an empty body
-
-Alerts on this embed disappear after 3 seconds.
 
 **App chrome**
 
@@ -707,23 +663,6 @@ This feature uses a `Notes` table where each entry has an `id` used by other tab
 **When** I press the wrench list icon to navigate to `Maintenance.vue`
 **Then** I can see the **Notes List** component in **Embed** mode embedded at the bottom of `Maintenance.vue` titled **Vehicle Maintenance Notes**
 **And** the **Vehicle Maintenance Notes** list contains every `note` that both has `maintenance_request` set to `true` and has the same `request_id` as any `request` containing the same `vehicle_id` as the `vin` of the `vehicle` selected to get to `Maintenance.vue`.
-**And** those notes are loaded with `GET /vehicle-t3/notes/request/:requestId`.
-
-#### Scenario: User has just viewed the maintenance info for the vehicle
-
-**Given** the user has just looked at the maintenance info for the vehicle
-**When** they look below the maintenance info
-**Then** they will see a table with headers (`Subject`, `Actions`)
-**And** a list of maintenance notes associated with the vehicle's requests
-**And** a `Add Note` Button near the top of the table
-**And** no API request is sent
-
-#### Scenario: User selects a service note
-
-**Given** the user is viewing the `Maintenance Notes` table
-**When** the user selects a specific note
-**Then** the `View Maintenance Note` modal opens
-**And** no API request is sent
 
 #### Scenario: More than 3 Notes in a Note List
 
@@ -787,37 +726,13 @@ This feature uses a `Notes` table where each entry has an `id` used by other tab
 #### Scenario: Maintenance deletes from Maintenance Requests Notes List
 
 **Given** I am an authenticated user with `maintenance` or `admin` role on `Maintenance.vue`
-**When** I press `confirm` on the `Complete Note` modal for a `note` from the **Vehicle Maintenance Notes** list
+**When** I confirm **Delete** on a `note` from the **Vehicle Maintenance Notes** list
 **Then** I can see the **Notes List** component in **Embed** mode embedded at the bottom of `Maintenance.vue` titled **Vehicle Maintenance Notes**
-**And** `DELETE /vehicle-t3/notes/note/:noteId` returns `204` with an empty body
-**And** the selected `note` is removed from the `Notes` table
+**Then** the selected `note` is removed from the `Notes` table
 **And** the confirmation dialog closes
 **And** the selected `note` no longer appears in the **Notes List**
-**And** the next notes are loaded with `GET /vehicle-t3/notes/request/:requestId`
+**And** a load request is made to the `Notes` table to get the next `note` in the table that is not the same as the ones already present in the **Notes List**
 **And** a `vehicle service log` is created with the `text` content of the deleted `note` and uploaded to the `vehicle service logs` table as per **Feature 10**.
-
-#### Scenario: User clicks the `Delete Note` icon button
-
-**Given** the user is viewing the `Maintenance Note` table
-**When** the user clicks the `Delete Note` icon button for a specific table item
-**Then** the `Complete Note` modal opens
-**And** no API request is sent
-
-#### Scenario: User clicks `cancel` button
-
-**Given** the user is viewing the `Complete Note` modal
-**When** the user clicks the `cancel` button
-**Then** the modal closes
-**And** no API request is sent
-
-#### Scenario: User clicks `confirm` button
-
-**Given** the user is viewing the `Complete Note` modal
-**When** the user clicks the `confirm` button
-**Then** a `POST` request is sent to the server to create a service log
-**And** returns a `201` with a payload containing `{"message": "human readable message"}`
-**And** a `DELETE` request is sent to `/vehicle-t3/notes/note/:noteId`
-**And** returns `204` with an empty body
 
 ### US-9.3: Create Notes
 
@@ -832,80 +747,6 @@ This feature uses a `Notes` table where each entry has an `id` used by other tab
 **Given** I am viewing a **Notes List** in **Embed** mode
 **When** I press the **+ New Note**
 **Then** I see the `NoteForm` component open in **Add** mode with `maintenance_request` toggled to `true`.
-
-#### Scenario: User clicks the `Add Note` button
-
-**Given** the user is viewing the `Maintenance Notes` table
-**When** they click the `Add Note` button
-**Then** the `Add Maintenance Note` modal opens
-**And** no API request is sent
-
-#### Scenario: User inputs valid text into the subject text field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** they enter text into the subject field
-**Then** the text field displays what they type
-**And** no API request is sent
-
-#### Scenario: User inputs no text into the subject text field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** no text is entered into the subject field
-**And** the `Add Note` button is clicked
-**Then** the text field is highlighted red
-**And** a `</v-alert>` pops up in red, saying `"Subject is required."`
-**And** no API request is sent
-
-#### Scenario: User inputs valid text into the description field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** they enter text into the description field
-**Then** the text field displays what they type
-**And** the amount of characters available decreases
-**And** no API request is sent
-
-#### Scenario: User inputs invalid text into the description field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** they do not enter text into the description field
-**And** the `Add Note` button is clicked
-**Then** the text field is highligted red
-**And** a `</v-alert>` pops up in red, saying `"Description is required."`
-**And** no API request is sent
-
-#### Scenario: User inputs too many characters into the description field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** they enter more than `255` characters into the description field
-**Then** the text field is highligted red
-**And** a note appears over the text field saying `Too many inputted characters`
-**And** the amount of characters available goes red and into the negatives
-**And** no API request is sent
-
-#### Scenario: User clicks the `Cancel` button
-
-**Given** the useer is viewing the `Add Maintenance Note` modal
-**When** they click the `Cancel` button
-**Then** the modal closes
-**And** all inputted information is cleared
-**And** no API request is sent
-
-#### Scenario: User inputs valid input into the `Add Maintenance Note` modal
-
-**Given** the user is viewing the `Add Maintenance Note` modal and has valid inputs in the form
-**When** they click the `Add Note` button
-**Then** a `POST` request is sent to `/vehicle-t3/notes/`
-**And** returns `201` with the contribution object from **Add Note**
-**And** the modal closes
-**And** a `</v-alert>` pops up in green, saying `Successfully created maintenance note.`
-
-#### Scenario: User inputs invalid input into the `Add Maintenance Note` modal
-
-**Given** the user is viewing the `Add Maintenance Note` modal and has invalid inputs in the form
-**When** they click the `Add Note` button
-**Then** a `POST` request is sent to `/vehicle-t3/notes/`
-**And** returns `400` with `{ "message": "Malformed request. Please make sure everything in the form is properly formatted!" }`
-**And** a `</v-alert>` pops up in red, saying `Could not create maintenance note.`
 
 #### Scenario: Press Cancel from Request form (add)
 
@@ -967,88 +808,6 @@ This feature uses a `Notes` table where each entry has an `id` used by other tab
 **Given** I am viewing a **Notes List** in **Embed** mode
 **When** I press the **Edit** icon on a list item row's **Actions** section
 **Then** I see the `NoteForm` component open in **Edit** mode with the form information already filled out.
-
-#### Scenario: User clicks the `Edit Note` icon button
-
-**Given** the user is viewing the `Maintenance Notes` table
-**When** they click the `Edit Note` icon button for a specific table item
-**Then** the `Edit Maintenance Note` modal opens
-**And** no API request is sent
-
-#### Scenario: `Edit Maintenance Note` modal opens
-
-**Given** the user is viewing the `Edit Maintenance Note` modal
-**When** they first view the `Edit Maintenance Note` modal
-**Then** the text fields for `subject` and `description` displays what the selected maintenance note had for its `subject` and `description`
-**And** no API request is sent
-
-#### Scenario: User inputs valid text into the subject text field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** they enter text into the subject field
-**Then** the text field displays what they type
-**And** no API request is sent
-
-#### Scenario: User deletes previous input and does not input any text into the subject text field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** no text is entered into the subject field
-**And** the `Update Note` button is clicked
-**Then** the text field is highlighted red
-**And** a `</v-alert>` pops up in red, saying `"Subject is required."`
-**And** no API request is sent
-
-#### Scenario: User inputs text into the description field
-
-**Given** the user is viewing the `Edit Maintenance Note` modal
-**When** they enter text into the description field
-**Then** the text field displays what they type
-**And** the amount of characters available decreases
-**And** no API request is sent
-
-#### Scenario: User inputs invalid text into the description field
-
-**Given** the user is viewing the `Edit Maintenance Note` modal
-**And** the user deleted all the previous description information from the selected maintenance note
-**When** they do not enter text into the description field
-**And** the `Add Note` button is clicked
-**Then** the text field is highligted red
-**And** a `</v-alert>` pops up in red, saying `"Description is required."`
-**And** no API request is sent
-
-#### Scenario: User inputs too many characters into the description field
-
-**Given** the user is viewing the `Add Maintenance Note` modal
-**When** they enter more than `255` characters into the description field
-**Then** the text field is highligted red
-**And** a note appears over the text field saying `Too many inputted characters`
-**And** the amount of characters available goes red and into the negatives
-**And** no API request is sent
-
-#### Scenario: User clicks the `Cancel` button
-
-**Given** the useer is viewing the `Edit Maintenance Note` modal
-**When** they click the `Cancel` button
-**Then** the modal closes
-**And** all inputted information is cleared
-**And** no API request is sent
-
-#### Scenario: User inputs valid input into the `Edit Maintenance Note` modal
-
-**Given** the user is viewing the `Edit Maintenance Note` modal and have valid inputs in the form
-**When** they click the `Update Note` button
-**Then** a `PUT` request is sent to `/vehicle-t3/notes/note/:noteId`
-**And** returns `200` with the contribution object from **Overwrite Note**
-**And** the modal closes
-**And** a `</v-alert>` pops up in green, saying `Successfully updated maintenance note.`
-
-#### Scenario: User inputs invalid input into the `Edit Maintenance Note` modal
-
-**Given** the user is viewing the `Edit Maintenance Note` modal and has invalid inputs in the form
-**When** they click the `Update Note` button
-**Then** a `PUT` request is sent to `/vehicle-t3/notes/note/:noteId`
-**And** returns `400` with `{ "message": "Malformed request. Please make sure everything in the form is properly formatted!" }`
-**And** a `</v-alert>` pops up in red, saying `Could not create maintenance note.`
 
 #### Scenario: Press Cancel from Request form (edit)
 
@@ -1158,30 +917,6 @@ Each scenario above must map to at least one automated test. `it` names must mat
 | US-9.5 | View Note Creation List for User Management              | `frontend/tests/NotesList.test.js`                                | `View Note Creation List for User Management`              |
 | US-9.5 | View Note Contribution List for User Management          | `frontend/tests/NotesList.test.js`                                | `View Note Contribution List for User Management`          |
 | US-9.5 | Admin super-permissions on any list                      | `backend/tests/notes.test.js`, `frontend/tests/NotesList.test.js` | `Admin super-permissions on any list`                      |
-| US-9.1 | User has just viewed the maintenance info for the vehicle | `frontend/tests/Maintenance.test.js` | `User has just viewed the maintenance info for the vehicle` |
-| US-9.1 | User selects a service note | `frontend/tests/Maintenance.test.js` | `User selects a service note` |
-| US-9.2 | User clicks the `Delete Note` icon button | `frontend/tests/Maintenance.test.js` | `User clicks the `Delete Note` icon button` |
-| US-9.2 | User clicks `cancel` button | `frontend/tests/Maintenance.test.js` | `User clicks `cancel` button` |
-| US-9.2 | User clicks `confirm` button | `backend/tests/notes.test.js` | `User clicks `confirm` button` |
-| US-9.3 | User clicks the `Add Note` button | `frontend/tests/Maintenance.test.js` | `User clicks the `Add Note` button` |
-| US-9.3 | User inputs valid text into the subject text field | `frontend/tests/Maintenance.test.js` | `User inputs valid text into the subject text field` |
-| US-9.3 | User inputs no text into the subject text field | `frontend/tests/Maintenance.test.js` | `User inputs no text into the subject text field` |
-| US-9.3 | User inputs valid text into the description field | `frontend/tests/Maintenance.test.js` | `User inputs valid text into the description field` |
-| US-9.3 | User inputs invalid text into the description field | `frontend/tests/Maintenance.test.js` | `User inputs invalid text into the description field` |
-| US-9.3 | User inputs too many characters into the description field | `frontend/tests/Maintenance.test.js` | `User inputs too many characters into the description field` |
-| US-9.3 | User clicks the `Cancel` button | `frontend/tests/Maintenance.test.js` | `User clicks the `Cancel` button` |
-| US-9.3 | User inputs valid input into the `Add Maintenance Note` modal | `backend/tests/notes.test.js` | `User inputs valid input into the `Add Maintenance Note` modal` |
-| US-9.3 | User inputs invalid input into the `Add Maintenance Note` modal | `backend/tests/notes.test.js` | `User inputs invalid input into the `Add Maintenance Note` modal` |
-| US-9.4 | User clicks the `Edit Note` icon button | `frontend/tests/Maintenance.test.js` | `User clicks the `Edit Note` icon button` |
-| US-9.4 | `Edit Maintenance Note` modal opens | `frontend/tests/Maintenance.test.js` | `it("\`Edit Maintenance Note\` modal opens")` |
-| US-9.4 | User inputs valid text into the subject text field | `frontend/tests/Maintenance.test.js` | `User inputs valid text into the subject text field` |
-| US-9.4 | User deletes previous input and does not input any text into the subject text field | `frontend/tests/Maintenance.test.js` | `User deletes previous input and does not input any text into the subject text field` |
-| US-9.4 | User inputs text into the description field | `frontend/tests/Maintenance.test.js` | `User inputs text into the description field` |
-| US-9.4 | User inputs invalid text into the description field | `frontend/tests/Maintenance.test.js` | `User inputs invalid text into the description field` |
-| US-9.4 | User inputs too many characters into the description field | `frontend/tests/Maintenance.test.js` | `User inputs too many characters into the description field` |
-| US-9.4 | User clicks the `Cancel` button | `frontend/tests/Maintenance.test.js` | `User clicks the `Cancel` button` |
-| US-9.4 | User inputs valid input into the `Edit Maintenance Note` modal | `backend/tests/notes.test.js` | `User inputs valid input into the `Edit Maintenance Note` modal` |
-| US-9.4 | User inputs invalid input into the `Edit Maintenance Note` modal | `backend/tests/notes.test.js` | `User inputs invalid input into the `Edit Maintenance Note` modal` |
 
 ---
 

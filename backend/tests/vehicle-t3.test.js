@@ -24,10 +24,9 @@ async function authHeader(role) {
   }
 
   const user = await db.user.create({
-    fName: "Ada",
-    lName: role === "admin" ? "Admin" : "Requester",
+    firstName: "Ada",
+    lastName: role === "admin" ? "Admin" : "Requester",
     email: `${role}@example.com`,
-    username: role,
     password: "hashed-password",
     role,
   });

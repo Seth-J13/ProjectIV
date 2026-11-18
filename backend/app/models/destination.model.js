@@ -1,11 +1,45 @@
-export default (sequelize, DataTypes) => {
+export default (sequelize, Sequelize) => {
   const Destination = sequelize.define(
     "destination",
     {
-      destId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: false },
-      name: { type: DataTypes.STRING, allowNull: false },
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      zip: {
+        type: Sequelize.STRING(10),
+        allowNull: false,
+      },
+      city: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      state: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      addr_line_1: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      addr_line_2: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      dest_name: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      last_visited_on: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+      },
     },
-    { tableName: "destinations", timestamps: false }
+    {
+      tableName: "Destinations",
+      timestamps: true,
+    }
   );
 
   return Destination;

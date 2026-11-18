@@ -4,6 +4,8 @@
  */
 import request from "supertest";
 import app from "../server.js";
+import db from "../app/models/index.js";
+import { syncTestDatabase } from "./helpers.js";
 
 const DESTINATIONS = "/vehicle-t3/destinations";
 const LOGIN_MESSAGE =
@@ -34,6 +36,14 @@ function createdId(response) {
 }
 
 describe("Feature 6 — Destination CRUD", () => {
+  beforeEach(async () => {
+    await syncTestDatabase();
+  });
+
+  afterAll(async () => {
+    await db.sequelize.close();
+  });
+
   describe("US-6.3: Add Destination", () => {
     it("Send add request with valid form data", async () => {
       const response = await request(app)
