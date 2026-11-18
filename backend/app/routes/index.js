@@ -3,6 +3,7 @@ import authRoutes from "./auth.routes.js";
 import userRoutes from "./user.routes.js";
 import vehicleRoutes from "./vehicle.routes.js";
 import driverRoutes from "./vehicle-t3.routes.js";
+import areaRoutes from "./area.routes.js";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/", authRoutes);
 router.use("/users", userRoutes);
 router.use("/vehicle-t3", vehicleRoutes);
 router.use("/vehicle-t3", driverRoutes);
+router.use("/areas", areaRoutes);
 
 export default router;

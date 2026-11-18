@@ -1,6 +1,6 @@
 export default (sequelize, Sequelize) => {
   const Area = sequelize.define(
-    "area",
+    'area',
     {
       id: {
         type: Sequelize.INTEGER,
@@ -19,13 +19,12 @@ export default (sequelize, Sequelize) => {
       noticeEmail: {
         type: Sequelize.STRING(255),
         allowNull: false,
-        field: "notice_email",
       },
     },
     {
-      tableName: "areas",
+      tableName: 'areas',
       timestamps: false,
-    }
+    },
   );
 
   return Area;

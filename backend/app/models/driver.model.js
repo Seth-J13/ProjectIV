@@ -1,33 +1,33 @@
-export default (sequelize, DataTypes) => {
+export default (sequelize, Sequelize) => {
   const Driver = sequelize.define(
-    "driver",
+    'driver',
     {
       driver_id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: false,
       },
       name: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       license_status: {
-        type: DataTypes.ENUM("expired", "active", "suspended"),
+        type: Sequelize.ENUM('expired', 'active', 'suspended'),
         allowNull: false,
       },
       license_exp_date: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       availability: {
-        type: DataTypes.ENUM("available", "not available", "on call"),
+        type: Sequelize.ENUM('available', 'not available', 'on call'),
         allowNull: false,
       },
     },
     {
-      tableName: "drivers",
+      tableName: 'drivers',
       timestamps: false,
-    }
+    },
   );
 
   return Driver;
