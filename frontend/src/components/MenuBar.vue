@@ -37,6 +37,11 @@ function openUserManagement() {
   return router.push({ name: "users" });
 }
 
+function openAreas() {
+  router.currentRoute.value = router.resolve({ name: "areas" });
+  return router.push({ name: "areas" });
+}
+
 async function logout() {
   try {
     await authServices.logoutUser();
@@ -70,6 +75,14 @@ async function logout() {
       Destinations
     </v-btn>
     <v-btn
+      v-if="user?.role === 'admin'"
+      variant="text"
+      type="button"
+      @click="router.push({ name: 'drivers' })"
+    >
+      Drivers
+    </v-btn>
+    <v-btn
       v-if="['admin', 'maintenance'].includes(user?.role)"
       variant="text"
       type="button"
@@ -77,6 +90,7 @@ async function logout() {
     >
       Vehicles
     </v-btn>
+
     <v-btn
       v-if="['admin', 'maintenance'].includes(user?.role)"
       variant="text"
@@ -84,6 +98,16 @@ async function logout() {
       @click="router.push({ name: 'maintenance' })"
     >
       Maintenance
+    </v-btn>
+
+    <v-btn
+      @click.stop.prevent="openAreas"
+      v-if="['admin', 'maintenance'].includes(user?.role)"
+      variant="text"
+      type="button"
+      @click="router.push({ name: 'areas' })"
+    >
+      Areas
     </v-btn>
     <v-spacer />
     <v-menu>

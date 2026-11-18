@@ -1,6 +1,6 @@
 # API Reference
 
-**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, and Feature 4 vehicle CRUD are implemented. Mount path is `/api`.
+**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, Feature 4 vehicle CRUD, Feature 5 maintenance info, Feature 6 destinations, Feature 7 drivers, and Feature 13 areas are implemented. Mount path is `/api`.
 
 Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": "..." }`. Protected routes read `Authorization: Bearer <session token>`.
 
@@ -24,6 +24,16 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `GET`    | `/api/vehicle-t3/maintenance-info` | Yes (`admin` or `maintenance`)             | Look up maintenance info by `make`, `model`, `year`               | Feature 4  |
 | `PUT`    | `/api/vehicle-t3/maintenance-info` | Yes (`admin` or `maintenance`)             | Create maintenance info for `make`, `model`, `year`               | Feature 4  |
 | `GET`    | `/api/vehicle-t3/areas/`           | Yes (`admin` or `maintenance`)             | List areas for vehicle forms/filters                              | Feature 4  |
+| `GET`    | `/api/vehicle-t3`                  | Yes (`Bearer` session token)               | List every driver                                                 | Feature 7  |
+| `GET`    | `/api/vehicle-t3/:driver_id`       | Yes (`Bearer` session token)               | Show one driver                                                   | Feature 7  |
+| `POST`   | `/api/vehicle-t3`                  | Yes (`Bearer` session token, role `admin`) | Create a driver                                                   | Feature 7  |
+| `PUT`    | `/api/vehicle-t3/:driver_id`       | Yes (`Bearer` session token, role `admin`) | Update a driver                                                   | Feature 7  |
+| `DELETE` | `/api/vehicle-t3/:driver_id`       | Yes (`Bearer` session token, role `admin`) | Delete a driver                                                   | Feature 7  |
+| `GET`    | `/api/areas`                       | Yes (`Bearer` session token, role `admin`) | List every area                                                   | Feature 13 |
+| `GET`    | `/api/areas/:id`                   | Yes (`Bearer` session token, role `admin`) | Read one area                                                     | Feature 13 |
+| `POST`   | `/api/areas`                       | Yes (`Bearer` session token, role `admin`) | Create an area                                                    | Feature 13 |
+| `PUT`    | `/api/areas/:id`                   | Yes (`Bearer` session token, role `admin`) | Update an area                                                    | Feature 13 |
+| `DELETE` | `/api/areas/:id`                   | Yes (`Bearer` session token, role `admin`) | Delete an area that no vehicle references                         | Feature 13 |
 
 A missing or expired Bearer token returns **401** `{ "message": "Unauthorized!" }` and the handler does not run.
 
@@ -190,25 +200,6 @@ Success is **204** with an empty body.
 
 Roles other than `admin` and `maintenance` receive **401** `{ "message": "Unauthorized user" }`.
 
-**Create vehicle body (`PUT /vehicles/`):**
-
-```json
-{
-  "vin": "12345671234567123",
-  "make": "Honda",
-  "model": "Accord",
-  "year": 2014,
-  "purchased_date": "2015/12/16",
-  "color": "White",
-  "license_plate_num": "ABC344",
-  "tag_exp_month": "2016/5/25",
-  "area_id": 5,
-  "most_recent_dest_id": null,
-  "available": 1,
-  "mileage": 0
-}
-```
-
 `vin` is stored as a 17-digit string. Create success is **201** `{ "message": "Successfully created vehicle." }`. Update success is **201** `{ "message": "Successfully updated vehicle." }`. List success is **200** `{ "message": "Successfully retreived all vehicles", "vehicles": [...] }`.
 
 | Situation                      | Status | `message`                                      |
@@ -242,4 +233,41 @@ Same `admin` / `maintenance` guard as Feature 4 (`401` `Unauthorized user` other
 | `PUT`    | `/fuels/:fuel_id`                       | Update fuel type → **200**                                                                    |
 | `DELETE` | `/fuels/:fuel_id`                       | Delete fuel type → **200**                                                                    |
 
-Missing `request_id` on create note returns **404**. Missing note/fuel/vehicle returns **404**.
+Missing `request_id` on create note returns **404**. Missing note/fuel/vehicle returns **404**. `vehicle_id` on requests and service logs is the vehicle VIN string.
+
+### Drivers (`/api/vehicle-t3`)
+
+Create and update body: `driver_id`, `license_status` (`expired`, `active`, or `suspended`), `license_exp_date` (stored as entered, for example `05/2026`), and `availability` (`available`, `not available`, or `on call`). `name` is optional. `driver_id` must be an integer. A missing or blank required field, or a non-numeric `driver_id`, is **400**. A signed-in role other than `admin` on `POST`, `PUT`, or `DELETE` is **403** `{ "message": "Admin access required." }`. An unknown driver is **404**. Delete success is **204** with no body. `GET` returns every driver to any signed-in user.
+
+### Areas (`/api/areas`)
+
+Admin only. Create and update body:
+
+```json
+{
+  "name": "North Campus",
+  "noticeEmail": "north@example.com"
+}
+```
+
+`name` is required, unique, and at most 30 characters. `noticeEmail` is required. `logo` may be omitted. Success is **201** on create and **200** on read and update:
+
+```json
+{
+  "id": 1,
+  "name": "North Campus",
+  "noticeEmail": "north@example.com",
+  "logo": null
+}
+```
+
+Delete success is **200** `{ "message": "Area deleted." }`.
+
+| Situation                                  | Status | `message`                   |
+| ------------------------------------------ | ------ | --------------------------- |
+| Missing or expired token                   | 401    | `Unauthorized!`             |
+| Role is `user`, `driver`, or `maintenance` | 403    | `Forbidden`                 |
+| Unknown area id                            | 404    | `Area not found!`           |
+| Name already used                          | 409    | `Area name already in use!` |
+| A vehicle still references the area        | 409    | `Area is in use!`           |
+| Name or notice email missing               | 400    | `Area is incomplete!`       |

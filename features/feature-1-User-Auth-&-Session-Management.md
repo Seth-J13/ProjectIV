@@ -55,16 +55,16 @@
 
 ### Functional Requirements
 
-**FR-001**: Users MUST authenticate with **email** + **password** (not username login; not password-only).
-**FR-002**: Successful login MUST create a server session and return a token and `role`; the frontend MUST store the payload in `localStorage` under `user` and navigate to `/landing`.
-**FR-003**: A valid session MUST persist on `/landing` across refresh until expiry or logout. After refresh, the screen MUST still show **"This feature has not been implemented yet"**.
-**FR-004**: Logout MUST invalidate the current server session, clear `localStorage` `user`, and send the user to Login.
-**FR-005**: Unknown or unused email on login MUST return **401** with message **"User not found!"**.
-**FR-006**: Wrong password for an existing email MUST return **401** with message **"Invalid password!"**.
-**FR-007**: Missing or expired token on a protected API MUST return **401**; the frontend MUST clear the session and redirect to Login.
-**FR-008**: Create account MUST require first name, last name, email, and password; on success it MUST create that user with role `user`, start a session, store `user` in `localStorage`, and navigate to `/landing`.
-**FR-009**: Create account with an email that already exists MUST return **409** with message **"Email already in use!"** and MUST NOT start a session.
-**FR-010**: Every signed-in user MUST open the same route, `/landing`. That screen MUST show only the placeholder **"This feature has not been implemented yet"**. It MUST NOT change by role.
+- **FR-001**: Users MUST authenticate with **email** + **password** (not username login; not password-only).
+- **FR-002**: Successful login MUST create a server session and return a token and `role`; the frontend MUST store the payload in `localStorage` under `user` and navigate to `/landing`.
+- **FR-003**: A valid session MUST persist on `/landing` across refresh until expiry or logout. After refresh, the screen MUST still show **"This feature has not been implemented yet"**.
+- **FR-004**: Logout MUST invalidate the current server session, clear `localStorage` `user`, and send the user to Login.
+- **FR-005**: Unknown or unused email on login MUST return **401** with message **"User not found!"**.
+- **FR-006**: Wrong password for an existing email MUST return **401** with message **"Invalid password!"**.
+- **FR-007**: Missing or expired token on a protected API MUST return **401**; the frontend MUST clear the session and redirect to Login.
+- **FR-008**: Create account MUST require first name, last name, email, and password; on success it MUST create that user with role `user`, start a session, store `user` in `localStorage`, and navigate to `/landing`.
+- **FR-009**: Create account with an email that already exists MUST return **409** with message **"Email already in use!"** and MUST NOT start a session.
+- **FR-010**: Every signed-in user MUST open the same route, `/landing`. That screen MUST show only the placeholder **"This feature has not been implemented yet"**. It MUST NOT change by role.
 
 ---
 
@@ -90,12 +90,12 @@
 
 ## Success Criteria
 
-**SC-001**: Every Gherkin scenario has at least one automated test before merge.
-**SC-002**: A user can log in with email and password and receive a session token.
-**SC-003**: A signed-in user can log out and is returned to Login with no remaining local session.
-**SC-004**: A valid session survives refresh of `/landing` until logout or expiry, and the placeholder message stays on screen.
-**SC-005**: A new user can create an account, land on `/landing` with a session, and see **"This feature has not been implemented yet"**.
-**SC-006**: A User, a Driver, a Maintenance account, and an Admin each land on `/landing` and see the same placeholder message.
+- **SC-001**: Every Gherkin scenario has at least one automated test before merge.
+- **SC-002**: A user can log in with email and password and receive a session token.
+- **SC-003**: A signed-in user can log out and is returned to Login with no remaining local session.
+- **SC-004**: A valid session survives refresh of `/landing` until logout or expiry, and the placeholder message stays on screen.
+- **SC-005**: A new user can create an account, land on `/landing` with a session, and see **"This feature has not been implemented yet"**.
+- **SC-006**: A User, a Driver, a Maintenance account, and an Admin each land on `/landing` and see the same placeholder message.
 
 ---
 
@@ -162,8 +162,8 @@ Quoted messages that tests must match:
 
 ## Key Entities
 
-**User**: account (first name, last name, email, password hash, role) created by this feature; used to verify credentials. Role is `user`, `driver`, `maintenance`, or `admin`. This feature stores `role` and does not render different screens from it.
-**Session**: server-side record tying a client `token` to a user; expires after 24 hours.
+- **User**: account (first name, last name, email, password hash, role) created by this feature; used to verify credentials. Role is `user`, `driver`, `maintenance`, or `admin`. This feature stores `role` and does not render different screens from it.
+- **Session**: server-side record tying a client `token` to a user; expires after 24 hours.
 
 ---
 
@@ -174,12 +174,12 @@ Quoted messages that tests must match:
 - Heading: **Login**
 - Fields: **Email**, **Password** (both required)
 - Primary action: **Login**
-  **Create Account** opens a dialog on this screen (this feature)
+- **Create Account** opens a dialog on this screen (this feature)
 - Dialog fields: **First name**, **Last name**, **Email**, **Password** (all required)
 - Dialog primary action: **Create Account**
-  **Error:** shows the API `message` (including **"User not found!"**, **"Invalid password!"**, and **"Email already in use!"**)
-  **Login success:** store payload in `localStorage` `user`, snackbar **"Login successful!"**, navigate to route `landing`
-  **Create-account success:** store payload in `localStorage` `user`, navigate to route `landing`
+- **Error:** shows the API `message` (including **"User not found!"**, **"Invalid password!"**, and **"Email already in use!"**)
+- **Login success:** store payload in `localStorage` `user`, snackbar **"Login successful!"**, navigate to route `landing`
+- **Create-account success:** store payload in `localStorage` `user`, navigate to route `landing`
 
 ### [View: Placeholder] — route name `landing` (`/landing`)
 
@@ -191,7 +191,7 @@ Quoted messages that tests must match:
 ### App chrome — `MenuBar`
 
 - When signed in: avatar (initials from first + last name). Opening it shows name, email, and **Logout**
-  **Logout** runs logout, then lands on `login`
+- **Logout** runs logout, then lands on `login`
 
 ---
 
@@ -233,107 +233,107 @@ This feature **owns** `users` and `sessions`.
 
 #### Scenario: Admin signs in
 
-**Given** I am on the Login page
-**And** an account exists with role `admin`
-**When** I enter that email and password and press Login
-**Then** I am signed in
-**And** I land on `/landing`
-**And** I see **"This feature has not been implemented yet"**
+- **Given** I am on the Login page
+- **And** an account exists with role `admin`
+- **When** I enter that email and password and press Login
+- **Then** I am signed in
+- **And** I land on `/landing`
+- **And** I see **"This feature has not been implemented yet"**
 
 #### Scenario: User signs in
 
-**Given** I am on the Login page
-**And** an account exists with role `user`
-**When** I enter that email and password and press Login
-**Then** I am signed in
-**And** I land on `/landing`
-**And** I see **"This feature has not been implemented yet"**
+- **Given** I am on the Login page
+- **And** an account exists with role `user`
+- **When** I enter that email and password and press Login
+- **Then** I am signed in
+- **And** I land on `/landing`
+- **And** I see **"This feature has not been implemented yet"**
 
 #### Scenario: Driver signs in
 
-**Given** I am on the Login page
-**And** an account exists with role `driver`
-**When** I enter that email and password and press Login
-**Then** I am signed in
-**And** I land on `/landing`
-**And** I see **"This feature has not been implemented yet"**
+- **Given** I am on the Login page
+- **And** an account exists with role `driver`
+- **When** I enter that email and password and press Login
+- **Then** I am signed in
+- **And** I land on `/landing`
+- **And** I see **"This feature has not been implemented yet"**
 
 #### Scenario: Maintenance signs in
 
-**Given** I am on the Login page
-**And** an account exists with role `maintenance`
-**When** I enter that email and password and press Login
-**Then** I am signed in
-**And** I land on `/landing`
-**And** I see **"This feature has not been implemented yet"**
+- **Given** I am on the Login page
+- **And** an account exists with role `maintenance`
+- **When** I enter that email and password and press Login
+- **Then** I am signed in
+- **And** I land on `/landing`
+- **And** I see **"This feature has not been implemented yet"**
 
 #### Scenario: Bad email
 
-**Given** I am on the Login page
-**When** I fill out an unused or wrong email and a password
-**And** I press **Login**
-**Then** I see the message **"User not found!"**
-**And** I remain on Login
-**And** I am not signed in
+- **Given** I am on the Login page
+- **When** I fill out an unused or wrong email and a password
+- **And** I press **Login**
+- **Then** I see the message **"User not found!"**
+- **And** I remain on Login
+- **And** I am not signed in
 
 #### Scenario: Bad password
 
-**Given** I am on the Login page
-**When** I fill out an existing email and an invalid password
-**And** I press **Login**
-**Then** I see the message **"Invalid password!"**
-**And** I remain on Login
-**And** I am not signed in
+- **Given** I am on the Login page
+- **When** I fill out an existing email and an invalid password
+- **And** I press **Login**
+- **Then** I see the message **"Invalid password!"**
+- **And** I remain on Login
+- **And** I am not signed in
 
 ### US-1.2 — Stay signed in across page loads
 
 #### Scenario: Opening the signed-in screen
 
-**Given** I have a valid session
-**When** I open `/landing`
-**Then** I remain logged in
-**And** I see **"This feature has not been implemented yet"**
+- **Given** I have a valid session
+- **When** I open `/landing`
+- **Then** I remain logged in
+- **And** I see **"This feature has not been implemented yet"**
 
 #### Scenario: Refresh pages
 
-**Given** I have a valid session on `/landing`
-**When** I refresh the page
-**Then** I remain logged in
-**And** I do not have to sign in again
-**And** I see **"This feature has not been implemented yet"**
+- **Given** I have a valid session on `/landing`
+- **When** I refresh the page
+- **Then** I remain logged in
+- **And** I do not have to sign in again
+- **And** I see **"This feature has not been implemented yet"**
 
 ### US-1.3 — Sign out
 
 #### Scenario: Logging out
 
-**Given** I have a valid session
-**When** I press the profile circle
-**And** I click **Logout**
-**Then** I am logged out of the user session
-**And** I am redirected to the Login page
+- **Given** I have a valid session
+- **When** I press the profile circle
+- **And** I click **Logout**
+- **Then** I am logged out of the user session
+- **And** I am redirected to the Login page
 
 ### US-1.4 — Create account
 
 #### Scenario: Creating new account
 
-**Given** I am on the Login page
-**When** I press the **Create Account** button
-**And** I fill all textboxes
-**And** I click **Create Account**
-**Then** I am logged into the new account
-**And** that account has role `user`
-**And** I am redirected to `/landing`
-**And** I see **"This feature has not been implemented yet"**
+- **Given** I am on the Login page
+- **When** I press the **Create Account** button
+- **And** I fill all textboxes
+- **And** I click **Create Account**
+- **Then** I am logged into the new account
+- **And** that account has role `user`
+- **And** I am redirected to `/landing`
+- **And** I see **"This feature has not been implemented yet"**
 
 #### Scenario: Email already in use
 
-**Given** I am on the Login page
-**And** an account already exists with an email
-**When** I press **Create Account**
-**And** I submit that same email with a first name, last name, and password
-**Then** I see the message **"Email already in use!"**
-**And** I remain on Login
-**And** I am not signed in
+- **Given** I am on the Login page
+- **And** an account already exists with an email
+- **When** I press **Create Account**
+- **And** I submit that same email with a first name, last name, and password
+- **Then** I see the message **"Email already in use!"**
+- **And** I remain on Login
+- **And** I am not signed in
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "name": "vehicles-t3-backend",
+  "name": "speckit-app-backend",
   "version": "1.0.0",
   "type": "module",
   "description": "Speckit App — Node.js REST API",

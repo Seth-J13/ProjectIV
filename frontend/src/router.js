@@ -1,5 +1,6 @@
 import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import Drivers from './views/Drivers.vue';
 import Utils from './config/utils.js';
 
 const router = createRouter({
@@ -26,6 +27,11 @@ const router = createRouter({
       component: () => import('./views/DestinationList.vue'),
     },
     {
+      path: '/drivers',
+      name: 'drivers',
+      component: Drivers,
+    },
+    {
       path: '/vehicles',
       name: 'vehicleManagement',
       component: () => import('./views/Vehicle.vue'),
@@ -43,6 +49,11 @@ const router = createRouter({
       component: { render: () => h('div', 'Vehicle Service Logs') },
     },
     {
+      path: '/areas',
+      name: 'areas',
+      component: () => import('./views/Areas.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'login' },
     },
@@ -57,7 +68,10 @@ router.beforeEach((to) => {
   }
 
   if (
-    (to.name === 'users' || to.name === 'destinations') &&
+    (to.name === 'users' ||
+      to.name === 'destinations' ||
+      to.name === 'drivers' ||
+      to.name === 'areas') &&
     user?.role !== 'admin'
   ) {
     return { name: 'landing' };

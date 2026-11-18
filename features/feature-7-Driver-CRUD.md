@@ -5,7 +5,7 @@
 **Status:** {Draft | Ready | Shipped}
 **Created:** 2026-10-26
 **Input:** create, read, update, delete drivers
-**Depends on:** [Feature 1 -- User Management](feature-1-User-Management.md),
+**Depends on:** [Feature 3 -- User Management](feature-1-User-Management.md),
 [Feature 2 -- Google Auth](feature-2-Google-Auth.md), [Feature X -- ...](feature-X-...md), ... <-- (omit if none)
 **Related:** `frontend/src/views/Drivers.vue`, `backend/app/routes/users.routes.js`,
 `backend/app/routes/vehicle-t3.routes.js`
@@ -70,11 +70,11 @@
 
 ### Functional Requirements
 
-**FR-001**: All driver endpoints MUST require a valid session (`authenticate` middleware).
-**FR-002**: driver names MUST be trimmed before save; empty strings MUST be rejected.
-**FR-003**: This feature MUST deliver driver CRUD and a **single-view** drivers UI in `Drivers.vue` (dialog-based add/edit/delete). No sidebar/main split.
-**FR-004**: typing in the on-screen driver search bar updates the driver list with only drivers containing the search bar's content as a substring.
-**FR-005**: signed-out users MUST NOT have access to any `/vehicle-t3` routes
+- **FR-001**: All driver endpoints MUST require a valid session (`authenticate` middleware).
+- **FR-002**: driver names MUST be trimmed before save; empty strings MUST be rejected.
+- **FR-003**: This feature MUST deliver driver CRUD and a **single-view** drivers UI in `Drivers.vue` (dialog-based add/edit/delete). No sidebar/main split.
+- **FR-004**: typing in the on-screen driver search bar updates the driver list with only drivers containing the search bar's content as a substring.
+- **FR-005**: signed-out users MUST NOT have access to any `/vehicle-t3` routes
 
 ---
 
@@ -91,10 +91,10 @@
 
 ## Success Criteria
 
-**SC-001**: Every Gherkin scenario has at least one automated test before merge.
-**SC-002**: Signed-in admin can create, view, rename, and delete drivers on one screen.
-**SC-003**: Signed-in non-admin users cannot access this view
-**SC-004**: `npm test` passes for driver API and drivers-view behavior.
+- **SC-001**: Every Gherkin scenario has at least one automated test before merge.
+- **SC-002**: Signed-in admin can create, view, rename, and delete drivers on one screen.
+- **SC-003**: Signed-in non-admin users cannot access this view
+- **SC-004**: `npm test` passes for driver API and drivers-view behavior.
 
 ---
 
@@ -171,29 +171,29 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 **drivers view (this feature)**
 
 - Heading: **Drivers**
-- Primary action: **+ New driver** opens a `<v-dialog>` with a name `<v-text-field>` and **Create** / **Cancel**. Use class `oc-cta` on **Create** and **+ New driver** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Display interactive search bar named `Find` above any lists
-- Display drivers as rows (e.g. `<v-list>` or table): each row shows the **driver name** and icon actions:
-  **Edit** icon — opens rename `<v-dialog>` pre-filled with current name; **Save** / **Cancel**
-  **Delete** icon — opens confirmation `<v-dialog>`
+- Primary action: **+ New driver** opens a `<v-dialog>` with **Driver id**, then **Driver name**, and **Create** / **Cancel**. **Driver id** is a combobox of every user, each shown as `First Last (id)`. Choosing one stores only that user's id in the field, fills **Driver name** with the full name, and keeps the name read-only until the id is cleared. **License status** and **Availability** are single-select dropdowns of their enum values (`expired` / `active` / `suspended`, and `available` / `not available` / `on call`). The edit dialog uses the same dropdowns. Use class `oc-cta` on **Create** and **+ New driver** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Display interactive search bar named `Find` above any lists. It keeps rows whose id, name, license status, license expiration, or availability contains the typed text
+- Display drivers in a `<v-table>` with columns **Driver ID**, **Name**, **License Status**, **License Expiration**, **Availability**, and **Actions**. Names and enum values are shown in proper-noun casing (`Active`, `Not Available`). Each value is its own cell. Icon actions:
+  - **Edit** icon — opens rename `<v-dialog>` pre-filled with current name; **Save** / **Cancel**
+  - **Delete** icon — opens confirmation `<v-dialog>`
 - Icon-only row actions use `size="small"` and accessible `aria-label`s (**Edit driver**, **Delete driver**).
-  **Empty state:** **"No drivers yet. Create a driver."** when no drivers exist in the database.
-  **Loading state:** skeleton or progress indicator while drivers are fetching.
-  **Error state:** `<v-alert type="error">` for API failures.
+- **Empty state:** **"No drivers yet. Create a driver."** when no drivers exist in the database.
+- **Loading state:** skeleton or progress indicator while drivers are fetching.
+- **Error state:** `<v-alert type="error">` for API failures. A create failure shows that alert inside the new-driver dialog.
 
 **Implementation note:** one route/view for drivers; driver CRUD dialogs are child components or inline `<v-dialog>` blocks in `Drivers.vue` unless the team splits presentational dialogs later.
 
 **App chrome**
 
-- Existing `MenuBar`. This feature does not add or hide chrome.
+- Existing `MenuBar`. An admin sees a **Drivers** button that opens `/drivers`. Other roles do not see that button.
 
 ---
 
 ## Key Entities
 
-**driver**: named item.
-**admin**: authenticated administrator user permitted to access all driver routes.
-**requester**: authenticated user permitted to only access `GET` driver routes.
+- **driver**: named item.
+- **admin**: authenticated administrator user permitted to access all driver routes.
+- **requester**: authenticated user permitted to only access `GET` driver routes.
 
 ---
 
@@ -216,55 +216,55 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 #### Scenario: Admin creates a new driver
 
-**Given** I am signed in as an admin on the driver view
-**When** I click **+ New driver**
-**And** I enter license status `active`
-**And** I enter expiration date `05/2026`
-**And** I add availability `available`
-**And** I confirm the dialog
-**Then** the API returns `201` with a driver object containing `driver_id`, `license_status:'active'`, `license_exp_date:'05/2026'` and `availability:'available'`
-**And** driver_id, license_status, license_exp_date, and availability appears in the drivers view
-**And** the add-driver dialog closes
+- **Given** I am signed in as an admin on the driver view
+- **When** I click **+ New driver**
+- **And** I enter license status `active`
+- **And** I enter expiration date `05/2026`
+- **And** I add availability `available`
+- **And** I confirm the dialog
+- **Then** the API returns `201` with a driver object containing `driver_id`, `license_status:'active'`, `license_exp_date:'05/2026'` and `availability:'available'`
+- **And** driver_id, license_status, license_exp_date, and availability appears in the drivers view
+- **And** the add-driver dialog closes
 
 #### Scenario: Admin creates a driver with an empty name
 
-**Given** I am signed in as an admin on the driver view
-**When** I open the new driver dialog
-**And** I leave the name field empty or whitespace only
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"Driver name is required."**
-**And** no API request is sent
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
+- **And** I leave the name field empty or whitespace only
+- **And** I attempt to confirm
+- **Then** inline validation blocks the request
+- **And** I see the message **"Driver name is required."**
+- **And** no API request is sent
 
 #### Scenario: Admin creates a driver with an empty license status
 
-**Given** I am signed in as an admin on the driver view
-**When** I open the new driver dialog
-**And** I leave the license status field empty or whitespace only
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"license status is required."**
-**And** no API request is sent
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
+- **And** I leave the license status field empty or whitespace only
+- **And** I attempt to confirm
+- **Then** inline validation blocks the request
+- **And** I see the message **"license status is required."**
+- **And** no API request is sent
 
 #### Scenario: Admin creates a driver without license expiration date
 
-**Given** I am signed in as an admin on the driver view
-**When** I open the new driver dialog
-**And** I leave the license expiration date empty or whitespace only
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"license expiration date is required."**
-**And** no API request is sent
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
+- **And** I leave the license expiration date empty or whitespace only
+- **And** I attempt to confirm
+- **Then** inline validation blocks the request
+- **And** I see the message **"license expiration date is required."**
+- **And** no API request is sent
 
 #### Scenario: Admin creates a driver without availability
 
-**Given** I am signed in as an admin on the driver view
-**When** I open the new driver dialog
-**And** I leave the availability empty or whitespace only
-**And** I attempt to confirm
-**Then** inline validation blocks the request
-**And** I see the message **"availability is required."**
-**And** no API request is sent
+- **Given** I am signed in as an admin on the driver view
+- **When** I open the new driver dialog
+- **And** I leave the availability empty or whitespace only
+- **And** I attempt to confirm
+- **Then** inline validation blocks the request
+- **And** I see the message **"availability is required."**
+- **And** no API request is sent
 
 ---
 
@@ -272,10 +272,10 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 #### Scenario: No drivers exist
 
-**Given** I am signed in as an admin
-**And** no drivers exist
-**When** I navigate to the driver view
-**Then** I see **"No drivers yet. Create a driver."**
+- **Given** I am signed in as an admin
+- **And** no drivers exist
+- **When** I navigate to the driver view
+- **Then** I see **"No drivers yet. Create a driver."**
 
 ---
 
@@ -283,11 +283,11 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 #### Scenario: driver rows show edit and delete actions
 
-**Given** I am signed in as an admin
-**And** the driver `1` exists
-**When** I view the drivers view
-**Then** the `1` row shows an **Edit driver** icon action
-**And** the `1` row shows a **Delete driver** icon action
+- **Given** I am signed in as an admin
+- **And** the driver `1` exists
+- **When** I view the drivers view
+- **Then** the `1` row shows an **Edit driver** icon action
+- **And** the `1` row shows a **Delete driver** icon action
 
 ---
 
@@ -295,22 +295,22 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 #### Scenario: Admin edits a driver
 
-**Given** I am signed in as an admin
-**And** the driver `1` exists
-**When** I click the edit icon on the `1` row with the license status `suspended`
-**And** I change the license status to `active` in the rename dialog
-**And** I confirm
-**Then** the API returns `200` with the updated driver object
-**And** the drivers view shows `active` instead of `suspended`
+- **Given** I am signed in as an admin
+- **And** the driver `1` exists
+- **When** I click the edit icon on the `1` row with the license status `suspended`
+- **And** I change the license status to `active` in the rename dialog
+- **And** I confirm
+- **Then** the API returns `200` with the updated driver object
+- **And** the drivers view shows `active` instead of `suspended`
 
 #### Scenario: Admin deletes a driver
 
-**Given** I am signed in as an admin
-**And** the driver `1` exists
-**When** I click the delete icon on the `1` row
-**And** I confirm the delete dialog
-**Then** the API returns `204`
-**And** the driver is removed from the drivers view
+- **Given** I am signed in as an admin
+- **And** the driver `1` exists
+- **When** I click the delete icon on the `1` row
+- **And** I confirm the delete dialog
+- **Then** the API returns `204`
+- **And** the driver is removed from the drivers view
 
 ---
 
@@ -318,50 +318,50 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 
 #### Scenario: Search bar appears with drivers
 
-**Given** I am signed in as an admin
-**And** the driver `1` exists
-**When** I view the drivers view
-**Then** I see a search bar named `Find` above the drivers list
-returns
+- **Given** I am signed in as an admin
+- **And** the driver `1` exists
+- **When** I view the drivers view
+- **Then** I see a search bar named `Find` above the drivers list
+  returns
 
 #### Scenario: search bar appears with no drivers
 
-**Given** I am signed in as an admin
-**And** the driver `1` exists
-**When** I view the drivers view
-**And** I type `2` in the search bar
-**Then** The search function does not display any drivers
-**And** I see no drivers in the view
+- **Given** I am signed in as an admin
+- **And** the driver `1` exists
+- **When** I view the drivers view
+- **And** I type `2` in the search bar
+- **Then** The search function does not display any drivers
+- **And** I see no drivers in the view
 
 #### Scenario: Admin types in driver search bar
 
-**Given** I am signed in as an admin
-**And** I am viewing the drivers view
-**And** the drivers license status `1, active`, `2, suspended`, `3, expired`,
-and `4, active` exist
-**When** I type `active` in the `Find` search bar
-**Then** the driver list updates to contain only the drivers `1` and `4`
+- **Given** I am signed in as an admin
+- **And** I am viewing the drivers view
+- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`,
+  and `4, active` exist
+- **When** I type `active` in the `Find` search bar
+- **Then** the driver list updates to contain only the drivers `1` and `4`
 
 #### Scenario: Admin types in driver search bar 2
 
-**Given** I am signed in as an admin
-**And** I am viewing the drivera view
-**And** the drivers license status `1, active`, `2, suspended`, `3, expired`,
-and `4, active` exist
-**When** I type `suspended` in the `Find` search bar
-**Then** the driver list updates to contain only the driver `2`
+- **Given** I am signed in as an admin
+- **And** I am viewing the drivera view
+- **And** the drivers license status `1, active`, `2, suspended`, `3, expired`,
+  and `4, active` exist
+- **When** I type `suspended` in the `Find` search bar
+- **Then** the driver list updates to contain only the driver `2`
 
 #### Scenario: Unauthenticated user accesses the drivers view
 
-**Given** I have no session in `localStorage`
-**When** I navigate to the drivers view
-**Then** I am redirected to the login page
+- **Given** I have no session in `localStorage`
+- **When** I navigate to the drivers view
+- **Then** I am redirected to the login page
 
 #### Scenario: Unauthenticated API request to drivers
 
-**Given** I have no valid session token
-**When** I request `GET /vehicle-t3`
-**Then** the API returns `401` with an unauthorized message
+- **Given** I have no valid session token
+- **When** I request `GET /vehicle-t3`
+- **Then** the API returns `401` with an unauthorized message
 
 ---
 
@@ -421,7 +421,6 @@ Do not implement behavior not in this spec.
 ## Out of Scope
 
 - Faculty items (see `features/feature-4-faculty-management.md`)
-- `MenuBar` beyond basic sign-out (full nav deferred if not needed)
 - Drag-and-drop driver reordering
 - Sharing drivers with other users
 - `POST`/`GET`/`PUT`/`DELETE` anywhere that's not `/vehicle-t3/vehicle-t3` or `/vehicle-t3/:driver_id`
