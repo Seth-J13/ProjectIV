@@ -1,7 +1,7 @@
 # Feature: Driver Crud
 
-**Feature ID:** 8
-**Branch pattern:** `feature/8-Driver-CRUD`
+**Feature ID:** 7
+**Branch pattern:** `feature/7-Driver-CRUD`
 **Status:** {Draft | Ready | Shipped}
 **Created:** 2026-10-26
 **Input:** create, read, update, delete drivers
@@ -171,21 +171,21 @@ All endpoints except `GET` require **an administrator-role user** to access/oper
 **drivers view (this feature)**
 
 - Heading: **Drivers**
-- Primary action: **+ New driver** opens a `<v-dialog>` with a name `<v-text-field>` and **Create** / **Cancel**. Use class `oc-cta` on **Create** and **+ New driver** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
-- Display interactive search bar named `Find` above any lists
-- Display drivers as rows (e.g. `<v-list>` or table): each row shows the **driver name** and icon actions:
+- Primary action: **+ New driver** opens a `<v-dialog>` with **Driver id**, then **Driver name**, and **Create** / **Cancel**. **Driver id** is a combobox of every user, each shown as `First Last (id)`. Choosing one stores only that user's id in the field, fills **Driver name** with the full name, and keeps the name read-only until the id is cleared. **License status** and **Availability** are single-select dropdowns of their enum values (`expired` / `active` / `suspended`, and `available` / `not available` / `on call`). The edit dialog uses the same dropdowns. Use class `oc-cta` on **Create** and **+ New driver** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Display interactive search bar named `Find` above any lists. It keeps rows whose id, name, license status, license expiration, or availability contains the typed text
+- Display drivers in a `<v-table>` with columns **Driver ID**, **Name**, **License Status**, **License Expiration**, **Availability**, and **Actions**. Names and enum values are shown in proper-noun casing (`Active`, `Not Available`). Each value is its own cell. Icon actions:
   - **Edit** icon — opens rename `<v-dialog>` pre-filled with current name; **Save** / **Cancel**
   - **Delete** icon — opens confirmation `<v-dialog>`
 - Icon-only row actions use `size="small"` and accessible `aria-label`s (**Edit driver**, **Delete driver**).
 - **Empty state:** **"No drivers yet. Create a driver."** when no drivers exist in the database.
 - **Loading state:** skeleton or progress indicator while drivers are fetching.
-- **Error state:** `<v-alert type="error">` for API failures.
+- **Error state:** `<v-alert type="error">` for API failures. A create failure shows that alert inside the new-driver dialog.
 
 **Implementation note:** one route/view for drivers; driver CRUD dialogs are child components or inline `<v-dialog>` blocks in `Drivers.vue` unless the team splits presentational dialogs later.
 
 **App chrome**
 
-- Existing `MenuBar`. This feature does not add or hide chrome.
+- Existing `MenuBar`. An admin sees a **Drivers** button that opens `/drivers`. Other roles do not see that button.
 
 ---
 
@@ -421,7 +421,6 @@ Do not implement behavior not in this spec.
 ## Out of Scope
 
 - Faculty items (see `features/feature-4-faculty-management.md`)
-- `MenuBar` beyond basic sign-out (full nav deferred if not needed)
 - Drag-and-drop driver reordering
 - Sharing drivers with other users
 - `POST`/`GET`/`PUT`/`DELETE` anywhere that's not `/vehicle-t3/vehicle-t3` or `/vehicle-t3/:driver_id`
