@@ -1,6 +1,6 @@
 # API Reference
 
-**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, and Feature 7 drivers are implemented. Mount path is `/api`.
+**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, Feature 7 drivers, and Feature 13 areas are implemented. Mount path is `/api`.
 
 Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": "..." }`. Protected routes read `Authorization: Bearer <session token>`.
 
@@ -19,6 +19,11 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `POST` | `/api/vehicle-t3` | Yes (`Bearer` session token, role `admin`) | Create a driver | Feature 7 |
 | `PUT` | `/api/vehicle-t3/:driver_id` | Yes (`Bearer` session token, role `admin`) | Update a driver | Feature 7 |
 | `DELETE` | `/api/vehicle-t3/:driver_id` | Yes (`Bearer` session token, role `admin`) | Delete a driver | Feature 7 |
+| `GET` | `/api/areas` | Yes (`Bearer` session token, role `admin`) | List every area | Feature 13 |
+| `GET` | `/api/areas/:id` | Yes (`Bearer` session token, role `admin`) | Read one area | Feature 13 |
+| `POST` | `/api/areas` | Yes (`Bearer` session token, role `admin`) | Create an area | Feature 13 |
+| `PUT` | `/api/areas/:id` | Yes (`Bearer` session token, role `admin`) | Update an area | Feature 13 |
+| `DELETE` | `/api/areas/:id` | Yes (`Bearer` session token, role `admin`) | Delete an area that no vehicle references | Feature 13 |
 
 A missing or expired Bearer token returns **401** `{ "message": "Unauthorized!" }` and the handler does not run.
 
@@ -127,3 +132,36 @@ The **400**, **403**, **404**, and **409** cases do not change the user.
 ### Drivers (`/api/vehicle-t3`)
 
 Create and update body: `driver_id`, `license_status` (`expired`, `active`, or `suspended`), `license_exp_date` (stored as entered, for example `05/2026`), and `availability` (`available`, `not available`, or `on call`). `name` is optional. `driver_id` must be an integer. A missing or blank required field, or a non-numeric `driver_id`, is **400**. A signed-in role other than `admin` on `POST`, `PUT`, or `DELETE` is **403** `{ "message": "Admin access required." }`. An unknown driver is **404**. Delete success is **204** with no body. `GET` returns every driver to any signed-in user.
+
+### Areas (`/api/areas`)
+
+Admin only. Create and update body:
+
+```json
+{
+  "name": "North Campus",
+  "noticeEmail": "north@example.com"
+}
+```
+
+`name` is required, unique, and at most 30 characters. `noticeEmail` is required. `logo` may be omitted. Success is **201** on create and **200** on read and update:
+
+```json
+{
+  "id": 1,
+  "name": "North Campus",
+  "noticeEmail": "north@example.com",
+  "logo": null
+}
+```
+
+Delete success is **200** `{ "message": "Area deleted." }`.
+
+| Situation | Status | `message` |
+| --- | --- | --- |
+| Missing or expired token | 401 | `Unauthorized!` |
+| Role is `user`, `driver`, or `maintenance` | 403 | `Forbidden` |
+| Unknown area id | 404 | `Area not found!` |
+| Name already used | 409 | `Area name already in use!` |
+| A vehicle still references the area | 409 | `Area is in use!` |
+| Name or notice email missing | 400 | `Area is incomplete!` |
