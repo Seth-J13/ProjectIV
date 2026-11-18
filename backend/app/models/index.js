@@ -2,9 +2,7 @@ import { Sequelize } from "sequelize";
 import sequelize from "../config/sequelizeInstance.js";
 import userModel from "./user.model.js";
 import sessionModel from "./session.model.js";
-<<<<<<< HEAD
 import destinationModel from "./destination.model.js";
-=======
 import areaModel from "./area.model.js";
 import fuelTypeModel from "./fuelType.model.js";
 import maintenanceInfoModel from "./maintenanceInfo.model.js";
@@ -12,7 +10,6 @@ import vehicleModel from "./vehicle.model.js";
 import requestModel from "./request.model.js";
 import noteModel from "./note.model.js";
 import vehicleServiceLogModel from "./vehicleServiceLog.model.js";
->>>>>>> 05aaa36d4fc656190e6877e46bbaa2ba02f3097f
 
 const db = {};
 db.Sequelize = Sequelize;
@@ -20,9 +17,7 @@ db.sequelize = sequelize;
 
 db.user = userModel(sequelize, Sequelize);
 db.session = sessionModel(sequelize, Sequelize);
-<<<<<<< HEAD
 db.destination = destinationModel(sequelize, Sequelize);
-=======
 db.area = areaModel(sequelize, Sequelize);
 db.fuelType = fuelTypeModel(sequelize, Sequelize);
 db.maintenanceInfo = maintenanceInfoModel(sequelize, Sequelize);
@@ -30,7 +25,6 @@ db.vehicle = vehicleModel(sequelize, Sequelize);
 db.request = requestModel(sequelize, Sequelize);
 db.note = noteModel(sequelize, Sequelize);
 db.vehicleServiceLog = vehicleServiceLogModel(sequelize, Sequelize);
->>>>>>> 05aaa36d4fc656190e6877e46bbaa2ba02f3097f
 
 db.user.hasMany(db.session, { foreignKey: "userId" });
 db.session.belongsTo(db.user, { foreignKey: "userId" });

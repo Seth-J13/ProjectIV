@@ -244,38 +244,56 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <v-container v-if="allowed" class="py-6">
-    <h1 class="text-h4 mb-4">Manage Destinations</h1>
-    <v-btn class="oc-cta mb-4" data-destination-opener type="button" @click.stop="openAdd">+ New Destination</v-btn>
+  <v-container v-if="allowed" class="py-10">
+    <v-row align="center" class="mb-4">
+      <v-col>
+        <h1 class="text-h4">Manage Destinations</h1>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn
+          color="primary"
+          variant="elevated"
+          class="oc-cta"
+          data-destination-opener
+          type="button"
+          @click.stop="openAdd"
+        >
+          + New Destination
+        </v-btn>
+      </v-col>
+    </v-row>
 
-    <div v-if="destinations.length" class="d-flex flex-wrap ga-4 mb-4">
-      <v-text-field v-model="search" label="Search" hide-details class="flex-grow-1" />
-      <v-select
-        v-model="searchAttribute"
-        :items="searchAttributes"
-        label="Search by"
-        clearable
-        hide-details
-        style="max-width: 240px"
-      />
-    </div>
+    <v-row v-if="destinations.length">
+      <v-col cols="12" md="6">
+        <v-text-field v-model="search" label="Search" clearable />
+      </v-col>
+      <v-col cols="12" md="3">
+        <v-select
+          v-model="searchAttribute"
+          :items="searchAttributes"
+          label="Search by"
+          clearable
+        />
+      </v-col>
+    </v-row>
 
-    <v-progress-linear v-if="loading" indeterminate class="mb-4" />
+    <v-progress-linear v-if="loading" indeterminate color="primary" class="mb-4" />
     <v-alert v-if="errorMessage" type="error" class="mb-4">{{ errorMessage }}</v-alert>
+    <v-alert v-if="!loading && destinations.length === 0" type="info" class="mb-4">
+      No destinations yet. Add a destination to view its details.
+    </v-alert>
 
-    <p v-if="!loading && destinations.length === 0">No destinations yet. Add a destination to view its details.</p>
-
-    <v-table v-else-if="destinations.length" class="destination-table">
+    <v-table v-if="destinations.length">
       <thead>
         <tr>
-          <th><v-btn variant="text" size="small" @click="toggleSort('dest_name')">Name</v-btn></th>
+          <th @click="toggleSort('dest_name')">Name</th>
           <th>Street Address</th>
           <th>Address Line 2</th>
-          <th><v-btn variant="text" size="small" @click="toggleSort('city')">City</v-btn></th>
-          <th><v-btn variant="text" size="small" @click="toggleSort('state')">State</v-btn></th>
-          <th><v-btn variant="text" size="small" @click="toggleSort('zip')">Zip Code</v-btn></th>
+          <th @click="toggleSort('city')">City</th>
+          <th @click="toggleSort('state')">State</th>
+          <th @click="toggleSort('zip')">Zip Code</th>
           <th>Visited</th>
-          <th></th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -288,8 +306,24 @@ onUnmounted(() => {
           <td>{{ row.zip }}</td>
           <td>{{ row.last_visited || "not visited" }}</td>
           <td>
-            <v-btn data-destination-opener size="small" icon aria-label="Edit" @click.stop="openEdit(row)">✎</v-btn>
-            <v-btn data-destination-opener size="small" icon aria-label="Delete" @click.stop="openDelete(row)">🗑</v-btn>
+            <v-btn
+              icon="mdi-pencil"
+              size="small"
+              variant="text"
+              type="button"
+              data-destination-opener
+              aria-label="Edit"
+              @click.stop="openEdit(row)"
+            />
+            <v-btn
+              icon="mdi-delete"
+              size="small"
+              variant="text"
+              type="button"
+              data-destination-opener
+              aria-label="Delete"
+              @click.stop="openDelete(row)"
+            />
           </td>
         </tr>
       </tbody>
@@ -328,11 +362,3 @@ onUnmounted(() => {
     </v-dialog>
   </v-container>
 </template>
-
-<style scoped>
-.destination-table :deep(th),
-.destination-table :deep(td) {
-  text-align: center;
-  vertical-align: middle;
-}
-</style>

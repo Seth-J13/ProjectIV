@@ -307,7 +307,7 @@ Primary Action: Fill out a form with the following fields:
 
 **App chrome**
 
-- Existing `MenuBar`. This feature does not add or hide chrome.
+- Existing `MenuBar`. An admin sees a **Destinations** button that opens `/destinations`. Other roles do not see that button.
 
 ---
 
