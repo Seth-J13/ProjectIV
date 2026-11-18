@@ -6,6 +6,10 @@ import request from "supertest";
 import app from "../server.js";
 
 const NOTES = "/vehicle-t3/notes";
+const SERVICE_LOGS = "/api/vehicle-t3/vehicle-service-logs/";
+const MALFORMED = {
+  message: "Malformed request. Please make sure everything in the form is properly formatted!",
+};
 const LOGIN_MESSAGE =
   "Please sign in. If you think this is a mistake, contact your system administrator";
 
@@ -14,6 +18,13 @@ const validNote = {
   maintenance_request: false,
   request_id: 5,
   text: "Brake noise from the front pads",
+};
+
+const maintenanceNote = {
+  reason: "Check tires",
+  maintenance_request: true,
+  request_id: 5,
+  text: "Vehicle needs new tires",
 };
 
 function createdId(response) {
@@ -105,6 +116,37 @@ describe("Feature 9 — Note CRUD", () => {
       expect(details.status).toBe(404);
       expect(details.body).toEqual({ message: `No note was found for id=${id}` });
     });
+
+    it("User clicks `confirm` button", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+
+      const logRes = await request(app)
+        .post(SERVICE_LOGS)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({
+          vehicle_id: "12345671234567123",
+          date: "2026-10-31",
+          type: "maintenance",
+          value: maintenanceNote.text,
+        });
+
+      expect(logRes.status).toBe(201);
+      expect(typeof logRes.body.message).toBe("string");
+      expect(logRes.body.message.length).toBeGreaterThan(0);
+
+      const deleteRes = await request(app)
+        .delete(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer maintenance-token");
+
+      expect(deleteRes.status).toBe(204);
+      expect(deleteRes.text).toBe("");
+    });
   });
 
   describe("US-9.3: Create Notes", () => {
@@ -145,6 +187,33 @@ describe("Feature 9 — Note CRUD", () => {
 
       expect(response.status).toBe(401);
       expect(response.body).toEqual({ message: LOGIN_MESSAGE });
+    });
+
+    it("User inputs valid input into the `Add Maintenance Note` modal", async () => {
+      const response = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          note_id: createdId(response),
+          created_note: true,
+        }),
+      );
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
+    });
+
+    it("User inputs invalid input into the `Add Maintenance Note` modal", async () => {
+      const response = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({ ...maintenanceNote, text: "" });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual(MALFORMED);
     });
   });
 
@@ -190,6 +259,49 @@ describe("Feature 9 — Note CRUD", () => {
 
       expect(response.status).toBe(401);
       expect(response.body).toEqual({ message: LOGIN_MESSAGE });
+    });
+
+    it("User inputs valid input into the `Edit Maintenance Note` modal", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+
+      const response = await request(app)
+        .put(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({
+          ...maintenanceNote,
+          reason: "Updated subject",
+          text: "Updated description text.",
+        });
+
+      expect(response.status).toBe(200);
+      expect(String(response.body.note_id)).toBe(String(id));
+      expect(response.body.created_note).toBe(false);
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
+    });
+
+    it("User inputs invalid input into the `Edit Maintenance Note` modal", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+
+      const response = await request(app)
+        .put(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({ ...maintenanceNote, text: "" });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual(MALFORMED);
     });
   });
 
