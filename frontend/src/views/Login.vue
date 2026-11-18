@@ -3,7 +3,6 @@ import { nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import authServices from "../services/authServices.js";
 import Utils from "../config/utils.js";
-import { emailRules, isValidEmail } from "../config/validation.js";
 
 const GOOGLE_SCRIPT = "https://accounts.google.com/gsi/client";
 
@@ -26,10 +25,6 @@ const accountEmail = ref("");
 const accountPassword = ref("");
 
 const requiredRules = [(value) => !!value?.trim() || "Required"];
-const passwordRules = [
-  (value) => !!value || "Password is required.",
-  (value) => value.length >= 8 || "Password must be at least 8 characters.",
-];
 const googleChooser = ref(false);
 const googleChooserHost = ref(null);
 
@@ -88,32 +83,19 @@ function closeCreateAccount() {
 }
 
 async function createAccount() {
+  const result = await createForm.value?.validate();
+
+  if (result === false || result?.valid === false) {
+    return;
+  }
+
   if (
     !firstName.value.trim() ||
     !lastName.value.trim() ||
     !accountEmail.value.trim() ||
-    !accountPassword.value
+    !accountPassword.value.trim()
   ) {
     createError.value = "First name, last name, email, and password are required.";
-    await createForm.value?.validate();
-    return;
-  }
-
-  if (!isValidEmail(accountEmail.value)) {
-    createError.value = "Enter a valid email address.";
-    await createForm.value?.validate();
-    return;
-  }
-
-  if (accountPassword.value.length < 8) {
-    createError.value = "Password must be at least 8 characters.";
-    await createForm.value?.validate();
-    return;
-  }
-
-  const result = await createForm.value?.validate();
-
-  if (result === false || result?.valid === false) {
     return;
   }
 
@@ -329,12 +311,12 @@ function continueWithGoogle() {
           <v-form ref="createForm" @submit.prevent="createAccount">
             <v-text-field v-model="firstName" label="First name" :rules="requiredRules" />
             <v-text-field v-model="lastName" label="Last name" :rules="requiredRules" />
-            <v-text-field v-model="accountEmail" label="Email" type="email" :rules="emailRules" />
+            <v-text-field v-model="accountEmail" label="Email" type="email" :rules="requiredRules" />
             <v-text-field
               v-model="accountPassword"
               label="Password"
               type="password"
-              :rules="passwordRules"
+              :rules="requiredRules"
             />
             <v-alert v-if="createError" type="error" class="mb-4">{{ createError }}</v-alert>
             <v-btn color="secondary" variant="text" type="button" @click="closeCreateAccount">

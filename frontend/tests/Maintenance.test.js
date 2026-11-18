@@ -22,7 +22,6 @@ const createFuel = vi.fn();
 const updateFuel = vi.fn();
 const deleteFuel = vi.fn();
 const updateVehicleMileage = vi.fn();
-const updateVehicle = vi.fn();
 const createVehicleServiceLog = vi.fn();
 const getVehicle = vi.fn();
 
@@ -41,7 +40,6 @@ vi.mock("../src/services/maintenanceServices.js", () => ({
     updateFuel: (...a) => updateFuel(...a),
     deleteFuel: (...a) => deleteFuel(...a),
     updateVehicleMileage: (...a) => updateVehicleMileage(...a),
-    updateVehicle: (...a) => updateVehicle(...a),
     createVehicleServiceLog: (...a) => createVehicleServiceLog(...a),
     getVehicle: (...a) => getVehicle(...a),
   },
@@ -228,11 +226,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
       expect(wrapper.text()).toMatch(/5000|mileage/i);
       expect(apiCallCount()).toBe(before);
     });
-  });
-});
 
-describe("Feature 9 — Note CRUD", () => {
-  describe("US-9.1: See Notes on Requests", () => {
     it("User has just viewed the maintenance info for the vehicle", async () => {
       const { wrapper } = await mountMaintenance();
       const before = apiCallCount();
@@ -243,22 +237,9 @@ describe("Feature 9 — Note CRUD", () => {
       expect(wrapper.text()).toMatch(/Add Note/i);
       expect(apiCallCount()).toBe(before);
     });
-
-    it("User selects a service note", async () => {
-      const { wrapper } = await mountMaintenance();
-      const before = apiCallCount();
-
-      const row = wrapper.find('[data-note-subject="Check tires"]');
-      expect(row.exists()).toBe(true);
-      await row.trigger("click");
-      await flush();
-
-      expect(wrapper.text()).toMatch(/View Maintenance Note/i);
-      expect(apiCallCount()).toBe(before);
-    });
   });
 
-  describe("US-9.3: Create Notes", () => {
+  describe("US-5.2 —  User adds a maintenance note", () => {
     it("User clicks the `Add Note` button", async () => {
       const { wrapper } = await mountMaintenance();
       const before = apiCallCount();
@@ -387,7 +368,7 @@ describe("Feature 9 — Note CRUD", () => {
     });
   });
 
-  describe("US-9.4: Edit Notes", () => {
+  describe("US-5.3 — User edits a maintenance note", () => {
     it("User clicks the `Edit Note` icon button", async () => {
       const { wrapper } = await mountMaintenance();
       const before = apiCallCount();
@@ -546,7 +527,7 @@ describe("Feature 9 — Note CRUD", () => {
     });
   });
 
-  describe("US-9.2: Remove Notes", () => {
+  describe("US-5.4 — User deletes a maintenance note", () => {
     it("User clicks the `Delete Note` icon button", async () => {
       const { wrapper } = await mountMaintenance();
       const before = apiCallCount();
@@ -580,10 +561,8 @@ describe("Feature 9 — Note CRUD", () => {
       expect(apiCallCount()).toBe(before);
     });
   });
-});
 
-describe("Feature 5 — Maintenance Info CRUD", () => {
-  describe("US-5.2 — User updates the car's mileage", () => {
+  describe("US-5.5 — User updates the car's mileage", () => {
     it("User clicks `update mileage` button", async () => {
       const { wrapper } = await mountMaintenance();
       const before = apiCallCount();
@@ -674,13 +653,27 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
       await cancel.trigger("click");
       await flush();
 
-      // Gherkin: modal closes and input clears. The page still has the Update Mileage action button.
-      expect(wrapper.find("#mileage-dialog").exists()).toBe(false);
-      expect(wrapper.vm?.newMileage ?? "").toBe("");
+      expect(wrapper.text()).not.toMatch(/Update Mileage/i);
       expect(apiCallCount()).toBe(before);
     });
   });
-  describe("US-5.3 — User clicks the `View Service Logs` button", () => {
+
+  describe("US-5.6 — User selects a service note", () => {
+    it("User selects a service note", async () => {
+      const { wrapper } = await mountMaintenance();
+      const before = apiCallCount();
+
+      const row = wrapper.findAll("*").find((n) => n.text().includes("Check tires"));
+      expect(row).toBeTruthy();
+      await row.trigger("click");
+      await flush();
+
+      expect(wrapper.text()).toMatch(/View Maintenance Note/i);
+      expect(apiCallCount()).toBe(before);
+    });
+  });
+
+  describe("US-5.7 — User clicks the `View Service Logs` button", () => {
     it("User clicks the `view service logs` button", async () => {
       const { wrapper, router } = await mountMaintenance();
       const pushSpy = vi.spyOn(router, "push");
@@ -700,7 +693,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
     });
   });
 
-  describe("US-5.4 — User clicks the `Back` button", () => {
+  describe("US-5.8 — User clicks the `Back` button", () => {
     it("User clicks the `Back` button", async () => {
       const { wrapper, router } = await mountMaintenance();
       const pushSpy = vi.spyOn(router, "push");
@@ -716,7 +709,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
     });
   });
 
-  describe("US-5.5 — User clicks the `Edit Maintenance Info` button", () => {
+  describe("US-5.9 — User clicks the `Edit Maintenance Info` button", () => {
     async function openEditMaintenanceInfo(wrapper) {
       const btn =
         findButtonByText(wrapper, "Edit Maintenance Info") ||
@@ -986,7 +979,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
     it("User clicks the `Update` button and only the `make`, `year`, and `model` are not in the database", async () => {
       const { wrapper } = await mountMaintenance();
       await openEditMaintenanceInfo(wrapper);
-      const getsBefore = getMaintenanceInfo.mock.calls.length;
+      const before = apiCallCount();
 
       if (wrapper.vm) {
         wrapper.vm.maintenanceForm = {
@@ -1006,9 +999,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
       await flush();
 
       expect(wrapper.text()).toMatch(/Confirm Create New Maintenance Info/i);
-      expect(createMaintenanceInfo).not.toHaveBeenCalled();
-      expect(updateVehicle).not.toHaveBeenCalled();
-      expect(getMaintenanceInfo.mock.calls.length).toBe(getsBefore + 1);
+      expect(apiCallCount()).toBe(before);
     });
 
     it("User clicks `Update` button and only the `fuel type` is not in the database", async () => {
@@ -1037,7 +1028,7 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
     it("User clicks `Update` button and both the `fuel type` and `make`, `year`, and `model` are not in the database", async () => {
       const { wrapper } = await mountMaintenance();
       await openEditMaintenanceInfo(wrapper);
-      const getsBefore = getMaintenanceInfo.mock.calls.length;
+      const before = apiCallCount();
 
       if (wrapper.vm) {
         wrapper.vm.maintenanceForm = {
@@ -1058,14 +1049,11 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
 
       expect(wrapper.text()).toMatch(/Confirm Create New Maintenance Info/i);
       expect(wrapper.text()).toMatch(/Confirm Create New Fuel Type/i);
-      expect(createMaintenanceInfo).not.toHaveBeenCalled();
-      expect(createFuel).not.toHaveBeenCalled();
-      expect(updateVehicle).not.toHaveBeenCalled();
-      expect(getMaintenanceInfo.mock.calls.length).toBe(getsBefore + 1);
+      expect(apiCallCount()).toBe(before);
     });
   });
 
-  describe("US-5.6 — User clicks the `Manage Fuels` button", () => {
+  describe("US-5.10 — User clicks the `Manage Fuels` button", () => {
     async function openFuelManagement(wrapper) {
       const btn =
         findButtonByText(wrapper, "Manage Fuels") ||

@@ -43,10 +43,11 @@ export function requireAdmin(req, res, next) {
   return next();
 }
 
-export function requireAdminOrMaintenance(req, res, next) {
-  if (req.user?.role !== "admin" && req.user?.role !== "maintenance") {
-    return res.status(401).send({ message: "Unauthorized user" });
+export async function getAccessibleDriversOrNull(req, driverId) {
+  if (!req.user) {
+    return null;
   }
 
-  return next();
+  const driver = await db.driver.findByPk(driverId);
+  return driver ?? null;
 }

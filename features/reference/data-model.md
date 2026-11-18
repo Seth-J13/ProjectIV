@@ -1,6 +1,6 @@
 # Data Model Reference
 
-**Status:** Features 1,2,4,5 (plus related tables for notes/requests/service logs used by Feature 5),6,7,9,10,12,13 applied.
+**Status:** Features 1,2,4,5,6,7,9,10,12,13 applied.
 
 Update this file when a feature that defines schema merges to `dev`.
 
@@ -17,7 +17,6 @@ Update this file when a feature that defines schema merges to `dev`.
 | `password`  | STRING     | Required for email/password accounts. Null for accounts created by **Continue with Google**. Bcrypt hash only when set — never store plaintext or a Google password. |
 | `role`      | STRING     | Required; `user`, `driver`, `maintenance`, or `admin`. Create account sets `user`                                                                                    |
 | `googleSub` | STRING     | Nullable, unique when set. Google `sub` from the verified token. Required for accounts created by **Continue with Google**.                                          |
-
 
 ### `sessions` table
 
@@ -46,7 +45,7 @@ Update this file when a feature that defines schema merges to `dev`.
 
 | Field                 | Type        | Rules                                 |
 | --------------------- | ----------- | ------------------------------------- |
-| `vin`                 | STRING(17) PK | Primary Key; 17 digits (0-9). Stored as string so leading zeros and full width are preserved. |
+| `vin`                 | INTEGER PK  | Primary Key, Must be 17 numbers (0-9) |
 | `make`                | VARCHAR(30) | Required                              |
 | `model`               | VARCHAR(65) | Required                              |
 | `year`                | INTEGER     | Required                              |
@@ -83,9 +82,10 @@ Update this file when a feature that defines schema merges to `dev`.
 
 | Field              | Type   | Rules                                             |
 | ------------------ | ------ | ------------------------------------------------- |
-| `driver_id`        | INT PK | Required; Unique;                                 |
-| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`,       |
-| `license_exp_date` | date   | Required;                                         |
+| `driver_id`        | INT PK | Required; unique; supplied by the client          |
+| `name`             | STRING | Optional; trimmed. A blank name is rejected       |
+| `license_status`   | ENUM   | Required; `expired`, `active`, `suspended`        |
+| `license_exp_date` | STRING | Required; stored as entered (for example `05/2026`) |
 | `availability`     | ENUM   | Required; `available`, `not available`, `on call` |
 
 ### `Notes` table

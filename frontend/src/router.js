@@ -1,5 +1,5 @@
-import { h } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
+import Drivers from "./views/Drivers.vue";
 import Utils from "./config/utils.js";
 
 const router = createRouter({
@@ -21,21 +21,9 @@ const router = createRouter({
       component: () => import("./views/UserManagement.vue"),
     },
     {
-      path: "/vehicles",
-      name: "vehicleManagement",
-      component: () => import("./views/Vehicle.vue"),
-    },
-    {
-      path: "/maintenance-info/:vin?",
-      name: "maintenance",
-      component: () => import("./views/Maintenance.vue"),
-      props: true,
-    },
-    {
-      // Stub until the Vehicle Service Log feature adds its view.
-      path: "/vehicle-service-logs/:vehicle_id?",
-      name: "vehicleServiceLogs",
-      component: { render: () => h("div", "Vehicle Service Logs") },
+      path: "/drivers",
+      name: "drivers",
+      component: Drivers,
     },
     {
       path: "/:pathMatch(.*)*",
@@ -51,14 +39,7 @@ router.beforeEach((to) => {
     return { name: "login" };
   }
 
-  if (to.name === "users" && user?.role !== "admin") {
-    return { name: "landing" };
-  }
-
-  if (
-    ["vehicleManagement", "maintenance", "vehicleServiceLogs"].includes(to.name) &&
-    !["admin", "maintenance"].includes(user?.role)
-  ) {
+  if ((to.name === "users" || to.name === "drivers") && user?.role !== "admin") {
     return { name: "landing" };
   }
 

@@ -13,7 +13,7 @@
 
 ### US-13.1: Create an area
 
-**As a** admin
+**As an** admin
 **I want to** create an area with a name and a notice email
 **So that** vehicles can belong to that area
 
@@ -23,7 +23,7 @@
 
 ### US-13.2: Read areas
 
-**As a** admin
+**As an** admin
 **I want to** view every area
 **So that** I can see the name and notice email for each area
 
@@ -33,17 +33,17 @@
 
 ### US-13.3: Update an area
 
-**As a** admin
+**As an** admin
 **I want to** change an area’s name or notice email
 **So that** the directory stays correct
 
 **Priority:** P1
-**Independent test:** Sign in as admin, change an area's notice email, and see the saved notice email on the list.
+**Independent test:** Sign in as admin, change an area’s notice email, and see the saved notice email on the list.
 **Acceptance scenarios:** see ### US-13.3 under Acceptance Criteria
 
 ### US-13.4: Delete an area
 
-**As a** admin
+**As an** admin
 **I want to** delete an area that nothing still uses
 **So that** deleted areas leave the directory
 
@@ -53,7 +53,7 @@
 
 ### US-13.5: Block other roles
 
-**As a** application
+**As the** application
 **I want to** refuse area changes from anyone who is not an admin
 **So that** only an admin maintains the area directory
 
@@ -67,16 +67,16 @@
 
 ### Functional Requirements
 
-**FR-001**: An admin MUST be able to create an area.
-**FR-002**: An area MUST contain a unique `name` of at most 30 characters and a `noticeEmail`. `logo` is optional.
-**FR-003**: An admin MUST be able to list every area and open one area by id.
-**FR-004**: An admin MUST be able to update an area’s `name`, `noticeEmail`, and `logo`.
-**FR-005**: An admin MUST be able to delete an area that has no vehicle references.
-**FR-006**: A delete MUST fail when a vehicle still references that area, and the area MUST remain.
-**FR-007**: Creating an area with a name that already exists MUST return **409** with message **"Area name already in use!"** and MUST NOT create a second row.
-**FR-008**: A missing `name` or `noticeEmail` MUST return **400** with message **"Area is incomplete!"**.
-**FR-009**: Roles `user`, `driver`, and `maintenance` MUST receive **403** with message **"Forbidden"** on every area route.
-**FR-010**: An admin requesting an unknown area id MUST receive **404** with message **"Area not found!"**.
+- **FR-001**: An admin MUST be able to create an area.
+- **FR-002**: An area MUST contain a unique `name` of at most 30 characters and a `noticeEmail`. `logo` is optional.
+- **FR-003**: An admin MUST be able to list every area and open one area by id.
+- **FR-004**: An admin MUST be able to update an area’s `name`, `noticeEmail`, and `logo`.
+- **FR-005**: An admin MUST be able to delete an area that has no vehicle references.
+- **FR-006**: A delete MUST fail when a vehicle still references that area, and the area MUST remain.
+- **FR-007**: Creating an area with a name that already exists MUST return **409** with message **"Area name already in use!"** and MUST NOT create a second row.
+- **FR-008**: A missing `name` or `noticeEmail` MUST return **400** with message **"Area is incomplete!"**.
+- **FR-009**: Roles `user`, `driver`, and `maintenance` MUST receive **403** with message **"Forbidden"** on every area route.
+- **FR-010**: An admin requesting an unknown area id MUST receive **404** with message **"Area not found!"**.
 
 ---
 
@@ -103,12 +103,12 @@
 
 ## Success Criteria
 
-**SC-001**: Every Gherkin scenario has at least one automated test before merge.
-**SC-002**: An admin can create an area and see it on the list with its name and notice email.
-**SC-003**: An admin can read the area list.
-**SC-004**: An admin can update an area and the list shows the saved values.
-**SC-005**: An admin can delete an unused area and it disappears from the list.
-**SC-006**: A maintenance user, a driver, and a user cannot use the area directory.
+- **SC-001**: Every Gherkin scenario has at least one automated test before merge.
+- **SC-002**: An admin can create an area and see it on the list with its name and notice email.
+- **SC-003**: An admin can read the area list.
+- **SC-004**: An admin can update an area and the list shows the saved values.
+- **SC-005**: An admin can delete an unused area and it disappears from the list.
+- **SC-006**: A maintenance user, a driver, and a user cannot use the area directory.
 
 ---
 
@@ -116,24 +116,28 @@
 
 Areas are organization records, not private user rows. Only an admin may create, read, update, or delete them.
 
-| Rule             | Requirement                                                                         |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| **Read scope**   | Role `admin` may list every area and open any area by id.                           |
-| **Create scope** | Role `admin` may insert one area. The name must be unique.                          |
-| **Write scope**  | Role `admin` may update or delete an area by id.                                    |
-| **Other roles**  | Roles `user`, `driver`, and `maintenance` receive **403** and do not see **Areas**. |
-| **Unknown area** | An admin asking for a missing area id receives **404**.                             |
-| **Delete guard** | An area referenced by a vehicle is not deleted.                                     |
+
+| Rule | Requirement |
+| ---- | ----------- |
+| **Read scope** | Role `admin` may list every area and open any area by id. |
+| **Create scope** | Role `admin` may insert one area. The name must be unique. |
+| **Write scope** | Role `admin` may update or delete an area by id. |
+| **Other roles** | Roles `user`, `driver`, and `maintenance` receive **403** and do not see **Areas**. |
+| **Unknown area** | An admin asking for a missing area id receives **404**. |
+| **Delete guard** | An area referenced by a vehicle is not deleted. |
+
 
 ## API Requirements
 
-| Method   | Endpoint         | Auth         | Purpose               |
-| -------- | ---------------- | ------------ | --------------------- |
-| `POST`   | `/api/areas`     | Yes, `admin` | Create an area        |
-| `GET`    | `/api/areas`     | Yes, `admin` | List areas            |
-| `GET`    | `/api/areas/:id` | Yes, `admin` | Read one area         |
-| `PUT`    | `/api/areas/:id` | Yes, `admin` | Update an area        |
+
+| Method | Endpoint | Auth | Purpose |
+| ------ | -------- | ---- | ------- |
+| `POST` | `/api/areas` | Yes, `admin` | Create an area |
+| `GET` | `/api/areas` | Yes, `admin` | List areas |
+| `GET` | `/api/areas/:id` | Yes, `admin` | Read one area |
+| `PUT` | `/api/areas/:id` | Yes, `admin` | Update an area |
 | `DELETE` | `/api/areas/:id` | Yes, `admin` | Delete an unused area |
+
 
 **Create and update body:**
 
@@ -163,21 +167,23 @@ Areas are organization records, not private user rows. Only an admin may create,
 
 Quoted messages that tests must match:
 
-| Situation                                  | Status | `message`                   |
-| ------------------------------------------ | ------ | --------------------------- |
-| Missing or expired token                   | 401    | `Unauthorized`              |
-| Role is `user`, `driver`, or `maintenance` | 403    | `Forbidden`                 |
-| Unknown area id                            | 404    | `Area not found!`           |
-| Name already used                          | 409    | `Area name already in use!` |
-| Area still referenced                      | 409    | `Area is in use!`           |
-| Name or notice email missing               | 400    | `Area is incomplete!`       |
+
+| Situation | Status | `message` |
+| --------- | ------ | --------- |
+| Missing or expired token | 401 | `Unauthorized` |
+| Role is `user`, `driver`, or `maintenance` | 403 | `Forbidden` |
+| Unknown area id | 404 | `Area not found!` |
+| Name already used | 409 | `Area name already in use!` |
+| Area still referenced | 409 | `Area is in use!` |
+| Name or notice email missing | 400 | `Area is incomplete!` |
+
 
 ---
 
 ## Key Entities
 
-**Area**: Organizational unit with a unique name, an optional logo, and a notice email. A vehicle may point at one area.
-**User**: the signed-in account from Feature 1. Only role `admin` uses this feature.
+- **Area**: Organizational unit with a unique name, an optional logo, and a notice email. A vehicle may point at one area.
+- **User**: the signed-in account from Feature 1. Only role `admin` uses this feature.
 
 ---
 
@@ -189,11 +195,11 @@ Quoted messages that tests must match:
 - Heading: **Areas**
 - Table columns: **Name**, **Notice email**
 - An empty list still shows the heading and **Create area**
-  **Create area** opens a dialog with **Name** and **Notice email** (both required). **Logo** is optional
+- **Create area** opens a dialog with **Name** and **Notice email** (both required). **Logo** is optional
 - Opening a row shows **Save** and **Delete**
-  **Save** writes the edited fields and the list shows the saved values
-  **Delete** removes the row when the area is unused
-  **Error:** shows the API `message`, including **"Area is incomplete!"**, **"Area name already in use!"**, **"Area is in use!"**, and **"Area not found!"**
+- **Save** writes the edited fields and the list shows the saved values
+- **Delete** removes the row when the area is unused
+- **Error:** shows the API `message`, including **"Area is incomplete!"**, **"Area name already in use!"**, **"Area is in use!"**, and **"Area not found!"**
 
 ### App chrome
 
@@ -208,12 +214,14 @@ This feature **owns** `areas`. It does not create `area_images` or `vehicles`.
 
 ### `areas` table
 
-| Field         | Type        | Rules                        |
-| ------------- | ----------- | ---------------------------- |
-| `id`          | INTEGER PK  | Auto-increment. ERD `id`     |
-| `name`        | STRING(30)  | Required, unique. ERD `name` |
-| `logo`        | BLOB        | Optional. ERD `logo`         |
+
+| Field | Type | Rules |
+| ----- | ---- | ----- |
+| `id` | INTEGER PK | Auto-increment. ERD `id` |
+| `name` | STRING(30) | Required, unique. ERD `name` |
+| `logo` | BLOB | Optional. ERD `logo` |
 | `noticeEmail` | STRING(255) | Required. ERD `notice_email` |
+
 
 ### Associations
 
@@ -228,75 +236,75 @@ This feature **owns** `areas`. It does not create `area_images` or `vehicles`.
 
 #### Scenario: Admin creates an area
 
-**Given** I am signed in as `admin`
-**When** I open **Areas** and press **Create area**
-**And** I enter a name and a notice email
-**And** I save
-**Then** the list shows that area with that name and notice email
+- **Given** I am signed in as `admin`
+- **When** I open **Areas** and press **Create area**
+- **And** I enter a name and a notice email
+- **And** I save
+- **Then** the list shows that area with that name and notice email
 
 #### Scenario: Duplicate area name
 
-**Given** I am signed in as `admin`
-**And** an area already has the name **"North Campus"**
-**When** I create another area named **"North Campus"**
-**Then** I see **"Area name already in use!"**
-**And** a second area is not created
+- **Given** I am signed in as `admin`
+- **And** an area already has the name **"North Campus"**
+- **When** I create another area named **"North Campus"**
+- **Then** I see **"Area name already in use!"**
+- **And** a second area is not created
 
 #### Scenario: Blank area
 
-**Given** I am signed in as `admin`
-**When** I press **Create area** and save with the name or notice email empty
-**Then** I see **"Area is incomplete!"**
-**And** no area is added
+- **Given** I am signed in as `admin`
+- **When** I press **Create area** and save with the name or notice email empty
+- **Then** I see **"Area is incomplete!"**
+- **And** no area is added
 
 ### US-13.2 — Read areas
 
 #### Scenario: Admin reads the list
 
-**Given** I am signed in as `admin`
-**And** an area exists
-**When** I open **Areas**
-**Then** I see that area's name and notice email
+- **Given** I am signed in as `admin`
+- **And** an area exists
+- **When** I open **Areas**
+- **Then** I see that area’s name and notice email
 
 ### US-13.3 — Update an area
 
 #### Scenario: Admin updates an area
 
-**Given** I am signed in as `admin`
-**And** an area exists
-**When** I change the notice email and save
-**Then** the list shows the new notice email
+- **Given** I am signed in as `admin`
+- **And** an area exists
+- **When** I change the notice email and save
+- **Then** the list shows the new notice email
 
 ### US-13.4 — Delete an area
 
 #### Scenario: Admin deletes an unused area
 
-**Given** I am signed in as `admin`
-**And** an area exists that no vehicle reference
-**When** I delete that area
-**Then** it does not appear on the list
+- **Given** I am signed in as `admin`
+- **And** an area exists that no vehicle reference
+- **When** I delete that area
+- **Then** it does not appear on the list
 
 #### Scenario: Area still in use
 
-**Given** I am signed in as `admin`
-**And** a vehicle references an area
-**When** I delete that area
-**Then** I see **"Area is in use!"**
-**And** the area remains on the list
+- **Given** I am signed in as `admin`
+- **And** a vehicle references an area
+- **When** I delete that area
+- **Then** I see **"Area is in use!"**
+- **And** the area remains on the list
 
 ### US-13.5 — Block other roles
 
 #### Scenario: Maintenance cannot open areas
 
-**Given** I am signed in as `maintenance`
-**When** I go to `/areas`
-**Then** I do not see the area list
+- **Given** I am signed in as `maintenance`
+- **When** I go to `/areas`
+- **Then** I do not see the area list
 
 #### Scenario: Driver cannot open areas
 
-**Given** I am signed in as `driver`
-**When** I go to `/areas`
-**Then** I do not see the area list
+- **Given** I am signed in as `driver`
+- **When** I go to `/areas`
+- **Then** I do not see the area list
 
 ---
 
@@ -304,17 +312,19 @@ This feature **owns** `areas`. It does not create `area_images` or `vehicles`.
 
 Each scenario above must map to at least one automated test.
 
-| Story   | Scenario                      | Test file                     | Test name                             |
-| ------- | ----------------------------- | ----------------------------- | ------------------------------------- |
-| US-13.1 | Admin creates an area         | `frontend/tests/Area.test.js` | `it("Admin creates an area")`         |
-| US-13.1 | Duplicate area name           | `backend/tests/area.test.js`  | `it("Duplicate area name")`           |
-| US-13.1 | Blank area                    | `backend/tests/area.test.js`  | `it("Blank area")`                    |
-| US-13.2 | Admin reads the list          | `frontend/tests/Area.test.js` | `it("Admin reads the list")`          |
-| US-13.3 | Admin updates an area         | `frontend/tests/Area.test.js` | `it("Admin updates an area")`         |
-| US-13.4 | Admin deletes an unused area  | `backend/tests/area.test.js`  | `it("Admin deletes an unused area")`  |
-| US-13.4 | Area still in use             | `backend/tests/area.test.js`  | `it("Area still in use")`             |
+
+| Story | Scenario | Test file | Test name |
+| ----- | -------- | --------- | --------- |
+| US-13.1 | Admin creates an area | `frontend/tests/Area.test.js` | `it("Admin creates an area")` |
+| US-13.1 | Duplicate area name | `backend/tests/area.test.js` | `it("Duplicate area name")` |
+| US-13.1 | Blank area | `backend/tests/area.test.js` | `it("Blank area")` |
+| US-13.2 | Admin reads the list | `frontend/tests/Area.test.js` | `it("Admin reads the list")` |
+| US-13.3 | Admin updates an area | `frontend/tests/Area.test.js` | `it("Admin updates an area")` |
+| US-13.4 | Admin deletes an unused area | `backend/tests/area.test.js` | `it("Admin deletes an unused area")` |
+| US-13.4 | Area still in use | `backend/tests/area.test.js` | `it("Area still in use")` |
 | US-13.5 | Maintenance cannot open areas | `frontend/tests/Area.test.js` | `it("Maintenance cannot open areas")` |
-| US-13.5 | Driver cannot open areas      | `frontend/tests/Area.test.js` | `it("Driver cannot open areas")`      |
+| US-13.5 | Driver cannot open areas | `frontend/tests/Area.test.js` | `it("Driver cannot open areas")` |
+
 
 ## Agent implementation request
 

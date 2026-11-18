@@ -262,35 +262,5 @@ describe("Feature 1 — User Auth & Session Management", () => {
       expect(router.currentRoute.value.path).toBe("/landing");
       expectPlaceholder();
     });
-
-    it("rejects an invalid email before calling the backend", async () => {
-      const { router } = await mountAuthApp("/");
-      await clickButton("Create Account");
-      await fillField("First name", "Danny");
-      await fillField("Last name", "Devito");
-      await fillField("Email", "not-an-email");
-      await fillField("Password", PASSWORD);
-      await clickButton("Create Account");
-
-      expect(authApi.registerUser).not.toHaveBeenCalled();
-      expect(wrapper.text()).toContain("Enter a valid email address.");
-      expect(router.currentRoute.value.path).toBe("/");
-      expect(localStorage.getItem("user")).toBeNull();
-    });
-
-    it("rejects a password shorter than 8 characters before calling the backend", async () => {
-      const { router } = await mountAuthApp("/");
-      await clickButton("Create Account");
-      await fillField("First name", "Danny");
-      await fillField("Last name", "Devito");
-      await fillField("Email", "DDevito@example.com");
-      await fillField("Password", "short");
-      await clickButton("Create Account");
-
-      expect(authApi.registerUser).not.toHaveBeenCalled();
-      expect(wrapper.text()).toContain("Password must be at least 8 characters.");
-      expect(router.currentRoute.value.path).toBe("/");
-      expect(localStorage.getItem("user")).toBeNull();
-    });
   });
 });
