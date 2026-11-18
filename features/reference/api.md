@@ -1,30 +1,11 @@
 # API Reference
 
-<<<<<<< HEAD
-**Status:** Feature 7 driver endpoints are documented below.
-=======
-**Status:** Feature 1 auth, Feature 2 Google login, and Feature 3 user management are implemented. Mount path is `/api`.
->>>>>>> 7e0f16e29febe48b6cbfd8b1dfb3e2c8664dbcdf
+**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, and Feature 7 drivers are implemented. Mount path is `/api`.
 
 Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": "..." }`. Protected routes read `Authorization: Bearer <session token>`.
 
 ## Endpoints
 
-<<<<<<< HEAD
-### Drivers (`/api/vehicle-t3`)
-
-| Method | Path | Auth | Success |
-| --- | --- | --- | --- |
-| `GET` | `/api/vehicle-t3` | Bearer session | `200` array of drivers |
-| `GET` | `/api/vehicle-t3/:driver_id` | Bearer session | `200` driver |
-| `POST` | `/api/vehicle-t3` | Bearer session, admin | `201` driver |
-| `PUT` | `/api/vehicle-t3/:driver_id` | Bearer session, admin | `200` driver |
-| `DELETE` | `/api/vehicle-t3/:driver_id` | Bearer session, admin | `204` |
-
-Create and update body: `driver_id`, `license_status`, `license_exp_date`, `availability`. `name` is optional. `driver_id` must be an integer. Non-admin writes return `403`. Missing token returns `401` `{ "message": "Unauthorized!" }`. Unknown driver returns `404`. Invalid body returns `400` `{ "message": "..." }`.
-
-Introduced in Feature 7.
-=======
 | Method | Endpoint | Auth | Purpose | Introduced |
 | --- | --- | --- | --- | --- |
 | `POST` | `/api/register` | No | Create an email/password account and a session | Feature 1 |
@@ -33,7 +14,11 @@ Introduced in Feature 7.
 | `POST` | `/api/logout` | Yes (`Bearer` session token) | Delete the caller's current session | Feature 1 |
 | `GET` | `/api/users` | Yes (`Bearer` session token, role `admin`) | List every user's account fields | Feature 3 |
 | `PUT` | `/api/users/:id` | Yes (`Bearer` session token, role `admin`) | Update one user's name, email, and role | Feature 3 |
->>>>>>> 7e0f16e29febe48b6cbfd8b1dfb3e2c8664dbcdf
+| `GET` | `/api/vehicle-t3` | Yes (`Bearer` session token) | List every driver | Feature 7 |
+| `GET` | `/api/vehicle-t3/:driver_id` | Yes (`Bearer` session token) | Show one driver | Feature 7 |
+| `POST` | `/api/vehicle-t3` | Yes (`Bearer` session token, role `admin`) | Create a driver | Feature 7 |
+| `PUT` | `/api/vehicle-t3/:driver_id` | Yes (`Bearer` session token, role `admin`) | Update a driver | Feature 7 |
+| `DELETE` | `/api/vehicle-t3/:driver_id` | Yes (`Bearer` session token, role `admin`) | Delete a driver | Feature 7 |
 
 A missing or expired Bearer token returns **401** `{ "message": "Unauthorized!" }` and the handler does not run.
 
@@ -138,3 +123,7 @@ Success is **200** and the same flat user object as a list item. `password` and 
 | User id does not exist | 404 | `User with id={id} not found.` |
 
 The **400**, **403**, **404**, and **409** cases do not change the user.
+
+### Drivers (`/api/vehicle-t3`)
+
+Create and update body: `driver_id`, `license_status` (`expired`, `active`, or `suspended`), `license_exp_date` (stored as entered, for example `05/2026`), and `availability` (`available`, `not available`, or `on call`). `name` is optional. `driver_id` must be an integer. A missing or blank required field, or a non-numeric `driver_id`, is **400**. A signed-in role other than `admin` on `POST`, `PUT`, or `DELETE` is **403** `{ "message": "Admin access required." }`. An unknown driver is **404**. Delete success is **204** with no body. `GET` returns every driver to any signed-in user.
