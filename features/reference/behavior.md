@@ -55,15 +55,3 @@ They do **not** authorize new scope — implement only from `features/feature-*.
 | A blank driver name is rejected                           | Whitespace-only `name` returns `400`. The drivers form blocks it before the request                                                                                                                                                                                                                                                                                                                         | Feature 7                                                         |
 | Driver id choices                                         | **Driver id** sits above **Driver name**. The list shows each user as `First Last (id)`. Choosing one stores only the id, fills **Driver name**, and keeps that name read-only until the id is cleared                                                                                                                                                                                                      | Feature 7                                                         |
 | Drivers screen is admin-only                              | Signed-out users go to login. Signed-in non-admins go to `/landing`                                                                                                                                                                                                                                                                                                                                         | Feature 7                                                         |
-
-<<<<<<< HEAD
-| Find filters the list | The **Find** box keeps rows whose id, name, license status, license expiration, or availability contains the text | Feature 7 |
-=======
-| Find filters the list | The **Find** box keeps rows whose id, name, or license status contains the text | Feature 7 |
-| Areas are admin-only | Roles `user`, `driver`, and `maintenance` do not see **Areas**. Opening `/areas` redirects to `/landing`. Area APIs return **403** `Forbidden` and do not return or change rows | Feature 13 |
-| Area name and notice email | `name` is required, unique, and at most 30 characters. `noticeEmail` is required. A blank name or notice email is **400** `Area is incomplete!`. A duplicate name is **409** `Area name already in use!` and no second row is created | Feature 13 |
-| Area list | An admin on `/areas` sees every area's name and notice email. **Create area** stays available when the list is empty. Opening a row shows **Save** and **Delete** | Feature 13 |
-| Delete an unused area | Delete succeeds with `Area deleted.` and the row leaves the list. If a vehicle still has that `area_id`, delete returns **409** `Area is in use!` and the area remains | Feature 13 |
-| Unknown area | An admin request for a missing area id returns **404** `Area not found!` | Feature 13 |
-
-> > > > > > > a6d9205316ae38e805106f2457837b17ed136fc4
