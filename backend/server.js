@@ -45,9 +45,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", routes);
 app.use("/vehicle-t3/destinations", destinationRoutes);
 app.use("/api/vehicle-t3/destinations", destinationRoutes);
+app.use("/api", routes);
 
 const PORT = process.env.PORT || 3200;
 

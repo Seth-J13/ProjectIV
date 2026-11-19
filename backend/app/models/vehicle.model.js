@@ -3,7 +3,6 @@ export default (sequelize, Sequelize) => {
     "vehicle",
     {
       vin: {
-        // Spec sample and UI use a 17-digit VIN string; INTEGER cannot hold that safely.
         type: Sequelize.STRING(17),
         primaryKey: true,
         allowNull: false,

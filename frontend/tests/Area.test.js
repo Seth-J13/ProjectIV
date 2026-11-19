@@ -84,6 +84,7 @@ async function clickLabel(label) {
 
   await matches[matches.length - 1].trigger("click");
   await flushPromises();
+  await flushPromises();
 }
 
 async function setField(label, value) {
@@ -180,6 +181,41 @@ describe("Feature 13 — Area", () => {
         noticeEmail: "updated@example.com",
       });
       expect(wrapper.text()).toContain("updated@example.com");
+    });
+
+    it("Close discards an area edit", async () => {
+      localStorage.setItem("user", JSON.stringify(storedSession("admin")));
+      listedAreas = [{ ...northCampus }];
+
+      await mountApp("/areas");
+      const row = wrapper.findAll("tbody tr").find((item) => item.text().includes("North Campus"));
+      await row.trigger("click");
+      await flushPromises();
+      await setField("Notice email", "updated@example.com");
+      await clickLabel("Close");
+
+      expect(areaApi.updateArea).not.toHaveBeenCalled();
+      expect(areaApi.removeArea).not.toHaveBeenCalled();
+      expect(wrapper.text()).toContain("north@example.com");
+      expect(wrapper.text()).not.toContain("updated@example.com");
+    });
+
+    it("Clicking outside discards an area edit", async () => {
+      localStorage.setItem("user", JSON.stringify(storedSession("admin")));
+      listedAreas = [{ ...northCampus }];
+
+      await mountApp("/areas");
+      const row = wrapper.findAll("tbody tr").find((item) => item.text().includes("North Campus"));
+      await row.trigger("click");
+      await flushPromises();
+      await setField("Notice email", "updated@example.com");
+      await wrapper.get("dialog[aria-labelledby='edit-area-title']").trigger("click");
+      await flushPromises();
+
+      expect(areaApi.updateArea).not.toHaveBeenCalled();
+      expect(areaApi.removeArea).not.toHaveBeenCalled();
+      expect(wrapper.text()).toContain("north@example.com");
+      expect(wrapper.text()).not.toContain("updated@example.com");
     });
   });
 

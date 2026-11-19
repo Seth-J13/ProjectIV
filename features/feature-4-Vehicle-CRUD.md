@@ -126,7 +126,7 @@
 - **FR-006**: System **MUST** make a `GET` request when first loading the page or re-retrieving vehicles after making a `update` or `delete`
 - **FR-007**: System **MUST NOT** allow any roles other than `admin` and `maintenance` to access this page
 - **FR-008**: System **Must** send user to the Maintenance page with the selected vehicle's details pulled up
-- **FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Department` for each vehicle
+- **FR-009**: System **MUST** display the `Make`, `Model`, `Year`, `Purchase Date`, `License`, `Color`, and `Area` for each vehicle
 - **FR-010**: System **MUST** display a vehicle's images if at least one is available from the `VehicleImages` table
 - **FR-011**: System **MUST** use `Confirm Create New Maintenance Info` component
 - **FR-012**: System **MUST** use `Confirm Create New Fuel Type` component
@@ -289,7 +289,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 **Table**
 
-- Headers: `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department`, `Actions`
+- Headers: `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Area`, `Actions`
 - Actions: `Maintenance Icon Button` - Wrench, `Edit Icon Button` - Pencil, `Delete Icon Button` - Trashcan
 
 **Add / Edit Modal**
@@ -566,7 +566,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Then** a `GET` API request is sent to the server
 - **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
 - **And** list of all vehicles in the database are shown
-- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Area` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
 #### Scenario: User adds a new vehicle
@@ -577,7 +577,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
 - **And** the frontend re-retreives all vehicles in the database
 - **And** lists out all retreived vehicles in a list
-- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Area` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
 #### Scenario: User edits a vehicle in the list
@@ -588,7 +588,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **And** returns a `200` with a payload containing `{"message": "Successfully retreived all vehicles"}`
 - **And** the frontend re-retreives all vehicles in the database
 - **And** lists out all retreived vehicles in a list
-- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Department` information
+- **And** each list item contains `License`, `Make`, `Model`, `Year`, `Purchase Date`, `Color`, `Area` information
 - **And** on the far right of the list item three icon buttons appear `maintenance info`, `edit`, and `delete`
 
 #### Scenario: Vehicle does not have a color value

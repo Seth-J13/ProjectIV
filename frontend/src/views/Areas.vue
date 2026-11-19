@@ -127,6 +127,12 @@ function closeEdit() {
   }
 }
 
+function dismissEditOnBackdrop(event) {
+  if (event.target === editDialog.value) {
+    closeEdit();
+  }
+}
+
 async function saveCreate() {
   if (incomplete(createForm.value)) {
     createError.value = "Area is incomplete!";
@@ -250,7 +256,13 @@ onMounted(loadAreas);
       </v-card>
     </dialog>
 
-    <dialog ref="editDialog" class="area-dialog" aria-labelledby="edit-area-title" @cancel.prevent="closeEdit">
+    <dialog
+      ref="editDialog"
+      class="area-dialog"
+      aria-labelledby="edit-area-title"
+      @cancel.prevent="closeEdit"
+      @click="dismissEditOnBackdrop"
+    >
       <v-card v-if="editOpen" rounded="lg" max-width="480">
         <v-card-item>
           <v-card-title id="edit-area-title">{{ editForm.name }}</v-card-title>
@@ -265,6 +277,7 @@ onMounted(loadAreas);
         </v-card-text>
         <v-card-actions>
           <v-spacer />
+          <v-btn color="secondary" variant="text" type="button" @click="closeEdit">Close</v-btn>
           <v-btn color="secondary" variant="text" type="button" :loading="saving" @click="deleteArea">
             Delete
           </v-btn>

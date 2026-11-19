@@ -379,6 +379,7 @@ onMounted(() => {
         />
         <v-text-field
           v-model="form.license_exp_date"
+          type="date"
           label="License expiration date"
           :error-messages="errors.license_exp_date"
         />
@@ -416,6 +417,7 @@ onMounted(() => {
         />
         <v-text-field
           v-model="editForm.license_exp_date"
+          type="date"
           label="License expiration date"
           :error-messages="editErrors.license_exp_date"
         />

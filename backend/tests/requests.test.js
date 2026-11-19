@@ -36,10 +36,9 @@ async function authHeader(role, username = role) {
   }
 
   const user = await db.user.create({
-    fName: "Ada",
-    lName: username,
+    firstName: "Ada",
+    lastName: username,
     email: `${username}@example.com`,
-    username,
     password: "hashed-password",
     role,
   });
@@ -59,12 +58,47 @@ function requestIds(body) {
   return (Array.isArray(body) ? body : []).map((row) => row.requestId);
 }
 
+async function seedCatalog() {
+  await db.area.create({
+    id: 1,
+    name: "Campus",
+    noticeEmail: "campus@example.com",
+  });
+  await db.vehicle.create({
+    vin: "12",
+    make: "Ford",
+    model: "Transit",
+    year: 2024,
+    purchased_date: "2024-01-01",
+    license_plate_num: "ABC-1234",
+    tag_exp_month: "2026-12-01",
+    area_id: 1,
+    available: true,
+  });
+  await db.driver.create({
+    driver_id: 3,
+    name: "Jane Doe",
+    license_status: "active",
+    license_exp_date: "08/2028",
+    availability: "available",
+  });
+  await db.destination.create({
+    id: 7,
+    zip: "68508",
+    city: "Lincoln",
+    state: "Nebraska",
+    addr_line_1: "1445 K Street",
+    dest_name: "State Capitol",
+  });
+}
+
 describe("Feature 8 — Request Management", () => {
   describe("US-8.1 — Create a normal request", () => {
     let user;
 
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
       user = await authHeader("worker", "requester");
     });
 
@@ -86,7 +120,7 @@ describe("Feature 8 — Request Management", () => {
         numPeople: 6,
       });
       expect(response.body.vehicle).toEqual(
-        expect.objectContaining({ vehicleId: 12, license: "ABC-1234", make: "Ford", model: "Transit" })
+        expect.objectContaining({ vehicleId: "12", license: "ABC-1234", make: "Ford", model: "Transit" })
       );
       expect(response.body.driver).toEqual(expect.objectContaining({ driverId: 3 }));
       expect(response.body.destination).toEqual(expect.objectContaining({ destId: 7 }));
@@ -132,6 +166,7 @@ describe("Feature 8 — Request Management", () => {
   describe("US-8.2 — Create a maintenance request", () => {
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
     });
 
     it("Admin creates a maintenance request", async () => {
@@ -147,8 +182,17 @@ describe("Feature 8 — Request Management", () => {
       expect(response.body.numPeople ?? null).toBeNull();
     });
 
-    it("Non-admin cannot create a maintenance request", async () => {
-      const worker = await authHeader("worker", "worker");
+    it("Maintenance creates a maintenance request", async () => {
+      const maintenance = await authHeader("maintenance", "mechanic");
+      const response = await request(app).post(REQUESTS_PATH).set(maintenance).send(maintenanceBody);
+
+      expect(response.status).toBe(201);
+      expect(response.body.requestType).toBe("maintenance");
+      expect(response.body.requesterId).toBeDefined();
+    });
+
+    it("User or driver cannot create a maintenance request", async () => {
+      const worker = await authHeader("user", "worker");
       const response = await request(app).post(REQUESTS_PATH).set(worker).send(maintenanceBody);
 
       expect(response.status).toBe(403);
@@ -159,6 +203,7 @@ describe("Feature 8 — Request Management", () => {
   describe("US-8.3 — View requests", () => {
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
     });
 
     it("Requests view loads with existing requests", async () => {
@@ -199,7 +244,7 @@ describe("Feature 8 — Request Management", () => {
       const secondUser = await authHeader("worker", "ben");
       const admin = await authHeader("admin", "admin");
       const first = await request(app).post(REQUESTS_PATH).set(firstUser).send(tripBody);
-      const second = await request(app).post(REQUESTS_PATH).set(secondUser).send(maintenanceBody);
+      const second = await request(app).post(REQUESTS_PATH).set(secondUser).send(tripBody);
 
       const response = await request(app).get(REQUESTS_PATH).set(admin);
 
@@ -213,6 +258,7 @@ describe("Feature 8 — Request Management", () => {
   describe("US-8.5 — Edit and delete requests", () => {
     beforeEach(async () => {
       await syncTestDatabase();
+      await seedCatalog();
     });
 
     it("User edits a request", async () => {
@@ -280,6 +326,111 @@ describe("Feature 8 — Request Management", () => {
 
       expect(response.status).toBe(200);
       expect(response.body.numPeople).toBe(4);
+    });
+  });
+
+  describe("US-8.6 — Filter requests", () => {
+    function dayOffset(offset) {
+      const date = new Date();
+      date.setDate(date.getDate() + offset);
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
+
+    function dayOf(date) {
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
+
+    function clockOf(date) {
+      return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    beforeEach(async () => {
+      await syncTestDatabase();
+      await seedCatalog();
+    });
+
+    it("Request activity follows the schedule", async () => {
+      const admin = await authHeader("admin", "admin");
+      const now = new Date();
+      const earlier = new Date(now.getTime() - 60 * 1000);
+      const later = new Date(now.getTime() + 60 * 1000);
+
+      async function create(body) {
+        const response = await request(app).post(REQUESTS_PATH).set(admin).send(body);
+        expect(response.status).toBe(201);
+        return response.body;
+      }
+
+      const openTrip = await create({
+        ...tripBody,
+        startDate: dayOffset(-1),
+        startTime: "23:30",
+        endDate: dayOffset(1),
+        endTime: "00:15",
+      });
+      const openMaintenance = await create({
+        ...maintenanceBody,
+        startDate: dayOffset(-1),
+        startTime: null,
+        endDate: null,
+        endTime: null,
+      });
+      const notStarted = await create({
+        ...tripBody,
+        startDate: dayOffset(1),
+        startTime: "00:00",
+        endDate: dayOffset(2),
+        endTime: "01:00",
+      });
+      const finished = await create({
+        ...tripBody,
+        startDate: dayOffset(-2),
+        startTime: "08:00",
+        endDate: dayOffset(-1),
+        endTime: "08:00",
+      });
+      const aroundNow = await create({
+        ...tripBody,
+        startDate: dayOf(earlier),
+        startTime: clockOf(earlier),
+        endDate: dayOf(later),
+        endTime: clockOf(later),
+      });
+      const startsLaterToday = await create({
+        ...tripBody,
+        startDate: dayOf(later),
+        startTime: clockOf(later),
+        endDate: dayOffset(1),
+        endTime: "23:00",
+      });
+      const missingStartTimeToday = await create({
+        ...maintenanceBody,
+        startDate: dayOffset(0),
+        startTime: null,
+        endDate: null,
+        endTime: null,
+      });
+
+      expect(openTrip.currentlyActive).toBe(true);
+      expect(openMaintenance.currentlyActive).toBe(true);
+      expect(notStarted.currentlyActive).toBe(false);
+      expect(finished.currentlyActive).toBe(false);
+      expect(aroundNow.currentlyActive).toBe(true);
+      expect(startsLaterToday.currentlyActive).toBe(false);
+      expect(missingStartTimeToday.currentlyActive).toBe(false);
+
+      await db.request.update(
+        { currentlyActive: false },
+        { where: { requestId: openTrip.requestId } }
+      );
+
+      const listed = await request(app).get(REQUESTS_PATH).set(admin);
+      const repaired = listed.body.find((row) => row.requestId === openTrip.requestId);
+      expect(repaired.currentlyActive).toBe(true);
     });
   });
 

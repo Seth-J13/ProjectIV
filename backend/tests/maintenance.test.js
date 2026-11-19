@@ -71,10 +71,10 @@ async function seedBasics() {
   });
 
   await db.request.create({
-    request_id: 5,
-    requester_id: 1,
-    vehicle_id: sampleVin,
-    maintenance: true,
+    requestId: 5,
+    requestType: "maintenance",
+    requesterId: 1,
+    vehicleId: sampleVin,
   });
 }
 

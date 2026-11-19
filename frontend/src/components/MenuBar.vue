@@ -31,17 +31,6 @@ const displayName = computed(() =>
   [user.value?.firstName, user.value?.lastName].filter(Boolean).join(" ")
 );
 
-function openUserManagement() {
-  // Show the page with the click. A later history guard must not leave the route unchanged.
-  router.currentRoute.value = router.resolve({ name: "users" });
-  return router.push({ name: "users" });
-}
-
-function openAreas() {
-  router.currentRoute.value = router.resolve({ name: "areas" });
-  return router.push({ name: "areas" });
-}
-
 async function logout() {
   try {
     await authServices.logoutUser();
@@ -58,11 +47,14 @@ async function logout() {
 
 <template>
   <v-app-bar v-if="user" color="surface" flat>
+    <v-btn variant="text" type="button" @click="router.push({ name: 'landing' })">
+      Landing
+    </v-btn>
     <v-btn
       v-if="user?.role === 'admin'"
       variant="text"
       type="button"
-      @click.stop.prevent="openUserManagement"
+      @click="router.push({ name: 'users' })"
     >
       User Management
     </v-btn>
@@ -101,7 +93,6 @@ async function logout() {
     </v-btn>
 
     <v-btn
-      @click.stop.prevent="openAreas"
       v-if="['admin', 'maintenance'].includes(user?.role)"
       variant="text"
       type="button"

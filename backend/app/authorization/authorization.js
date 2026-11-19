@@ -51,8 +51,8 @@ export function requireAdminOrMaintenance(req, res, next) {
 }
 
 export function requireAreaAdmin(req, res, next) {
-  if (req.user?.role !== 'admin') {
-    return res.status(403).send({ message: 'Forbidden' });
+  if (req.user?.role !== "admin") {
+    return res.status(403).send({ message: "Forbidden" });
   }
 
   return next();
@@ -70,4 +70,22 @@ export async function getAccessibleDriversOrNull(req, driverId) {
 
   const driver = await db.driver.findByPk(driverId);
   return driver ?? null;
+}
+
+export async function getAccessibleRequestOrNull(req, requestId) {
+  if (!req.user) {
+    return null;
+  }
+
+  const request = await db.request.findByPk(requestId);
+
+  if (!request) {
+    return null;
+  }
+
+  if (req.user.role !== "admin" && request.requesterId !== req.user.id) {
+    return null;
+  }
+
+  return request;
 }

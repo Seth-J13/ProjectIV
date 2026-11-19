@@ -1,5 +1,6 @@
 import db from "../models/index.js";
 import logger from "../config/logger.js";
+import { isRequestActive } from "./request.controller.js";
 
 const exports = {};
 
@@ -17,8 +18,27 @@ function required(field) {
 exports.findRequestsByVehicle = async (req, res) => {
   try {
     const vehicleId = text(req.params.vehicle_id);
-    const rows = await db.request.findAll({ where: { vehicle_id: vehicleId } });
-    return res.send(rows);
+    const rows = await db.request.findAll({ where: { vehicleId } });
+    const presented = [];
+
+    for (const row of rows) {
+      const plain = row.toJSON();
+      const active = isRequestActive(plain.startDate, plain.startTime, plain.endDate, plain.endTime);
+
+      if (plain.currentlyActive !== active) {
+        await row.update({ currentlyActive: active });
+        plain.currentlyActive = active;
+      }
+
+      presented.push({
+        ...plain,
+        request_id: plain.requestId,
+        requester_id: plain.requesterId,
+        vehicle_id: plain.vehicleId,
+      });
+    }
+
+    return res.send(presented);
   } catch (error) {
     logger.error(`findRequestsByVehicle failed: ${error.message}`);
     return res.status(500).send({ message: "Could not retrieve requests." });
