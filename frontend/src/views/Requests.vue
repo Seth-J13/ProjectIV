@@ -1,9 +1,10 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import ListRequestForm from "../components/ListRequestForm.vue";
 import TripRequestForm from "../components/TripRequestForm.vue";
 import MaintenanceRequestForm from "../components/MaintenanceRequestForm.vue";
 import requestServices from "../services/requestServices.js";
+import Utils from "../config/utils.js";
 
 const rows = ref([]);
 const vehicles = ref([]);
@@ -11,6 +12,7 @@ const drivers = ref([]);
 const destinations = ref([]);
 const loading = ref(false);
 const errorMessage = ref("");
+const formError = ref("");
 const query = ref("");
 const activeOnly = ref(false);
 const typeFilter = ref("all");
@@ -35,6 +37,9 @@ function blankForm() {
 }
 
 const form = reactive(blankForm());
+const canCreateMaintenance = computed(() =>
+  ["admin", "maintenance"].includes(Utils.getStore("user")?.role)
+);
 
 const visibleRequests = computed(() => {
   const needle = query.value.trim().toLowerCase();
@@ -109,16 +114,8 @@ function validate(value) {
     return "start date is required.";
   }
 
-  if (!value.startTime) {
-    return "start time is required.";
-  }
-
   if (!value.endDate) {
     return "end date is required.";
-  }
-
-  if (!value.endTime) {
-    return "end time is required.";
   }
 
   if (value.numPeople === "" || value.numPeople == null) {
@@ -149,9 +146,9 @@ function payload(value) {
     driverId: value.driverId,
     destId: value.destId,
     startDate: value.startDate,
-    startTime: value.startTime,
+    startTime: value.startTime || null,
     endDate: value.endDate,
-    endTime: value.endTime,
+    endTime: value.endTime || null,
     numPeople: Number(value.numPeople),
   };
 }
@@ -180,14 +177,14 @@ async function load() {
 
 function openCreate() {
   resetForm();
-  errorMessage.value = "";
+  formError.value = "";
   createOpen.value = true;
 }
 
 function openEdit(row) {
   editingId.value = row.requestId;
   form.requestType = row.requestType;
-  form.vehicleId = row.vehicle?.vehicleId ?? null;
+  form.vehicleId = row.vehicle?.vehicleId == null ? null : String(row.vehicle.vehicleId);
   form.driverId = row.driver?.driverId ?? null;
   form.destId = row.destination?.destId ?? null;
   form.startDate = row.startDate || "";
@@ -195,7 +192,7 @@ function openEdit(row) {
   form.endDate = row.endDate || "";
   form.endTime = row.endTime || "";
   form.numPeople = row.numPeople ?? "";
-  errorMessage.value = "";
+  formError.value = "";
   editOpen.value = true;
 }
 
@@ -205,11 +202,11 @@ function openDelete(row) {
 }
 
 async function createRequest() {
-  errorMessage.value = "";
+  formError.value = "";
   const problem = validate(form);
 
   if (problem) {
-    errorMessage.value = problem;
+    formError.value = problem;
     return;
   }
 
@@ -219,16 +216,16 @@ async function createRequest() {
     resetForm();
     await load();
   } catch (error) {
-    errorMessage.value = messageFrom(error);
+    formError.value = messageFrom(error);
   }
 }
 
 async function saveRequest() {
-  errorMessage.value = "";
+  formError.value = "";
   const problem = validate(form);
 
   if (problem) {
-    errorMessage.value = problem;
+    formError.value = problem;
     return;
   }
 
@@ -238,7 +235,7 @@ async function saveRequest() {
     resetForm();
     await load();
   } catch (error) {
-    errorMessage.value = messageFrom(error);
+    formError.value = messageFrom(error);
   }
 }
 
@@ -251,6 +248,12 @@ async function confirmDelete() {
     errorMessage.value = messageFrom(error);
   }
 }
+
+watch(activeOnly, (checked) => {
+  if (checked) {
+    load();
+  }
+});
 
 onMounted(load);
 </script>
@@ -272,23 +275,30 @@ onMounted(load);
       @delete="openDelete"
     />
 
-    <v-dialog v-if="createOpen" :model-value="true" persistent>
+    <v-dialog v-if="createOpen" :model-value="true" persistent max-width="720">
       <v-card>
         <v-card-title>New request</v-card-title>
         <v-card-text>
-          <v-btn @click="form.requestType = 'trip'">Trip</v-btn>
-          <v-btn @click="form.requestType = 'maintenance'">Maintenance</v-btn>
+          <div class="d-flex ga-4 mb-4">
+            <v-btn @click="form.requestType = 'trip'">Trip</v-btn>
+            <v-btn v-if="canCreateMaintenance" @click="form.requestType = 'maintenance'">Maintenance</v-btn>
+          </div>
+          <v-alert v-if="formError && !form.requestType" type="error" class="mb-4 flex-grow-0 flex-shrink-0">
+            {{ formError }}
+          </v-alert>
           <TripRequestForm
             v-if="form.requestType === 'trip'"
             :form="form"
             :vehicles="vehicles"
             :drivers="drivers"
             :destinations="destinations"
+            :error="formError"
           />
           <MaintenanceRequestForm
             v-if="form.requestType === 'maintenance'"
             :form="form"
             :vehicles="vehicles"
+            :error="formError"
           />
         </v-card-text>
         <v-card-actions>
@@ -298,7 +308,7 @@ onMounted(load);
       </v-card>
     </v-dialog>
 
-    <v-dialog v-if="editOpen" :model-value="true" persistent>
+    <v-dialog v-if="editOpen" :model-value="true" persistent max-width="720">
       <v-card>
         <v-card-title>Edit request</v-card-title>
         <v-card-text>
@@ -308,11 +318,13 @@ onMounted(load);
             :vehicles="vehicles"
             :drivers="drivers"
             :destinations="destinations"
+            :error="formError"
           />
           <MaintenanceRequestForm
             v-else
             :form="form"
             :vehicles="vehicles"
+            :error="formError"
           />
         </v-card-text>
         <v-card-actions>

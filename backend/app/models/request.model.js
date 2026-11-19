@@ -1,21 +1,33 @@
-export default (sequelize, DataTypes) => {
+export default (sequelize, Sequelize) => {
   const Request = sequelize.define(
-    "request",
+    'request',
     {
-      requestId: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-      requestType: { type: DataTypes.ENUM("trip", "maintenance"), allowNull: false },
-      requesterId: { type: DataTypes.INTEGER, allowNull: false },
-      vehicleId: { type: DataTypes.STRING(17), allowNull: false },
-      driverId: { type: DataTypes.INTEGER, allowNull: true },
-      destId: { type: DataTypes.INTEGER, allowNull: true },
-      startDate: { type: DataTypes.STRING, allowNull: true },
-      startTime: { type: DataTypes.STRING, allowNull: true },
-      endDate: { type: DataTypes.STRING, allowNull: true },
-      endTime: { type: DataTypes.STRING, allowNull: true },
-      numPeople: { type: DataTypes.INTEGER, allowNull: true },
-      currentlyActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+      requestId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        field: "request_id",
+      },
+      requestType: {
+        type: Sequelize.ENUM('trip', 'maintenance'),
+        allowNull: false,
+      },
+      requesterId: { type: Sequelize.INTEGER, allowNull: false, field: "requester_id" },
+      vehicleId: { type: Sequelize.STRING(17), allowNull: false, field: "vehicle_id" },
+      driverId: { type: Sequelize.INTEGER, allowNull: true },
+      destId: { type: Sequelize.INTEGER, allowNull: true },
+      startDate: { type: Sequelize.STRING, allowNull: true },
+      startTime: { type: Sequelize.STRING, allowNull: true },
+      endDate: { type: Sequelize.STRING, allowNull: true },
+      endTime: { type: Sequelize.STRING, allowNull: true },
+      numPeople: { type: Sequelize.INTEGER, allowNull: true },
+      currentlyActive: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
     },
-    { tableName: "requests", timestamps: false }
+    { tableName: 'requests', timestamps: false },
   );
 
   return Request;

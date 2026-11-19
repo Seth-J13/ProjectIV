@@ -24,12 +24,122 @@ function parseId(value) {
   return null;
 }
 
-function stamp(date, time) {
-  if (!date) {
+function dayKey(value) {
+  const match = /^(\d{4}-\d{2}-\d{2})/.exec(text(value));
+  return match ? match[1] : "";
+}
+
+function clockMinutes(value) {
+  const match = /^(\d{1,2}):(\d{2})/.exec(text(value));
+
+  if (!match) {
     return null;
   }
 
-  return new Date(`${date}T${time || "00:00"}`);
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+
+  if (hours > 23 || minutes > 59) {
+    return null;
+  }
+
+  return hours * 60 + minutes;
+}
+
+function dateKey(now) {
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function nowMinutes(now) {
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function isBeforeNow(date, time, now) {
+  const day = dayKey(date);
+
+  if (!day) {
+    return false;
+  }
+
+  const today = dateKey(now);
+
+  if (day < today) {
+    return true;
+  }
+
+  if (day > today) {
+    return false;
+  }
+
+  const minutes = clockMinutes(time);
+
+  if (minutes == null) {
+    return false;
+  }
+
+  return minutes < nowMinutes(now);
+}
+
+function isAfterNow(date, time, now) {
+  const day = dayKey(date);
+
+  if (!day) {
+    return false;
+  }
+
+  const today = dateKey(now);
+
+  if (day > today) {
+    return true;
+  }
+
+  if (day < today) {
+    return false;
+  }
+
+  const minutes = clockMinutes(time);
+
+  if (minutes == null) {
+    return false;
+  }
+
+  return minutes > nowMinutes(now);
+}
+
+export function isRequestActive(startDate, startTime, endDate, endTime, now = new Date()) {
+  if (!isBeforeNow(startDate, startTime, now)) {
+    return false;
+  }
+
+  if (!dayKey(endDate)) {
+    return true;
+  }
+
+  return isAfterNow(endDate, endTime, now);
+}
+
+function scheduleError(startDate, startTime, endDate, endTime) {
+  const startDay = dayKey(startDate);
+  const endDay = dayKey(endDate);
+
+  if (startDay && endDay && endDay < startDay) {
+    return "end must be after start.";
+  }
+
+  if (startDay && endDay && endDay > startDay) {
+    return "";
+  }
+
+  const startMinutes = clockMinutes(startTime);
+  const endMinutes = clockMinutes(endTime);
+
+  if (startMinutes == null || endMinutes == null || endMinutes > startMinutes) {
+    return "";
+  }
+
+  return "end must be after start.";
 }
 
 function vehicleKey(vehicleId) {
@@ -41,11 +151,8 @@ function vehicleView(vehicle) {
     return null;
   }
 
-  const vin = String(vehicle.vin);
-  const vehicleId = /^[0-9]+$/.test(vin) ? Number(vin) : vin;
-
   return {
-    vehicleId,
+    vehicleId: String(vehicle.vin),
     license: vehicle.license_plate_num ?? null,
     make: vehicle.make,
     model: vehicle.model,
@@ -54,6 +161,13 @@ function vehicleView(vehicle) {
 
 async function present(row) {
   const plain = row.get({ plain: true });
+  const active = isRequestActive(plain.startDate, plain.startTime, plain.endDate, plain.endTime);
+
+  if (plain.currentlyActive !== active) {
+    await row.update({ currentlyActive: active });
+    plain.currentlyActive = active;
+  }
+
   const vehicle = await db.vehicle.findByPk(vehicleKey(plain.vehicleId));
   const driver = plain.driverId == null ? null : await db.driver.findByPk(plain.driverId);
   const destination = plain.destId == null ? null : await db.destination.findByPk(plain.destId);
@@ -82,9 +196,9 @@ async function readPayload(body, requestType) {
     return { error: "request type is required." };
   }
 
-  const vehicleId = parseId(body.vehicleId);
+  const vehicleId = text(body.vehicleId);
 
-  if (vehicleId === null) {
+  if (!vehicleId) {
     return { error: "vehicle is required." };
   }
 
@@ -119,16 +233,8 @@ async function readPayload(body, requestType) {
       return { error: "start date is required." };
     }
 
-    if (!value.startTime) {
-      return { error: "start time is required." };
-    }
-
     if (!value.endDate) {
       return { error: "end date is required." };
-    }
-
-    if (!value.endTime) {
-      return { error: "end time is required." };
     }
 
     const people = Number(body.numPeople);
@@ -137,11 +243,10 @@ async function readPayload(body, requestType) {
       return { error: "number of people must be at least 1." };
     }
 
-    const start = stamp(value.startDate, value.startTime);
-    const end = stamp(value.endDate, value.endTime);
+    const order = scheduleError(value.startDate, value.startTime, value.endDate, value.endTime);
 
-    if (end < start) {
-      return { error: "end must be after start." };
+    if (order) {
+      return { error: order };
     }
 
     value.numPeople = people;
@@ -156,8 +261,10 @@ async function readPayload(body, requestType) {
   value.vehicleId = vehicle.vin;
 
   if (requestType === "maintenance") {
-    if (!value.endDate && value.startDate) {
-      value.endDate = value.startDate;
+    const order = scheduleError(value.startDate, value.startTime, value.endDate, value.endTime);
+
+    if (order) {
+      return { error: order };
     }
 
     return { value };
@@ -260,7 +367,11 @@ exports.findOne = async (req, res) => {
 exports.create = async (req, res) => {
   const requestType = text(req.body.requestType);
 
-  if (requestType === "maintenance" && req.user.role !== "admin") {
+  if (
+    requestType === "maintenance" &&
+    req.user.role !== "admin" &&
+    req.user.role !== "maintenance"
+  ) {
     return res.status(403).send({ message: "Admin access required." });
   }
 
@@ -274,7 +385,12 @@ exports.create = async (req, res) => {
     const row = await db.request.create({
       ...parsed.value,
       requesterId: req.user.id,
-      currentlyActive: true,
+      currentlyActive: isRequestActive(
+        parsed.value.startDate,
+        parsed.value.startTime,
+        parsed.value.endDate,
+        parsed.value.endTime
+      ),
     });
 
     return res.status(201).send(await present(row));
@@ -308,6 +424,12 @@ exports.update = async (req, res) => {
       ...parsed.value,
       requestType: row.requestType,
       requesterId: row.requesterId,
+      currentlyActive: isRequestActive(
+        parsed.value.startDate,
+        parsed.value.startTime,
+        parsed.value.endDate,
+        parsed.value.endTime
+      ),
     });
 
     return res.send(await present(row));

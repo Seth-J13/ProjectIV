@@ -193,7 +193,7 @@ describe("Feature 7 — Driver Crud", () => {
 
       setControlValue(name, "Pat Driver");
       await chooseOption(/license status/i, "active");
-      setControlValue(expiration, "05/2026");
+      setControlValue(expiration, "2026-05-01");
       await chooseOption(/availability/i, "available");
       await flushPromises();
 
@@ -207,11 +207,11 @@ describe("Feature 7 — Driver Crud", () => {
       expect(String(url)).toContain("vehicle-t3");
       expect(body).toMatchObject({
         license_status: "active",
-        license_exp_date: "05/2026",
+        license_exp_date: "2026-05-01",
         availability: "available",
       });
       expect(pageText()).toContain("Active");
-      expect(pageText()).toContain("05/2026");
+      expect(pageText()).toContain("2026-05-01");
       expect(pageText()).toContain("Available");
       expect(buttonByText("Create")).toBeUndefined();
     });
@@ -237,7 +237,7 @@ describe("Feature 7 — Driver Crud", () => {
 
       await clickButton("+ New driver");
       setControlValue(inputByLabel(/name/i), "Pat Driver");
-      setControlValue(inputByLabel(/expiration/i), "05/2026");
+      setControlValue(inputByLabel(/expiration/i), "2026-05-01");
       await chooseOption(/availability/i, "available");
       await flushPromises();
 
@@ -268,7 +268,7 @@ describe("Feature 7 — Driver Crud", () => {
       await clickButton("+ New driver");
       setControlValue(inputByLabel(/name/i), "Pat Driver");
       await chooseOption(/license status/i, "active");
-      setControlValue(inputByLabel(/expiration/i), "05/2026");
+      setControlValue(inputByLabel(/expiration/i), "2026-05-01");
       await flushPromises();
 
       await clickButton("Create");
@@ -284,7 +284,7 @@ describe("Feature 7 — Driver Crud", () => {
       setControlValue(inputByLabel(/name/i), "Pat Driver");
       setControlValue(inputByLabel(/driver\s*_?id/i), "abc");
       await chooseOption(/license status/i, "active");
-      setControlValue(inputByLabel(/expiration/i), "05/2026");
+      setControlValue(inputByLabel(/expiration/i), "2026-05-01");
       await chooseOption(/availability/i, "available");
       await flushPromises();
 

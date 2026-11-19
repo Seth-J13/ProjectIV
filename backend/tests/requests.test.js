@@ -120,7 +120,7 @@ describe("Feature 8 — Request Management", () => {
         numPeople: 6,
       });
       expect(response.body.vehicle).toEqual(
-        expect.objectContaining({ vehicleId: 12, license: "ABC-1234", make: "Ford", model: "Transit" })
+        expect.objectContaining({ vehicleId: "12", license: "ABC-1234", make: "Ford", model: "Transit" })
       );
       expect(response.body.driver).toEqual(expect.objectContaining({ driverId: 3 }));
       expect(response.body.destination).toEqual(expect.objectContaining({ destId: 7 }));
@@ -182,8 +182,17 @@ describe("Feature 8 — Request Management", () => {
       expect(response.body.numPeople ?? null).toBeNull();
     });
 
-    it("Non-admin cannot create a maintenance request", async () => {
-      const worker = await authHeader("worker", "worker");
+    it("Maintenance creates a maintenance request", async () => {
+      const maintenance = await authHeader("maintenance", "mechanic");
+      const response = await request(app).post(REQUESTS_PATH).set(maintenance).send(maintenanceBody);
+
+      expect(response.status).toBe(201);
+      expect(response.body.requestType).toBe("maintenance");
+      expect(response.body.requesterId).toBeDefined();
+    });
+
+    it("User or driver cannot create a maintenance request", async () => {
+      const worker = await authHeader("user", "worker");
       const response = await request(app).post(REQUESTS_PATH).set(worker).send(maintenanceBody);
 
       expect(response.status).toBe(403);
@@ -317,6 +326,111 @@ describe("Feature 8 — Request Management", () => {
 
       expect(response.status).toBe(200);
       expect(response.body.numPeople).toBe(4);
+    });
+  });
+
+  describe("US-8.6 — Filter requests", () => {
+    function dayOffset(offset) {
+      const date = new Date();
+      date.setDate(date.getDate() + offset);
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
+
+    function dayOf(date) {
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
+
+    function clockOf(date) {
+      return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    beforeEach(async () => {
+      await syncTestDatabase();
+      await seedCatalog();
+    });
+
+    it("Request activity follows the schedule", async () => {
+      const admin = await authHeader("admin", "admin");
+      const now = new Date();
+      const earlier = new Date(now.getTime() - 60 * 1000);
+      const later = new Date(now.getTime() + 60 * 1000);
+
+      async function create(body) {
+        const response = await request(app).post(REQUESTS_PATH).set(admin).send(body);
+        expect(response.status).toBe(201);
+        return response.body;
+      }
+
+      const openTrip = await create({
+        ...tripBody,
+        startDate: dayOffset(-1),
+        startTime: "23:30",
+        endDate: dayOffset(1),
+        endTime: "00:15",
+      });
+      const openMaintenance = await create({
+        ...maintenanceBody,
+        startDate: dayOffset(-1),
+        startTime: null,
+        endDate: null,
+        endTime: null,
+      });
+      const notStarted = await create({
+        ...tripBody,
+        startDate: dayOffset(1),
+        startTime: "00:00",
+        endDate: dayOffset(2),
+        endTime: "01:00",
+      });
+      const finished = await create({
+        ...tripBody,
+        startDate: dayOffset(-2),
+        startTime: "08:00",
+        endDate: dayOffset(-1),
+        endTime: "08:00",
+      });
+      const aroundNow = await create({
+        ...tripBody,
+        startDate: dayOf(earlier),
+        startTime: clockOf(earlier),
+        endDate: dayOf(later),
+        endTime: clockOf(later),
+      });
+      const startsLaterToday = await create({
+        ...tripBody,
+        startDate: dayOf(later),
+        startTime: clockOf(later),
+        endDate: dayOffset(1),
+        endTime: "23:00",
+      });
+      const missingStartTimeToday = await create({
+        ...maintenanceBody,
+        startDate: dayOffset(0),
+        startTime: null,
+        endDate: null,
+        endTime: null,
+      });
+
+      expect(openTrip.currentlyActive).toBe(true);
+      expect(openMaintenance.currentlyActive).toBe(true);
+      expect(notStarted.currentlyActive).toBe(false);
+      expect(finished.currentlyActive).toBe(false);
+      expect(aroundNow.currentlyActive).toBe(true);
+      expect(startsLaterToday.currentlyActive).toBe(false);
+      expect(missingStartTimeToday.currentlyActive).toBe(false);
+
+      await db.request.update(
+        { currentlyActive: false },
+        { where: { requestId: openTrip.requestId } }
+      );
+
+      const listed = await request(app).get(REQUESTS_PATH).set(admin);
+      const repaired = listed.body.find((row) => row.requestId === openTrip.requestId);
+      expect(repaired.currentlyActive).toBe(true);
     });
   });
 

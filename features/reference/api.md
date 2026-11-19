@@ -40,7 +40,7 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `GET` | `/api/destinations` | Yes | Destination choices: `destId`, `name` | Feature 8 |
 | `GET` | `/api/requests` | Yes | The caller's requests. An admin receives every request | Feature 8 |
 | `GET` | `/api/requests/:requestId` | Yes | One accessible request, or `404` | Feature 8 |
-| `POST` | `/api/requests` | Yes | Create a trip, or a maintenance request when the caller is an admin | Feature 8 |
+| `POST` | `/api/requests` | Yes | Create a trip, or a maintenance request when the caller is an admin or maintenance user | Feature 8 |
 | `PUT` | `/api/requests/:requestId` | Yes | Update a request without changing `requestType` or `requesterId` | Feature 8 |
 | `DELETE` | `/api/requests/:requestId` | Yes | Delete an accessible request. Success is `204` | Feature 8 |
 
@@ -246,7 +246,7 @@ Missing `request_id` on create note returns **404**. Missing note/fuel/vehicle r
 
 ### Drivers (`/api/vehicle-t3`)
 
-Create and update body: `driver_id`, `license_status` (`expired`, `active`, or `suspended`), `license_exp_date` (stored as entered, for example `05/2026`), and `availability` (`available`, `not available`, or `on call`). `name` is optional. `driver_id` must be an integer. A missing or blank required field, or a non-numeric `driver_id`, is **400**. A signed-in role other than `admin` on `POST`, `PUT`, or `DELETE` is **403** `{ "message": "Admin access required." }`. An unknown driver is **404**. Delete success is **204** with no body. `GET` returns every driver to any signed-in user.
+Create and update body: `driver_id`, `license_status` (`expired`, `active`, or `suspended`), `license_exp_date` (chosen with a date picker and stored as entered, for example `2026-05-01`), and `availability` (`available`, `not available`, or `on call`). `name` is optional. `driver_id` must be an integer. A missing or blank required field, or a non-numeric `driver_id`, is **400**. A signed-in role other than `admin` on `POST`, `PUT`, or `DELETE` is **403** `{ "message": "Admin access required." }`. An unknown driver is **404**. Delete success is **204** with no body. `GET` returns every driver to any signed-in user.
 
 ### Areas (`/api/areas`)
 

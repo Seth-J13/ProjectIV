@@ -95,7 +95,7 @@
 - **FR-010**: Date and time MUST be chosen through calendar/time pickers, not free-text.
 - **FR-011**: Signed-out users MUST NOT have access to any `/requests` routes.
 - **FR-012**: A user MUST NOT read, edit, or delete another user's request unless they are an administrator.
-- **FR-013**: `currentlyActive` MUST default to `true` on creation.
+- **FR-013**: `currentlyActive` is `true` only when the start is before now and, if an end date exists, the end is after now. An earlier date ignores the time. On today's date, the time is required and must be before now for the start, or after now for the end. A missing end date does not make the request inactive. The request list's first load, and turning **Active only** on, recalculates the flag for every listed request.
 - **FR-014**: `requestor_id` MUST automatically default to the signed-in user.
 
 ### Request Types
@@ -106,9 +106,9 @@
 | `driverId`  | Required        | nullable, optional                           |
 | `destId`    | Required        | Must be null / ignored                       |
 | `startDate` | Required        | nullable, optional                           |
-| `startTime` | Required        | nullable, optional                           |
-| `endDate`   | Required        | nullable, optional (defaults to `startDate`) |
-| `endTime`   | Required        | nullable, optional                           |
+| `startTime` | nullable, optional | nullable, optional                        |
+| `endDate`   | Required           | nullable, optional                        |
+| `endTime`   | nullable, optional | nullable, optional                        |
 | `numPeople` | Required (>= 1) | Must be null / ignored                       |
 
 ---
@@ -118,7 +118,7 @@
 - Feature 1 auth and session handling MUST be merged to `dev` before implementing this feature.
 - Features 4 (Vehicle), 6 (Destination), and 7 (Driver) expose list endpoints used to populate the dropdowns.
 - Requests use **dialog-based** workflows (no split sidebar / main panel).
-- Any signed-in user can create `trip` requests; only administrators can create `maintenance` requests. _(Confirm; see Open Questions.)_
+- Any signed-in user can create `trip` requests. An `admin` or `maintenance` user can create `maintenance` requests.
 - Users see only their own requests; administrators see all requests.
 
 ## Edge Cases
@@ -128,7 +128,7 @@
 - `numPeople` zero, negative, or non-integer → `400`.
 - Unknown `vehicleId`, `driverId`, or `destId` → `400`.
 - Invalid `requestId` → `400`; request not found or not accessible → `404`.
-- Non-admin attempts to create a `maintenance` request → `403`.
+- A `user` or `driver` attempts to create a `maintenance` request → `403`.
 - Unauthenticated `Requests.vue` or `GET /requests` → redirect or `401`.
 - Referenced vehicle, driver, or destination is later deleted → deletion behavior defined in Features 4/6/7; the Requests view MUST NOT crash on missing references.
 
@@ -151,7 +151,7 @@ Requests are owned by the user who created them (`requesterId`).
 | **Write scope**       | `PUT` and `DELETE` apply only when the request matches both `requestId` and `req.user.id`, unless the user is an administrator.                |
 | **Create scope**      | New requests are owned by `req.user.id`.                                                                                                       |
 | **Cross-user access** | A non-admin requesting another user's request by id receives `404`.                                                                            |
-| **Role restriction**  | A non-admin attempting to create a `maintenance` request receives `403`.                                                                       |
+| **Role restriction**  | A `user` or `driver` attempting to create a `maintenance` request receives `403`. An `admin` or `maintenance` user can create one.             |
 | **UI scope**          | The requests view shows only requests returned by `GET /requests` for the signed-in user.                                                      |
 | **Implementation**    | Use a shared helper (e.g. `getAccessibleRequestOrNull(req, requestId)`) in `app/authorization/` — do not duplicate scope logic in controllers. |
 
@@ -258,7 +258,7 @@ Requests are owned by the user who created them (`requesterId`).
 **Component** (`TripRequestForm.vue`) — embedded into User's Landing Page.
 
 - Heading: **Requests**
-- Primary action: **+ New request** opens a `<v-dialog>`. The dialog starts with a request-type selector (**Trip** / **Maintenance**) and shows the matching form. **Create** / **Cancel** buttons. Use class `oc-cta` on **Create** and **+ New request** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
+- Primary action: **+ New request** opens a `<v-dialog>`. The dialog starts with a request-type selector. **Trip** is shown to every signed-in user. **Maintenance** is shown only when the signed-in role is `admin` or `maintenance`. The matching form follows the selection. **Create** / **Cancel** buttons. Use class `oc-cta` on **Create** and **+ New request** (per [ui-style-system.mdc](../../.cursor/rules/ui-style-system.mdc)).
 - **Trip form fields:** vehicle dropdown (shows license, make, model), driver dropdown, destination dropdown, start date + time pickers, end date + time pickers, number of people.
 
 ### [Form: Maintenance Requests] Component Name `MaintenanceRequestForm.vue`
@@ -281,6 +281,7 @@ Maintenance's and Admin's landing page both have a toggle switch that lets them 
 - **request**: a scheduled vehicle use, either a `trip` or a `maintenance` block.
 - **requester**: the authenticated user who created the request.
 - **admin**: authenticated administrator permitted to view and modify all requests and create maintenance requests.
+- **maintenance**: authenticated maintenance user permitted to create maintenance requests. They see and change only their own requests.
 
 ---
 
@@ -297,11 +298,11 @@ Maintenance's and Admin's landing page both have a toggle switch that lets them 
 | `driverId`        | FK → `drivers`      | Required for `trip`; NULLABLE overall                               |
 | `destId`          | FK → `destinations` | Required for `trip`; NULLABLE overall                               |
 | `startDate`       | DATE                | Required                                                            |
-| `startTime`       | TIME                | Required for `trip`; NULLABLE for `maintenance`                     |
-| `endDate`         | DATE                | Required for `trip`; NULLABLE for `maintenance` (defaults to start) |
-| `endTime`         | TIME                | Required for `trip`; NULLABLE for `maintenance`                     |
+| `startTime`       | TIME                | NULLABLE for `trip` and `maintenance`                               |
+| `endDate`         | DATE                | Required for `trip`; NULLABLE for `maintenance`                     |
+| `endTime`         | TIME                | NULLABLE for `trip` and `maintenance`                               |
 | `numPeople`       | INTEGER             | Required (>= 1) for `trip`; NULLABLE for `maintenance`              |
-| `currentlyActive` | BOOLEAN             | Required; default `true`                                            |
+| `currentlyActive` | BOOLEAN             | Required. `true` only while the schedule is in progress             |
 
 Type-dependent requirements are enforced in model/controller validation, not by database NOT NULL constraints.
 
@@ -379,6 +380,13 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 - **And** `driverId`, `destId`, and `numPeople` are null
 - **And** the request appears in the requests view
 
+#### Scenario: User does not see the maintenance option
+
+- **Given** I am signed in as a user or driver
+- **When** I open the new request dialog
+- **Then** I see **Trip**
+- **And** I do not see **Maintenance**
+
 #### Scenario: Maintenance form hides trip-only fields
 
 - **Given** I am signed in as an admin
@@ -395,9 +403,16 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 - **And** I see the message **"start date is required."**
 - **And** no API request is sent
 
-#### Scenario: Non-admin cannot create a maintenance request
+#### Scenario: Maintenance creates a maintenance request
 
-- **Given** I am signed in as a non-admin user
+- **Given** I am signed in as a maintenance user
+- **And** vehicle `ABC-1234` exists
+- **When** I `POST /requests` with `requestType` `maintenance` for that vehicle
+- **Then** the API returns `201` with a request object whose `requestType` is `maintenance`
+
+#### Scenario: User or driver cannot create a maintenance request
+
+- **Given** I am signed in as a user or driver
 - **When** I `POST /requests` with `requestType` `maintenance`
 - **Then** the API returns `403` with an unauthorized message
 
@@ -494,6 +509,16 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 
 ### US-8.6 — Filter requests
 
+#### Scenario: Request activity follows the schedule
+
+- **Given** I am signed in
+- **When** the request list first loads, or I turn on **Active only**
+- **Then** `currentlyActive` is recalculated for each listed request
+- **And** it is `true` only when the start date/time is before now and, if an end date exists, the end date/time is after now
+- **And** a date before today counts as before now regardless of time
+- **And** a date after today counts as after now regardless of time
+- **And** a time on today's date must be before now for the start, or after now for the end
+
 #### Scenario: Active-only filter
 
 - **Given** I am signed in
@@ -537,9 +562,11 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 | US-8.1 | User creates a trip request with an invalid number of people | `backend/tests/requests.test.js`                                    | `User creates a trip request with an invalid number of people` |
 | US-8.1 | User creates a request referencing a nonexistent vehicle     | `backend/tests/requests.test.js`                                    | `User creates a request referencing a nonexistent vehicle`     |
 | US-8.2 | Admin creates a maintenance request                          | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `Admin creates a maintenance request`                          |
+| US-8.2 | User does not see the maintenance option                     | `frontend/tests/Requests.test.js`                                   | `User does not see the maintenance option`                     |
 | US-8.2 | Maintenance form hides trip-only fields                      | `frontend/tests/Requests.test.js`                                   | `Maintenance form hides trip-only fields`                      |
 | US-8.2 | Maintenance request without a start date                     | `frontend/tests/Requests.test.js`                                   | `Maintenance request without a start date`                     |
-| US-8.2 | Non-admin cannot create a maintenance request                | `backend/tests/requests.test.js`                                    | `Non-admin cannot create a maintenance request`                |
+| US-8.2 | Maintenance creates a maintenance request                    | `backend/tests/requests.test.js`                                    | `Maintenance creates a maintenance request`                    |
+| US-8.2 | User or driver cannot create a maintenance request           | `backend/tests/requests.test.js`                                    | `User or driver cannot create a maintenance request`           |
 | US-8.3 | Requests view loads with existing requests                   | `backend/tests/requests.test.js`, `frontend/tests/Requests.test.js` | `Requests view loads with existing requests`                   |
 | US-8.3 | User does not see other users' requests                      | `backend/tests/requests.test.js`                                    | `User does not see other users' requests`                      |
 | US-8.3 | Admin sees all requests                                      | `backend/tests/requests.test.js`                                    | `Admin sees all requests`                                      |
@@ -550,6 +577,7 @@ Type-dependent requirements are enforced in model/controller validation, not by 
 | US-8.5 | User cannot edit another user's request                      | `backend/tests/requests.test.js`                                    | `User cannot edit another user's request`                      |
 | US-8.5 | User cannot delete another user's request                    | `backend/tests/requests.test.js`                                    | `User cannot delete another user's request`                    |
 | US-8.5 | Admin edits any request                                      | `backend/tests/requests.test.js`                                    | `Admin edits any request`                                      |
+| US-8.6 | Request activity follows the schedule                        | `backend/tests/requests.test.js`                                    | `Request activity follows the schedule`                        |
 | US-8.6 | Active-only filter                                           | `frontend/tests/Requests.test.js`                                   | `Active-only filter`                                           |
 | US-8.6 | Request type filter                                          | `frontend/tests/Requests.test.js`                                   | `Request type filter`                                          |
 | Auth   | Unauthenticated user accesses the requests view              | `frontend/tests/Requests.test.js`                                   | `Unauthenticated user accesses the requests view`              |

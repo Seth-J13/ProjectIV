@@ -6,6 +6,7 @@ const props = defineProps({
   vehicles: { type: Array, required: true },
   drivers: { type: Array, required: true },
   destinations: { type: Array, required: true },
+  error: { type: String, default: "" },
 });
 
 const filters = reactive({ make: "", model: "", license: "" });
@@ -28,7 +29,7 @@ const filteredVehicles = computed(() =>
 );
 
 const selectedVehicle = computed(() =>
-  props.vehicles.find((item) => item.vehicleId === props.form.vehicleId)
+  props.vehicles.find((item) => String(item.vehicleId) === String(props.form.vehicleId))
 );
 
 const selectedDriver = computed(() =>
@@ -39,8 +40,14 @@ const selectedDestination = computed(() =>
   props.destinations.find((item) => item.destId === props.form.destId)
 );
 
+const vehicleLabel = computed(() =>
+  selectedVehicle.value
+    ? `${selectedVehicle.value.license} ${selectedVehicle.value.make} ${selectedVehicle.value.model}`
+    : ""
+);
+
 function pickVehicle(item) {
-  props.form.vehicleId = item.vehicleId;
+  props.form.vehicleId = String(item.vehicleId);
   vehicleOpen.value = false;
 }
 
@@ -56,64 +63,98 @@ function pickDestination(item) {
 </script>
 
 <template>
-  <v-text-field v-model="filters.make" label="Make" />
-  <v-text-field v-model="filters.model" label="Model" />
-  <v-text-field v-model="filters.license" label="License" />
+  <v-alert v-if="error" type="error" class="mb-4 flex-grow-0 flex-shrink-0">{{ error }}</v-alert>
+  <v-row>
+    <v-col cols="12" md="4">
+      <v-text-field v-model="filters.make" label="Make" />
+    </v-col>
+    <v-col cols="12" md="4">
+      <v-text-field v-model="filters.model" label="Model" />
+    </v-col>
+    <v-col cols="12" md="4">
+      <v-text-field v-model="filters.license" label="License" />
+    </v-col>
 
-  <div class="v-input">
-    <label class="v-label">Vehicle</label>
-    <input
-      readonly
-      :value="selectedVehicle ? `${selectedVehicle.license} ${selectedVehicle.make} ${selectedVehicle.model}` : ''"
-      @click="vehicleOpen = true"
-    />
-    <div v-if="vehicleOpen">
-      <div
-        v-for="item in filteredVehicles"
-        :key="item.vehicleId"
-        role="option"
-        class="v-list-item"
-        @click="pickVehicle(item)"
-      >{{ item.license }} {{ item.make }} {{ item.model }}</div>
-    </div>
-  </div>
-  <p v-if="selectedVehicle">{{ selectedVehicle.license }} {{ selectedVehicle.make }} {{ selectedVehicle.model }}</p>
+    <v-col cols="12" md="6">
+      <v-menu v-model="vehicleOpen" :close-on-content-click="true">
+        <template #activator="{ props: menuProps }">
+          <v-text-field
+            v-bind="menuProps"
+            :model-value="vehicleLabel"
+            label="Vehicle"
+            readonly
+          />
+        </template>
+        <v-list density="comfortable">
+          <v-list-item
+            v-for="item in filteredVehicles"
+            :key="item.vehicleId"
+            role="option"
+            :title="`${item.license} ${item.make} ${item.model}`"
+            @click="pickVehicle(item)"
+          />
+        </v-list>
+      </v-menu>
+    </v-col>
 
-  <div class="v-input">
-    <label class="v-label">Driver</label>
-    <input readonly :value="selectedDriver ? selectedDriver.name : ''" @click="driverOpen = true" />
-    <div v-if="driverOpen">
-      <div
-        v-for="item in drivers"
-        :key="item.driverId"
-        role="option"
-        class="v-list-item"
-        @click="pickDriver(item)"
-      >{{ item.name }}</div>
-    </div>
-  </div>
+    <v-col cols="12" md="6">
+      <v-menu v-model="driverOpen" :close-on-content-click="true">
+        <template #activator="{ props: menuProps }">
+          <v-text-field
+            v-bind="menuProps"
+            :model-value="selectedDriver ? selectedDriver.name : ''"
+            label="Driver"
+            readonly
+          />
+        </template>
+        <v-list density="comfortable">
+          <v-list-item
+            v-for="item in drivers"
+            :key="item.driverId"
+            role="option"
+            :title="item.name"
+            @click="pickDriver(item)"
+          />
+        </v-list>
+      </v-menu>
+    </v-col>
 
-  <div class="v-input">
-    <label class="v-label">Destination</label>
-    <input
-      readonly
-      :value="selectedDestination ? selectedDestination.name : ''"
-      @click="destinationOpen = true"
-    />
-    <div v-if="destinationOpen">
-      <div
-        v-for="item in destinations"
-        :key="item.destId"
-        role="option"
-        class="v-list-item"
-        @click="pickDestination(item)"
-      >{{ item.name }}</div>
-    </div>
-  </div>
+    <v-col cols="12" md="6">
+      <v-menu v-model="destinationOpen" :close-on-content-click="true">
+        <template #activator="{ props: menuProps }">
+          <v-text-field
+            v-bind="menuProps"
+            :model-value="selectedDestination ? selectedDestination.name : ''"
+            label="Destination"
+            readonly
+          />
+        </template>
+        <v-list density="comfortable">
+          <v-list-item
+            v-for="item in destinations"
+            :key="item.destId"
+            role="option"
+            :title="item.name"
+            @click="pickDestination(item)"
+          />
+        </v-list>
+      </v-menu>
+    </v-col>
 
-  <v-text-field v-model="form.startDate" label="Start date" type="date" />
-  <v-text-field v-model="form.startTime" label="Start time" type="time" />
-  <v-text-field v-model="form.endDate" label="End date" type="date" />
-  <v-text-field v-model="form.endTime" label="End time" type="time" />
-  <v-text-field v-model="form.numPeople" label="Number of people" type="number" />
+    <v-col cols="12" md="6">
+      <v-text-field v-model="form.startDate" label="Start date" type="date" />
+    </v-col>
+    <v-col cols="12" md="6">
+      <v-text-field v-model="form.startTime" label="Start time" type="time" />
+    </v-col>
+    <v-col cols="12" md="6">
+      <v-text-field v-model="form.endDate" label="End date" type="date" />
+    </v-col>
+    <v-col cols="12" md="6">
+      <v-text-field v-model="form.endTime" label="End time" type="time" />
+    </v-col>
+    <v-col cols="12" md="6">
+      <v-text-field v-model="form.numPeople" label="Number of people" type="number" />
+    </v-col>
+  </v-row>
 </template>

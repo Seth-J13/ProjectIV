@@ -4,6 +4,7 @@ import { computed, reactive, ref } from "vue";
 const props = defineProps({
   form: { type: Object, required: true },
   vehicles: { type: Array, required: true },
+  error: { type: String, default: "" },
 });
 
 const filters = reactive({ make: "", model: "", license: "" });
@@ -24,39 +25,61 @@ const filteredVehicles = computed(() =>
 );
 
 const selectedVehicle = computed(() =>
-  props.vehicles.find((item) => item.vehicleId === props.form.vehicleId)
+  props.vehicles.find((item) => String(item.vehicleId) === String(props.form.vehicleId))
+);
+
+const vehicleLabel = computed(() =>
+  selectedVehicle.value
+    ? `${selectedVehicle.value.license} ${selectedVehicle.value.make} ${selectedVehicle.value.model}`
+    : ""
 );
 
 function pickVehicle(item) {
-  props.form.vehicleId = item.vehicleId;
+  props.form.vehicleId = String(item.vehicleId);
   vehicleOpen.value = false;
 }
 </script>
 
 <template>
-  <v-text-field v-model="filters.make" label="Make" />
-  <v-text-field v-model="filters.model" label="Model" />
-  <v-text-field v-model="filters.license" label="License" />
+  <v-alert v-if="error" type="error" class="mb-4 flex-grow-0 flex-shrink-0">{{ error }}</v-alert>
+  <v-row>
+    <v-col cols="12" md="4">
+      <v-text-field v-model="filters.make" label="Make" />
+    </v-col>
+    <v-col cols="12" md="4">
+      <v-text-field v-model="filters.model" label="Model" />
+    </v-col>
+    <v-col cols="12" md="4">
+      <v-text-field v-model="filters.license" label="License" />
+    </v-col>
 
-  <div class="v-input">
-    <label class="v-label">Vehicle</label>
-    <input
-      readonly
-      :value="selectedVehicle ? `${selectedVehicle.license} ${selectedVehicle.make} ${selectedVehicle.model}` : ''"
-      @click="vehicleOpen = true"
-    />
-    <div v-if="vehicleOpen">
-      <div
-        v-for="item in filteredVehicles"
-        :key="item.vehicleId"
-        role="option"
-        class="v-list-item"
-        @click="pickVehicle(item)"
-      >{{ item.license }} {{ item.make }} {{ item.model }}</div>
-    </div>
-  </div>
-  <p v-if="selectedVehicle">{{ selectedVehicle.license }} {{ selectedVehicle.make }} {{ selectedVehicle.model }}</p>
+    <v-col cols="12" md="6">
+      <v-menu v-model="vehicleOpen" :close-on-content-click="true">
+        <template #activator="{ props: menuProps }">
+          <v-text-field
+            v-bind="menuProps"
+            :model-value="vehicleLabel"
+            label="Vehicle"
+            readonly
+          />
+        </template>
+        <v-list density="comfortable">
+          <v-list-item
+            v-for="item in filteredVehicles"
+            :key="item.vehicleId"
+            role="option"
+            :title="`${item.license} ${item.make} ${item.model}`"
+            @click="pickVehicle(item)"
+          />
+        </v-list>
+      </v-menu>
+    </v-col>
 
-  <v-text-field v-model="form.startDate" label="Start date" type="date" />
-  <v-text-field v-model="form.startTime" label="Start time" type="time" />
+    <v-col cols="12" md="6">
+      <v-text-field v-model="form.startDate" label="Start date" type="date" />
+    </v-col>
+    <v-col cols="12" md="6">
+      <v-text-field v-model="form.startTime" label="Start time" type="time" />
+    </v-col>
+  </v-row>
 </template>

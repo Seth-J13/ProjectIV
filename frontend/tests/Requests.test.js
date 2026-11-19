@@ -112,6 +112,7 @@ async function clickExact(text) {
 async function chooseOption(labelPattern, optionPattern) {
   const input = inputByLabel(labelPattern);
   expect(input).toBeTruthy();
+  input.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
   input.closest(".v-input")?.click();
   input.click();
   await flushPromises();
@@ -125,8 +126,10 @@ async function chooseOption(labelPattern, optionPattern) {
 }
 
 function rowForRequest(requestId) {
-  const rows = [...document.querySelectorAll("tr, .v-list-item")];
-  return rows.find((row) => new RegExp(`\\b${requestId}\\b`).test(row.textContent));
+  const rows = [...document.querySelectorAll("tbody tr")];
+  return rows.find((row) =>
+    [...row.querySelectorAll("td")].some((cell) => cell.textContent.trim() === String(requestId))
+  );
 }
 
 function installGetMock() {
@@ -234,7 +237,7 @@ describe("Feature 8 — Request Management", () => {
       expect(String(url)).toContain("requests");
       expect(body).toMatchObject({
         requestType: "trip",
-        vehicleId: 12,
+        vehicleId: "12",
         driverId: 3,
         destId: 7,
         startDate: "2026-11-10",
@@ -243,7 +246,7 @@ describe("Feature 8 — Request Management", () => {
         endTime: "17:00",
       });
       expect(Number(body.numPeople)).toBe(6);
-      expect(pageText()).toContain("trip");
+      expect(pageText()).toContain("Trip");
       expect(pageText()).toContain("ABC-1234");
       expect(buttonByText("Create")).toBeUndefined();
     });
@@ -253,9 +256,10 @@ describe("Feature 8 — Request Management", () => {
       await openTripForm();
       await chooseOption(/vehicle/i, /ABC-1234/);
 
-      expect(pageText()).toContain("ABC-1234");
-      expect(pageText()).toContain("Ford");
-      expect(pageText()).toContain("Transit");
+      const vehicleField = inputByLabel(/vehicle/i);
+      expect(vehicleField.value).toContain("ABC-1234");
+      expect(vehicleField.value).toContain("Ford");
+      expect(vehicleField.value).toContain("Transit");
     });
 
     it("User creates a trip request with a missing required field", async () => {
@@ -324,11 +328,22 @@ describe("Feature 8 — Request Management", () => {
       expect(apiClient.post).toHaveBeenCalled();
       const body = apiClient.post.mock.calls[0][1];
       expect(body.requestType).toBe("maintenance");
-      expect(body.vehicleId).toBe(12);
+      expect(body.vehicleId).toBe("12");
       expect(body.driverId ?? null).toBeNull();
       expect(body.destId ?? null).toBeNull();
       expect(body.numPeople ?? null).toBeNull();
-      expect(pageText()).toContain("maintenance");
+      expect(pageText()).toContain("Maintenance");
+    });
+
+    it("User does not see the maintenance option", async () => {
+      ({ wrapper } = await mountRequests("user"));
+      await clickButton("+ New request");
+
+      const labels = [...document.querySelectorAll("button")].map((button) =>
+        button.textContent.replace(/\s+/g, " ").trim()
+      );
+      expect(labels).toContain("Trip");
+      expect(labels).not.toContain("Maintenance");
     });
 
     it("Maintenance form hides trip-only fields", async () => {
@@ -369,7 +384,7 @@ describe("Feature 8 — Request Management", () => {
 
       for (const row of [rowForRequest(41), rowForRequest(44)]) {
         expect(row).toBeTruthy();
-        expect(row.textContent).toContain("trip");
+        expect(row.textContent).toContain("Trip");
         expect(row.textContent).toContain("ABC-1234");
         expect(row.textContent).toMatch(/2026-11-1[02]/);
         expect(row.querySelector('[aria-label="Edit request"]')).toBeTruthy();
@@ -458,12 +473,19 @@ describe("Feature 8 — Request Management", () => {
       expect(rowForRequest(41)).toBeTruthy();
       expect(rowForRequest(50)).toBeTruthy();
 
-      const activeOnly = [...document.querySelectorAll("label, .v-label, .v-selection-control")].find((element) =>
+      const requestLoads = () =>
+        apiClient.get.mock.calls.filter((call) => String(call[0]).includes("/requests")).length;
+      const loadsBeforeToggle = requestLoads();
+
+      const activeOnly = [...document.querySelectorAll(".v-selection-control")].find((element) =>
         /Active only/i.test(element.textContent)
       );
       expect(activeOnly).toBeTruthy();
-      activeOnly.click();
+      activeOnly.querySelector("input").click();
       await flushPromises();
+      await flushPromises();
+
+      expect(requestLoads()).toBe(loadsBeforeToggle + 1);
 
       expect(rowForRequest(41)).toBeTruthy();
       expect(rowForRequest(50)).toBeUndefined();
