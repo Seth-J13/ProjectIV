@@ -3,6 +3,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Utils from "../config/utils.js";
 import maintenanceServices from "../services/maintenanceServices.js";
+import NotesList from "../components/NotesList.vue";
 
 const props = defineProps({
   vin: { type: String, default: "" },
@@ -18,6 +19,11 @@ const years = Array.from({ length: currentYear - 1899 }, (_, index) => currentYe
 const vehicle = ref(null);
 const maintenanceInfo = ref(null);
 const requests = ref([]);
+
+function maintenanceNoteFilter(item) {
+  const ids = requests.value.map((request) => Number(request.request_id));
+  return item?.maintenance_request === true && ids.includes(Number(item.request_id));
+}
 const notes = ref([]);
 const fuels = ref([]);
 const loading = ref(false);
@@ -1147,6 +1153,15 @@ async function removeFuel(fuel) {
         </v-table>
       </v-card-text>
     </v-card>
+
+    <NotesList
+      mode="embed"
+      title="Vehicle Maintenance Notes"
+      scope="maintenance"
+      :maintenance-request="true"
+      :vehicle-id="vin"
+      :filter="maintenanceNoteFilter"
+    />
   </v-container>
 </template>
 

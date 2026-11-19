@@ -4,6 +4,7 @@
  */
 import request from "supertest";
 import app from "../server.js";
+import db from "../app/models/index.js";
 
 const NOTES = "/vehicle-t3/notes";
 const SERVICE_LOGS = "/api/vehicle-t3/vehicle-service-logs/";
@@ -47,20 +48,50 @@ function createdId(response) {
 }
 
 function expectToday(value) {
-  const match = String(value).match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/);
   const now = new Date();
 
   expect(match).not.toBeNull();
   expect(Number(match[1])).toBe(now.getFullYear());
   expect(Number(match[2])).toBe(now.getMonth() + 1);
   expect(Number(match[3])).toBe(now.getDate());
+
+  const stamp = new Date(
+    Number(match[1]),
+    Number(match[2]) - 1,
+    Number(match[3]),
+    Number(match[4]),
+    Number(match[5]),
+    Number(match[6])
+  );
+  expect(Math.abs(stamp.getTime() - now.getTime())).toBeLessThan(2 * 60 * 1000);
 }
 
 function contributorKey(entry) {
   return `${entry.contributor_id}|${entry.created_note}|${entry.date}`;
 }
 
+const FIXTURE_TEXT = [
+  validNote.text,
+  maintenanceNote.text,
+  "Pads are worn",
+  "well well well...",
+  "Updated description text.",
+  "Created by someone else",
+  "Updated by an admin",
+];
+
 describe("Feature 9 — Note CRUD", () => {
+  beforeEach(async () => {
+    const notes = await db.note.findAll({ where: { text: FIXTURE_TEXT } });
+    const ids = notes.map((note) => note.note_id);
+
+    if (ids.length) {
+      await db.contributor.destroy({ where: { note_id: ids } });
+      await db.note.destroy({ where: { note_id: ids } });
+    }
+  });
+
   describe("US-9.2: Remove Notes", () => {
     it("User confirms Delete", async () => {
       const created = await request(app)

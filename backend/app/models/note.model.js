@@ -26,20 +26,12 @@ export default (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      name: {
-        type: Sequelize.STRING(120),
+      created_by: {
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
       date: {
         type: Sequelize.DATEONLY,
-        allowNull: true,
-      },
-      submitted_when: {
-        type: Sequelize.STRING(40),
-        allowNull: true,
-      },
-      type: {
-        type: Sequelize.STRING(40),
         allowNull: true,
       },
     },

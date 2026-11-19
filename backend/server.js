@@ -1,5 +1,6 @@
 import routes from "./app/routes/index.js";
 import destinationRoutes from "./app/routes/destination.routes.js";
+import noteRoutes from "./app/routes/note.routes.js";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -47,6 +48,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/vehicle-t3/destinations", destinationRoutes);
 app.use("/api/vehicle-t3/destinations", destinationRoutes);
+app.use("/vehicle-t3/notes", noteRoutes);
+app.use("/api/vehicle-t3/notes", noteRoutes);
 app.use("/api", routes);
 
 const PORT = process.env.PORT || 3200;

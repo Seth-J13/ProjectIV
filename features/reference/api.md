@@ -280,3 +280,51 @@ Delete success is **200** `{ "message": "Area deleted." }`.
 | Name already used                          | 409    | `Area name already in use!` |
 | A vehicle still references the area        | 409    | `Area is in use!`           |
 | Name or notice email missing               | 400    | `Area is incomplete!`       |
+
+### Feature 9 — Note CRUD (`/vehicle-t3/notes` and `/api/vehicle-t3/notes`)
+
+These paths are mounted before the vehicle router so `GET /notes/:request_id`, `POST /notes/`, `PUT /notes/:note_id`, and `DELETE /notes/:note_id` from Feature 5 still belong to maintenance. A maintenance create body that sends `subject` and no `reason` continues to Feature 5. Feature 9 bodies send `reason`.
+
+Any signed-in user may list notes. `contributor_id` is the signed-in user. A missing bearer token is **401** `{ "message": "Please sign in. If you think this is a mistake, contact your system administrator" }`.
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/notes?offset=` | Next 3 notes, newest `date` first. `offset` defaults to 0 |
+| `POST` | `/notes/` | Create a note and its first contribution → **201** |
+| `GET` | `/notes/note/:noteId` | Note details plus `contributors` |
+| `GET` | `/notes/request/:requestId` | Notes for one request |
+| `GET` | `/notes/user/:userId` | Admin. Notes that user contributed to |
+| `PUT` | `/notes/note/:noteId` | Update the note and add a contribution → **200** |
+| `DELETE` | `/notes/note/:noteId` | Delete the note and its contributions → **204** empty |
+| `DELETE` | `/notes/request/:requestId` | Admin. Delete every note on a request → **204** |
+| `GET` | `/notes/contributors` | Admin. Every contribution |
+| `POST` | `/notes/contributors` | Add a contribution |
+| `GET` | `/notes/contributors/note/:noteId` | Contributions for one note |
+| `GET` | `/notes/contributors/user/:userId` | Admin. Contributions by one user |
+| `DELETE` | `/notes/contributors/contribution/:contributionId` | Admin. Delete one contribution → **204** |
+| `DELETE` | `/notes/contributors/note/:noteId` | Delete every contribution on a note → **204** |
+
+Create body: `reason`, `text`, `request_id`, and optional `maintenance_request` (defaults to `false`). Success:
+
+```json
+{
+  "message": "New note created with id=1",
+  "note_id": 1,
+  "contributor_id": 1,
+  "created_note": true,
+  "date": "2026-11-18 23:14:00"
+}
+```
+
+`date` is the contribution's local date and time, `YYYY-MM-DD HH:mm:ss`, with no timezone. Update success is **200** with `note_id`, `created_note: false`, `contributor_id`, and that same `date`.
+
+| Situation | Status | `message` |
+| --- | --- | --- |
+| Missing `reason`, `request_id`, or `text` | 400 | `Malformed request. Please make sure everything in the form is properly formatted!` |
+| Signed out | 401 | `Please sign in. If you think this is a mistake, contact your system administrator` |
+| Not allowed to change the note | 403 | `Please contact a system administrator for assistance.` |
+| Unknown note | 404 | `No note was found for id=<id>` |
+| Request has no notes | 404 | `This request <requestId> doesn't have any notes` |
+| Note has no contributions | 404 | `This note <noteId> doesn't have any contributions` |
+| Same `request_id` and `text` already stored | 409 | `Note with these details already exists!` |
+| Second contribution with `created_note: true` | 409 | `contributor with these details already exists!` |
