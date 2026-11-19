@@ -58,6 +58,9 @@ async function logout() {
 
 <template>
   <v-app-bar v-if="user" color="surface" flat>
+    <v-btn variant="text" type="button" @click="router.push({ name: 'landing' })">
+      Landing
+    </v-btn>
     <v-btn
       v-if="user?.role === 'admin'"
       variant="text"
