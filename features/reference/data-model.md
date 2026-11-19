@@ -97,6 +97,9 @@ Update this file when a feature that defines schema merges to `dev`.
 | `maintenance_request` | BOOLEAN                 | Required              |
 | `request_id`          | INTEGER, FOREIGN KEY    | Required              |
 | `text`                | TEXT                    | Required              |
+| `created_by`          | INTEGER                 | Optional. The user who created the note. Feature 5 maintenance notes may leave this empty |
+
+Feature 9 also stores one row in `Contributors` when a note is created and another row each time it is updated. `request_id` records the request the note belongs to. The database does not reject a note when that request row is absent. `name`, `submitted_when`, and `type` are not columns on `notes`.
 
 ### `Contributors` table
 
@@ -106,7 +109,7 @@ Update this file when a feature that defines schema merges to `dev`.
 | `note_id`        | INTEGER; FOREIGN KEY    | Required              |
 | `contributor_id` | INTEGER; FOREIGN KEY    | Required              |
 | `created_note`   | BOOLEAN                 | Required              |
-| `date`           | DATE                    | Required              |
+| `date`           | DATETIME                | Required. Local date and time, returned as `YYYY-MM-DD HH:mm:ss` with no timezone |
 
 ### `vehicle_logs` table
 

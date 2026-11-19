@@ -91,10 +91,7 @@ exports.createNote = async (req, res) => {
       text: noteText,
       maintenance_request: req.body?.maintenance_request !== false,
       request_id: requestId,
-      name: text(req.body?.name) || null,
       date: req.body?.date || new Date().toISOString().slice(0, 10),
-      submitted_when: text(req.body?.submitted_when) || null,
-      type: text(req.body?.type) || "Maintenance",
     });
 
     return res.status(201).send({
@@ -106,10 +103,7 @@ exports.createNote = async (req, res) => {
       description: created.text,
       request_id: created.request_id,
       maintenance_request: created.maintenance_request,
-      name: created.name,
       date: created.date,
-      submitted_when: created.submitted_when,
-      type: created.type,
     });
   } catch (error) {
     logger.error(`createNote failed: ${error.message}`);
@@ -137,10 +131,7 @@ exports.updateNote = async (req, res) => {
     await note.update({
       subject,
       text: noteText,
-      name: text(req.body?.name) || note.name,
       date: req.body?.date || note.date,
-      submitted_when: text(req.body?.submitted_when) || note.submitted_when,
-      type: text(req.body?.type) || note.type,
       maintenance_request:
         req.body?.maintenance_request == null ? note.maintenance_request : !!req.body.maintenance_request,
     });

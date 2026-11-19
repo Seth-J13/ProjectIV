@@ -4,6 +4,8 @@ import ListRequestForm from "../components/ListRequestForm.vue";
 import TripRequestForm from "../components/TripRequestForm.vue";
 import MaintenanceRequestForm from "../components/MaintenanceRequestForm.vue";
 import requestServices from "../services/requestServices.js";
+import NotesList from "../components/NotesList.vue";
+import apiClient from "../services/services.js";
 import Utils from "../config/utils.js";
 
 const rows = ref([]);
@@ -21,6 +23,7 @@ const editOpen = ref(false);
 const deleteOpen = ref(false);
 const editingId = ref(null);
 const deletingId = ref(null);
+const draftNotes = ref([]);
 
 function blankForm() {
   return {
@@ -37,6 +40,7 @@ function blankForm() {
 }
 
 const form = reactive(blankForm());
+
 const canCreateMaintenance = computed(() =>
   ["admin", "maintenance"].includes(Utils.getStore("user")?.role)
 );
@@ -177,6 +181,7 @@ async function load() {
 
 function openCreate() {
   resetForm();
+  draftNotes.value = [];
   formError.value = "";
   createOpen.value = true;
 }
@@ -211,10 +216,31 @@ async function createRequest() {
   }
 
   try {
-    await requestServices.create(payload(form));
+    const created = await requestServices.create(payload(form));
+    const requestId = created.data?.requestId;
+    const notes = draftNotes.value.map((note) => ({ ...note }));
+    let noteError = "";
+
+    for (const note of notes) {
+      try {
+        await apiClient.post("/vehicle-t3/notes/", {
+          reason: note.reason,
+          text: note.text,
+          request_id: requestId,
+          maintenance_request: note.maintenance_request === true,
+        });
+      } catch (error) {
+        noteError = messageFrom(error);
+      }
+    }
+
     createOpen.value = false;
+    draftNotes.value = [];
     resetForm();
     await load();
+    if (noteError) {
+      errorMessage.value = noteError;
+    }
   } catch (error) {
     formError.value = messageFrom(error);
   }
@@ -300,6 +326,14 @@ onMounted(load);
             :vehicles="vehicles"
             :error="formError"
           />
+          <NotesList
+            v-model="draftNotes"
+            class="mt-4"
+            mode="embed"
+            title=""
+            draft
+            :maintenance-request="form.requestType === 'maintenance'"
+          />
         </v-card-text>
         <v-card-actions>
           <v-btn @click="createOpen = false">Cancel</v-btn>
@@ -325,6 +359,14 @@ onMounted(load);
             :form="form"
             :vehicles="vehicles"
             :error="formError"
+          />
+          <NotesList
+            class="mt-4"
+            mode="embed"
+            title=""
+            scope="request"
+            :request-id="editingId"
+            :maintenance-request="form.requestType === 'maintenance'"
           />
         </v-card-text>
         <v-card-actions>
