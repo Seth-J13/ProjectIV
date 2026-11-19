@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import db from "../models/index.js";
 import logger from "../config/logger.js";
 import { getAccessibleRequestOrNull } from "../authorization/authorization.js";
@@ -159,6 +160,46 @@ function vehicleView(vehicle) {
   };
 }
 
+// Feature 12: the Landing lists need year, availability, and whether a vehicle is in use.
+// `inUse` is computed here so no role has to read other users' requests to learn it.
+function vehicleListView(vehicle, inUseVins) {
+  return {
+    ...vehicleView(vehicle),
+    year: vehicle.year,
+    available: Boolean(vehicle.available),
+    inUse: inUseVins.has(String(vehicle.vin)),
+  };
+}
+
+async function vehiclesInUse() {
+  const rows = await db.request.findAll({
+    attributes: ["vehicleId", "startDate", "startTime", "endDate", "endTime"],
+  });
+  const inUse = new Set();
+
+  for (const row of rows) {
+    if (isRequestActive(row.startDate, row.startTime, row.endDate, row.endTime)) {
+      inUse.add(String(row.vehicleId));
+    }
+  }
+
+  return inUse;
+}
+
+// Admin reads every request. Maintenance reads its own plus every maintenance request.
+// Everyone else reads only their own.
+function requestScope(user) {
+  if (user.role === "admin") {
+    return {};
+  }
+
+  if (user.role === "maintenance") {
+    return { [Op.or]: [{ requesterId: user.id }, { requestType: "maintenance" }] };
+  }
+
+  return { requesterId: user.id };
+}
+
 async function present(row) {
   const plain = row.get({ plain: true });
   const active = isRequestActive(plain.startDate, plain.startTime, plain.endDate, plain.endTime);
@@ -289,7 +330,8 @@ async function readPayload(body, requestType) {
 exports.findVehicles = async (_req, res) => {
   try {
     const vehicles = await db.vehicle.findAll({ order: [["vin", "ASC"]] });
-    return res.send(vehicles.map(vehicleView));
+    const inUseVins = await vehiclesInUse();
+    return res.send(vehicles.map((vehicle) => vehicleListView(vehicle, inUseVins)));
   } catch (error) {
     logger.error(error.message);
     return res.status(500).send({ message: "Unable to load vehicles." });
@@ -328,8 +370,10 @@ exports.findDestinations = async (_req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const where = req.user.role === "admin" ? {} : { requesterId: req.user.id };
-    const rows = await db.request.findAll({ where, order: [["requestId", "ASC"]] });
+    const rows = await db.request.findAll({
+      where: requestScope(req.user),
+      order: [["requestId", "ASC"]],
+    });
     const presented = [];
 
     for (const row of rows) {

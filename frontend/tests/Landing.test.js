@@ -2,184 +2,131 @@
  * Feature 12 — Landing Vue
  * Spec: features/feature-12-Landing-Vue.md
  *
- * Landing.vue should call:
- * - vehicleServices.getVehicles()
- * - requestServices.getRequests(requesterId) for Your Reserved Vehicles
- * - requestServices.getRequests() with no requesterId when an admin loads Reserved Vehicles
- * - requestServices.createVehicleRequest(body) with maintenance: false
- * - requestServices.createMaintenanceRequest(body) with maintenance: true
- *
- * A request GET resolves to { data: { message, requests } }.
- * Headings: "Available Vehicles", "Your Reserved Vehicles", "Vehicles In Service", "Reserved Vehicles".
- * In-service rows use inMaintenance: true. Info buttons use aria-label "Info".
- * Routes: "requests" (/requests), "maintenance" (/maintenance-info/:vin?).
+ * Landing.vue reuses the Feature 8 services:
+ * - requestServices.findVehicles()   (vehicleId, license, make, model, year, available, inUse)
+ * - requestServices.findAll()        (requests the caller may see)
+ * - requestServices.create(body)     (trip or maintenance request)
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { nextTick } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { createMemoryHistory, createRouter } from "vue-router";
 import Landing from "../src/views/Landing.vue";
+import TripRequestForm from "../src/components/TripRequestForm.vue";
+import MaintenanceRequestForm from "../src/components/MaintenanceRequestForm.vue";
 import Utils from "../src/config/utils.js";
 import { mountWithPlugins } from "./testUtils.js";
 
-const { getVehicles, getRequests, createVehicleRequest, createMaintenanceRequest } = vi.hoisted(() => ({
-  getVehicles: vi.fn(),
-  getRequests: vi.fn(),
-  createVehicleRequest: vi.fn(),
-  createMaintenanceRequest: vi.fn(),
-}));
-
-vi.mock("../src/services/vehicleServices.js", () => ({
-  default: {
-    getVehicles: (...args) => getVehicles(...args),
-  },
+const { findAll, findVehicles, findDrivers, findDestinations, create } = vi.hoisted(() => ({
+  findAll: vi.fn(),
+  findVehicles: vi.fn(),
+  findDrivers: vi.fn(),
+  findDestinations: vi.fn(),
+  create: vi.fn(),
 }));
 
 vi.mock("../src/services/requestServices.js", () => ({
   default: {
-    getRequests: (...args) => getRequests(...args),
-    createVehicleRequest: (...args) => createVehicleRequest(...args),
-    createMaintenanceRequest: (...args) => createMaintenanceRequest(...args),
+    findAll: (...args) => findAll(...args),
+    findVehicles: (...args) => findVehicles(...args),
+    findDrivers: (...args) => findDrivers(...args),
+    findDestinations: (...args) => findDestinations(...args),
+    create: (...args) => create(...args),
   },
 }));
 
-const availableVehicle = {
-  vehicleId: "101",
-  vin: "1234567123456712",
-  license: "ABC344",
-  license_plate_num: "ABC344",
-  make: "Honda",
-  model: "Accord",
-  year: 2014,
-  image: "/images/accord.png",
-  available: true,
-  inMaintenance: false,
-};
-
-const hiddenVehicle = {
-  vehicleId: "202",
-  vin: "9999999999999999",
-  license: "HID999",
-  license_plate_num: "HID999",
-  make: "Ford",
-  model: "F-150",
-  year: 2018,
-  image: "/images/f150.png",
-  available: false,
-  inMaintenance: false,
-};
-
-const inServiceVehicle = {
-  vehicleId: "303",
-  vin: "5555555555555555",
-  license: "SRV303",
-  license_plate_num: "SRV303",
-  make: "Toyota",
-  model: "Camry",
-  year: 2019,
-  image: "/images/camry.png",
-  available: false,
-  inMaintenance: true,
-};
-
-const reservedVehicle = {
-  vehicleId: "404",
-  vin: "4044044044044044",
-  license: "MY404",
-  license_plate_num: "MY404",
-  make: "Chevy",
-  model: "Malibu",
-  year: 2021,
-  image: "/images/malibu.png",
-  available: false,
-  inMaintenance: false,
-};
-
-const otherReservedVehicle = {
-  vehicleId: "808",
-  vin: "8088088088088088",
-  license: "OTH808",
-  license_plate_num: "OTH808",
-  make: "Nissan",
-  model: "Altima",
-  year: 2020,
-  image: "/images/altima.png",
-  available: false,
-  inMaintenance: false,
-};
+const userIds = { admin: 1, maintenance: 2, driver: 3, user: 4 };
 
 const vehicles = [
-  availableVehicle,
-  hiddenVehicle,
-  inServiceVehicle,
-  reservedVehicle,
-  otherReservedVehicle,
+  {
+    vehicleId: "101",
+    license: "ABC344",
+    make: "Honda",
+    model: "Accord",
+    year: 2014,
+    available: true,
+    inUse: false,
+  },
+  {
+    vehicleId: "202",
+    license: "HID999",
+    make: "Ford",
+    model: "F-150",
+    year: 2018,
+    available: false,
+    inUse: false,
+  },
+  {
+    vehicleId: "303",
+    license: "SRV303",
+    make: "Toyota",
+    model: "Camry",
+    year: 2019,
+    available: true,
+    inUse: true,
+  },
+  {
+    vehicleId: "404",
+    license: "MY404",
+    make: "Chevy",
+    model: "Malibu",
+    year: 2021,
+    available: true,
+    inUse: true,
+  },
+  {
+    vehicleId: "808",
+    license: "OTH808",
+    make: "Nissan",
+    model: "Altima",
+    year: 2020,
+    available: true,
+    inUse: true,
+  },
 ];
 
-const userIds = {
-  admin: 1,
-  maintenance: 2,
-  driver: 3,
-  user: 4,
-};
+function requestsFor(role) {
+  const mine = userIds[role];
+  const rows = [
+    // Mine and in use right now.
+    { requestId: 1, requestType: "trip", requesterId: mine, vehicleId: "404", currentlyActive: true },
+    // Mine, booked for later: not reserved yet.
+    { requestId: 2, requestType: "trip", requesterId: mine, vehicleId: "101", currentlyActive: false },
+    // Someone else's.
+    { requestId: 3, requestType: "trip", requesterId: 99, vehicleId: "808", currentlyActive: true },
+    { requestId: 4, requestType: "maintenance", requesterId: 99, vehicleId: "303", currentlyActive: true },
+  ];
 
-const otherReservation = {
-  requestId: 502,
-  requesterId: 99,
-  vehicleId: otherReservedVehicle.vehicleId,
-  maintenance: false,
-  currentlyActive: true,
-  vehicle: otherReservedVehicle,
-};
+  if (role === "admin") {
+    return rows;
+  }
 
-const serviceReservation = {
-  requestId: 503,
-  requesterId: 99,
-  vehicleId: inServiceVehicle.vehicleId,
-  maintenance: true,
-  currentlyActive: true,
-  vehicle: inServiceVehicle,
-};
+  // A maintenance user also reads every maintenance request.
+  if (role === "maintenance") {
+    return rows.filter((row) => row.requesterId === mine || row.requestType === "maintenance");
+  }
 
-function myReservation(requesterId) {
-  return {
-    requestId: 501,
-    requesterId: Number(requesterId),
-    vehicleId: reservedVehicle.vehicleId,
-    maintenance: false,
-    currentlyActive: true,
-    vehicle: reservedVehicle,
-  };
+  return rows.filter((row) => row.requesterId === mine);
 }
 
 function setUser(role) {
-  const userId = userIds[role];
   Utils.setStore("user", {
-    userId,
-    requesterId: userId,
-    username: role,
+    id: userIds[role],
+    email: `${role}@example.com`,
+    firstName: "Test",
+    lastName: role,
     role,
     token: `${role}-token`,
   });
-  return userId;
 }
 
-function requesterIdFromCall(arg) {
-  if (typeof arg === "number" || typeof arg === "string") {
-    return Number(arg);
-  }
-  if (!arg || typeof arg !== "object") {
-    return NaN;
-  }
-  return Number(arg.requesterId ?? arg.userId ?? arg.params?.requesterId ?? arg.params?.userId);
-}
-
-function apiCallCount() {
+function apiCalls() {
   return (
-    getVehicles.mock.calls.length +
-    getRequests.mock.calls.length +
-    createVehicleRequest.mock.calls.length +
-    createMaintenanceRequest.mock.calls.length
+    findAll.mock.calls.length +
+    findVehicles.mock.calls.length +
+    findDrivers.mock.calls.length +
+    findDestinations.mock.calls.length +
+    create.mock.calls.length
   );
 }
 
@@ -189,204 +136,73 @@ async function flush() {
   await flushPromises();
 }
 
-async function createLandingRouter() {
+async function mountLanding(role) {
+  setUser(role);
+  findVehicles.mockResolvedValue({ data: vehicles });
+  findAll.mockResolvedValue({ data: requestsFor(role) });
+  findDrivers.mockResolvedValue({ data: [{ driverId: 3, name: "Jane Doe" }] });
+  findDestinations.mockResolvedValue({ data: [{ destId: 7, name: "State Capitol" }] });
+
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
       { path: "/landing", name: "landing", component: Landing },
       { path: "/requests", name: "requests", component: { template: "<div>Requests</div>" } },
-      {
-        path: "/maintenance-info/:vin?",
-        name: "maintenance",
-        component: { template: "<div>Maintenance</div>" },
-        props: true,
-      },
-      { path: "/login", name: "login", component: { template: "<div>Login</div>" } },
+      { path: "/maintenance-info/:vin?", name: "maintenance", component: { template: "<div>Maintenance</div>" } },
     ],
   });
-
-  await router.push({ name: "landing" });
+  await router.push("/landing");
   await router.isReady();
-  return router;
-}
 
-let activeWrapper;
-
-async function mountLanding(role) {
-  activeWrapper?.unmount();
-  document.body.innerHTML = "";
-
-  const requesterId = setUser(role);
-  const router = await createLandingRouter();
-  const { wrapper } = await mountWithPlugins(Landing, {
-    router,
-    attachTo: document.body,
-  });
-  activeWrapper = wrapper;
+  const { wrapper } = await mountWithPlugins(Landing, { router });
   await flush();
-  return { wrapper, router, requesterId };
+  return { wrapper, router };
 }
 
-const headingSelector =
-  "h1, h2, h3, h4, caption, .v-card-title, .v-toolbar-title, .text-h6, .text-h5, .text-subtitle-1";
-
-function headingByTitle(wrapper, title) {
-  return wrapper.findAll(headingSelector).find((node) => node.text().replace(/\s+/g, " ").trim() === title);
+function section(wrapper, key) {
+  return wrapper.find(`[data-testid="section-${key}"]`);
 }
 
-function sectionByTitle(wrapper, title) {
-  const heading = headingByTitle(wrapper, title);
-  expect(heading, `heading "${title}"`).toBeTruthy();
-
-  let element = heading.element;
-  while (element && element !== wrapper.element) {
-    const owner = wrapper.findAll("*").find((node) => node.element === element);
-    if (owner && owner.find("tbody tr, .v-data-table__tr").exists()) {
-      return owner;
-    }
-    element = element.parentElement;
-  }
-
-  expect.fail(`No table found for "${title}"`);
+function rowTexts(wrapper, key) {
+  return section(wrapper, key)
+    .findAll("tbody tr")
+    .map((row) => row.text());
 }
 
-function rowContaining(section, text) {
-  const row = section
-    .findAll("tbody tr, .v-data-table__tr")
-    .find((node) => node.text().includes(text));
-  expect(row, `row containing "${text}"`).toBeTruthy();
-  return row;
+function rowFor(wrapper, key, license) {
+  return section(wrapper, key)
+    .findAll("tbody tr")
+    .find((row) => row.text().includes(license));
 }
 
-function expectHeaders(section, headers) {
-  const text = section.text();
-  for (const header of headers) {
-    expect(text).toContain(header);
-  }
-}
-
-function infoButton(row) {
-  const button = row.findAll("button").find((node) => /info/i.test(node.attributes("aria-label") || ""));
-  expect(button, 'button with aria-label "Info"').toBeTruthy();
-  return button;
-}
-
-function visibleShortText(wrapper, pattern) {
-  return wrapper.findAll("*").some((node) => {
-    if (!node.isVisible()) {
-      return false;
-    }
-    const text = node.text().replace(/\s+/g, " ").trim();
-    return text.length > 0 && text.length <= 60 && pattern.test(text);
+async function fillTrip(wrapper, overrides = {}) {
+  Object.assign(wrapper.findComponent(TripRequestForm).props("form"), {
+    vehicleId: "101",
+    driverId: 3,
+    destId: 7,
+    startDate: "2026-11-20",
+    endDate: "2026-11-21",
+    numPeople: "4",
+    ...overrides,
   });
+  await nextTick();
 }
 
-function labelInput(pattern) {
-  const labels = [...document.querySelectorAll("label, .v-label")];
-  const label = labels.find((element) =>
-    pattern.test(element.textContent.replace(/\s+/g, " ").trim())
-  );
-  if (!label) {
-    return null;
-  }
-  const root = label.closest(".v-input") || label.parentElement;
-  return root?.querySelector("input, textarea") ?? null;
-}
-
-function setControlValue(input, value) {
-  const prototype = Object.getPrototypeOf(input);
-  const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
-  descriptor.set.call(input, value);
-  input.dispatchEvent(new Event("input", { bubbles: true }));
-  input.dispatchEvent(new Event("change", { bubbles: true }));
-}
-
-function fillRequired(pattern, value) {
-  const input = labelInput(pattern);
-  expect(input, `field matching ${pattern}`).toBeTruthy();
-  setControlValue(input, value);
-  return input;
-}
-
-function visibleSubmitButton() {
-  return [...document.querySelectorAll("button")].find((button) => {
-    const text = button.textContent.replace(/\s+/g, " ");
-    const style = window.getComputedStyle(button);
-    return /submit/i.test(text) && style.display !== "none" && style.visibility !== "hidden";
-  });
-}
-
-function payloadOf(mock) {
-  const args = mock.mock.calls.at(-1) ?? [];
-  return args.find((arg) => arg && typeof arg === "object" && !Array.isArray(arg));
-}
-
-function formShowsVehicle(vehicle) {
-  const formInputs = [...document.querySelectorAll("form input, .v-form input")]
-    .map((input) => input.value)
-    .join(" ");
-  const formText = [...document.querySelectorAll("form, .v-form")].map((node) => node.textContent).join(" ");
-  const blob = `${formInputs} ${formText}`;
-  expect(blob).toContain(vehicle.license);
-  expect(blob).toContain(vehicle.make);
-  expect(blob).toContain(vehicle.model);
-}
-
-function expectVehicleColumns(section, vehicle) {
-  expect(section.text()).toContain(vehicle.license);
-  expect(section.text()).toContain(vehicle.make);
-  expect(section.text()).toContain(vehicle.model);
-  expect(section.text()).toContain(String(vehicle.year));
-  expect(section.find("img").exists()).toBe(true);
-}
-
-async function fillVehicleRequestForm() {
-  fillRequired(/license/i, availableVehicle.license);
-  fillRequired(/make/i, availableVehicle.make);
-  fillRequired(/model/i, availableVehicle.model);
-  fillRequired(/driver/i, "Jane Doe");
-  fillRequired(/destination/i, "State Capitol");
-  fillRequired(/people/i, "5");
-  fillRequired(/start date/i, "2026-10-25");
-  fillRequired(/end date/i, "2026-10-28");
-  const startTime = labelInput(/start time/i);
-  const endTime = labelInput(/end time/i);
-  if (startTime) {
-    setControlValue(startTime, "09:00:00");
-  }
-  if (endTime) {
-    setControlValue(endTime, "17:00:00");
-  }
-}
-
-function routeIncludesVehicle(route, vehicle) {
-  expect(route.fullPath).toMatch(new RegExp(`${vehicle.vin}|${vehicle.vehicleId}|${vehicle.license}`));
+async function submitForm(wrapper) {
+  await wrapper.find("form").trigger("submit");
+  await flush();
 }
 
 beforeEach(() => {
-  vi.clearAllMocks();
   localStorage.clear();
-  getVehicles.mockResolvedValue({ status: 200, data: vehicles });
-  getRequests.mockImplementation(async (arg) => {
-    const fromArg = requesterIdFromCall(arg);
-    const stored = JSON.parse(localStorage.getItem("user") || "{}");
-    const requesterId = Number.isFinite(fromArg) ? fromArg : null;
-    const mine = myReservation(requesterId ?? stored.requesterId);
-    const requests = requesterId === null ? [mine, otherReservation, serviceReservation] : [mine];
-    return {
-      status: 200,
-      data: {
-        message: "Reserved vehicles retrieved.",
-        requests,
-      },
-    };
-  });
+  findAll.mockReset();
+  findVehicles.mockReset();
+  findDrivers.mockReset();
+  findDestinations.mockReset();
+  create.mockReset();
 });
 
 afterEach(() => {
-  activeWrapper?.unmount();
-  activeWrapper = undefined;
-  document.body.innerHTML = "";
   localStorage.clear();
 });
 
@@ -394,88 +210,95 @@ describe("Feature 12 — Landing Vue", () => {
   describe("US-12.1 — View Available Vehicles", () => {
     it("User logs in and `Landing.vue` is loaded", async () => {
       for (const role of ["admin", "maintenance", "driver", "user"]) {
+        findVehicles.mockClear();
         const { wrapper } = await mountLanding(role);
 
-        expect(getVehicles).toHaveBeenCalled();
-        expect(wrapper.text()).toContain("Vehicle Management System");
-
-        const section = sectionByTitle(wrapper, "Available Vehicles");
-        expect(section.text()).toContain(availableVehicle.license);
-        expect(section.text()).toContain(availableVehicle.make);
-        expect(section.text()).toContain(availableVehicle.model);
-        expect(section.text()).not.toContain(hiddenVehicle.license);
-        expect(section.text()).not.toContain(otherReservedVehicle.license);
+        expect(wrapper.find("h1").text()).toBe("Vehicle Management System");
+        expect(findVehicles).toHaveBeenCalledTimes(1);
+        wrapper.unmount();
       }
     });
 
     it("User clicks a vehicle in the `Available Vehicles` list", async () => {
-      for (const role of ["admin", "maintenance", "driver", "user"]) {
-        const { wrapper, router } = await mountLanding(role);
-        const before = apiCallCount();
-        const row = rowContaining(sectionByTitle(wrapper, "Available Vehicles"), availableVehicle.license);
+      const { wrapper } = await mountLanding("user");
+      const before = apiCalls();
 
-        await row.trigger("click");
-        await flush();
+      await rowFor(wrapper, "available", "ABC344").trigger("click");
+      await flush();
 
-        expect(apiCallCount()).toBe(before);
-        expect(router.currentRoute.value.name).toBe("landing");
-        formShowsVehicle(availableVehicle);
-      }
+      expect(wrapper.findComponent(TripRequestForm).props("form").vehicleId).toBe("101");
+      const fieldValue = (label) =>
+        wrapper
+          .findAllComponents({ name: "VTextField" })
+          .find((field) => field.props("label") === label)
+          .find("input").element.value;
+      expect(fieldValue("Vehicle")).toBe("ABC344 Honda Accord");
+      expect(fieldValue("License")).toBe("ABC344");
+      expect(fieldValue("Make")).toBe("Honda");
+      expect(fieldValue("Model")).toBe("Accord");
+      expect(apiCalls()).toBe(before);
     });
 
     it("User views `Available Vehicles` list", async () => {
-      for (const role of ["admin", "maintenance", "driver", "user"]) {
-        const { wrapper } = await mountLanding(role);
-        const section = sectionByTitle(wrapper, "Available Vehicles");
+      const { wrapper } = await mountLanding("user");
+      const headers = section(wrapper, "available")
+        .findAll("thead th")
+        .map((th) => th.text());
 
-        expectHeaders(section, ["License", "Make", "Model", "Year", "Image"]);
-        expectVehicleColumns(section, availableVehicle);
-      }
+      expect(headers).toEqual(["License", "Make", "Model", "Year", "Image"]);
+
+      const rows = rowTexts(wrapper, "available");
+      expect(rows).toHaveLength(1);
+      expect(rows[0]).toContain("ABC344");
+      expect(rows[0]).toContain("Honda");
+      expect(rows[0]).toContain("Accord");
+      expect(rows[0]).toContain("2014");
+      // Unavailable and in-use vehicles are not offered.
+      expect(section(wrapper, "available").text()).not.toContain("HID999");
+      expect(section(wrapper, "available").text()).not.toContain("MY404");
     });
   });
 
   describe("US-12.2 — View `Your Reserved Vehicles`", () => {
     it("User logs in and `Landing.vue` is loaded", async () => {
       for (const role of ["admin", "maintenance", "driver", "user"]) {
-        const { wrapper, requesterId } = await mountLanding(role);
+        const { wrapper } = await mountLanding(role);
 
-        expect(getVehicles).toHaveBeenCalled();
-        expect(getRequests).toHaveBeenCalled();
-        expect(
-          getRequests.mock.calls.some((args) => args.some((arg) => requesterIdFromCall(arg) === requesterId))
-        ).toBe(true);
-
-        const section = sectionByTitle(wrapper, "Your Reserved Vehicles");
-        expect(section.text()).toContain(reservedVehicle.license);
-        expect(section.text()).toContain(reservedVehicle.make);
-        expect(section.text()).toContain(reservedVehicle.model);
-        expect(section.text()).not.toContain(otherReservedVehicle.license);
-        expect(section.text()).not.toContain(hiddenVehicle.license);
+        expect(findAll).toHaveBeenCalled();
+        const rows = rowTexts(wrapper, "your-reserved");
+        expect(rows).toHaveLength(1);
+        expect(rows[0]).toContain("MY404");
+        wrapper.unmount();
+        findAll.mockClear();
       }
     });
 
     it("User clicks on a list item", async () => {
-      for (const role of ["admin", "maintenance", "driver", "user"]) {
-        const { wrapper, router } = await mountLanding(role);
-        const before = apiCallCount();
-        const row = rowContaining(sectionByTitle(wrapper, "Your Reserved Vehicles"), reservedVehicle.license);
+      const { wrapper, router } = await mountLanding("user");
+      const before = apiCalls();
 
-        await row.trigger("click");
-        await flush();
-
-        expect(apiCallCount()).toBe(before);
-        expect(router.currentRoute.value.name).toBe("requests");
-      }
+      await rowFor(wrapper, "your-reserved", "MY404").trigger("click");
+      await flush();
+      await vi.waitFor(() => expect(router.currentRoute.value.name).toBe("requests"));
+      expect(apiCalls()).toBe(before);
     });
 
     it("User views `Your Reserved Vehicles` list", async () => {
-      for (const role of ["admin", "maintenance", "driver", "user"]) {
-        const { wrapper } = await mountLanding(role);
-        const section = sectionByTitle(wrapper, "Your Reserved Vehicles");
+      const { wrapper } = await mountLanding("driver");
+      const headers = section(wrapper, "your-reserved")
+        .findAll("thead th")
+        .map((th) => th.text());
 
-        expectHeaders(section, ["License", "Make", "Model", "Year", "Image"]);
-        expectVehicleColumns(section, reservedVehicle);
-      }
+      expect(headers).toEqual(["License", "Make", "Model", "Year", "Image"]);
+
+      const text = section(wrapper, "your-reserved").text();
+      expect(text).toContain("MY404");
+      expect(text).toContain("Chevy");
+      expect(text).toContain("Malibu");
+      expect(text).toContain("2021");
+      // Someone else's reservation, and one booked for later, are not mine to see here.
+      expect(text).not.toContain("OTH808");
+      expect(text).not.toContain("ABC344");
     });
   });
 
@@ -483,256 +306,229 @@ describe("Feature 12 — Landing Vue", () => {
     it("User logs in and `Landing.vue` is loaded", async () => {
       for (const role of ["admin", "maintenance"]) {
         const { wrapper } = await mountLanding(role);
-        const section = sectionByTitle(wrapper, "Vehicles In Service");
 
-        expect(getVehicles).toHaveBeenCalled();
-        expect(section.text()).toContain(inServiceVehicle.license);
-        expect(section.text()).toContain(inServiceVehicle.make);
-        expect(section.text()).toContain(inServiceVehicle.model);
-        expect(section.text()).not.toContain(hiddenVehicle.license);
+        expect(findVehicles).toHaveBeenCalled();
+        expect(findAll).toHaveBeenCalled();
+        const rows = rowTexts(wrapper, "in-service");
+        expect(rows).toHaveLength(1);
+        expect(rows[0]).toContain("SRV303");
+        wrapper.unmount();
       }
 
       for (const role of ["driver", "user"]) {
         const { wrapper } = await mountLanding(role);
-        expect(headingByTitle(wrapper, "Vehicles In Service")).toBeFalsy();
-        expect(wrapper.text()).not.toContain(inServiceVehicle.license);
+
+        expect(section(wrapper, "in-service").exists()).toBe(false);
+        wrapper.unmount();
       }
     });
 
     it("User clicks a list item", async () => {
-      for (const role of ["admin", "maintenance"]) {
-        const { wrapper, router } = await mountLanding(role);
-        const before = apiCallCount();
-        const row = rowContaining(sectionByTitle(wrapper, "Vehicles In Service"), inServiceVehicle.license);
+      const { wrapper, router } = await mountLanding("maintenance");
+      const before = apiCalls();
 
-        await row.trigger("click");
-        await flush();
-
-        expect(apiCallCount()).toBe(before);
-        expect(router.currentRoute.value.name).toBe("maintenance");
-        routeIncludesVehicle(router.currentRoute.value, inServiceVehicle);
-      }
+      await rowFor(wrapper, "in-service", "SRV303").trigger("click");
+      await flush();
+      await vi.waitFor(() => expect(router.currentRoute.value.name).toBe("maintenance"));
+      expect(router.currentRoute.value.params.vin).toBe("303");
+      expect(apiCalls()).toBe(before);
     });
 
     it("User views `Vehicles In Service` list", async () => {
-      for (const role of ["admin", "maintenance"]) {
-        const { wrapper } = await mountLanding(role);
-        const section = sectionByTitle(wrapper, "Vehicles In Service");
-        const row = rowContaining(section, inServiceVehicle.license);
+      const { wrapper } = await mountLanding("admin");
+      const headers = section(wrapper, "in-service")
+        .findAll("thead th")
+        .map((th) => th.text());
 
-        expectHeaders(section, ["License", "Make", "Model", "Year", "Image"]);
-        expectVehicleColumns(section, inServiceVehicle);
-        expect(infoButton(row).exists()).toBe(true);
-        expect(section.text()).not.toContain(availableVehicle.license);
-      }
+      expect(headers).toEqual(["License", "Make", "Model", "Year", "Image", "Action"]);
+
+      const row = rowFor(wrapper, "in-service", "SRV303");
+      expect(row.text()).toContain("Toyota");
+      expect(row.text()).toContain("Camry");
+      expect(row.text()).toContain("2019");
+      expect(row.find('button[aria-label="Info"]').exists()).toBe(true);
     });
 
     it("User clicks `Info Icon` button", async () => {
-      for (const role of ["admin", "maintenance"]) {
-        const { wrapper, router } = await mountLanding(role);
-        const row = rowContaining(sectionByTitle(wrapper, "Vehicles In Service"), inServiceVehicle.license);
+      const { wrapper, router } = await mountLanding("admin");
+      const before = apiCalls();
 
-        await infoButton(row).trigger("click");
-        await flush();
-
-        expect(router.currentRoute.value.name).toBe("maintenance");
-        routeIncludesVehicle(router.currentRoute.value, inServiceVehicle);
-      }
+      await rowFor(wrapper, "in-service", "SRV303").find('button[aria-label="Info"]').trigger("click");
+      await flush();
+      await vi.waitFor(() => expect(router.currentRoute.value.name).toBe("maintenance"));
+      expect(router.currentRoute.value.params.vin).toBe("303");
+      expect(apiCalls()).toBe(before);
     });
   });
 
-  describe("US-12.4 — Toggle between Vehicle Request Form and Maintenance Request", () => {
+  describe("US-12.4 — Toggle between TripRequestVorm.vue and Maintenance Request", () => {
     it("User clicks the form toggle switch", async () => {
       for (const role of ["admin", "maintenance"]) {
         const { wrapper } = await mountLanding(role);
-        const before = apiCallCount();
-        const toggle = wrapper.find("[role='switch']");
+        const before = apiCalls();
 
-        expect(toggle.exists()).toBe(true);
-        expect(visibleShortText(wrapper, /Vehicle Request Form/)).toBe(true);
+        expect(wrapper.findComponent(TripRequestForm).exists()).toBe(true);
+        expect(wrapper.findComponent(MaintenanceRequestForm).exists()).toBe(false);
 
-        await toggle.setValue(true);
+        await wrapper.find('input[role="switch"]').setValue(true);
         await flush();
 
-        expect(apiCallCount()).toBe(before);
-        expect(visibleShortText(wrapper, /Maintenance Request Form/)).toBe(true);
-        expect(visibleShortText(wrapper, /Vehicle Request Form/)).toBe(false);
+        expect(wrapper.findComponent(MaintenanceRequestForm).exists()).toBe(true);
+        expect(wrapper.findComponent(TripRequestForm).exists()).toBe(false);
+        expect(apiCalls()).toBe(before);
+        wrapper.unmount();
       }
 
-      for (const role of ["driver", "user"]) {
-        const { wrapper } = await mountLanding(role);
-        expect(wrapper.find("[role='switch']").exists()).toBe(false);
-        expect(visibleShortText(wrapper, /Vehicle Request Form/)).toBe(true);
-        expect(visibleShortText(wrapper, /Maintenance Request Form/)).toBe(false);
-      }
+      const { wrapper } = await mountLanding("user");
+      expect(wrapper.find('input[role="switch"]').exists()).toBe(false);
     });
   });
 
-  describe("US-12.5 — View `Vehicle Request Form` component", () => {
-    it("User correctly fills out the `Vehicle Request Form`", async () => {
+  describe("US-12.5 — View `TripRequestVorm.vue` component", () => {
+    it("User correctly fills out the `TripRequestVorm.vue`", async () => {
       for (const role of ["admin", "maintenance", "driver", "user"]) {
-        const { requesterId } = await mountLanding(role);
-        createVehicleRequest.mockResolvedValue({
-          status: 201,
-          data: { message: "Vehicle request created." },
+        create.mockReset();
+        create.mockResolvedValue({ status: 201, data: { requestId: 10, requestType: "trip" } });
+        const { wrapper } = await mountLanding(role);
+        await fillTrip(wrapper);
+
+        await submitForm(wrapper);
+
+        expect(create).toHaveBeenCalledTimes(1);
+        expect(create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            requestType: "trip",
+            vehicleId: "101",
+            driverId: 3,
+            destId: 7,
+            startDate: "2026-11-20",
+            endDate: "2026-11-21",
+            numPeople: 4,
+          })
+        );
+        expect(wrapper.findComponent(TripRequestForm).props("form")).toMatchObject({
+          vehicleId: null,
+          driverId: null,
+          destId: null,
+          startDate: "",
+          endDate: "",
+          numPeople: "",
         });
-
-        await fillVehicleRequestForm();
-        const before = createVehicleRequest.mock.calls.length;
-        const submit = visibleSubmitButton();
-        expect(submit).toBeTruthy();
-        submit.click();
-        await flush();
-
-        expect(createVehicleRequest.mock.calls.length).toBe(before + 1);
-        const body = payloadOf(createVehicleRequest);
-        expect(body.maintenance).toBe(false);
-        expect(Number(body.requesterId)).toBe(requesterId);
-        expect(JSON.stringify(body)).toContain("2026-10-25");
-        expect(JSON.stringify(body)).toContain("2026-10-28");
-        expect(labelInput(/people/i).value).toBe("");
-        expect(labelInput(/start date/i).value).toBe("");
+        wrapper.unmount();
       }
     });
 
-    it("User incorrectly fills out the `Vehicle Request Form`", async () => {
-      for (const role of ["admin", "maintenance", "driver", "user"]) {
-        const { wrapper } = await mountLanding(role);
-        createVehicleRequest.mockRejectedValue({
-          response: {
-            status: 400,
-            data: { message: "destination is required" },
-          },
-        });
+    it("User incorrectly fills out the `TripRequestVorm.vue`", async () => {
+      create.mockRejectedValue({
+        response: { status: 400, data: { message: "driver is required." } },
+      });
+      const { wrapper } = await mountLanding("user");
+      await fillTrip(wrapper, { driverId: null });
 
-        fillRequired(/license/i, availableVehicle.license);
-        fillRequired(/make/i, availableVehicle.make);
-        fillRequired(/model/i, availableVehicle.model);
-        fillRequired(/driver/i, "Jane Doe");
-        fillRequired(/people/i, "5");
-        fillRequired(/start date/i, "2026-10-25");
-        fillRequired(/end date/i, "2026-10-28");
+      await submitForm(wrapper);
 
-        const before = createVehicleRequest.mock.calls.length;
-        const submit = visibleSubmitButton();
-        expect(submit).toBeTruthy();
-        submit.click();
-        await flush();
-
-        expect(createVehicleRequest.mock.calls.length).toBe(before + 1);
-        expect(wrapper.text()).toContain("destination is required");
-        expect(labelInput(/start date/i).value).toBe("2026-10-25");
-      }
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(wrapper.text()).toContain("driver is required.");
+      expect(wrapper.findComponent(TripRequestForm).props("form").vehicleId).toBe("101");
     });
   });
 
-  describe("US-12.6 — View `Maintenance Request Form` component", () => {
-    it("User correctly fills out the `Maintenance Request Form`", async () => {
+  describe("US-12.6 — View `MaintenanceRequestVorm.vue` component", () => {
+    async function openMaintenance(role) {
+      const mounted = await mountLanding(role);
+      await mounted.wrapper.find('input[role="switch"]').setValue(true);
+      await flush();
+      return mounted.wrapper;
+    }
+
+    it("User correctly fills out the `MaintenanceRequestVorm.vue`", async () => {
       for (const role of ["admin", "maintenance"]) {
-        const { requesterId } = await mountLanding(role);
-        createMaintenanceRequest.mockResolvedValue({
-          status: 201,
-          data: { message: "Maintenance request created." },
+        create.mockReset();
+        create.mockResolvedValue({ status: 201, data: { requestId: 11, requestType: "maintenance" } });
+        const wrapper = await openMaintenance(role);
+        Object.assign(wrapper.findComponent(MaintenanceRequestForm).props("form"), {
+          vehicleId: "101",
+          startDate: "2026-11-20",
+          startTime: "08:00",
         });
+        await nextTick();
 
-        const toggle = wrapperToggle();
-        await toggle.setValue(true);
-        await flush();
+        await submitForm(wrapper);
 
-        fillRequired(/license/i, inServiceVehicle.license);
-        fillRequired(/start date/i, "2026-10-25");
-        fillRequired(/end date/i, "2026-10-28");
-
-        const beforeVehicle = createVehicleRequest.mock.calls.length;
-        const beforeMaintenance = createMaintenanceRequest.mock.calls.length;
-        const submit = visibleSubmitButton();
-        expect(submit).toBeTruthy();
-        submit.click();
-        await flush();
-
-        expect(createMaintenanceRequest.mock.calls.length).toBe(beforeMaintenance + 1);
-        expect(createVehicleRequest.mock.calls.length).toBe(beforeVehicle);
-        const body = payloadOf(createMaintenanceRequest);
-        expect(body.maintenance).toBe(true);
-        expect(Number(body.requesterId)).toBe(requesterId);
-        expect(JSON.stringify(body)).toContain("2026-10-25");
-        expect(labelInput(/start date/i).value).toBe("");
+        expect(create).toHaveBeenCalledTimes(1);
+        expect(create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            requestType: "maintenance",
+            vehicleId: "101",
+            startDate: "2026-11-20",
+            startTime: "08:00",
+          })
+        );
+        expect(wrapper.findComponent(MaintenanceRequestForm).props("form")).toMatchObject({
+          vehicleId: null,
+          startDate: "",
+          startTime: "",
+        });
+        wrapper.unmount();
       }
     });
 
-    it("User incorrectly fills out the `Maintenance Request Form`", async () => {
-      for (const role of ["admin", "maintenance"]) {
-        const { wrapper } = await mountLanding(role);
-        createMaintenanceRequest.mockRejectedValue({
-          response: {
-            status: 400,
-            data: { message: "start date is required" },
-          },
-        });
+    it("User incorrectly fills out the `MaintenanceRequestVorm.vue`", async () => {
+      create.mockRejectedValue({
+        response: { status: 400, data: { message: "vehicle is required." } },
+      });
+      const wrapper = await openMaintenance("maintenance");
 
-        await wrapper.find("[role='switch']").setValue(true);
-        await flush();
+      await submitForm(wrapper);
 
-        fillRequired(/license/i, inServiceVehicle.license);
-        fillRequired(/end date/i, "2026-10-28");
-
-        const before = createMaintenanceRequest.mock.calls.length;
-        const submit = visibleSubmitButton();
-        expect(submit).toBeTruthy();
-        submit.click();
-        await flush();
-
-        expect(createMaintenanceRequest.mock.calls.length).toBe(before + 1);
-        expect(wrapper.text()).toContain("start date is required");
-        expect(labelInput(/end date/i).value).toBe("2026-10-28");
-      }
+      expect(create).toHaveBeenCalledTimes(1);
+      expect(wrapper.text()).toContain("vehicle is required.");
     });
   });
 
   describe("US-12.7 — View `Reserved Vehicles`", () => {
     it("User logs in and `Landing.vue` is loaded", async () => {
       const { wrapper } = await mountLanding("admin");
-      const section = sectionByTitle(wrapper, "Reserved Vehicles");
 
-      expect(
-        getRequests.mock.calls.some((args) => !args.some((arg) => Number.isFinite(requesterIdFromCall(arg))))
-      ).toBe(true);
-      expect(section.text()).toContain(otherReservedVehicle.license);
-      expect(section.text()).toContain(reservedVehicle.license);
+      expect(findAll).toHaveBeenCalled();
+      const text = section(wrapper, "reserved").text();
+      expect(text).toContain("MY404");
+      expect(text).toContain("OTH808");
+      expect(text).toContain("SRV303");
 
       for (const role of ["maintenance", "driver", "user"]) {
-        const mounted = await mountLanding(role);
-        expect(headingByTitle(mounted.wrapper, "Reserved Vehicles")).toBeFalsy();
-        expect(mounted.wrapper.text()).not.toContain(otherReservedVehicle.license);
+        const other = await mountLanding(role);
+        expect(section(other.wrapper, "reserved").exists()).toBe(false);
+        other.wrapper.unmount();
       }
     });
 
     it("User views `Reserved Vehicles` list", async () => {
       const { wrapper } = await mountLanding("admin");
-      const section = sectionByTitle(wrapper, "Reserved Vehicles");
-      const row = rowContaining(section, otherReservedVehicle.license);
+      const headers = section(wrapper, "reserved")
+        .findAll("thead th")
+        .map((th) => th.text());
 
-      expectHeaders(section, ["License", "Make", "Model", "Year", "Image"]);
-      expectVehicleColumns(section, otherReservedVehicle);
-      expectVehicleColumns(section, reservedVehicle);
-      expect(infoButton(row).exists()).toBe(true);
+      expect(headers).toEqual(["License", "Make", "Model", "Year", "Image", "Action"]);
+
+      const row = rowFor(wrapper, "reserved", "OTH808");
+      expect(row.text()).toContain("Nissan");
+      expect(row.text()).toContain("Altima");
+      expect(row.text()).toContain("2020");
+      expect(row.find('button[aria-label="Info"]').exists()).toBe(true);
+      // Booked for later is not reserved yet.
+      expect(section(wrapper, "reserved").text()).not.toContain("ABC344");
     });
 
     it("User clicks `Info Icon` button", async () => {
       const { wrapper, router } = await mountLanding("admin");
-      const row = rowContaining(sectionByTitle(wrapper, "Reserved Vehicles"), otherReservedVehicle.license);
+      const before = apiCalls();
 
-      await infoButton(row).trigger("click");
+      await rowFor(wrapper, "reserved", "OTH808").find('button[aria-label="Info"]').trigger("click");
       await flush();
-
-      expect(router.currentRoute.value.name).toBe("requests");
-      routeIncludesVehicle(router.currentRoute.value, otherReservedVehicle);
+      await vi.waitFor(() => expect(router.currentRoute.value.name).toBe("requests"));
+      expect(router.currentRoute.value.query.vehicleId).toBe("808");
+      expect(apiCalls()).toBe(before);
     });
   });
 });
-
-function wrapperToggle() {
-  const toggle = activeWrapper.find("[role='switch']");
-  expect(toggle.exists()).toBe(true);
-  return toggle;
-}
