@@ -453,6 +453,14 @@ exports.remove = async (req, res) => {
       return res.status(404).send({ message: `Request with id=${requestId} not found.` });
     }
 
+    const notes = await db.note.findAll({ where: { request_id: row.requestId } });
+    const noteIds = notes.map((note) => note.note_id);
+
+    if (noteIds.length) {
+      await db.contributor.destroy({ where: { note_id: noteIds } });
+      await db.note.destroy({ where: { note_id: noteIds } });
+    }
+
     await row.destroy();
     return res.status(204).send();
   } catch (error) {

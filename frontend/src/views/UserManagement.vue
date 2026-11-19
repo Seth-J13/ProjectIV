@@ -23,6 +23,7 @@ export default {
 <script setup>
 import { nextTick, onMounted, ref } from "vue";
 import RoleSelect from "../components/RoleSelect.vue";
+import NotesList from "../components/NotesList.vue";
 import userServices from "../services/userServices.js";
 
 const users = ref([]);
@@ -185,6 +186,31 @@ onMounted(() => {
           <v-text-field v-model="form.lastName" label="Last name" :rules="requiredRules" />
           <v-text-field v-model="form.email" label="Email" type="email" :rules="requiredRules" />
           <RoleSelect v-model="form.role" label="Role" :items="roles" />
+          <NotesList
+            v-if="form.id"
+            mode="embed"
+            title="Created Notes"
+            scope="creator"
+            :allow-create="false"
+            :user-id="form.id"
+            :filter="(item) => item.created_by === form.id"
+          />
+          <NotesList
+            v-if="form.id"
+            mode="embed"
+            title="Edited Notes"
+            scope="contributor"
+            :allow-create="false"
+            :user-id="form.id"
+            :filter="(item) =>
+              (item.contributors ?? []).some(
+                (entry) => Number(entry.contributor_id) === Number(form.id) && entry.created_note === false
+              )
+            "
+          />
+          <p v-if="form.id" class="note-edit-notice">
+            Current state of note does not always reflect the edit this user made to it.
+          </p>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -219,5 +245,11 @@ onMounted(() => {
 
 .edit-user-dialog::backdrop {
   background: rgba(0, 0, 0, 0.32);
+}
+
+.note-edit-notice {
+  margin: 8px 0 0;
+  font-size: 10px;
+  color: rgba(28, 27, 31, 0.6);
 }
 </style>

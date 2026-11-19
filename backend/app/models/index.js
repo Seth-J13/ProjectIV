@@ -10,6 +10,7 @@ import maintenanceInfoModel from "./maintenanceInfo.model.js";
 import vehicleModel from "./vehicle.model.js";
 import requestModel from "./request.model.js";
 import noteModel from "./note.model.js";
+import contributorModel from "./contributor.model.js";
 import vehicleServiceLogModel from "./vehicleServiceLog.model.js";
 
 const db = {};
@@ -26,6 +27,7 @@ db.maintenanceInfo = maintenanceInfoModel(sequelize, Sequelize);
 db.vehicle = vehicleModel(sequelize, Sequelize);
 db.request = requestModel(sequelize, Sequelize);
 db.note = noteModel(sequelize, Sequelize);
+db.contributor = contributorModel(sequelize, Sequelize);
 db.vehicleServiceLog = vehicleServiceLogModel(sequelize, Sequelize);
 
 db.user.hasMany(db.session, { foreignKey: "userId" });
@@ -36,5 +38,22 @@ db.vehicle.belongsTo(db.area, { foreignKey: "area_id" });
 
 db.fuelType.hasMany(db.maintenanceInfo, { foreignKey: "fuel_type_id" });
 db.maintenanceInfo.belongsTo(db.fuelType, { foreignKey: "fuel_type_id" });
+
+db.user.hasMany(db.note, { foreignKey: "created_by", constraints: false });
+db.note.belongsTo(db.user, { foreignKey: "created_by", constraints: false });
+db.request.hasMany(db.note, {
+  foreignKey: "request_id",
+  sourceKey: "requestId",
+  constraints: false,
+});
+db.note.belongsTo(db.request, {
+  foreignKey: "request_id",
+  targetKey: "requestId",
+  constraints: false,
+});
+db.note.hasMany(db.contributor, { foreignKey: "note_id", constraints: false });
+db.contributor.belongsTo(db.note, { foreignKey: "note_id", constraints: false });
+db.user.hasMany(db.contributor, { foreignKey: "contributor_id", constraints: false });
+db.contributor.belongsTo(db.user, { foreignKey: "contributor_id", constraints: false });
 
 export default db;
