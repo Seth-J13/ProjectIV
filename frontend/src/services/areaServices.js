@@ -16,4 +16,8 @@ export default {
   removeArea(id) {
     return apiClient.delete(`areas/${id}`);
   },
+
+  getAreas() {
+    return apiClient.get('vehicle-t3/areas/');
+  },
 };

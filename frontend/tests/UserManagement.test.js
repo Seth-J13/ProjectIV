@@ -99,6 +99,7 @@ async function clickLabel(label) {
 
   await matches[matches.length - 1].trigger("click");
   await flushPromises();
+  await flushPromises();
 }
 
 async function setField(label, value) {

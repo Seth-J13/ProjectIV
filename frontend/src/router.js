@@ -1,6 +1,5 @@
 import { h } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import Drivers from './views/Drivers.vue';
 import Utils from './config/utils.js';
 
 const router = createRouter({
@@ -24,7 +23,7 @@ const router = createRouter({
     {
       path: '/drivers',
       name: 'drivers',
-      component: Drivers,
+      component: () => import('./views/Drivers.vue'),
     },
     {
       path: '/vehicles',
