@@ -5,7 +5,7 @@
 **Status:** Draft
 **Created:** 2026-11-07
 **Input:** Create the landing page for different roles to view
-**Depends on:** [Feature 1 -- User Auth & Session Management](features/feature-1-User-Auth-&-Session-Management), [Feature 2 -- Google Auth](features/feature-2-Google-Auth), [Feature 8 -- Requests CRUD](features/feature-8-Request-CRUD)
+**Depends on:** [Feature 1 -- User Auth & Session Management](features/feature-1-User-Auth-&-Session-Management.md), [Feature 2 -- Google Auth](features/feature-2-Google-Auth.md), [Feature 8 -- Requests CRUD](features/feature-8-Request-Crud.md)
 
 ---
 
@@ -38,31 +38,31 @@
 **Independent test:** I land on the landing page and view a list of vehicles that have maintenance requests
 **Acceptance scenarios:**see ### US-12.3 under Acceptance Criteria
 
-### US-12.4: Toggle between Vehicle Request Form and Maintenance Request
+### US-12.4: Toggle between TripRequestVorm.vue and Maintenance Request
 **As a** (`admin`, `maintenance`)
-**I want to** toggle between different `Vehicle Request Form` and `Maintenance Request`
+**I want to** toggle between different `TripRequestVorm.vue` and `Maintenance Request`
 **So that** I can make different requests as needed
 
 **Priority:** P1
 **Independent test:** I land on the landing page and I see a toggle switch that changes the form component
 **Acceptance scenarios:**see ### US-12.4 under Acceptance Criteria
 
-### US-12.5: View `Vehicle Request Form` component
+### US-12.5: View `TripRequestVorm.vue` component
 **As a** (`admin`, `maintenance`, `driver`, and `user`)
-**I want to** view the `Vehicle Request Form` component
+**I want to** view the `TripRequestVorm.vue` component
 **So that** I can make a request for to reserve a vehicle
 
 **Priority:** P1
-**Independent test:** I land on the landing page and at the bottom is the `Vehicle Request Form` component
+**Independent test:** I land on the landing page and at the bottom is the `TripRequestVorm.vue` component
 **Acceptance scenarios:**see ### US-12.5 under Acceptance Criteria
 
-### US-12.6: View `Maintenance Request Form` component
+### US-12.6: View `MaintenanceRequestVorm.vue` component
 **As a** (`admin`, `maintenance`)
-**I want to** view the `Maintenance Request Form` component
+**I want to** view the `MaintenanceRequestVorm.vue` component
 **So that** I can make a request for to reserve a vehicle for maintenance
 
 **Priority:** P2
-**Independent test:** I land on the landing page and at the bottom is the `Maintenance Request Form` component
+**Independent test:** I land on the landing page and at the bottom is the `MaintenanceRequestVorm.vue` component
 **Acceptance scenarios:**see ### US-12.6 under Acceptance Criteria
 
 ### US-12.7: View `Reserved Vehicles`
@@ -82,11 +82,9 @@
 
 - **FR-001**: System **MUST** show what the user role is allowed to see
 - **FR-002**: System **MUST NOT** show what the user role is not allowed to see
-- **FR-003**: System **MUST** use `Vehicle Request Form` component
-- **FR-004**: System **MUST** use `Maintenance Request Form` component
+- **FR-003**: System **MUST** use `TripRequestVorm.vue` component
+- **FR-004**: System **MUST** use `MaintenanceRequestVorm.vue` component
 - **FR-005**: System **MUST** navigate user to proper `.vue`s when managing list items on the landing page
-- **FR-006**: System **MUST** adhere to `WCAG` and maintain visual hierarchy
-- **FR-007**: System **MUST** display lists in a way that is readable from varying screen sizes and layouts
 
 ---
 
@@ -101,11 +99,11 @@
     - `feature-6-Destination-CRUD`
     - `feature-7-Driver-CRUD`
     - `feature-8-Requests-CRUD`
-    - `feature-9-Note-CRUD`
+    - `feature-9-note-crud`
     - `feature-10-Vehicle-Service-Log-CRUD`
     - `feature-11-Images`
-    - `Vehicle Request Form` component
-    - `Maintenance Request Form` component
+    - `TripRequestVorm.vue` component
+    - `MaintenanceRequestVorm.vue` component
     - `Menu Bar` component
 - What you are deliberately not building yet
     - You do not need to create new form components, **if you cannot find the correct components notify the user when making this feature doc**
@@ -115,10 +113,9 @@
 ## Edge Cases
 
 - PUT or Add request with the same id --> `400`
-- PUT or POST with incorrect database types --> `500`
+- PUT or POST with incorrect database types --> `400`
 - PUT or POST with no inputted values --> `400`
-- GET, POST, PUT, DELETE as a student --> `401`
-- Cross-user access → (`driver`, `user`, and `maintenance`) roles should not be able to view reserved vehicles that are unavailable unless they requested the vehicle. All `maintenance` can see vehicles requested for maintenance work.
+- Cross-user access → `driver` and `user` only receive their own requests. `maintenance` receives their own requests plus every `maintenance` request. `admin` receives every request. No role learns who reserved a vehicle from the vehicles list.
 
 ## Success Criteria
 
@@ -151,21 +148,19 @@ Features 1 and 2 establishes identity;
 
 ## Data Model Requirements
 - **NO TABLE TO CREATE**
+- Request table is owned by feature 8
 
 ---
 
 ## API Requirements
 All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` from Feature 1.
-| Method   | Endpoint                                          | Purpose                                                                           |  Auth  |
-| -------- | ------------------------------------------------- | --------------------------------------------------------------------------------- | ------ | 
-| `GET`    | `/vehicle-t3/vehicles/`                           | Get all vehicles in the database                                                  |  All   |
-| `GET`    | `/vehicle-t3/requests/`                           | Get all requests in the database                                                  |  All   |
-| `POST`   | `/vehicle-t3/requests/`                           | Create a new vehicle request                                                      |  All   |
-| `POST`   | `/vehicle-t3/requests/`                           | Create a new maintenance request                                                  |  `admin`, `maintenance` |
-| `PUT`    | `/vehicle-t3/requests/:request_id`                | Update a new vehicle request                                                      |  All   |
-| `PUT`    | `/vehicle-t3/requests/:request_id`                | Update a new maintenance request                                                  |  `admin`, `maintenance` |
-| `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a vehicle request the designated request number                            |  All   |
-| `DELETE` | `/vehicle-t3/requests/:request_id`                | Delete a maintenance request the designated request number                        |  `admin`, `maintenance` |
+| Method   | Endpoint   | Purpose        |  Auth  |
+| -------- | ---------- | -------------- | ------ | 
+| `GET`    | `/vehicle-t3/vehicles/`         | Get all vehicles in the database     |  All   |
+| `GET`    | `/vehicle-t3/requests/`         | Get all requests in the database     |  All   |
+| `POST`   | `/vehicle-t3/requests/`         | Create a new vehicle request         |  All   |
+| `PUT`    | `/vehicle-t3/requests/:requestId`| Update a new vehicle request       |  All   |
+| `DELETE` | `/vehicle-t3/requests/:requestId`| Delete a vehicle request the designated request number |  All   |
 
 **Create / Update Request Body (Request Table)**
 
@@ -177,10 +172,10 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
     "driverId": 12312312,
     "numPeople": 5,
     "currentlyActive": true,
-    "startDate": '2026-10-25',
-    "endDate": '2026-10-28',
-    "startTime": '09:00:00',
-    "endTime": '17:00:00',
+    "startDate": "2026-10-25",
+    "endDate": "2026-10-28",
+    "startTime": "09:00:00",
+    "endTime": "17:00:00",
     "maintenance": false
 }
 ```
@@ -190,12 +185,13 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 **Error response:** `{"message": "..."}`
 | Status | When | Message |
 | ------ | ---------------------------------------------------- | --------------------------------------------------- |
-| `400` | Missing field | `(attribute) is required` (same pattern for `car license`, `make`, `model`, `driver`, `destination`, `number of people`, `start date`, `end date`) |
+| `400` | Missing field | `(attribute) is required` (same pattern for `make`, `model`, `driver`, `destination`, `number of people`, `start date`, `end date`) |
 | `400` | Year is less than 1900 and greater than current year | `Select a year between 1900-Today` |
 
 ---
 
 ## Screen Requirements
+Follow [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc). Primary labeled actions use class `oc-cta`. Icon-only row actions need `aria-label`s.
 
 ### [View: Landing.vue] -- route name `landing`
 
@@ -204,21 +200,21 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - Visible in the nav to all users
 
 **Lists**
-- Available Vehicles
+- Available Vehicles (`All roles`)
     - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`
-- Your Reserved Vehicles
+- Your Reserved Vehicles (`All roles`)
     - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`
-- Vehicles In Service
+- Vehicles In Service (`admin`, `maintenance`)
     - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`, `Action`
     - Action: `Info Icon` button
-- Reserved Vehicles
+- Reserved Vehicles (`maintenance`, `driver`, `user` can view their requests, `admin` can view all requests from every user)
     - Table Headers: `License`, `Make`, `Model`, `Year`, `Image`, `Action`
 
 **Form Section**
-- Toggle Switch: Left side (`Request`), Right side (`Maintenance`)
+- Toggle Switch: Left side (`Request`), Right side (`Maintenance`) | (`admin` and `maintenance` only)
 - Form
-    - Toggle to Left: `Vehicle Request Form`
-    - Toggle to Right: `Maintenance Request Form`
+    - Toggle to Left: `TripRequestVorm.vue`
+    - Toggle to Right: `MaintenanceRequestVorm.vue`
 
 ---
 
@@ -228,22 +224,21 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User logs in and `Landing.vue` is loaded
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
 - **When** I log in 
 - **And** the `Landing.vue` has loaded
 - **And** a `GET` request is sent to get all vehicles
-- **Then** the list displays all vehicles available to reserve
 
 #### Scenario: User clicks a vehicle in the `Available Vehicles` list
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
 - **When** I click a list item
-- **Then** the `Vehicle Request From` component will have vehicle details filled out
+- **Then** the `TripRequestForm.vue` component will have vehicle details filled out
 - **And** no API request is sent
 
 #### Scenario: User views `Available Vehicles` list
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
 - **When** I view the `Available Vehicles` list
 - **Then** every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`
 
@@ -253,7 +248,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User logs in and `Landing.vue` is loaded
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
 - **When** I log in
 - **And** the `Landing.vue` has loaded  
 - **And** a `GET` request is sent to get all vehicles 
@@ -262,14 +257,14 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User clicks on a list item
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
 - **When** I click one of the vehicles that I have reserved
 - **Then** I am sent to the `Requests.vue`
 - **And** no API request is sent
 
 #### Scenario: User views `Your Reserved Vehicles` list
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
 - **When** I view the `My` Reserved Vehicles list
 - **Then** I see all my reserved vehicles is listed with their `License`, `Make`, `Model`, `Year`, `Image`
 
@@ -282,7 +277,8 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **Given** I am a (`admin` or `maintenance`)
 - **When** I log in
 - **And** a `GET` request is sent to get all vehicles  
-- **Then** the list displays all vehicles currently reserved for maintenance work
+- **And** a `GET` request is sent to get requests
+- **Then** the list displays every vehicle that has a `maintenance` request in use
 
 #### Scenario: User clicks a list item
 
@@ -293,66 +289,66 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 
 #### Scenario: User views `Vehicles In Service` list
 
-- **Given** I am a (`admin` or `mainentance`)
+- **Given** I am a (`admin` or `maintenance`)
 - **When** I view the `Vehicles In Service` list
-- **Then** every available vehicle is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button
+- **Then** every vehicle in service is listed with their `License`, `Make`, `Model`, `Year`, `Image`, `Info Icon` button
 
 #### Scenario: User clicks `Info Icon` button
 
-- **Given** I am a (`admin` or `mainentance`)
+- **Given** I am a (`admin` or `maintenance`)
 - **When** I click the `Info Icon` button for a list item in the `Vehicles In Service` list
 - **Then** I am redirected to the `Maintenance.vue` page for the selected vehicle
 
 ---
 
-### US-12.4 — Toggle between Vehicle Request Form and Maintenance Request
+### US-12.4 — Toggle between TripRequestVorm.vue and Maintenance Request
 
 #### Scenario: User clicks the form toggle switch 
 
 - **Given** I am a (`admin` or `maintenance`)
-- **When** I view the `Vehicle Request Form` component
+- **When** I view the `TripRequestVorm.vue` component
 - **And** I click the toggle button  
-- **Then** the request form component switches to the `Maintenance Request Form` component
+- **Then** the request form component switches to the `MaintenanceRequestVorm.vue` component
 - **And** no API request is sent
 
 ---
 
-### US-12.5 — View `Vehicle Request Form` component
+### US-12.5 — View `TripRequestVorm.vue` component
 
-#### Scenario: User correctly fills out the `Vehicle Request Form`
+#### Scenario: User correctly fills out the `TripRequestVorm.vue`
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
-- **When** I fill out the `Vehicle Request Form` component
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
+- **When** I fill out the `TripRequestVorm.vue` component
 - **And** click `submit`
 - **Then** a `POST` request is sent to create a vehicle request
-- **And** returns `201` with a payload of `{"message": "human readable message"}`
+- **And** returns `201` with a payload of the created request
 - **And** component is reset for another request
 
-#### Scenario: User incorrectly fills out the `Vehicle Request Form`
+#### Scenario: User incorrectly fills out the `TripRequestVorm.vue`
 
-- **Given** I am a (`admin`, `mainentance`, `driver`, or `user`)
-- **When** I fill out the `Vehicle Request Form` component
+- **Given** I am a (`admin`, `maintenance`, `driver`, or `user`)
+- **When** I fill out the `TripRequestVorm.vue` component
 - **And** click `submit`
 - **Then** a `POST` request is sent to create a vehicle request
 - **And** returns `400` with a payload of `{"message": "human readable message"}`
 
 ---
 
-### US-12.6 — View `Maintenance Request Form` component
+### US-12.6 — View `MaintenanceRequestVorm.vue` component
 
-#### Scenario: User correctly fills out the `Maintenance Request Form`
+#### Scenario: User correctly fills out the `MaintenanceRequestVorm.vue`
 
-- **Given** I am a (`admin` or `mainentance`)
-- **When** I fill out the `Maintenance Request Form` component
+- **Given** I am a (`admin` or `maintenance`)
+- **When** I fill out the `MaintenanceRequestVorm.vue` component
 - **And** click `submit`
 - **Then** a `POST` request is sent to create a maintenance request
 - **And** returns `201` with a payload of `{"message": "human readable message"}`
 - **And** component is reset for another request
 
-#### Scenario: User incorrectly fills out the `Maintenance Request Form`
+#### Scenario: User incorrectly fills out the `MaintenanceRequestVorm.vue`
 
-- **Given** I am a (`admin` or `mainentance`)
-- **When** I fill out the `Maintenance Request Form` component
+- **Given** I am a (`admin` or `maintenance`)
+- **When** I fill out the `MaintenanceRequestVorm.vue` component
 - **And** click `submit`
 - **Then** a `POST` request is sent to create a maintenance request
 - **And** returns `400` with a payload of `{"message": "human readable message"}`
@@ -367,7 +363,7 @@ All routes mount under `/vehicle-t3`, Auth is `Authorization: Bearer <token>` fr
 - **When** I log in
 - **And** the `Landing.vue` loads
 - **And** a `GET` request is sent
-- **And** returns a `200` code  with a payload of `{"message":"humman readable message"}`
+- **And** returns a `200` code  with a payload containing all requests from every user
 - **Then** a list of all reserved vehicles displays
 
 #### Scenario: User views `Reserved Vehicles` list
@@ -401,14 +397,14 @@ Each scenario above must map to at least one automated test. Submit scenarios, a
 | US-12.3 | User views `Vehicles In Service` list | `frontend/tests/Landing.test.js` | it("User views `Vehicles In Service` list") |
 | US-12.3 | User clicks `Info Icon` button | `frontend/tests/Landing.test.js` | it("User clicks `Info Icon` button") |
 | US-12.4 | User clicks the form toggle switch | `frontend/tests/Landing.test.js` | it("User clicks the form toggle switch") |
-| US-12.5 | User correctly fills out the `Vehicle Request Form` | `backend/tests/landing.test.js` | it("User correctly fills out the `Vehicle Request Form`") |
-| US-12.5 | User correctly fills out the `Vehicle Request Form` | `frontend/tests/Landing.test.js` | it("User correctly fills out the `Vehicle Request Form`") |
-| US-12.5 | User incorrectly fills out the `Vehicle Request Form` | `backend/tests/landing.test.js` | it("User incorrectly fills out the `Vehicle Request Form`") |
-| US-12.5 | User incorrectly fills out the `Vehicle Request Form` | `frontend/tests/Landing.test.js` | it("User incorrectly fills out the `Vehicle Request Form`") |
-| US-12.6 | User correctly fills out the `Maintenance Request Form` | `backend/tests/landing.test.js` | it("User correctly fills out the `Maintenance Request Form`") |
-| US-12.6 | User correctly fills out the `Maintenance Request Form` | `frontend/tests/Landing.test.js` | it("User correctly fills out the `Maintenance Request Form`") |
-| US-12.6 | User incorrectly fills out the `Maintenance Request Form` | `backend/tests/landing.test.js` | it("User incorrectly fills out the `Maintenance Request Form`") |
-| US-12.6 | User incorrectly fills out the `Maintenance Request Form` | `frontend/tests/Landing.test.js` | it("User incorrectly fills out the `Maintenance Request Form`") |
+| US-12.5 | User correctly fills out the `TripRequestVorm.vue` | `backend/tests/landing.test.js` | it("User correctly fills out the `TripRequestVorm.vue`") |
+| US-12.5 | User correctly fills out the `TripRequestVorm.vue` | `frontend/tests/Landing.test.js` | it("User correctly fills out the `TripRequestVorm.vue`") |
+| US-12.5 | User incorrectly fills out the `TripRequestVorm.vue` | `backend/tests/landing.test.js` | it("User incorrectly fills out the `TripRequestVorm.vue`") |
+| US-12.5 | User incorrectly fills out the `TripRequestVorm.vue` | `frontend/tests/Landing.test.js` | it("User incorrectly fills out the `TripRequestVorm.vue`") |
+| US-12.6 | User correctly fills out the `MaintenanceRequestVorm.vue` | `backend/tests/landing.test.js` | it("User correctly fills out the `MaintenanceRequestVorm.vue`") |
+| US-12.6 | User correctly fills out the `MaintenanceRequestVorm.vue` | `frontend/tests/Landing.test.js` | it("User correctly fills out the `MaintenanceRequestVorm.vue`") |
+| US-12.6 | User incorrectly fills out the `MaintenanceRequestVorm.vue` | `backend/tests/landing.test.js` | it("User incorrectly fills out the `MaintenanceRequestVorm.vue`") |
+| US-12.6 | User incorrectly fills out the `MaintenanceRequestVorm.vue` | `frontend/tests/Landing.test.js` | it("User incorrectly fills out the `MaintenanceRequestVorm.vue`") |
 | US-12.7 | User logs in and `Landing.vue` is loaded | `backend/tests/landing.test.js` | it("User logs in and `Landing.vue` is loaded") |
 | US-12.7 | User logs in and `Landing.vue` is loaded | `frontend/tests/Landing.test.js` | it("User logs in and `Landing.vue` is loaded") |
 | US-12.7 | User views `Reserved Vehicles` list | `frontend/tests/Landing.test.js` | it("User views `Reserved Vehicles` list") |
@@ -427,7 +423,15 @@ Follow layer order in @features/framework.md (models → routes → backend test
 Map every Gherkin scenario in the Test Coverage Map; run `npm test` before finishing.
 If API routes, payloads, schema, or product rules changed per this spec, update @features/reference/api.md, @features/reference/data-model.md, and/or @features/reference/behavior.md in the same PR to match shipped code.
 Complete Definition of Done and the merge checklist in @features/framework.md.
-Do not implement behavior not in this spec.
+Be sure to follow the screen requirements and add the proper themeing of `oc-cta`
+Do not implement behavior not in this spec. 
 ```
+
+## Definition of Done
+- Successfully implemnted all User Stories and Gherkin scenarios
+- Implemented the OC branding into the landing page
+- Maintenance Request and Vehicle Request are both embedded components at the bottom of the page
+- Proper role authorization is used
+- Exiting the website logs user out
 
 **Reference updates for this feature:** `features/reference/data-model.md`, `features/reference/api.md`, `features/reference/behavior.md`
