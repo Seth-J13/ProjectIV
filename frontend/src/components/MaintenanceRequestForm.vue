@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -34,7 +34,25 @@ const vehicleLabel = computed(() =>
     : ""
 );
 
+// A vehicle set from outside the form (a Landing click, an edit dialog, a reset)
+// fills or clears the Make/Model/License boxes. Picking from the menu leaves them alone.
+let pickedHere = false;
+
+watch(() => selectedVehicle.value?.vehicleId, () => {
+  if (pickedHere) {
+    pickedHere = false;
+    return;
+  }
+
+  const vehicle = selectedVehicle.value;
+
+  filters.make = vehicle ? String(vehicle.make) : "";
+  filters.model = vehicle ? String(vehicle.model) : "";
+  filters.license = vehicle ? String(vehicle.license) : "";
+});
+
 function pickVehicle(item) {
+  pickedHere = String(props.form.vehicleId) !== String(item.vehicleId);
   props.form.vehicleId = String(item.vehicleId);
   vehicleOpen.value = false;
 }

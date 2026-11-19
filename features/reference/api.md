@@ -35,10 +35,10 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `POST`   | `/api/areas`                       | Yes (`Bearer` session token, role `admin`) | Create an area                                                    | Feature 13 |
 | `PUT`    | `/api/areas/:id`                   | Yes (`Bearer` session token, role `admin`) | Update an area                                                    | Feature 13 |
 | `DELETE` | `/api/areas/:id`                   | Yes (`Bearer` session token, role `admin`) | Delete an area that no vehicle references                         | Feature 13 |
-| `GET` | `/api/vehicles` | Yes | Vehicle choices for a request: `vehicleId`, `license`, `make`, `model` | Feature 8 |
+| `GET` | `/api/vehicles` | Yes | Vehicle choices for a request: `vehicleId`, `license`, `make`, `model`, plus `year`, `available`, and `inUse` (`true` while a request for the vehicle is in use now) for the Landing lists | Feature 8, Feature 12 |
 | `GET` | `/api/drivers` | Yes | Driver choices: `driverId`, `name` | Feature 8 |
 | `GET` | `/api/destinations` | Yes | Destination choices: `destId`, `name` | Feature 8 |
-| `GET` | `/api/requests` | Yes | The caller's requests. An admin receives every request | Feature 8 |
+| `GET` | `/api/requests` | Yes | The caller's requests. An admin receives every request. A `maintenance` user also receives every `maintenance` request | Feature 8, Feature 12 |
 | `GET` | `/api/requests/:requestId` | Yes | One accessible request, or `404` | Feature 8 |
 | `POST` | `/api/requests` | Yes | Create a trip, or a maintenance request when the caller is an admin or maintenance user | Feature 8 |
 | `PUT` | `/api/requests/:requestId` | Yes | Update a request without changing `requestType` or `requesterId` | Feature 8 |

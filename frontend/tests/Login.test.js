@@ -11,7 +11,6 @@ import * as directives from "vuetify/directives";
 import Login from "../src/views/Login.vue";
 import Landing from "../src/views/Landing.vue";
 
-const PLACEHOLDER = "This feature has not been implemented yet";
 const PASSWORD = "a-valid-password";
 
 const authApi = vi.hoisted(() => ({
@@ -23,6 +22,14 @@ vi.mock("../src/services/authServices.js", () => ({
   default: authApi,
 }));
 
+vi.mock("../src/services/requestServices.js", () => ({
+  default: {
+    findAll: vi.fn().mockResolvedValue({ data: [] }),
+    findVehicles: vi.fn().mockResolvedValue({ data: [] }),
+    findDrivers: vi.fn().mockResolvedValue({ data: [] }),
+    findDestinations: vi.fn().mockResolvedValue({ data: [] }),
+  },
+}));
 const Shell = {
   template: "<v-app><router-view /></v-app>",
 };
@@ -100,8 +107,8 @@ async function clickButton(label) {
   await flushPromises();
 }
 
-function expectPlaceholder() {
-  expect(wrapper.getComponent(Landing).text().replace(/\s+/g, " ").trim()).toBe(PLACEHOLDER);
+function expectLanding() {
+  expect(wrapper.getComponent(Landing).find("h1").text()).toBe("Vehicle Management System");
 }
 
 async function signIn({ email, firstName, lastName, role, token }) {
@@ -123,7 +130,7 @@ async function signIn({ email, firstName, lastName, role, token }) {
   expect(user).toMatchObject({ email, firstName, lastName, role, token });
   expect(user.password).toBeUndefined();
   expect(router.currentRoute.value.path).toBe("/landing");
-  expectPlaceholder();
+  expectLanding();
 }
 
 describe("Feature 1 — User Auth & Session Management", () => {
@@ -198,7 +205,7 @@ describe("Feature 1 — User Auth & Session Management", () => {
 
       expect(router.currentRoute.value.name).toBe("landing");
       expect(storedUser()).toMatchObject(session);
-      expectPlaceholder();
+      expectLanding();
       expect(authApi.loginUser).not.toHaveBeenCalled();
     });
 
@@ -207,7 +214,7 @@ describe("Feature 1 — User Auth & Session Management", () => {
 
       const first = await mountAuthApp("/landing");
       expect(first.router.currentRoute.value.path).toBe("/landing");
-      expectPlaceholder();
+      expectLanding();
       wrapper.unmount();
       wrapper = undefined;
 
@@ -215,7 +222,7 @@ describe("Feature 1 — User Auth & Session Management", () => {
 
       expect(router.currentRoute.value.path).toBe("/landing");
       expect(storedUser()).toEqual(session);
-      expectPlaceholder();
+      expectLanding();
       expect(wrapper.text()).not.toContain("Create Account");
       expect(authApi.loginUser).not.toHaveBeenCalled();
     });
@@ -260,7 +267,7 @@ describe("Feature 1 — User Auth & Session Management", () => {
       });
       expect(user.password).toBeUndefined();
       expect(router.currentRoute.value.path).toBe("/landing");
-      expectPlaceholder();
+      expectLanding();
     });
 
     it("rejects an invalid email before calling the backend", async () => {
