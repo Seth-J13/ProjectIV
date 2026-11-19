@@ -257,13 +257,16 @@ describe("Feature 4 — Vehicle CRUD", () => {
   describe("US-4.1 — Add a new vehicle as a `admin` role", () => {
     it("User clicks the add button", async () => {
       await mountVehicle("admin");
-      const before = apiCallCount();
+
+      expect(areaApi.getAreas).not.toHaveBeenCalled();
+      expect(vehicleApi.getVehicles).toHaveBeenCalledTimes(1);
 
       await openAddModal();
 
       expect(modal("#vehicle-dialog").exists()).toBe(true);
       expect(modal("#vehicle-dialog").text()).toContain("Add Vehicle");
-      expect(apiCallCount()).toBe(before);
+      expect(areaApi.getAreas).toHaveBeenCalledTimes(1);
+      expect(vehicleApi.getVehicles).toHaveBeenCalledTimes(1);
     });
 
     it("User inputs invalid information into `Add Vehicle` modal", async () => {
@@ -312,12 +315,15 @@ describe("Feature 4 — Vehicle CRUD", () => {
   describe("US-4.2 — Add a new vehicle as a `maintenance` role", () => {
     it("User clicks the add button", async () => {
       await mountVehicle("maintenance");
-      const before = apiCallCount();
+
+      expect(areaApi.getAreas).not.toHaveBeenCalled();
+      expect(vehicleApi.getVehicles).toHaveBeenCalledTimes(1);
 
       await openAddModal();
 
       expect(modal("#vehicle-dialog").text()).toContain("Add Vehicle");
-      expect(apiCallCount()).toBe(before);
+      expect(areaApi.getAreas).toHaveBeenCalledTimes(1);
+      expect(vehicleApi.getVehicles).toHaveBeenCalledTimes(1);
     });
 
     it("User inputs a `make`, `model`, and `year` into the comboboxes that doesn't exist", async () => {
@@ -347,7 +353,8 @@ describe("Feature 4 — Vehicle CRUD", () => {
   describe("US-4.3 — Edit a vehicle as a `maintenance` or `admin` role", () => {
     it("User clicks the edit icon button", async () => {
       await mountVehicle("admin");
-      const before = apiCallCount();
+
+      expect(areaApi.getAreas).not.toHaveBeenCalled();
 
       await openEditModal(0);
 
@@ -357,9 +364,10 @@ describe("Feature 4 — Vehicle CRUD", () => {
       expect(modalField("Model").props("modelValue")).toBe("Accord");
       expect(modalField("Year").props("modelValue")).toBe(2014);
       expect(modalField("License").props("modelValue")).toBe("ABC344");
-      expect(modalField("Area").props("modelValue")).toBe(1);
+      expect(modalField("Area").props("modelValue")).toBe("1");
       expect(modalField("Purchase Date").props("modelValue")).toBe("2015-12-16");
-      expect(apiCallCount()).toBe(before);
+      expect(areaApi.getAreas).toHaveBeenCalledTimes(1);
+      expect(vehicleApi.getVehicles).toHaveBeenCalledTimes(1);
     });
 
     it("User inputs invalid information into `Edit Vehicle` modal", async () => {
@@ -405,7 +413,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
       await mountVehicle("admin", []);
 
       expect(vehicleApi.getVehicles).toHaveBeenCalled();
-      for (const header of ["License", "Make", "Model", "Year", "Purchase Date", "Color", "Department", "Actions"]) {
+      for (const header of ["License", "Make", "Model", "Year", "Purchase Date", "Color", "Area", "Actions"]) {
         expect(wrapper.find("thead").text()).toContain(header);
       }
       expect(wrapper.findAll("tbody tr")).toHaveLength(0);
@@ -416,6 +424,7 @@ describe("Feature 4 — Vehicle CRUD", () => {
       await mountVehicle("maintenance");
 
       expect(vehicleApi.getVehicles).toHaveBeenCalledTimes(1);
+      expect(areaApi.getAreas).not.toHaveBeenCalled();
       expect(wrapper.text()).toContain("Vehicle Management");
       expect(wrapper.findAll("tbody tr")).toHaveLength(3);
       const firstRow = wrapper.find("tbody tr").text();

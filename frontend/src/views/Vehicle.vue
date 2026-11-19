@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import vehicleServices from "../services/vehicleServices.js";
 import areaServices from "../services/areaServices.js";
@@ -91,6 +91,15 @@ function distinct(values) {
 const makes = computed(() => distinct(vehicles.value.map((vehicle) => vehicle.make)));
 const models = computed(() => distinct(vehicles.value.map((vehicle) => vehicle.model)));
 const fuelNames = computed(() => fuels.value.map((fuel) => fuel.fuel_type));
+const areaOptions = computed(() =>
+  areas.value
+    .filter((area) => area?.id != null)
+    .map((area) => {
+      const id = String(area.id);
+      const name = String(area.name ?? "").trim();
+      return { id, label: name ? `${name} (${id})` : id };
+    })
+);
 
 const filteredVehicles = computed(() => {
   const f = filters.value;
@@ -177,7 +186,8 @@ function openEdit(vehicle) {
     year: vehicle.year,
     color: vehicle.color ?? "",
     license_plate_num: vehicle.license_plate_num ?? "",
-    area_id: vehicle.area_id,
+    area_id:
+      vehicle.area_id == null || vehicle.area_id === "" ? null : String(vehicle.area_id),
     purchased_date: dateOnly(vehicle.purchased_date),
     tag_exp_month: dateOnly(vehicle.tag_exp_month),
     most_recent_dest_id: vehicle.most_recent_dest_id ?? null,
@@ -203,12 +213,20 @@ function cancelConfirm() {
   needFuelType.value = false;
 }
 
+function selectedAreaId(value) {
+  if (value && typeof value === "object") {
+    return value.id ?? "";
+  }
+
+  return value ?? "";
+}
+
 function resolveAreaId(value) {
   if (typeof value === "number") {
     return Number.isInteger(value) ? value : null;
   }
 
-  const raw = String(value ?? "").trim();
+  const raw = String(selectedAreaId(value) ?? "").trim();
   if (!raw) {
     return null;
   }
@@ -424,9 +442,29 @@ function openMaintenance(vehicle) {
   return router.push({ name: "maintenance", params: { vin: vehicle.vin } });
 }
 
+watch(showVehicleDialog, (open) => {
+  if (open) {
+    loadAreas();
+  }
+});
+
+watch(
+  () => form.value.area_id,
+  (value) => {
+    if (value == null || value === "") {
+      return;
+    }
+
+    const id = String(selectedAreaId(value)).trim();
+
+    if (id && value !== id) {
+      form.value.area_id = id;
+    }
+  }
+);
+
 onMounted(() => {
   loadVehicles();
-  loadAreas();
   loadFuels();
 });
 </script>
@@ -498,7 +536,7 @@ onMounted(() => {
           <th>Year</th>
           <th>Purchase Date</th>
           <th>Color</th>
-          <th>Department</th>
+          <th>Area</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -551,7 +589,7 @@ onMounted(() => {
     </v-card>
 
     <v-dialog v-model="showVehicleDialog" max-width="720">
-      <v-card id="vehicle-dialog">
+      <v-card v-if="showVehicleDialog" id="vehicle-dialog">
         <v-card-item>
           <v-card-title>{{ isEditMode ? "Edit Vehicle" : "Add Vehicle" }}</v-card-title>
         </v-card-item>
@@ -577,13 +615,20 @@ onMounted(() => {
               <v-text-field v-model="form.color" label="Color" />
             </v-col>
             <v-col cols="12" md="6">
-              <v-select
+              <v-combobox
                 v-model="form.area_id"
-                :items="areas"
-                item-title="name"
+                :items="areaOptions"
+                item-title="id"
                 item-value="id"
+                :return-object="false"
+                :filter-keys="['raw.label', 'id']"
+                clearable
                 label="Area"
-              />
+              >
+                <template #item="{ item, props: itemProps }">
+                  <v-list-item v-bind="itemProps" :title="item.label" />
+                </template>
+              </v-combobox>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
