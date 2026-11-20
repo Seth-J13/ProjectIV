@@ -363,14 +363,18 @@ onBeforeUnmount(() => {
             :key="`draft-${selected.id}`"
             type="note"
             :model-value="selected.images || []"
+            :allow-add="false"
             :allow-delete="false"
+            readonly
           />
           <ImagesContainer
             v-else
             :key="selected.id"
             type="note"
             :parent-id="selected.id"
+            :allow-add="false"
             :allow-delete="false"
+            readonly
           />
           <p>Last updated on {{ latest(selected) }}</p>
         </v-card-text>

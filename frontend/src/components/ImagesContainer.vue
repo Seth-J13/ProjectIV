@@ -3,7 +3,7 @@ export default { name: "ImagesContainer" };
 </script>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import apiClient from "../services/services.js";
 import ImagesDetails from "./ImagesDetails.vue";
 import { fileToPngBase64, isAllowedImage, isTooLarge } from "../utils/imageFile.js";
@@ -14,10 +14,13 @@ const props = defineProps({
   heading: { type: String, default: "" },
   modelValue: { type: Array, default: undefined },
   allowDelete: { type: Boolean, default: true },
+  allowAdd: { type: Boolean, default: true },
+  readonly: { type: Boolean, default: false },
   defer: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(["update:modelValue"]);
+const canAdd = computed(() => props.allowAdd && !props.readonly);
 
 const images = ref([]);
 const loading = ref(false);
@@ -114,7 +117,7 @@ async function load() {
 }
 
 function openChoices(event) {
-  if (event?.target?.closest?.("img, button")) {
+  if (!canAdd.value || event?.target?.closest?.("img, button")) {
     return;
   }
 
@@ -291,6 +294,10 @@ function pickComputer() {
 }
 
 async function acceptFiles(fileList) {
+  if (!canAdd.value) {
+    return;
+  }
+
   const files = [...(fileList ?? [])];
 
   if (!files.length) {
@@ -340,7 +347,17 @@ async function acceptFiles(fileList) {
   }
 }
 
+function onContainerDragOver(event) {
+  if (canAdd.value) {
+    event.preventDefault();
+  }
+}
+
 function onDrop(event) {
+  if (!canAdd.value) {
+    return;
+  }
+
   event.preventDefault();
   acceptFiles(event.dataTransfer?.files);
 }
@@ -351,19 +368,19 @@ function isDocumentTarget(event) {
 }
 
 function onDocumentClick(event) {
-  if (isDocumentTarget(event)) {
+  if (canAdd.value && isDocumentTarget(event)) {
     openChoices(event);
   }
 }
 
 function onDocumentDragOver(event) {
-  if (isDocumentTarget(event)) {
+  if (canAdd.value && isDocumentTarget(event)) {
     event.preventDefault();
   }
 }
 
 function onDocumentDrop(event) {
-  if (isDocumentTarget(event)) {
+  if (canAdd.value && isDocumentTarget(event)) {
     onDrop(event);
   }
 }
@@ -396,30 +413,30 @@ onUnmounted(() => {
     ref="root"
     class="images-container oc-cta"
     @click="openChoices"
-    @dragover.prevent
+    @dragover="onContainerDragOver"
     @drop="onDrop"
   >
     <h2 v-if="heading" class="text-center">{{ heading }}</h2>
-    <p class="text-center">Drop or Upload Image Here</p>
+    <p v-if="canAdd" class="text-center">Drop or Upload Image Here</p>
     <v-progress-linear v-if="loading || uploading" indeterminate color="primary" />
     <v-alert v-if="errorMessage" type="error" class="mb-3">{{ errorMessage }}</v-alert>
-    <div v-if="choicesOpen" class="image-choices">
+    <div v-if="canAdd && choicesOpen" class="image-choices">
       <v-btn color="primary" variant="elevated" class="oc-cta" type="button" @click.stop="openCloud">From Cloud</v-btn>
       <v-btn color="primary" variant="elevated" class="oc-cta" type="button" @click.stop="pickComputer">From Computer</v-btn>
     </div>
-    <input ref="fileInput" type="file" multiple accept="image/*" hidden @change="acceptFiles($event.target.files)" />
+    <input v-if="canAdd" ref="fileInput" type="file" multiple accept="image/*" hidden @change="acceptFiles($event.target.files)" />
     <ImagesDetails
       :type="type"
       :parent-id="parentId"
       host="container"
-      :allow-delete="allowDelete"
+      :allow-delete="allowDelete && canAdd"
       :defer="defer"
       :images="images"
       @update:images="publish"
     />
 
     <div
-      v-if="cloudOpen"
+      v-if="canAdd && cloudOpen"
       ref="cloudDialog"
       class="cloud-dialog"
       role="dialog"

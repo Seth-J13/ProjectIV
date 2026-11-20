@@ -1,6 +1,9 @@
+import sharp from "sharp";
 import db from "../models/index.js";
 import logger from "../config/logger.js";
 import { getAreaOrNull } from "../authorization/authorization.js";
+
+const MAX_STORED_LOGO = 10 * 1024 * 1024;
 
 const exports = {};
 
@@ -22,17 +25,79 @@ function text(value) {
   return String(value).trim();
 }
 
-function logoValue(logo) {
+function logoBytes(logo) {
   if (logo == null) {
     return null;
   }
 
   if (Buffer.isBuffer(logo)) {
-    return logo.length === 0 ? null : logo.toString("utf8");
+    return logo.length === 0 ? null : logo;
   }
 
-  const trimmed = String(logo).trim();
-  return trimmed === "" ? null : trimmed;
+  const raw = String(logo).trim();
+
+  if (!raw) {
+    return null;
+  }
+
+  const encoded = raw.includes(",") ? raw.slice(raw.indexOf(",") + 1) : raw;
+  const buffer = Buffer.from(encoded, "base64");
+  return buffer.length === 0 ? null : buffer;
+}
+
+function presentLogo(logo) {
+  const buffer = logoBytes(logo);
+  return buffer ? buffer.toString("base64") : null;
+}
+
+async function compressLogo(buffer) {
+  let output = await sharp(buffer, { failOn: "none" }).png({ compressionLevel: 9 }).toBuffer();
+
+  if (output.length <= MAX_STORED_LOGO) {
+    return output;
+  }
+
+  const meta = await sharp(buffer, { failOn: "none" }).metadata();
+  let width = meta.width || 1600;
+
+  while (output.length > MAX_STORED_LOGO && width > 32) {
+    width = Math.max(32, Math.floor(width * 0.7));
+    output = await sharp(buffer, { failOn: "none" })
+      .resize({ width })
+      .png({ compressionLevel: 9, palette: true })
+      .toBuffer();
+  }
+
+  return output;
+}
+
+async function storeLogo(value) {
+  if (!Object.prototype.hasOwnProperty.call(value, "logo") || value.logo == null) {
+    return;
+  }
+
+  try {
+    value.logo = await compressLogo(value.logo);
+  } catch (error) {
+    logger.error(error.message);
+    const invalid = new Error("Use a png, jpg, tiff, avif, webp, or bmp image.");
+    invalid.status = 400;
+    throw invalid;
+  }
+}
+
+function sendAreaError(res, error, fallback) {
+  if (error.status === 400) {
+    return res.status(400).send({ message: error.message });
+  }
+
+  if (String(error?.message || "").includes("Data too long")) {
+    logger.error(error.message);
+    return res.status(400).send({ message: "The logo image is too large." });
+  }
+
+  logger.error(error.message);
+  return res.status(500).send({ message: fallback });
 }
 
 function present(area) {
@@ -40,7 +105,7 @@ function present(area) {
     id: area.id,
     name: area.name,
     noticeEmail: area.noticeEmail,
-    logo: logoValue(area.logo),
+    logo: presentLogo(area.logo),
   };
 }
 
@@ -63,7 +128,7 @@ function readPayload(body) {
   const value = { name, noticeEmail };
 
   if (Object.prototype.hasOwnProperty.call(body, "logo")) {
-    value.logo = logoValue(body.logo);
+    value.logo = logoBytes(body.logo);
   }
 
   return { value };
@@ -140,6 +205,7 @@ exports.create = async (req, res) => {
       return res.status(409).send({ message: "Area name already in use!" });
     }
 
+    await storeLogo(parsed.value);
     const area = await db.area.create(parsed.value);
     return res.status(201).send(present(area));
   } catch (error) {
@@ -147,8 +213,7 @@ exports.create = async (req, res) => {
       return res.status(409).send({ message: "Area name already in use!" });
     }
 
-    logger.error(error.message);
-    return res.status(500).send({ message: "Unable to create the area." });
+    return sendAreaError(res, error, "Unable to create the area.");
   }
 };
 
@@ -176,6 +241,7 @@ exports.update = async (req, res) => {
       return res.status(409).send({ message: "Area name already in use!" });
     }
 
+    await storeLogo(parsed.value);
     await area.update(parsed.value);
     return res.send(present(area));
   } catch (error) {
@@ -183,8 +249,7 @@ exports.update = async (req, res) => {
       return res.status(409).send({ message: "Area name already in use!" });
     }
 
-    logger.error(error.message);
-    return res.status(500).send({ message: "Unable to update the area." });
+    return sendAreaError(res, error, "Unable to update the area.");
   }
 };
 

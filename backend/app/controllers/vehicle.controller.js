@@ -370,10 +370,21 @@ exports.createMaintenanceInfo = async (req, res) => {
 exports.findAreas = async (_req, res) => {
   try {
     const areas = await db.area.findAll({
-      attributes: ["id", "name"],
+      attributes: ["id", "name", "logo"],
       order: [["name", "ASC"]],
     });
-    return res.send(areas);
+    return res.send(
+      areas.map((area) => {
+        const logo = area.logo;
+        const buffer = logo == null ? null : Buffer.isBuffer(logo) ? logo : Buffer.from(logo);
+
+        return {
+          id: area.id,
+          name: area.name,
+          logo: buffer?.length ? buffer.toString("base64") : null,
+        };
+      })
+    );
   } catch (error) {
     logger.error(`findAreas failed: ${error.message}`);
     return res.status(500).send({ message: "Could not retrieve areas." });

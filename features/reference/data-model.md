@@ -138,7 +138,7 @@ Feature 9 also stores one row in `Contributors` when a note is created and anoth
 | ------------- | ----------- | ---------------------------- |
 | `id`          | INTEGER PK  | Auto-increment. ERD `id`     |
 | `name`        | STRING(30)  | Required, unique. ERD `name` |
-| `logo`        | BLOB        | Optional. ERD `logo`         |
+| `logo`        | MEDIUMBLOB  | Optional. One PNG image on the area row, up to 16 megabytes. ERD `logo` |
 | `noticeEmail` | STRING(255) | Required. ERD `notice_email` |
 
 ### `requests` table

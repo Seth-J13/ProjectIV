@@ -148,7 +148,7 @@ Areas are organization records, not private user rows. Only an admin may create,
 }
 ```
 
-`logo` may be omitted. `name` is the ERD column `name` (`varchar(30)`, unique). `noticeEmail` is the ERD column `notice_email`.
+`logo` may be omitted. When sent, it is one PNG as base64 and is stored as a blob. `name` is the ERD column `name` (`varchar(30)`, unique). `noticeEmail` is the ERD column `notice_email`.
 
 **Success response** (`201` on create, `200` on read and update):
 
@@ -195,7 +195,7 @@ Quoted messages that tests must match:
 - Heading: **Areas**
 - Table columns: **Name**, **Notice email**
 - An empty list still shows the heading and **Create area**
-- **Create area** opens a dialog with **Name** and **Notice email** (both required). **Logo** is optional
+- **Create area** opens a dialog with **Name** and **Notice email** (both required). **Logo** is an optional single image, stored as a blob on the area row
 - Opening a row shows **Save** and **Delete**
 - **Save** writes the edited fields and the list shows the saved values
 - **Delete** removes the row when the area is unused
@@ -219,7 +219,7 @@ This feature **owns** `areas`. It does not create `area_images` or `vehicles`.
 | ----- | ---- | ----- |
 | `id` | INTEGER PK | Auto-increment. ERD `id` |
 | `name` | STRING(30) | Required, unique. ERD `name` |
-| `logo` | BLOB | Optional. ERD `logo` |
+| `logo` | MEDIUMBLOB | Optional. One PNG image on the area row |
 | `noticeEmail` | STRING(255) | Required. ERD `notice_email` |
 
 

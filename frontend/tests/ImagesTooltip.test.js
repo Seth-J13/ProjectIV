@@ -28,16 +28,16 @@ vi.mock("../src/services/services.js", () => ({
 }));
 
 const tooltipTemplate = `
-  <ImageUnderTest :type="type" :parent-id="parentId">
+  <ImageUnderTest :type="type" :parent-id="parentId" :logo="logo">
     <button type="button" class="list-item">Listing</button>
   </ImageUnderTest>
 `;
 
 let activeWrapper;
 
-async function mountTooltip(type, parentId) {
+async function mountTooltip(type, parentId, extra = {}) {
   activeWrapper = await mountImage(ImagesTooltip, {
-    props: { type, parentId },
+    props: { type, parentId, logo: "", ...extra },
     template: tooltipTemplate,
   });
   return activeWrapper;
@@ -165,64 +165,72 @@ describe("Feature 11 — Images CRUD", () => {
     it("Hover an area listing", async () => {
       const parentId = 8101;
       const [first] = listImages("area", parentId);
+      const logo = "area-logo-bytes";
       signIn("admin");
       apiClient.get.mockResolvedValue({ status: 200, data: listImages("area", parentId) });
-      await mountTooltip("area", parentId);
+      await mountTooltip("area", parentId, { logo });
 
       await hoverListing();
-      expect(pageText()).not.toContain(first.date);
+      expect(document.querySelector(".images-tooltip")).toBeNull();
       await finishHover();
 
-      const tooltip = tooltipElement(first.date);
+      const tooltip = document.querySelector(".images-tooltip");
       expect(tooltip).toBeTruthy();
+      expect(tooltip.querySelector("img").getAttribute("src")).toContain(logo);
+      expect(pageText()).not.toContain(first.date);
       expect(hasThickWhiteBorder(tooltip)).toBe(true);
 
       await movePointer(24, 70);
       const left = tooltip.style.left;
       const top = tooltip.style.top;
-      await movePointer(160, 8);
+      tooltip.dispatchEvent(new MouseEvent("mousemove", { bubbles: true, clientX: 160, clientY: 8 }));
+      document.dispatchEvent(new MouseEvent("mousemove", { bubbles: true, clientX: 160, clientY: 8 }));
+      await flushPromises();
       expect(tooltip.style.left).not.toBe(left);
       expect(tooltip.style.top).toBe(top);
 
       document.querySelector(".list-item").dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
       tooltip.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
       await flushPromises();
-      expect(pageText()).toContain(first.date);
+      expect(tooltip.querySelector("img").getAttribute("src")).toContain(logo);
     });
 
     it("Press the area image tooltip", async () => {
       const parentId = 8102;
       const images = listImages("area", parentId);
+      const logo = "area-logo-bytes";
       signIn("maintenance");
       apiClient.get.mockResolvedValue({ status: 200, data: images });
-      await mountTooltip("area", parentId);
+      await mountTooltip("area", parentId, { logo });
       await hoverListing();
       await finishHover();
-      tooltipElement(images[0].date).click();
+      document.querySelector(".images-tooltip").click();
       await flushPromises();
 
-      expect(String(apiClient.get.mock.calls.at(-1)[0])).toMatch(new RegExp(`/vehicle-t3/areaimage/area/${parentId}$`));
-      expect(dialog()).not.toBeNull();
-      expect(pageText()).toContain(images[0].date);
-      expect(pageText()).toContain(images[1].date);
+      const opened = dialog();
+      expect(opened).not.toBeNull();
+      expect(opened.querySelector("img").getAttribute("src")).toContain(logo);
+      expect(pageText()).not.toContain(images[0].date);
+      expect(pageText()).not.toContain(images[1].date);
     });
 
     it("Close the area image modal", async () => {
       const parentId = 8103;
       const images = listImages("area", parentId);
+      const logo = "area-logo-bytes";
       signIn("admin");
       apiClient.get.mockResolvedValue({ status: 200, data: images });
-      await mountTooltip("area", parentId);
+      await mountTooltip("area", parentId, { logo });
       await hoverListing();
       await finishHover();
-      tooltipElement(images[0].date).click();
+      document.querySelector(".images-tooltip").click();
       await flushPromises();
 
       await pressOutsideDialog();
       expect(dialog()).toBeNull();
       expect(apiClient.delete).not.toHaveBeenCalled();
 
-      tooltipElement(images[0].date).click();
+      document.querySelector(".images-tooltip").click();
       await flushPromises();
       await pressControl("X");
       expect(dialog()).toBeNull();

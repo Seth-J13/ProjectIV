@@ -92,7 +92,7 @@
 **So that** I know which `area` I'm looking at.
 
 **Priority:** P1
-**Independent test:** On `Areas.vue`, hover an `area` list item for `1` second and an `ImagesTooltip` shows that area's first `AreaImage` with a thick white border, stays open when the cursor moves onto it, and follows the cursor horizontally but not vertically; pressing the tooltip opens a modal whose `ImagesDetails` lists that area's `AreaImages`, and pressing **X** or outside the modal closes it.
+**Independent test:** On `Areas.vue`, hover an `area` list item for `1` second and an `ImagesTooltip` shows that area's logo with a thick white border, stays open when the cursor moves onto it, and follows the cursor horizontally but not vertically; pressing the tooltip expands that logo, and pressing **X** or outside the modal closes it.
 **Acceptance scenarios:** see ### US-11.8 under Acceptance Criteria
 
 ### US-11.9: Create AreaImage on Area listings
@@ -386,6 +386,7 @@ imagesDetails contained inside imagesContainer and imagesBox
 - The container fill is the muted `surface-variant` token, with a dashed outline.
 - **From Cloud**, **From Computer**, and the cloud provider actions use `v-btn` `color="primary"` `variant="elevated"` `class="oc-cta"`.
 - Each image in the grid is a `100`px by `100`px square, scaled down to fit. It stays collapsed until **Image Content** is pressed.
+- A details view embeds `ImagesContainer` with adding and deleting turned off. The `ImagesDetails` grid still renders. Add and edit forms keep both actions.
 - Grid **ImagesDetails** components are separated by about `25`px of space horizontally and `25`px of space vertically.
 - Grid expands vertically downward when horizontal row limit is reached (dependent on space inside container).
 - Overflow requires scroll bar.
@@ -419,8 +420,8 @@ imagesDetails contained inside imagesContainer and imagesBox
 
 - Container: tooltip: <v-tooltip>; modal: <v-card>
 - Heading: [no header]
-- Primary action: Hover over a `vehicle` or `area` list item for `1` second to show that item's first image in a small but visible tooltip with a thick white border. The tooltip remains open if the cursor moves onto it, and it follows the cursor horizontally but not vertically. Use class `oc-cta` (per [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc)).
-- Pressing the tooltip opens a modal containing an **ImagesDetails** component that lists every image associated with that item.
+- Primary action: Hover over a `vehicle` list item for `1` second to show that vehicle's first image, or an `area` list item for `1` second to show that area's logo, in a small but visible tooltip with a thick white border. The tooltip remains open if the cursor moves onto it, and it follows the cursor horizontally but not vertically. Use class `oc-cta` (per [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc)).
+- Pressing a vehicle tooltip opens a modal containing an **ImagesDetails** component that lists every image associated with that vehicle. Pressing an area tooltip opens that area's logo expanded in the modal.
   - Pressing outside modal closes modal
   - Pressing on `X` in top right of modal closes modal
 
@@ -759,7 +760,7 @@ This feature uses different image tables where each entry has a foreign key to t
 
 **Given** I am an authenticated user with the `admin` or `maintenance` role on `Areas.vue`
 **When** I hover an `area` list item for `1` second
-**Then** an `ImagesTooltip` shows that area's first `AreaImage`
+**Then** an `ImagesTooltip` shows that area's logo
 **And** the tooltip has a thick white border and class `oc-cta`
 **And** the tooltip follows the cursor horizontally but not vertically
 **And** moving the cursor onto the tooltip leaves it open.
@@ -768,9 +769,8 @@ This feature uses different image tables where each entry has a foreign key to t
 
 **Given** the `ImagesTooltip` for an `area` is open
 **When** I press the tooltip
-**Then** a modal opens whose `ImagesDetails` lists every `AreaImage` for that `area_id` from `GET /vehicle-t3/areaimage/area/:areaId`
-**And** pressing **Image Content** expands that image with its `date` above it
-**And** **<** and **>** step through that area's images and stop at the first and last image.
+**Then** a modal opens showing that area's logo expanded
+**And** the area's `AreaImages` are not listed in that modal.
 
 #### Scenario: Close the area image modal
 

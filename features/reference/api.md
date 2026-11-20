@@ -24,7 +24,7 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `POST`   | `/api/vehicle-t3/fuels/`           | Yes (`admin` or `maintenance`)             | Create a fuel type                                                | Feature 4  |
 | `GET`    | `/api/vehicle-t3/maintenance-info` | Yes (`admin` or `maintenance`)             | Look up maintenance info by `make`, `model`, `year`               | Feature 4  |
 | `PUT`    | `/api/vehicle-t3/maintenance-info` | Yes (`admin` or `maintenance`)             | Create maintenance info for `make`, `model`, `year`               | Feature 4  |
-| `GET`    | `/api/vehicle-t3/areas/`           | Yes (`admin` or `maintenance`)             | List areas for vehicle forms/filters                              | Feature 4  |
+| `GET`    | `/api/vehicle-t3/areas/`           | Yes (`admin` or `maintenance`)             | List areas for vehicle forms. Each area includes its logo as base64, or `null` | Feature 4  |
 | `GET`    | `/api/vehicle-t3`                  | Yes (`Bearer` session token)               | List every driver                                                 | Feature 7  |
 | `GET`    | `/api/vehicle-t3/:driver_id`       | Yes (`Bearer` session token)               | Show one driver                                                   | Feature 7  |
 | `POST`   | `/api/vehicle-t3`                  | Yes (`Bearer` session token, role `admin`) | Create a driver                                                   | Feature 7  |
@@ -259,7 +259,7 @@ Admin only. Create and update body:
 }
 ```
 
-`name` is required, unique, and at most 30 characters. `noticeEmail` is required. `logo` may be omitted. Success is **201** on create and **200** on read and update:
+`name` is required, unique, and at most 30 characters. `noticeEmail` is required. `logo` may be omitted. When it is sent, it is one PNG as base64 and is stored as a blob on the area row. The response returns that base64, or `null`. Success is **201** on create and **200** on read and update:
 
 ```json
 {
