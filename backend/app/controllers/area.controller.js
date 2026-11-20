@@ -206,6 +206,7 @@ exports.remove = async (req, res) => {
       return res.status(409).send({ message: "Area is in use!" });
     }
 
+    await db.areaImage.destroy({ where: { area_id: area.id } });
     await area.destroy();
     return res.send({ message: "Area deleted." });
   } catch (error) {

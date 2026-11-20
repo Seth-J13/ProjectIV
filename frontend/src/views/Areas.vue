@@ -23,6 +23,8 @@ export default {
 <script setup>
 import { nextTick, onMounted, ref } from "vue";
 import areaServices from "../services/areaServices.js";
+import ImagesTooltip from "../components/ImagesTooltip.vue";
+import ImagesContainer from "../components/ImagesContainer.vue";
 
 const areas = ref([]);
 const loading = ref(false);
@@ -46,6 +48,8 @@ function emptyForm() {
 
 const createForm = ref(emptyForm());
 const editForm = ref(emptyForm());
+const areaImages = ref(null);
+const hoveredAreaId = ref(null);
 
 function payloadFrom(source) {
   const body = {
@@ -167,6 +171,7 @@ async function saveEdit() {
 
   try {
     const response = await areaServices.updateArea(editForm.value.id, payloadFrom(editForm.value));
+    await areaImages.value?.commit(editForm.value.id);
     areas.value = areas.value
       .map((area) => (area.id === response.data.id ? response.data : area))
       .sort((left, right) => left.name.localeCompare(right.name));
@@ -219,12 +224,20 @@ onMounted(loadAreas);
         </tr>
       </thead>
       <tbody>
-        <tr v-for="area in areas" :key="area.id" @click="openArea(area)">
+        <tr
+          v-for="area in areas"
+          :key="area.id"
+          @click="openArea(area)"
+          @mouseenter="hoveredAreaId = area.id"
+          @mouseleave="hoveredAreaId = null"
+        >
           <td>{{ area.name }}</td>
           <td>{{ area.noticeEmail }}</td>
         </tr>
       </tbody>
     </v-table>
+
+    <ImagesTooltip v-if="hoveredAreaId" active type="area" :parent-id="hoveredAreaId" />
 
     <dialog ref="createDialog" class="area-dialog" aria-labelledby="create-area-title" @cancel.prevent="closeCreate">
       <v-card v-if="createOpen" rounded="lg" max-width="480">
@@ -274,6 +287,13 @@ onMounted(loadAreas);
           <v-text-field v-model="editForm.name" label="Name" />
           <v-text-field v-model="editForm.noticeEmail" label="Notice email" />
           <v-text-field v-model="editForm.logo" label="Logo" />
+          <ImagesContainer
+            v-if="editForm.id"
+            ref="areaImages"
+            defer
+            type="area"
+            :parent-id="editForm.id"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />

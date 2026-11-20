@@ -1,6 +1,7 @@
 import routes from "./app/routes/index.js";
 import destinationRoutes from "./app/routes/destination.routes.js";
 import noteRoutes from "./app/routes/note.routes.js";
+import imageRoutes from "./app/routes/image.routes.js";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -43,13 +44,19 @@ app.use(
   })
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "40mb" }));
+app.use(express.urlencoded({ extended: true, limit: "40mb" }));
 
 app.use("/vehicle-t3/destinations", destinationRoutes);
 app.use("/api/vehicle-t3/destinations", destinationRoutes);
 app.use("/vehicle-t3/notes", noteRoutes);
 app.use("/api/vehicle-t3/notes", noteRoutes);
+app.use("/vehicle-t3/noteimage", imageRoutes("note"));
+app.use("/api/vehicle-t3/noteimage", imageRoutes("note"));
+app.use("/vehicle-t3/vehicleimage", imageRoutes("vehicle"));
+app.use("/api/vehicle-t3/vehicleimage", imageRoutes("vehicle"));
+app.use("/vehicle-t3/areaimage", imageRoutes("area"));
+app.use("/api/vehicle-t3/areaimage", imageRoutes("area"));
 app.use("/api", routes);
 
 const PORT = process.env.PORT || 3200;

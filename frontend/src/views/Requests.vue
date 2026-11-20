@@ -223,12 +223,20 @@ async function createRequest() {
 
     for (const note of notes) {
       try {
-        await apiClient.post("/vehicle-t3/notes/", {
+        const createdNote = await apiClient.post("/vehicle-t3/notes/", {
           reason: note.reason,
           text: note.text,
           request_id: requestId,
           maintenance_request: note.maintenance_request === true,
         });
+        const noteId = createdNote.data?.note_id ?? createdNote.data?.id;
+
+        for (const item of note.images || []) {
+          await apiClient.post("/vehicle-t3/noteimage/", {
+            image: item.image,
+            note_id: noteId,
+          });
+        }
       } catch (error) {
         noteError = messageFrom(error);
       }

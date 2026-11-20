@@ -5,6 +5,7 @@ export default { name: "NoteForm" };
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import apiClient from "../services/services.js";
+import ImagesContainer from "./ImagesContainer.vue";
 
 const props = defineProps({
   isAddMode: { type: Boolean, default: true },
@@ -23,6 +24,8 @@ const subjectError = ref("");
 const descriptionError = ref("");
 const saving = ref(false);
 const panel = ref(null);
+const pendingImages = ref([...(props.modelValue?.images ?? [])]);
+const imageEditor = ref(null);
 
 function formatDate(value) {
   if (value == null || value === "") {
@@ -48,6 +51,7 @@ function applyModel(value) {
   description.value = value?.text ?? "";
   notifyMaintenance.value =
     typeof value?.maintenance_request === "boolean" ? value.maintenance_request : props.maintenanceRequest === true;
+  pendingImages.value = [...(value?.images ?? [])];
 }
 
 applyModel(props.modelValue);
@@ -136,6 +140,7 @@ async function submit() {
       maintenance_request: payload.maintenance_request,
       date: props.modelValue?.date,
       contributors: props.modelValue?.contributors,
+      images: pendingImages.value.map((item) => ({ image: item.image, date: item.date })),
     });
     close();
     return;
@@ -147,6 +152,12 @@ async function submit() {
     const response = props.isAddMode
       ? await apiClient.post("/vehicle-t3/notes/", payload)
       : await apiClient.put(`/vehicle-t3/notes/note/${props.modelValue.id}`, payload);
+    const noteId = response.data?.note_id ?? response.data?.id ?? props.modelValue?.id;
+
+    if (noteId != null) {
+      await imageEditor.value?.commit(noteId);
+    }
+
     emit("saved", response.data);
     close();
   } catch (error) {
@@ -180,7 +191,13 @@ async function submit() {
             :error-messages="descriptionError ? [descriptionError] : []"
           />
           <v-switch v-model="notifyMaintenance" color="primary" label="Notify maintenance" hide-details />
-          <div class="image-frame">Drop or Upload Image Here</div>
+          <ImagesContainer
+            ref="imageEditor"
+            v-model="pendingImages"
+            defer
+            type="note"
+            :parent-id="local || modelValue?.id == null ? null : modelValue.id"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />

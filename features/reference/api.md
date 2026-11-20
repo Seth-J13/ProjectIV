@@ -328,3 +328,18 @@ Create body: `reason`, `text`, `request_id`, and optional `maintenance_request` 
 | Note has no contributions | 404 | `This note <noteId> doesn't have any contributions` |
 | Same `request_id` and `text` already stored | 409 | `Note with these details already exists!` |
 | Second contribution with `created_note: true` | 409 | `contributor with these details already exists!` |
+
+### Feature 11 — Images (`/vehicle-t3/noteimage`, `/vehicle-t3/vehicleimage`, `/vehicle-t3/areaimage`)
+
+The same routes are also mounted under `/api`. `[type]` is `note`, `vehicle`, or `area`. `PUT` is **403** `{ "message": "PUT and overwriting requests are not allowed to image entries" }` with or without a token.
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/[type]image?offset=` | Next 3 images, newest `date` first |
+| `POST` | `/[type]image/` | Create one image → **201** `{ "message": "New image created with id=<id>" }` |
+| `GET` | `/[type]image/:id` | One image |
+| `DELETE` | `/[type]image/:id` | Delete one image → **204** empty |
+| `GET` | `/[type]image/[type]/:parentId` | Every image for that parent |
+| `DELETE` | `/[type]image/[type]/:parentId` | Delete every image for that parent → **204** |
+
+Create sends multipart field `image` plus `note_id`, `vehicle_id`, or `area_id`. `vehicle_id` is the vehicle `vin`. A JSON body may send `image` as base64. The response `image` is base64 PNG. A parent with no images is **404** `This note <:noteId> doesn't have any images`, `This vehicle <:vehicleId> doesn't have any images`, or `This area <:areaId> doesn't have any images`. A missing image is **404** `{ "message": "No image was found for id=<id>" }`. A duplicate image for the same parent is **409** `{ "message": "Image with these details already exists!" }`. A missing file or parent id is **400** `{ "message": "Malformed request. Please make sure everything in the form is properly formatted!" }`.

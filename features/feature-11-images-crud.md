@@ -32,7 +32,7 @@
 **So that** I can help others know what `vehicle` they're looking at.
 
 **Priority:** P1
-**Independent test:** On `Maintenance.vue`, dragging an allowed image under `25` Megabytes onto the **Vehicle Images** `ImagesContainer` appends a `VehicleImage` with that vehicle's `vehicle_id` after converting it to `png`; pressing inside the container but not on an image offers **From Cloud** and **From Computer**.
+**Independent test:** On the add or edit vehicle form, dragging an allowed image under `25` Megabytes onto the **Vehicle Images** `ImagesContainer` appends a `VehicleImage` with that vehicle's `vehicle_id` after converting it to `png`; pressing inside the container but not on an image offers **From Cloud** and **From Computer**.
 **Acceptance scenarios:** see ### US-11.2 under Acceptance Criteria
 
 ### US-11.3: Delete VehicleImage on Vehicle listings
@@ -42,7 +42,7 @@
 **So that** I can replace incorrect `VehicleImages`.
 
 **Priority:** P1
-**Independent test:** On `Maintenance.vue`, the **X** on a `VehicleImage` inside the **Vehicle Images** `ImagesContainer` colors what is beneath it in negative color, and pressing it `DELETE`s that image only and refreshes the grid without a page reload; pressing **X** on the expanded image closes the overlay.
+**Independent test:** On the add or edit vehicle form, the **X** on a `VehicleImage` inside the **Vehicle Images** `ImagesContainer` colors what is beneath it in negative color, and pressing it `DELETE`s that image only and refreshes the grid without a page reload; pressing **X** on the expanded image closes the overlay.
 **Acceptance scenarios:** see ### US-11.3 under Acceptance Criteria
 
 ### US-11.4: See NoteImage on Note details
@@ -133,7 +133,7 @@
 
 **FR-001**: Any authenticated user **MUST** be allowed to Create, Read, and Delete `NoteImages` on `notes` they are making or that they created. An authenticated `maintenance` user **MUST** also be allowed to Delete a `NoteImage` on a `note` marked as a maintenance request.
 **FR-002**: An authenticated `admin` **MUST** be allowed to Create, Read, and Delete every image. This feature has no update operation.
-**FR-003**: An authenticated `admin` or `maintenance` user **MUST** be able to `POST` and `DELETE` `VehicleImages` from `Maintenance.vue` and `AreaImages` from `AreaForm.vue`. Any authenticated user **MUST** be able to `POST` `NoteImages` from `NoteForm.vue` on a `note` they are making or that they created.
+**FR-003**: An authenticated `admin` or `maintenance` user **MUST** be able to `POST` and `DELETE` `VehicleImages` from the add or edit vehicle form and `AreaImages` from `AreaForm.vue`. Any authenticated user **MUST** be able to `POST` `NoteImages` from `NoteForm.vue` on a `note` they are making or that they created. The request form does not embed `ImagesContainer`.
 **FR-004**: Any authenticated user **MUST** be allowed to reach all `GET` endpoints on any image table.
 **FR-005**: The `ImagesContainer` component **MUST** provide methods for authenticated users to Create, Read, and Delete to and from the image table associated with the form it's embedded in.
 **FR-006**: Displaying an error inside a create or delete dialog **MUST NOT** close the dialog.
@@ -375,7 +375,7 @@ imagesDetails contained inside imagesContainer and imagesBox
 - Primary action: **Drop or Upload Image Here** inside container. **ImagesDetails** components each containing their own image associated with the viewed entity displayed in a grid inside container. Use class `oc-cta` on whole container (per [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc)).
 - Dragging an image file into the container auto `POST`s a new `[type]Image` entry based on where the component is embedded.
 - Pressing inside container (but not in an image) presents two options.
-  - **From Cloud** -- w/ `oc-cta` class. Include **Google OAuth integration** for authentication. Modal has tabbed interface for **Google Drive**, **Dropbox**, and **OneDrive**, with a file browser for selection. Support drag-and-drop for local files, validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads with a progress bar. Use slots for UI customization and ensure the modal has proper focus trapping and accessibility. Pressing outside this dialog emphasizes the dialog, requiring to hit an `X` in the top-right corner to close it.
+  - **From Cloud** -- w/ `oc-cta` class. Include **Google OAuth integration** for authentication. Modal has a **Google Drive** file browser for selection. Support drag-and-drop for local files, validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads with a progress bar. Use slots for UI customization and ensure the modal has proper focus trapping and accessibility. Pressing outside this dialog emphasizes the dialog, requiring to hit an `X` in the top-right corner to close it.
   - **From Computer** -- System file-picker dialog. Validate **file size** and **type** according to **FR-008** and **FR-011**, and allow multiple file uploads. Ensure the system dialog has proper focus trapping and accessibility.
 - Empty state in **ImagesContainer**: **Drop or Upload Image Here**
 - Loading state: skeleton or progress indicator while images are fetching.
@@ -383,6 +383,9 @@ imagesDetails contained inside imagesContainer and imagesBox
 
 **Implementation Notes:**
 
+- The container fill is the muted `surface-variant` token, with a dashed outline.
+- **From Cloud**, **From Computer**, and the cloud provider actions use `v-btn` `color="primary"` `variant="elevated"` `class="oc-cta"`.
+- Each image in the grid is a `100`px by `100`px square, scaled down to fit. It stays collapsed until **Image Content** is pressed.
 - Grid **ImagesDetails** components are separated by about `25`px of space horizontally and `25`px of space vertically.
 - Grid expands vertically downward when horizontal row limit is reached (dependent on space inside container).
 - Overflow requires scroll bar.
@@ -396,7 +399,7 @@ imagesDetails contained inside imagesContainer and imagesBox
 - Primary action: Press left arrow and right arrow to navigate through list of images inside component. Press on image to expand it in center of screen. Press `X` on expanded image (or press outside it) to close. Use class `oc-cta` on whole container (per [ui-style-system.mdc](../.cursor/rules/ui-style-system.mdc)).
 - Wrap `[type]Images` in a L/R navigable list. The items below hold no text, labels are just the names of the elements:
   - **Image Content** -- The image rendered inside the square container; clicking on **Image Content** opens a larger modal overlaying the screen with an expanded version of the selected `[type]Image`. Remove options from context menu related to saving the image.
-  - **X** -- An `X` in the top-right corner of each image container coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Only shown on expanded images or **if** the parent **ImagesDetails** component is embedded in an entity's creation/editing form/modal. Pressing this on the expanded `[type]Image` modal closes that modal. Pressing this on an image inside the **Image Content** sends a `DELETE` request for that image **only** if this component is embedded in an **ImagesContainer** on the entity's edit/add form/page (for example, `NoteImages` on `NoteForm.vue` in **Add** or **Edit** mode, `VehicleImages` on `Maintenance.vue`, and `AreaImages` on `AreaForm.vue`).
+  - **X** -- An `X` in the top-right corner of each image container coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Only shown on expanded images or **if** the parent **ImagesDetails** component is embedded in an entity's creation/editing form/modal. Pressing this on the expanded `[type]Image` modal closes that modal. Pressing this on an image inside the **Image Content** sends a `DELETE` request for that image **only** if this component is embedded in an **ImagesContainer** on the entity's edit/add form/page (for example, `NoteImages` on `NoteForm.vue` in **Add** or **Edit** mode, `VehicleImages` on the add or edit vehicle form, and `AreaImages` on `AreaForm.vue`).
   - **<** -- A `<` vertical-center and horizontal-left of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the previous image in the list (unless it's the 0th index).
   - **>** -- A `>` vertical-center and horizontal-right of each expanded image coloring anything beneath it in negative color so it contrasts strongly and is easy to find. Pressing this navigates to the next image in the list (unless it's the final index).
 
@@ -509,7 +512,7 @@ This feature uses different image tables where each entry has a foreign key to t
 
 #### Scenario: Drag a valid image onto Vehicle Images
 
-**Given** I am an authenticated user with the `admin` or `maintenance` role viewing the **Vehicle Images** `ImagesContainer` on `Maintenance.vue`
+**Given** I am an authenticated user with the `admin` or `maintenance` role viewing the **Vehicle Images** `ImagesContainer` on the add or edit vehicle form
 **When** I drag a `png`/`apng`, `jpg`/`jpeg`, `tiff`/`tif`, `avif`, `webp`, or `bmp` under `25` Megabytes into the container
 **Then** a `POST /vehicle-t3/vehicleimage/` is sent
 **And** I receive `201` `{ "message": "New image created with id=<id>" }`
@@ -528,7 +531,7 @@ This feature uses different image tables where each entry has a foreign key to t
 #### Scenario: Upload from the cloud
 
 **Given** the **From Cloud** dialog is open
-**When** I choose one or more allowed files from **Google Drive**, **Dropbox**, or **OneDrive**
+**When** I choose one or more allowed files from **Google Drive**
 **Then** each file is checked against the allowed types and the `25` Megabyte limit
 **And** a progress bar shows the uploads
 **And** a valid file is `POST`ed to `/vehicle-t3/vehicleimage/`
@@ -578,7 +581,7 @@ This feature uses different image tables where each entry has a foreign key to t
 
 #### Scenario: Show delete on a vehicle image
 
-**Given** I am an authenticated user with the `admin` or `maintenance` role viewing a `VehicleImage` inside the **Vehicle Images** `ImagesContainer` on `Maintenance.vue`
+**Given** I am an authenticated user with the `admin` or `maintenance` role viewing a `VehicleImage` inside the **Vehicle Images** `ImagesContainer` on the add or edit vehicle form
 **When** the image is shown
 **Then** **X** appears in its top-right corner and colors what is beneath it in negative color.
 
@@ -955,13 +958,13 @@ Do not implement behavior not in this spec.
 
 ## Definition of Done
 
-- [ ] Backend and frontend implemented per this spec (**FR-00N** satisfied)
-- [ ] **Success Criteria (SC-00N)** met
-- [ ] All mapped tests pass (`npm test`)
-- [ ] Test Coverage Map complete
-- [ ] `features/reference/data-model.md` updated (if schema changed)
-- [ ] `features/reference/api.md` updated (if API changed)
-- [ ] `features/reference/behavior.md` updated (if product rules changed)
+- [x] Backend and frontend implemented per this spec (**FR-00N** satisfied)
+- [x] **Success Criteria (SC-00N)** met
+- [x] All mapped tests pass (`npm test`)
+- [x] Test Coverage Map complete
+- [x] `features/reference/data-model.md` updated (if schema changed)
+- [x] `features/reference/api.md` updated (if API changed)
+- [x] `features/reference/behavior.md` updated (if product rules changed)
 
 ---
 

@@ -6,6 +6,7 @@ export default { name: "NotesList" };
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import apiClient from "../services/services.js";
 import NoteForm from "./NoteForm.vue";
+import ImagesContainer from "./ImagesContainer.vue";
 
 const props = defineProps({
   mode: { type: String, default: "embed" },
@@ -216,6 +217,7 @@ async function onSaved(data) {
       maintenance_request: data?.maintenance_request === true,
       date: data?.date || today(),
       contributors: data?.contributors || [],
+      images: data?.images || [],
     };
 
     if (formAdd.value) {
@@ -356,7 +358,20 @@ onBeforeUnmount(() => {
           <p>{{ earliest(selected) }}</p>
           <p>{{ selected.reason }}</p>
           <p>{{ selected.text }}</p>
-          <div class="image-frame">Drop or Upload Image Here</div>
+          <ImagesContainer
+            v-if="draft"
+            :key="`draft-${selected.id}`"
+            type="note"
+            :model-value="selected.images || []"
+            :allow-delete="false"
+          />
+          <ImagesContainer
+            v-else
+            :key="selected.id"
+            type="note"
+            :parent-id="selected.id"
+            :allow-delete="false"
+          />
           <p>Last updated on {{ latest(selected) }}</p>
         </v-card-text>
         <v-card-actions>

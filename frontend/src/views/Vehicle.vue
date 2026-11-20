@@ -3,6 +3,8 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import vehicleServices from "../services/vehicleServices.js";
 import areaServices from "../services/areaServices.js";
+import ImagesTooltip from "../components/ImagesTooltip.vue";
+import ImagesContainer from "../components/ImagesContainer.vue";
 
 const FORM_ERROR = "An error occured processing your form.";
 // The modal has no tire type field (spec); the API requires one when creating maintenance info.
@@ -23,6 +25,7 @@ const isEditMode = ref(false);
 const form = ref(emptyForm());
 const formError = ref("");
 const saving = ref(false);
+const vehicleImages = ref(null);
 
 const showConfirmMaintenanceInfo = ref(false);
 const showConfirmFuelType = ref(false);
@@ -121,17 +124,6 @@ const filteredVehicles = computed(() => {
 function areaName(vehicle) {
   return vehicle.area?.name ?? areas.value.find((area) => area.id === vehicle.area_id)?.name ?? "";
 }
-
-const hoveredImage = computed(() => {
-  const vehicle = vehicles.value.find((item) => item.vin === hoveredVin.value);
-  const image = vehicle?.image || vehicle?.images?.[0];
-  const src = image?.url ?? (typeof image === "string" ? image : null);
-  // Block file:// URLs — browsers reject them from http:// pages.
-  if (!src || String(src).startsWith("file:")) {
-    return null;
-  }
-  return src;
-});
 
 function apiMessage(error, fallback) {
   return error.response?.data?.message || fallback;
@@ -368,6 +360,7 @@ async function saveVehicle() {
     await vehicleServices.createVehicle(payload);
   }
 
+  await vehicleImages.value?.commit(payload.vin);
   closeAllDialogs();
   await loadVehicles();
 }
@@ -379,7 +372,6 @@ async function createAndSave() {
 
   showConfirmMaintenanceInfo.value = false;
   showConfirmFuelType.value = false;
-  showVehicleDialog.value = false;
   saving.value = true;
   errorMessage.value = "";
 
@@ -584,9 +576,7 @@ onMounted(() => {
       </tbody>
     </v-table>
 
-    <v-card v-if="hoveredImage" class="vehicle-image-preview" elevation="4">
-      <img :src="hoveredImage" alt="Vehicle" />
-    </v-card>
+    <ImagesTooltip v-if="hoveredVin" active type="vehicle" :parent-id="hoveredVin" />
 
     <v-dialog v-model="showVehicleDialog" max-width="720">
       <v-card v-if="showVehicleDialog" id="vehicle-dialog">
@@ -661,6 +651,15 @@ onMounted(() => {
                 :precision="2"
                 control-variant="stacked"
                 label="Recommended Tire PSI"
+              />
+            </v-col>
+            <v-col cols="12">
+              <ImagesContainer
+                ref="vehicleImages"
+                defer
+                type="vehicle"
+                :parent-id="String(form.vin || '').trim() || null"
+                heading="Vehicle Images"
               />
             </v-col>
           </v-row>

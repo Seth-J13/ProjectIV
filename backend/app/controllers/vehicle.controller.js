@@ -242,6 +242,7 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     const vin = text(req.params.vin);
+    await db.vehicleImage.destroy({ where: { vehicle_id: vin } });
     const deleted = await db.vehicle.destroy({ where: { vin } });
     if (!deleted) {
       return res.status(500).send({ message: `Vehicle with vin=${vin} not found.` });

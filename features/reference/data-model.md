@@ -167,27 +167,27 @@ Request dropdowns read `vehicles` (`vehicleId`, `license`, `make`, `model`), `dr
 | Field     | Type                    | Rules                                      |
 | --------- | ----------------------- | ------------------------------------------ |
 | `id`      | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
-| `image`   | BLOB                    | Required                                   |
-| `date`    | DATE                    | Derived from image metadata (or generated) |
-| `note_id` | INTEGER, FOREIGN KEY    | Required                                   |
+| `image`   | BLOB                    | Required. Stored as PNG, under 10 megabytes |
+| `date`    | DATE                    | Derived from image metadata, or today       |
+| `note_id` | INTEGER, FOREIGN KEY    | Required. Deleting the note deletes these rows |
 
 ### `VehicleImage` table
 
 | Field        | Type                    | Rules                                      |
 | ------------ | ----------------------- | ------------------------------------------ |
 | `id`         | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
-| `image`      | BLOB                    | Required                                   |
-| `date`       | DATE                    | Derived from image metadata (or generated) |
-| `vehicle_id` | INTEGER, FOREIGN KEY    | Required; references `Vehicles.vin`        |
+| `image`      | BLOB                    | Required. Stored as PNG, under 10 megabytes |
+| `date`       | DATE                    | Derived from image metadata, or today       |
+| `vehicle_id` | STRING(17)              | Required. The vehicle `vin`. Deleting the vehicle deletes these rows |
 
 ### `AreaImage` table
 
 | Field     | Type                    | Rules                                      |
 | --------- | ----------------------- | ------------------------------------------ |
 | `id`      | INTEGER; AUTO-INCREMENT | Primary Key, NOT NULL                      |
-| `image`   | BLOB                    | Required                                   |
-| `date`    | DATE                    | Derived from image metadata (or generated) |
-| `area_id` | INTEGER, FOREIGN KEY    | Required                                   |
+| `image`   | BLOB                    | Required. Stored as PNG, under 10 megabytes |
+| `date`    | DATE                    | Derived from image metadata, or today       |
+| `area_id` | INTEGER, FOREIGN KEY    | Required. Deleting the area deletes these rows |
 
 ### Associations
 
