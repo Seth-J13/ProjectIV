@@ -149,13 +149,19 @@ export function dropFiles(target, files) {
 }
 
 export function chooseFiles(input, files) {
-  const transfer = new DataTransfer();
+  let list = files;
 
-  for (const file of files) {
-    transfer.items.add(file);
+  if (typeof DataTransfer === "function") {
+    const transfer = new DataTransfer();
+
+    for (const file of files) {
+      transfer.items.add(file);
+    }
+
+    list = transfer.files;
   }
 
-  input.files = transfer.files;
+  Object.defineProperty(input, "files", { configurable: true, value: list });
   input.dispatchEvent(new Event("change", { bubbles: true }));
 }
 

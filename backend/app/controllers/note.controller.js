@@ -447,6 +447,7 @@ exports.remove = async (req, res) => {
     }
 
     await db.contributor.destroy({ where: { note_id: note.note_id } });
+    await db.noteImage.destroy({ where: { note_id: note.note_id } });
     await note.destroy();
     return res.status(204).end();
   } catch (error) {
@@ -470,6 +471,7 @@ exports.removeByRequest = async (req, res) => {
 
     const noteIds = notes.map((note) => note.note_id);
     await db.contributor.destroy({ where: { note_id: noteIds } });
+    await db.noteImage.destroy({ where: { note_id: noteIds } });
     await db.note.destroy({ where: { note_id: noteIds } });
     return res.status(204).end();
   } catch (error) {

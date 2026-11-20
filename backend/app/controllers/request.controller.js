@@ -502,6 +502,7 @@ exports.remove = async (req, res) => {
 
     if (noteIds.length) {
       await db.contributor.destroy({ where: { note_id: noteIds } });
+      await db.noteImage.destroy({ where: { note_id: noteIds } });
       await db.note.destroy({ where: { note_id: noteIds } });
     }
 
