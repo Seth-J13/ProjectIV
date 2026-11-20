@@ -3,7 +3,7 @@ export default { name: "NotesList" };
 </script>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import apiClient from "../services/services.js";
 import NoteForm from "./NoteForm.vue";
 import ImagesContainer from "./ImagesContainer.vue";
@@ -20,6 +20,7 @@ const props = defineProps({
   draft: { type: Boolean, default: false },
   modelValue: { type: Array, default: () => [] },
   allowCreate: { type: Boolean, default: true },
+  showCreate: { type: Boolean, default: true },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -261,11 +262,24 @@ async function confirmDelete() {
   await reload();
 }
 
+defineExpose({ openAdd });
+
 function onDocumentClick(event) {
   if (detailsOpen.value && event.target?.classList?.contains("v-overlay__scrim")) {
     detailsOpen.value = false;
   }
 }
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (!props.draft) {
+      return;
+    }
+
+    items.value = Array.isArray(value) ? value.map((item) => ({ ...item })) : [];
+  }
+);
 
 onMounted(async () => {
   document.addEventListener("click", onDocumentClick);
@@ -296,7 +310,7 @@ onBeforeUnmount(() => {
     <h2 v-if="title" class="text-h6 mb-2">{{ title }}</h2>
     <v-text-field v-if="mode === 'list'" v-model="search" label="Search" />
     <v-btn
-      v-if="mode === 'embed' && allowCreate"
+      v-if="mode === 'embed' && allowCreate && showCreate"
       color="primary"
       variant="elevated"
       class="oc-cta mb-3"

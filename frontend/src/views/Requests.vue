@@ -294,8 +294,16 @@ onMounted(load);
 
 <template>
   <v-container>
-    <h1>Requests</h1>
-    <v-btn class="oc-cta" @click="openCreate">+ New request</v-btn>
+    <v-row align="center" class="mb-4">
+      <v-col>
+        <h1 class="text-h4">Requests</h1>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn color="primary" variant="elevated" class="oc-cta" type="button" @click="openCreate">
+          + New request
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-progress-linear v-if="loading" indeterminate />
     <v-alert v-if="errorMessage" type="error">{{ errorMessage }}</v-alert>
 

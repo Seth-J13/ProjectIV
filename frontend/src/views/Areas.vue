@@ -293,11 +293,16 @@ onBeforeUnmount(() => {
 
 <template>
   <v-container class="py-10">
-    <h1 class="text-h4 mb-6">Areas</h1>
-
-    <v-btn class="oc-cta mb-4" color="primary" variant="elevated" type="button" @click="openCreate">
-      Create area
-    </v-btn>
+    <v-row align="center" class="mb-6">
+      <v-col>
+        <h1 class="text-h4">Areas</h1>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn color="primary" variant="elevated" class="oc-cta" type="button" @click="openCreate">
+          Create area
+        </v-btn>
+      </v-col>
+    </v-row>
 
     <v-alert v-if="errorMessage" type="error" density="compact" class="mb-4">
       {{ errorMessage }}
