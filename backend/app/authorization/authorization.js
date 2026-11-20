@@ -50,6 +50,14 @@ export function requireAdminOrMaintenance(req, res, next) {
   return next();
 }
 
+export function requireVehicleLogReader(req, res, next) {
+  if (req.user?.role !== "admin" && req.user?.role !== "maintenance") {
+    return res.status(403).send({ message: "Forbidden" });
+  }
+
+  return next();
+}
+
 export function requireAreaAdmin(req, res, next) {
   if (req.user?.role !== "admin") {
     return res.status(403).send({ message: "Forbidden" });
