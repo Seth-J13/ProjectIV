@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import Utils from "../config/utils.js";
 import maintenanceServices from "../services/maintenanceServices.js";
 import NotesList from "../components/NotesList.vue";
+import VehicleLogs from "./VehicleLogs.vue";
 
 const props = defineProps({
   vin: { type: String, default: "" },
@@ -133,8 +134,10 @@ function goBack() {
   return router.push({ name: "vehicleManagement" });
 }
 
+const showServiceLogs = ref(false);
+
 function viewServiceLogs() {
-  return router.push({ name: "vehicleServiceLogs", params: { vehicle_id: props.vin } });
+  showServiceLogs.value = true;
 }
 
 // ---------- Notes ----------
@@ -685,6 +688,17 @@ async function removeFuel(fuel) {
   <v-container class="py-10">
     <!-- Modals come first so their buttons precede the page buttons of the same name.
          They are rendered inline (not via v-dialog's Teleport) so they stay inside the view. -->
+    <div v-if="showServiceLogs" class="modal-layer" role="dialog" aria-modal="true">
+      <div class="modal-scrim" @click="showServiceLogs = false" />
+      <v-card class="modal-card" style="max-width: 960px" id="service-logs-dialog">
+        <VehicleLogs :vin="vin" />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="secondary" variant="text" type="button" @click="showServiceLogs = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </div>
+
     <div v-if="showNoteDialog" class="modal-layer" role="dialog" aria-modal="true">
       <div class="modal-scrim" @click="closeNote" />
       <v-card class="modal-card" style="max-width: 560px" id="note-dialog">

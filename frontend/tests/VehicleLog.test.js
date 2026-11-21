@@ -18,6 +18,7 @@ const logApi = vi.hoisted(() => ({
   updateLog: vi.fn(),
   removeLog: vi.fn(),
   addOwner: vi.fn(),
+  removeOwner: vi.fn(),
 }));
 
 vi.mock("../src/services/vehicleLogServices.js", () => ({
@@ -99,6 +100,7 @@ async function setField(label, value) {
   const fields = [
     ...wrapper.findAllComponents({ name: "VTextField" }),
     ...wrapper.findAllComponents({ name: "VSelect" }),
+    ...wrapper.findAllComponents({ name: "VCombobox" }),
   ];
   const field = [...fields].reverse().find((item) => item.props("label") === label);
 
@@ -119,6 +121,7 @@ describe("Feature 10 — Vehicle Service Log", () => {
     logApi.updateLog.mockReset();
     logApi.removeLog.mockReset();
     logApi.addOwner.mockReset();
+    logApi.removeOwner.mockReset();
     logApi.listLogs.mockImplementation(() => Promise.resolve({ data: listedLogs }));
     logApi.listOwnerChoices.mockResolvedValue({ data: [] });
   });
@@ -145,7 +148,7 @@ describe("Feature 10 — Vehicle Service Log", () => {
       await setField("Service date", "2026-11-10");
       await setField("Vehicle", VIN);
       await setField("Description", "Replaced front brake pads");
-      await setField("Completed", true);
+      await setField("Completed", "Completed");
       await clickLabel("Save");
 
       expect(logApi.createLog).toHaveBeenCalledWith({
@@ -170,7 +173,8 @@ describe("Feature 10 — Vehicle Service Log", () => {
       expect(wrapper.text()).toContain("2026-11-10");
       expect(wrapper.text()).toContain(VIN);
       expect(wrapper.text()).toContain("Replaced front brake pads");
-      expect(wrapper.text()).toContain("Yes");
+      expect(wrapper.find("tbody tr").text()).toContain("Completed");
+      expect(wrapper.find("tbody tr").text()).not.toContain("Not completed");
       expect(wrapper.text()).toContain("2");
     });
 
@@ -208,6 +212,9 @@ describe("Feature 10 — Vehicle Service Log", () => {
           { id: 12, firstName: "Alan", lastName: "Turing" },
         ],
       });
+      logApi.updateLog.mockImplementation(async (id, body) => ({
+        data: { ...sampleLog, ...body, id, ownerIds: [2] },
+      }));
       logApi.addOwner.mockResolvedValue({
         data: { ...sampleLog, ownerIds: [2, 12] },
       });
@@ -218,7 +225,8 @@ describe("Feature 10 — Vehicle Service Log", () => {
       await row.trigger("click");
       await flushPromises();
 
-      expect(wrapper.text()).toContain("Owners: 2");
+      expect(wrapper.text()).toContain("Owners");
+      expect(wrapper.text()).toContain("2");
 
       const field = wrapper
         .findAllComponents({ name: "VCombobox" })
@@ -232,10 +240,109 @@ describe("Feature 10 — Vehicle Service Log", () => {
       await field.setValue("12");
       await clickLabel("Add owner");
 
+      expect(logApi.addOwner).not.toHaveBeenCalled();
+      expect(wrapper.text()).toContain("Alan Turing (12)");
+
+      await clickLabel("Save");
+      await flushPromises();
+
       expect(logApi.addOwner).toHaveBeenCalledTimes(1);
       expect(logApi.addOwner).toHaveBeenCalledWith(1, 12);
-      expect(wrapper.text()).toContain("Alan Turing (12)");
-      expect(wrapper.text()).toContain("Owners: 2, Alan Turing (12)");
+      expect(wrapper.text()).toContain("2, Alan Turing (12)");
+    });
+
+    it("Owner removes an owner", async () => {
+      localStorage.setItem("user", JSON.stringify(storedSession("maintenance")));
+      listedLogs = [{ ...sampleLog, ownerIds: [2, 12] }];
+      logApi.listOwnerChoices.mockResolvedValue({
+        data: [
+          { id: 2, firstName: "Ada", lastName: "Requester" },
+          { id: 12, firstName: "Alan", lastName: "Turing" },
+        ],
+      });
+      logApi.updateLog.mockImplementation(async (id, body) => ({
+        data: { ...sampleLog, ...body, id, ownerIds: [2, 12] },
+      }));
+      logApi.removeOwner.mockResolvedValue({
+        data: { ...sampleLog, ownerIds: [2] },
+      });
+
+      await mountApp("/vehicle-logs");
+      const row = wrapper.findAll("tbody tr").find((item) => item.text().includes(VIN));
+
+      await row.trigger("click");
+      await flushPromises();
+
+      const ownerLine = wrapper
+        .findAll("div")
+        .filter(
+          (item) =>
+            item.text().includes("Alan Turing (12)") &&
+            item.findAll("button").some((button) => button.text().trim() === "Remove")
+        )
+        .sort((left, right) => left.text().length - right.text().length)[0];
+      const remove = ownerLine.findAll("button").find((item) => item.text().trim() === "Remove");
+
+      await remove.trigger("click");
+      await flushPromises();
+
+      const dialog = wrapper.findAll("dialog").find((item) => item.text().includes("Add owner"));
+
+      expect(logApi.removeOwner).not.toHaveBeenCalled();
+      expect(dialog.text()).not.toContain("Alan Turing (12)");
+
+      await clickLabel("Save");
+      await flushPromises();
+
+      expect(logApi.removeOwner).toHaveBeenCalledWith(1, 12);
+      expect(wrapper.text()).not.toContain("Alan Turing (12)");
+      expect(wrapper.text()).toContain("Ada Requester (2)");
+    });
+  });
+
+  describe("US-10.5 — Delete Vehicle Logs", () => {
+    it("Delete asks for confirmation", async () => {
+      localStorage.setItem("user", JSON.stringify(storedSession("maintenance")));
+      listedLogs = [{ ...sampleLog }];
+      logApi.removeLog.mockResolvedValue({ data: { message: "Vehicle log deleted." } });
+
+      await mountApp("/vehicle-logs");
+      const row = wrapper.findAll("tbody tr").find((item) => item.text().includes(VIN));
+
+      await row.trigger("click");
+      await flushPromises();
+      await clickLabel("Delete");
+
+      expect(logApi.removeLog).not.toHaveBeenCalled();
+      expect(wrapper.text()).toContain("Delete this vehicle service log?");
+
+      await clickLabel("Cancel");
+      expect(logApi.removeLog).not.toHaveBeenCalled();
+      expect(wrapper.text()).toContain(VIN);
+
+      await clickLabel("Delete");
+      await clickLabel("Delete");
+      await flushPromises();
+
+      expect(logApi.removeLog).toHaveBeenCalledWith(1);
+      expect(wrapper.text()).not.toContain("Replaced front brake pads");
+    });
+
+    it("Added owner cannot delete", async () => {
+      localStorage.setItem("user", JSON.stringify(storedSession("maintenance")));
+      listedLogs = [{ ...sampleLog, creatorId: 9, ownerIds: [9, 2] }];
+
+      await mountApp("/vehicle-logs");
+      const row = wrapper.findAll("tbody tr").find((item) => item.text().includes(VIN));
+
+      await row.trigger("click");
+      await flushPromises();
+
+      const labels = wrapper.findAll("button").map((button) => button.text().trim());
+
+      expect(labels).toContain("Save");
+      expect(labels).toContain("Add owner");
+      expect(labels).not.toContain("Delete");
     });
   });
 
@@ -265,11 +372,38 @@ describe("Feature 10 — Vehicle Service Log", () => {
         completed: true,
       });
       expect(wrapper.text()).toContain("Adjusted the brake pads");
+      expect(wrapper.text()).not.toContain("Only the original owner and admins can modify this field");
+    });
+
+    it("Added owner sees locked fields", async () => {
+      localStorage.setItem("user", JSON.stringify(storedSession("maintenance")));
+      listedLogs = [{ ...sampleLog, creatorId: 9, ownerIds: [9, 2] }];
+
+      await mountApp("/vehicle-logs");
+      const row = wrapper.findAll("tbody tr").find((item) => item.text().includes(VIN));
+
+      await row.trigger("click");
+      await flushPromises();
+
+      const fields = [
+        ...wrapper.findAllComponents({ name: "VTextField" }),
+        ...wrapper.findAllComponents({ name: "VCombobox" }),
+      ];
+      const field = (label) => [...fields].reverse().find((item) => item.props("label") === label);
+
+      expect(field("Service date").props("readonly")).toBe(true);
+      expect(field("Vehicle").props("readonly")).toBe(true);
+      expect(field("Description").props("readonly")).toBe(false);
+      expect(field("Completed").props("readonly")).toBe(false);
+      expect(wrapper.text()).toContain("Only the original owner and admins can modify this field");
     });
 
     it("Click outside cancels the log", async () => {
       localStorage.setItem("user", JSON.stringify(storedSession("maintenance")));
       listedLogs = [{ ...sampleLog, description: "Original pads" }];
+      logApi.listOwnerChoices.mockResolvedValue({
+        data: [{ id: 12, firstName: "Alan", lastName: "Turing" }],
+      });
 
       await mountApp("/vehicle-logs");
       const row = wrapper.findAll("tbody tr").find((item) => item.text().includes(VIN));
@@ -277,14 +411,20 @@ describe("Feature 10 — Vehicle Service Log", () => {
       await row.trigger("click");
       await flushPromises();
       await setField("Description", "Unsaved change");
+      await setField("User", "12");
+      await clickLabel("Add owner");
 
-      const dialogs = wrapper.findAll("dialog");
-      await dialogs[dialogs.length - 1].trigger("click");
+      expect(wrapper.text()).toContain("Alan Turing (12)");
+
+      const dialog = wrapper.findAll("dialog").find((item) => item.text().includes("Add owner"));
+      await dialog.trigger("click");
       await flushPromises();
 
       expect(logApi.updateLog).not.toHaveBeenCalled();
+      expect(logApi.addOwner).not.toHaveBeenCalled();
       expect(wrapper.text()).toContain("Original pads");
       expect(wrapper.text()).not.toContain("Unsaved change");
+      expect(wrapper.text()).not.toContain("Alan Turing (12)");
     });
   });
 });

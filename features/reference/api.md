@@ -39,9 +39,10 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `GET` | `/api/vehicle-logs` | Yes (`maintenance` or `admin`) | List vehicle service logs | Feature 10 |
 | `GET` | `/api/vehicle-logs/owner-choices` | Yes (`maintenance` or `admin`) | Owner picker: `id`, `firstName`, `lastName` only | Feature 10 |
 | `GET` | `/api/vehicle-logs/:id` | Yes (`maintenance` or `admin`) | Read one vehicle service log | Feature 10 |
-| `PUT` | `/api/vehicle-logs/:id` | Yes (owner or `admin`) | Update a vehicle service log | Feature 10 |
-| `DELETE` | `/api/vehicle-logs/:id` | Yes (owner or `admin`) | Delete a vehicle service log | Feature 10 |
+| `PUT` | `/api/vehicle-logs/:id` | Yes (owner or `admin`; service date and vehicle only for the creator or `admin`) | Update a vehicle service log | Feature 10 |
+| `DELETE` | `/api/vehicle-logs/:id` | Yes (creator or `admin`) | Delete a vehicle service log | Feature 10 |
 | `POST` | `/api/vehicle-logs/:id/owners` | Yes (owner or `admin`) | Add an owner to a vehicle service log | Feature 10 |
+| `DELETE` | `/api/vehicle-logs/:id/owners/:userId` | Yes (owner or `admin`) | Remove one owner. The log fields stay the same | Feature 10 |
 | `GET` | `/api/vehicles` | Yes | Vehicle choices for a request: `vehicleId`, `license`, `make`, `model`, plus `year`, `available`, and `inUse` (`true` while a request for the vehicle is in use now) for the Landing lists | Feature 8, Feature 12 |
 | `GET` | `/api/drivers` | Yes | Driver choices: `driverId`, `name` | Feature 8 |
 | `GET` | `/api/destinations` | Yes | Destination choices: `destId`, `name` | Feature 8 |
@@ -301,16 +302,16 @@ Delete success is **200** `{ "message": "Area deleted." }`.
 }
 ```
 
-Success is **201** on create and **200** on read and update. `creatorId` and the first `ownerIds` entry are the signed-in user. `createdAt` and `updatedAt` are set on create and `updatedAt` changes on update. A log whose service date is more than 18 months ago is removed when logs are listed or read.
+Success is **201** on create and **200** on read and update. `creatorId` and the first `ownerIds` entry are the signed-in user. `createdAt` and `updatedAt` are set on create and `updatedAt` changes on update. An owner who is not the creator may change `description` and `completed`. A different `serviceDate` or `vin` from that caller is **403** `{ "message": "Forbidden" }` and the stored service date and vehicle stay. A log whose service date is more than 18 months ago is removed when logs are listed or read.
 
-Delete success is **200** `{ "message": "Vehicle log deleted." }`. Add owner body is `{ "userId": 9 }`.
+Delete success is **200** `{ "message": "Vehicle log deleted." }`. Add owner body is `{ "userId": 9 }`. `DELETE /api/vehicle-logs/:id/owners/:userId` returns the same log with that id removed from `ownerIds`. Service date, vehicle, description, completed status, and creator are unchanged. A caller who is not an owner and is not admin receives **403** `{ "message": "Forbidden" }`. An unknown owner id is **404** `{ "message": "User not found!" }`.
 
 `GET /api/vehicle-logs/owner-choices` returns `[{ "id": 9, "firstName": "Grace", "lastName": "Hopper" }]`, ordered by `id`. The response has no email, role, password, or `googleSub`. `user` and `driver` receive **403** `{ "message": "Forbidden" }`.
 
 | Situation | Status | `message` |
 | --- | --- | --- |
 | Missing or expired token | 401 | `Unauthorized!` |
-| Role is `user` or `driver`, or the caller is not an owner and is not admin | 403 | `Forbidden` |
+| Role is `user` or `driver`, the caller is not an owner and is not admin, or an added owner changes the service date or vehicle | 403 | `Forbidden` |
 | Unknown log id | 404 | `Vehicle log not found!` |
 | Unknown vehicle vin | 404 | `Vehicle not found!` |
 | A required field is missing | 400 | `Vehicle log is incomplete!` |

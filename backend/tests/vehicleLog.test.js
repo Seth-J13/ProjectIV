@@ -137,6 +137,37 @@ describe("Feature 10 — Vehicle Service Log", () => {
       expect(updated.body.description).toBe("Owner updated the pads");
     });
 
+    it("Owner removes an owner", async () => {
+      const created = await request(app).post(LOGS_PATH).set(maintenance.headers).send(logBody());
+      const other = await authHeader("maintenance", "removed-owner");
+
+      await request(app)
+        .post(`${LOGS_PATH}/${created.body.id}/owners`)
+        .set(maintenance.headers)
+        .send({ userId: other.user.id });
+
+      const removed = await request(app)
+        .delete(`${LOGS_PATH}/${created.body.id}/owners/${other.user.id}`)
+        .set(maintenance.headers);
+
+      expect(removed.status).toBe(200);
+      expect(removed.body.ownerIds).not.toContain(other.user.id);
+      expect(removed.body.ownerIds).toContain(maintenance.user.id);
+      expect(removed.body.serviceDate).toBe("2026-11-10");
+      expect(removed.body.vin).toBe(VIN);
+      expect(removed.body.description).toBe("Replaced front brake pads");
+      expect(removed.body.completed).toBe(true);
+      expect(removed.body.creatorId).toBe(maintenance.user.id);
+
+      const stranger = await authHeader("maintenance", "cannot-remove");
+      const forbidden = await request(app)
+        .delete(`${LOGS_PATH}/${created.body.id}/owners/${maintenance.user.id}`)
+        .set(stranger.headers);
+
+      expect(forbidden.status).toBe(403);
+      expect(forbidden.body.message).toBe("Forbidden");
+    });
+
     it("Non-owner cannot modify", async () => {
       const created = await request(app).post(LOGS_PATH).set(maintenance.headers).send(logBody());
       const stranger = await authHeader("maintenance", "stranger");
@@ -155,6 +186,44 @@ describe("Feature 10 — Vehicle Service Log", () => {
   });
 
   describe("US-10.4 — Modify Vehicle Log", () => {
+    it("Added owner cannot change the vehicle", async () => {
+      const created = await request(app).post(LOGS_PATH).set(maintenance.headers).send(logBody());
+      const added = await authHeader("maintenance", "added-editor");
+
+      await request(app)
+        .post(`${LOGS_PATH}/${created.body.id}/owners`)
+        .set(maintenance.headers)
+        .send({ userId: added.user.id });
+
+      const blocked = await request(app)
+        .put(`${LOGS_PATH}/${created.body.id}`)
+        .set(added.headers)
+        .send(logBody({
+          serviceDate: "2026-01-01",
+          vin: "NOTAVEHICLE",
+          description: "Changed the vehicle",
+        }));
+
+      expect(blocked.status).toBe(403);
+      expect(blocked.body).toEqual({ message: "Forbidden" });
+
+      const kept = await request(app).get(`${LOGS_PATH}/${created.body.id}`).set(maintenance.headers);
+      expect(kept.body.serviceDate).toBe("2026-11-10");
+      expect(kept.body.vin).toBe(VIN);
+      expect(kept.body.description).toBe("Replaced front brake pads");
+
+      const work = await request(app)
+        .put(`${LOGS_PATH}/${created.body.id}`)
+        .set(added.headers)
+        .send(logBody({ description: "Pads are done", completed: false }));
+
+      expect(work.status).toBe(200);
+      expect(work.body.description).toBe("Pads are done");
+      expect(work.body.completed).toBe(false);
+      expect(work.body.serviceDate).toBe("2026-11-10");
+      expect(work.body.vin).toBe(VIN);
+    });
+
     it("Admin updates any log", async () => {
       const created = await request(app).post(LOGS_PATH).set(maintenance.headers).send(logBody());
 
@@ -197,6 +266,33 @@ describe("Feature 10 — Vehicle Service Log", () => {
 
       const listed = await request(app).get(LOGS_PATH).set(maintenance.headers);
       expect(listed.body.map((log) => log.vin)).toContain(VIN);
+    });
+
+    it("Added owner cannot delete", async () => {
+      const created = await request(app).post(LOGS_PATH).set(maintenance.headers).send(logBody());
+      const added = await authHeader("maintenance", "added-owner");
+
+      await request(app)
+        .post(`${LOGS_PATH}/${created.body.id}/owners`)
+        .set(maintenance.headers)
+        .send({ userId: added.user.id });
+
+      const response = await request(app)
+        .delete(`${LOGS_PATH}/${created.body.id}`)
+        .set(added.headers);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toEqual({ message: "Forbidden" });
+
+      const creatorDelete = await request(app)
+        .delete(`${LOGS_PATH}/${created.body.id}`)
+        .set(maintenance.headers);
+
+      expect(creatorDelete.status).toBe(200);
+      expect(creatorDelete.body).toEqual({ message: "Vehicle log deleted." });
+
+      const listed = await request(app).get(LOGS_PATH).set(maintenance.headers);
+      expect(listed.body.map((log) => log.id)).not.toContain(created.body.id);
     });
   });
 });

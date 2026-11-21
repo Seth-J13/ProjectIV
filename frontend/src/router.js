@@ -1,4 +1,3 @@
-import { h } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import Requests from "./views/Requests.vue";
 import Utils from "./config/utils.js";
@@ -43,9 +42,9 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/vehicle-service-logs/:vehicle_id?",
-      name: "vehicleServiceLogs",
-      component: { render: () => h("div", "Vehicle Service Logs") },
+      path: "/vehicle-logs",
+      name: "vehicle-logs",
+      component: () => import("./views/VehicleLogs.vue"),
     },
     {
       path: "/areas",
@@ -82,7 +81,7 @@ router.beforeEach((to) => {
   }
 
   if (
-    ["vehicleManagement", "maintenance", "vehicleServiceLogs"].includes(to.name) &&
+    ["vehicleManagement", "maintenance", "vehicle-logs"].includes(to.name) &&
     !["admin", "maintenance"].includes(user?.role)
   ) {
     return { name: "landing" };

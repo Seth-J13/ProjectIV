@@ -37,15 +37,14 @@ const createOpen = ref(false);
 const editOpen = ref(false);
 const createDialog = ref(null);
 const editDialog = ref(null);
+const confirmDialog = ref(null);
+const confirmOpen = ref(false);
 const createError = ref("");
 const editError = ref("");
 const people = ref([]);
 const selectedOwnerId = ref(null);
 
-const completedChoices = [
-  { title: "Yes", value: true },
-  { title: "No", value: false },
-];
+const completedChoices = ["Completed", "Not completed"];
 
 function emptyForm() {
   return {
@@ -77,7 +76,23 @@ function canChange(log) {
   return (log.ownerIds || []).map(Number).includes(Number(user.id));
 }
 
+function canDelete(log) {
+  const user = currentUser.value;
+
+  if (!user || !log) {
+    return false;
+  }
+
+  if (user.role === "admin") {
+    return true;
+  }
+
+  return Number(user.id) === Number(log.creatorId);
+}
+
 const editWritable = computed(() => canChange(editForm.value));
+const editDeletable = computed(() => canDelete(editForm.value));
+const recordEditable = computed(() => canDelete(editForm.value));
 const visibleLogs = computed(() => {
   if (!props.vin) {
     return logs.value;
@@ -87,7 +102,26 @@ const visibleLogs = computed(() => {
 });
 
 function completedLabel(value) {
-  return value ? "Yes" : "No";
+  if (value === true || value === "Completed") {
+    return "Completed";
+  }
+
+  if (value === false || value === "Not completed") {
+    return "Not completed";
+  }
+
+  return "";
+}
+
+function completedValue(value) {
+  const label = completedLabel(value);
+  if (label === "Completed") {
+    return true;
+  }
+  if (label === "Not completed") {
+    return false;
+  }
+  return null;
 }
 
 function personLabel(user) {
@@ -110,6 +144,16 @@ const ownerMenuProps = computed(() => ({
   closeOnContentClick: true,
 }));
 
+const createMenuProps = computed(() => ({
+  attach: createDialog.value ?? undefined,
+  closeOnContentClick: true,
+}));
+
+const editMenuProps = computed(() => ({
+  attach: editDialog.value ?? undefined,
+  closeOnContentClick: true,
+}));
+
 function ownerValue(value) {
   if (value && typeof value === "object") {
     return value.id ?? "";
@@ -118,14 +162,23 @@ function ownerValue(value) {
   return value ?? "";
 }
 
+function ownerRowsFor(ids) {
+  return (ids || []).map((id) => {
+    const person = people.value.find((user) => Number(user.id) === Number(id));
+    return {
+      id: Number(id),
+      label: person ? personLabel(person) : String(id),
+    };
+  });
+}
+
 function ownersText(ids) {
-  return (ids || [])
-    .map((id) => {
-      const person = people.value.find((user) => Number(user.id) === Number(id));
-      return person ? personLabel(person) : String(id);
-    })
+  return ownerRowsFor(ids)
+    .map((owner) => owner.label)
     .join(", ");
 }
+
+const editOwners = computed(() => ownerRowsFor(editForm.value.ownerIds));
 
 watch(selectedOwnerId, (value) => {
   if (!value || typeof value !== "object") {
@@ -144,12 +197,17 @@ function payloadFrom(source) {
     serviceDate: source.serviceDate,
     vin: source.vin.trim(),
     description: source.description.trim(),
-    completed: source.completed,
+    completed: completedValue(source.completed),
   };
 }
 
 function incomplete(source) {
-  return !source.serviceDate || !source.vin.trim() || !source.description.trim() || source.completed === null;
+  return (
+    !source.serviceDate ||
+    !source.vin.trim() ||
+    !source.description.trim() ||
+    completedValue(source.completed) === null
+  );
 }
 
 async function loadOwnerChoices() {
@@ -198,7 +256,7 @@ async function openLog(log) {
     serviceDate: log.serviceDate,
     vin: log.vin,
     description: log.description,
-    completed: log.completed,
+    completed: completedLabel(log.completed),
     creatorId: log.creatorId,
     ownerIds: log.ownerIds || [],
   };
@@ -267,14 +325,44 @@ async function saveEdit() {
   editError.value = "";
 
   try {
-    const response = await vehicleLogServices.updateLog(editForm.value.id, payloadFrom(editForm.value));
-    logs.value = logs.value.map((log) => (log.id === response.data.id ? response.data : log));
+    let current = (
+      await vehicleLogServices.updateLog(editForm.value.id, payloadFrom(editForm.value))
+    ).data;
+    const wanted = (editForm.value.ownerIds || []).map(Number);
+    const savedIds = (current.ownerIds || []).map(Number);
+
+    for (const userId of wanted) {
+      if (!savedIds.includes(userId)) {
+        current = (await vehicleLogServices.addOwner(editForm.value.id, userId)).data;
+      }
+    }
+
+    for (const userId of savedIds) {
+      if (!wanted.includes(userId)) {
+        current = (await vehicleLogServices.removeOwner(editForm.value.id, userId)).data;
+      }
+    }
+
+    logs.value = logs.value.map((log) => (log.id === current.id ? current : log));
     closeEdit();
   } catch (error) {
     editError.value = error.response?.data?.message || "Unable to update the vehicle log.";
     errorMessage.value = editError.value;
   } finally {
     saving.value = false;
+  }
+}
+
+async function askDelete() {
+  confirmOpen.value = true;
+  await showDialog(confirmDialog);
+}
+
+function closeConfirm() {
+  confirmOpen.value = false;
+
+  if (confirmDialog.value?.open) {
+    confirmDialog.value.close();
   }
 }
 
@@ -285,6 +373,7 @@ async function deleteLog() {
   try {
     await vehicleLogServices.removeLog(editForm.value.id);
     logs.value = logs.value.filter((log) => log.id !== editForm.value.id);
+    closeConfirm();
     closeEdit();
   } catch (error) {
     editError.value = error.response?.data?.message || "Unable to delete the vehicle log.";
@@ -304,7 +393,7 @@ function chosenOwnerId() {
   return Number(raw);
 }
 
-async function addOwner() {
+function addOwner() {
   const userId = chosenOwnerId();
 
   if (!Number.isInteger(userId) || userId <= 0) {
@@ -312,23 +401,25 @@ async function addOwner() {
     return;
   }
 
-  saving.value = true;
-  editError.value = "";
+  const ownerIds = (editForm.value.ownerIds || []).map(Number);
 
-  try {
-    const response = await vehicleLogServices.addOwner(editForm.value.id, userId);
+  if (!ownerIds.includes(userId)) {
     editForm.value = {
       ...editForm.value,
-      ownerIds: response.data.ownerIds,
+      ownerIds: [...ownerIds, userId],
     };
-    logs.value = logs.value.map((log) => (log.id === response.data.id ? response.data : log));
-    selectedOwnerId.value = null;
-  } catch (error) {
-    editError.value = error.response?.data?.message || "Unable to add the owner.";
-    errorMessage.value = editError.value;
-  } finally {
-    saving.value = false;
   }
+
+  selectedOwnerId.value = null;
+  editError.value = "";
+}
+
+function removeOwner(userId) {
+  editForm.value = {
+    ...editForm.value,
+    ownerIds: (editForm.value.ownerIds || []).map(Number).filter((id) => id !== Number(userId)),
+  };
+  editError.value = "";
 }
 
 onMounted(() => {
@@ -390,7 +481,14 @@ onMounted(() => {
           <v-text-field v-model="createForm.serviceDate" label="Service date" type="date" />
           <v-text-field v-model="createForm.vin" label="Vehicle" :readonly="Boolean(props.vin)" />
           <v-text-field v-model="createForm.description" label="Description" />
-          <v-select v-model="createForm.completed" label="Completed" :items="completedChoices" />
+          <v-combobox
+            v-model="createForm.completed"
+            :items="completedChoices"
+            :menu-props="createMenuProps"
+            :return-object="false"
+            label="Completed"
+            clearable
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -416,17 +514,52 @@ onMounted(() => {
           <v-alert v-if="editError" type="error" density="compact" class="mb-4">
             {{ editError }}
           </v-alert>
-          <v-text-field v-model="editForm.serviceDate" label="Service date" type="date" :readonly="!editWritable" />
-          <v-text-field v-model="editForm.vin" label="Vehicle" :readonly="!editWritable" />
+          <div class="locked-field" :class="{ 'locked-field--on': !recordEditable }">
+            <v-text-field
+              v-model="editForm.serviceDate"
+              label="Service date"
+              type="date"
+              :readonly="!editWritable || !recordEditable"
+            />
+            <span v-if="!recordEditable" class="locked-tip" role="tooltip">
+              Only the original owner and admins can modify this field
+            </span>
+          </div>
+          <div class="locked-field" :class="{ 'locked-field--on': !recordEditable }">
+            <v-text-field
+              v-model="editForm.vin"
+              label="Vehicle"
+              :readonly="!editWritable || !recordEditable"
+            />
+            <span v-if="!recordEditable" class="locked-tip" role="tooltip">
+              Only the original owner and admins can modify this field
+            </span>
+          </div>
           <v-text-field v-model="editForm.description" label="Description" :readonly="!editWritable" />
-          <v-select
+          <v-combobox
             v-model="editForm.completed"
-            label="Completed"
             :items="completedChoices"
+            :menu-props="editMenuProps"
+            :return-object="false"
+            label="Completed"
             :readonly="!editWritable"
+            clearable
           />
-          <div v-if="ownersText(editForm.ownerIds)" class="mb-4">
-            Owners: {{ ownersText(editForm.ownerIds) }}
+          <div v-if="editOwners.length" class="mb-4">
+            <div class="mb-2">Owners</div>
+            <div v-for="owner in editOwners" :key="owner.id" class="d-flex align-center justify-space-between mb-2">
+              <span>{{ owner.label }}</span>
+              <v-btn
+                v-if="editWritable"
+                color="secondary"
+                variant="text"
+                type="button"
+                :loading="saving"
+                @click="removeOwner(owner.id)"
+              >
+                Remove
+              </v-btn>
+            </div>
           </div>
           <v-combobox
             v-if="editWritable"
@@ -445,16 +578,59 @@ onMounted(() => {
             </template>
           </v-combobox>
         </v-card-text>
-        <v-card-actions v-if="editWritable">
-          <v-btn color="secondary" variant="text" type="button" :loading="saving" @click="deleteLog">
+        <v-card-actions v-if="editWritable || editDeletable">
+          <v-btn
+            v-if="editDeletable"
+            color="secondary"
+            variant="text"
+            type="button"
+            :loading="saving"
+            @click="askDelete"
+          >
             Delete
           </v-btn>
-          <v-btn color="secondary" variant="text" type="button" :loading="saving" @click="addOwner">
+          <v-btn v-if="editWritable" color="secondary" variant="text" type="button" :loading="saving" @click="addOwner">
             Add owner
           </v-btn>
           <v-spacer />
-          <v-btn color="primary" variant="elevated" class="oc-cta" type="button" :loading="saving" @click="saveEdit">
+          <v-btn
+            v-if="editWritable"
+            color="primary"
+            variant="elevated"
+            class="oc-cta"
+            type="button"
+            :loading="saving"
+            @click="saveEdit"
+          >
             Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </dialog>
+
+    <dialog
+      ref="confirmDialog"
+      class="log-dialog"
+      @cancel.prevent="closeConfirm"
+      @click="onDialogClick($event, closeConfirm)"
+    >
+      <v-card v-if="confirmOpen" rounded="lg" max-width="420">
+        <v-card-item>
+          <v-card-title>Delete log</v-card-title>
+        </v-card-item>
+        <v-card-text>Delete this vehicle service log?</v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="secondary" variant="text" type="button" @click="closeConfirm">Cancel</v-btn>
+          <v-btn
+            color="primary"
+            variant="elevated"
+            class="oc-cta"
+            type="button"
+            :loading="saving"
+            @click="deleteLog"
+          >
+            Delete
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -473,5 +649,39 @@ onMounted(() => {
 
 .log-dialog::backdrop {
   background: rgba(0, 0, 0, 0.32);
+}
+
+.locked-field {
+  position: relative;
+}
+
+.locked-field--on {
+  cursor: not-allowed;
+}
+
+.locked-field--on :deep(.v-field) {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.locked-tip {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: 100%;
+  max-width: 280px;
+  margin-bottom: 4px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgb(var(--v-theme-on-surface));
+  color: rgb(var(--v-theme-surface));
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.locked-field--on:hover .locked-tip,
+.locked-field--on:focus-within .locked-tip {
+  display: block;
 }
 </style>

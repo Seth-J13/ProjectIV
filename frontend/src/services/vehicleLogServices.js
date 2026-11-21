@@ -24,4 +24,8 @@ export default {
   addOwner(id, userId) {
     return apiClient.post(`vehicle-logs/${id}/owners`, { userId });
   },
+
+  removeOwner(id, userId) {
+    return apiClient.delete(`vehicle-logs/${id}/owners/${userId}`);
+  },
 };

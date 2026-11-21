@@ -11,5 +11,6 @@ router.post("/", [authenticate, requireVehicleLogReader], vehicleLog.create);
 router.put("/:id", [authenticate, requireVehicleLogReader], vehicleLog.update);
 router.delete("/:id", [authenticate, requireVehicleLogReader], vehicleLog.remove);
 router.post("/:id/owners", [authenticate, requireVehicleLogReader], vehicleLog.addOwner);
+router.delete("/:id/owners/:userId", [authenticate, requireVehicleLogReader], vehicleLog.removeOwner);
 
 export default router;

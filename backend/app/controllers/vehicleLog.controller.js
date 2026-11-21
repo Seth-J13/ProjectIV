@@ -104,6 +104,14 @@ function canWrite(req, ownerIds) {
   return ownerIds.map(Number).includes(Number(req.user.id));
 }
 
+function canDelete(req, log) {
+  if (req.user.role === "admin") {
+    return true;
+  }
+
+  return Number(req.user.id) === Number(log.creatorId);
+}
+
 export async function purgeExpiredVehicleLogs(now = new Date()) {
   const cutoff = new Date(now);
   cutoff.setMonth(cutoff.getMonth() - 18);
@@ -212,6 +220,13 @@ exports.update = async (req, res) => {
       return res.status(403).send({ message: "Forbidden" });
     }
 
+    const sameDate = formatDate(log.serviceDate) === parsed.value.serviceDate;
+    const sameVin = text(log.vin) === parsed.value.vin;
+
+    if (!canDelete(req, log) && (!sameDate || !sameVin)) {
+      return res.status(403).send({ message: "Forbidden" });
+    }
+
     const vehicle = await db.vehicle.findByPk(parsed.value.vin);
 
     if (!vehicle) {
@@ -236,9 +251,7 @@ exports.remove = async (req, res) => {
       return res.status(404).send({ message: "Vehicle log not found!" });
     }
 
-    const owners = await ownerIdsFor(log.id);
-
-    if (!canWrite(req, owners)) {
+    if (!canDelete(req, log)) {
       return res.status(403).send({ message: "Forbidden" });
     }
 
@@ -306,6 +319,39 @@ exports.addOwner = async (req, res) => {
   } catch (error) {
     logger.error(error.message);
     return res.status(500).send({ message: "Unable to add the owner." });
+  }
+};
+
+exports.removeOwner = async (req, res) => {
+  const logId = parseId(req.params.id);
+  const userId = parseId(req.params.userId);
+
+  if (userId === null) {
+    return res.status(400).send({ message: "Vehicle log is incomplete!" });
+  }
+
+  try {
+    const log = await findLog(logId);
+
+    if (!log) {
+      return res.status(404).send({ message: "Vehicle log not found!" });
+    }
+
+    const owners = await ownerIdsFor(log.id);
+
+    if (!canWrite(req, owners)) {
+      return res.status(403).send({ message: "Forbidden" });
+    }
+
+    if (!owners.map(Number).includes(userId)) {
+      return res.status(404).send({ message: "User not found!" });
+    }
+
+    await db.vehicleLogOwner.destroy({ where: { vehicleLogId: log.id, userId } });
+    return res.send(await present(log));
+  } catch (error) {
+    logger.error(error.message);
+    return res.status(500).send({ message: "Unable to remove the owner." });
   }
 };
 

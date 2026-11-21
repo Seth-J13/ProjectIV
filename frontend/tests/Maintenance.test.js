@@ -34,6 +34,7 @@ vi.mock("../src/services/vehicleLogServices.js", () => ({
     updateLog: vi.fn(),
     removeLog: vi.fn(),
     addOwner: vi.fn(),
+    removeOwner: vi.fn(),
   },
 }));
 
