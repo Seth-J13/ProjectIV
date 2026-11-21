@@ -164,6 +164,7 @@ Vehicle logs are fleet records. A maintenance user or an admin may read every lo
 | ------ | -------- | ---- | ------- |
 | `POST` | `/api/vehicle-logs` | Yes, `maintenance` or `admin` | Create a log |
 | `GET` | `/api/vehicle-logs` | Yes, `maintenance` or `admin` | List logs |
+| `GET` | `/api/vehicle-logs/owner-choices` | Yes, `maintenance` or `admin` | List users as `id`, `firstName`, and `lastName` for the owner field. No email, role, password, or `googleSub` |
 | `GET` | `/api/vehicle-logs/:id` | Yes, `maintenance` or `admin` | Read one log |
 | `PUT` | `/api/vehicle-logs/:id` | Yes, owner or `admin` | Update a log |
 | `DELETE` | `/api/vehicle-logs/:id` | Yes, `admin` | Delete a log |
@@ -232,13 +233,14 @@ Quoted messages that tests must match:
 
 - Shown only to `maintenance` and `admin`
 - Heading: **Vehicle Service Logs**
-- Table columns: **Service date**, **Vehicle**, **Description**, **Completed**, **Creator**
+- Table columns: **Service date**, **Vehicle**, **Description**, **Completed**, **Creator**, **Owners**
 - An empty list still shows the heading and **Create log**
 - **Create log** opens a dialog with **Service date**, **Vehicle**, **Description**, and **Completed** (all required)
 - Opening a row shows that log. An owner or an admin sees **Save**, **Delete**, and **Add owner**
+- Clicking outside the create or edit dialog closes it and discards unsaved changes
 - **Save** writes the edited fields and the list shows the saved values
 - **Delete** removes the row from the list
-- **Add owner** asks for a user and adds that user as an owner
+- The open log lists every saved owner. **User** is a combobox of accounts, in the same form as driver id: each row is `Name (id)`, typing filters that text and the id, and **Add owner** sends only the selected user id. Adding another person keeps the owners already saved
 - A maintenance user who is not an owner and is not an admin does not see **Save**, **Delete**, or **Add owner**
 - **Error:** shows the API `message`, including **"Vehicle log is incomplete!"**, **"Vehicle not found!"**, **"Vehicle log not found!"**, and **"Forbidden"**
 
@@ -326,6 +328,13 @@ The creator’s user id is inserted as the first owner row.
 - **When** I add that user as an owner
 - **Then** that user can modify the log
 
+#### Scenario: Owner picker sends the user id
+
+- **Given** I am signed in as the owner of a vehicle log
+- **And** another user exists
+- **When** I choose that user from the owner list
+- **Then** the add-owner request contains only that user id
+
 #### Scenario: Non-owner cannot modify
 
 - **Given** I am signed in as `maintenance`
@@ -365,6 +374,14 @@ The creator’s user id is inserted as the first owner row.
 - **When** I change the description and save
 - **Then** the list shows the new description
 
+#### Scenario: Click outside cancels the log
+
+- **Given** I am signed in as the owner of a vehicle log
+- **And** I have changed the description without saving
+- **When** I click outside the dialog
+- **Then** the dialog closes
+- **And** the list still shows the original description
+
 #### Scenario: Admin updates any log
 
 - **Given** I am signed in as `admin`
@@ -403,11 +420,13 @@ Each scenario above must map to at least one automated test.
 | US-10.1 | Admin creates a log | `backend/tests/vehicleLog.test.js` | `it("Admin creates a log")` |
 | US-10.1 | Blank log | `backend/tests/vehicleLog.test.js` | `it("Blank log")` |
 | US-10.2 | Owner assigns another owner | `backend/tests/vehicleLog.test.js` | `it("Owner assigns another owner")` |
+| US-10.2 | Owner picker sends the user id | `frontend/tests/VehicleLog.test.js` | `it("Owner picker sends the user id")` |
 | US-10.2 | Non-owner cannot modify | `backend/tests/vehicleLog.test.js` | `it("Non-owner cannot modify")` |
 | US-10.3 | Maintenance reads the logs | `frontend/tests/VehicleLog.test.js` | `it("Maintenance reads the logs")` |
 | US-10.3 | Admin reads the logs | `frontend/tests/VehicleLog.test.js` | `it("Admin reads the logs")` |
 | US-10.3 | Driver cannot open the page | `frontend/tests/VehicleLog.test.js` | `it("Driver cannot open the page")` |
 | US-10.4 | Owner updates a log | `frontend/tests/VehicleLog.test.js` | `it("Owner updates a log")` |
+| US-10.4 | Click outside cancels the log | `frontend/tests/VehicleLog.test.js` | `it("Click outside cancels the log")` |
 | US-10.4 | Admin updates any log | `backend/tests/vehicleLog.test.js` | `it("Admin updates any log")` |
 | US-10.5 | Log older than 18 months is removed | `backend/tests/vehicleLog.test.js` | `it("Log older than 18 months is removed")` |
 | US-10.5 | Non-owner cannot delete | `backend/tests/vehicleLog.test.js` | `it("Non-owner cannot delete")` |
@@ -431,14 +450,14 @@ Do not implement behavior listed under Out of Scope.
 
 ## Definition of Done
 
-- [ ] Backend and frontend implemented per this spec (**FR-00N** satisfied)
+- [x] Backend and frontend implemented per this spec (**FR-00N** satisfied)
 - [ ] **Success Criteria (SC-00N)** met
 - [ ] All mapped tests pass (`npm test`)
-- [ ] Test Coverage Map complete
-- [ ] Test traceability (file headers, nested `describe` / `it`, audit commands in this spec)
-- [ ] `features/reference/data-model.md` updated (if schema changed)
-- [ ] `features/reference/api.md` updated (if API changed)
-- [ ] `features/reference/behavior.md` updated (if product rules changed)
+- [x] Test Coverage Map complete
+- [x] Test traceability (file headers, nested `describe` / `it`, audit commands in this spec)
+- [x] `features/reference/data-model.md` updated (if schema changed)
+- [x] `features/reference/api.md` updated (if API changed)
+- [x] `features/reference/behavior.md` updated (if product rules changed)
 
 ---
 

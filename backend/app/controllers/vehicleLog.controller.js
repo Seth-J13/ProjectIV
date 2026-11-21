@@ -251,6 +251,26 @@ exports.remove = async (req, res) => {
   }
 };
 
+exports.ownerChoices = async (_req, res) => {
+  try {
+    const users = await db.user.findAll({
+      attributes: ["id", "firstName", "lastName"],
+      order: [["id", "ASC"]],
+    });
+
+    res.send(
+      users.map((user) => ({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      }))
+    );
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send({ message: "Unable to list owners." });
+  }
+};
+
 exports.addOwner = async (req, res) => {
   const logId = parseId(req.params.id);
   const userId = parseId(req.body?.userId);

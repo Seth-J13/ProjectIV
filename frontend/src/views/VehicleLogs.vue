@@ -21,9 +21,13 @@ export default {
 </script>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import Utils from "../config/utils.js";
 import vehicleLogServices from "../services/vehicleLogServices.js";
+
+const props = defineProps({
+  vin: { type: String, default: "" },
+});
 
 const logs = ref([]);
 const loading = ref(false);
@@ -35,7 +39,8 @@ const createDialog = ref(null);
 const editDialog = ref(null);
 const createError = ref("");
 const editError = ref("");
-const ownerUserId = ref("");
+const people = ref([]);
+const selectedOwnerId = ref(null);
 
 const completedChoices = [
   { title: "Yes", value: true },
@@ -73,10 +78,66 @@ function canChange(log) {
 }
 
 const editWritable = computed(() => canChange(editForm.value));
+const visibleLogs = computed(() => {
+  if (!props.vin) {
+    return logs.value;
+  }
+
+  return logs.value.filter((log) => log.vin === props.vin);
+});
 
 function completedLabel(value) {
   return value ? "Yes" : "No";
 }
+
+function personLabel(user) {
+  const id = String(user.id);
+  const name = [user.firstName, user.lastName].filter(Boolean).join(" ");
+  return name ? `${name} (${id})` : id;
+}
+
+const ownerOptions = computed(() =>
+  people.value
+    .filter((user) => user?.id != null)
+    .map((user) => ({
+      id: String(user.id),
+      label: personLabel(user),
+    }))
+);
+
+const ownerMenuProps = computed(() => ({
+  attach: editDialog.value ?? undefined,
+  closeOnContentClick: true,
+}));
+
+function ownerValue(value) {
+  if (value && typeof value === "object") {
+    return value.id ?? "";
+  }
+
+  return value ?? "";
+}
+
+function ownersText(ids) {
+  return (ids || [])
+    .map((id) => {
+      const person = people.value.find((user) => Number(user.id) === Number(id));
+      return person ? personLabel(person) : String(id);
+    })
+    .join(", ");
+}
+
+watch(selectedOwnerId, (value) => {
+  if (!value || typeof value !== "object") {
+    return;
+  }
+
+  const id = String(value.id ?? "").trim();
+
+  if (id) {
+    selectedOwnerId.value = id;
+  }
+});
 
 function payloadFrom(source) {
   return {
@@ -89,6 +150,15 @@ function payloadFrom(source) {
 
 function incomplete(source) {
   return !source.serviceDate || !source.vin.trim() || !source.description.trim() || source.completed === null;
+}
+
+async function loadOwnerChoices() {
+  try {
+    const response = await vehicleLogServices.listOwnerChoices();
+    people.value = Array.isArray(response.data) ? response.data : [];
+  } catch {
+    people.value = [];
+  }
 }
 
 async function loadLogs() {
@@ -115,7 +185,7 @@ async function showDialog(dialog) {
 }
 
 async function openCreate() {
-  createForm.value = emptyForm();
+  createForm.value = { ...emptyForm(), vin: props.vin || "" };
   createError.value = "";
   errorMessage.value = "";
   createOpen.value = true;
@@ -132,7 +202,7 @@ async function openLog(log) {
     creatorId: log.creatorId,
     ownerIds: log.ownerIds || [],
   };
-  ownerUserId.value = "";
+  selectedOwnerId.value = null;
   editError.value = "";
   errorMessage.value = "";
   editOpen.value = true;
@@ -142,6 +212,7 @@ async function openLog(log) {
 function closeCreate() {
   createOpen.value = false;
   createError.value = "";
+  createForm.value = emptyForm();
 
   if (createDialog.value?.open) {
     createDialog.value.close();
@@ -151,9 +222,17 @@ function closeCreate() {
 function closeEdit() {
   editOpen.value = false;
   editError.value = "";
+  editForm.value = emptyForm();
+  selectedOwnerId.value = null;
 
   if (editDialog.value?.open) {
     editDialog.value.close();
+  }
+}
+
+function onDialogClick(event, close) {
+  if (event.target === event.currentTarget) {
+    close();
   }
 }
 
@@ -215,8 +294,18 @@ async function deleteLog() {
   }
 }
 
+function chosenOwnerId() {
+  const raw = String(ownerValue(selectedOwnerId.value) ?? "").trim();
+
+  if (!/^\d+$/.test(raw)) {
+    return null;
+  }
+
+  return Number(raw);
+}
+
 async function addOwner() {
-  const userId = Number(String(ownerUserId.value).trim());
+  const userId = chosenOwnerId();
 
   if (!Number.isInteger(userId) || userId <= 0) {
     editError.value = "Vehicle log is incomplete!";
@@ -233,7 +322,7 @@ async function addOwner() {
       ownerIds: response.data.ownerIds,
     };
     logs.value = logs.value.map((log) => (log.id === response.data.id ? response.data : log));
-    ownerUserId.value = "";
+    selectedOwnerId.value = null;
   } catch (error) {
     editError.value = error.response?.data?.message || "Unable to add the owner.";
     errorMessage.value = editError.value;
@@ -242,7 +331,10 @@ async function addOwner() {
   }
 }
 
-onMounted(loadLogs);
+onMounted(() => {
+  loadLogs();
+  loadOwnerChoices();
+});
 </script>
 
 <template>
@@ -266,20 +358,27 @@ onMounted(loadLogs);
           <th>Description</th>
           <th>Completed</th>
           <th>Creator</th>
+          <th>Owners</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="log in logs" :key="log.id" @click="openLog(log)">
+        <tr v-for="log in visibleLogs" :key="log.id" @click="openLog(log)">
           <td>{{ log.serviceDate }}</td>
           <td>{{ log.vin }}</td>
           <td>{{ log.description }}</td>
           <td>{{ completedLabel(log.completed) }}</td>
           <td>{{ log.creatorId }}</td>
+          <td>{{ ownersText(log.ownerIds) }}</td>
         </tr>
       </tbody>
     </v-table>
 
-    <dialog ref="createDialog" class="log-dialog" @cancel.prevent="closeCreate">
+    <dialog
+      ref="createDialog"
+      class="log-dialog"
+      @cancel.prevent="closeCreate"
+      @click="onDialogClick($event, closeCreate)"
+    >
       <v-card v-if="createOpen" rounded="lg" max-width="520">
         <v-card-item>
           <v-card-title>Create log</v-card-title>
@@ -289,7 +388,7 @@ onMounted(loadLogs);
             {{ createError }}
           </v-alert>
           <v-text-field v-model="createForm.serviceDate" label="Service date" type="date" />
-          <v-text-field v-model="createForm.vin" label="Vehicle" />
+          <v-text-field v-model="createForm.vin" label="Vehicle" :readonly="Boolean(props.vin)" />
           <v-text-field v-model="createForm.description" label="Description" />
           <v-select v-model="createForm.completed" label="Completed" :items="completedChoices" />
         </v-card-text>
@@ -303,7 +402,12 @@ onMounted(loadLogs);
       </v-card>
     </dialog>
 
-    <dialog ref="editDialog" class="log-dialog" @cancel.prevent="closeEdit">
+    <dialog
+      ref="editDialog"
+      class="log-dialog"
+      @cancel.prevent="closeEdit"
+      @click="onDialogClick($event, closeEdit)"
+    >
       <v-card v-if="editOpen" rounded="lg" max-width="520">
         <v-card-item>
           <v-card-title>Vehicle Service Logs</v-card-title>
@@ -321,12 +425,25 @@ onMounted(loadLogs);
             :items="completedChoices"
             :readonly="!editWritable"
           />
-          <v-text-field
+          <div v-if="ownersText(editForm.ownerIds)" class="mb-4">
+            Owners: {{ ownersText(editForm.ownerIds) }}
+          </div>
+          <v-combobox
             v-if="editWritable"
-            v-model="ownerUserId"
+            v-model="selectedOwnerId"
+            :items="ownerOptions"
+            item-title="id"
+            item-value="id"
+            :return-object="false"
+            :filter-keys="['raw.label', 'id']"
+            :menu-props="ownerMenuProps"
+            clearable
             label="User"
-            type="number"
-          />
+          >
+            <template #item="{ item, props: itemProps }">
+              <v-list-item v-bind="itemProps" :title="item.label" />
+            </template>
+          </v-combobox>
         </v-card-text>
         <v-card-actions v-if="editWritable">
           <v-btn color="secondary" variant="text" type="button" :loading="saving" @click="deleteLog">

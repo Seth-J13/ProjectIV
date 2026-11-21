@@ -5,6 +5,10 @@ export default {
     return apiClient.get("vehicle-logs");
   },
 
+  listOwnerChoices() {
+    return apiClient.get("vehicle-logs/owner-choices");
+  },
+
   createLog(log) {
     return apiClient.post("vehicle-logs", log);
   },

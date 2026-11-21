@@ -1,6 +1,6 @@
 # API Reference
 
-**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, Feature 4 vehicle CRUD, Feature 5 maintenance info, Feature 6 destinations, Feature 7 drivers, Feature 8 requests, and Feature 13 areas are implemented. Mount path is `/api`.
+**Status:** Feature 1 auth, Feature 2 Google login, Feature 3 user management, Feature 4 vehicle CRUD, Feature 5 maintenance info, Feature 6 destinations, Feature 7 drivers, Feature 8 requests, Feature 10 vehicle service logs, and Feature 13 areas are implemented. Mount path is `/api`.
 
 Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": "..." }`. Protected routes read `Authorization: Bearer <session token>`.
 
@@ -35,6 +35,13 @@ Flat JSON responses (no `{ success, data }` envelope). Errors are `{ "message": 
 | `POST`   | `/api/areas`                       | Yes (`Bearer` session token, role `admin`) | Create an area                                                    | Feature 13 |
 | `PUT`    | `/api/areas/:id`                   | Yes (`Bearer` session token, role `admin`) | Update an area                                                    | Feature 13 |
 | `DELETE` | `/api/areas/:id`                   | Yes (`Bearer` session token, role `admin`) | Delete an area that no vehicle references                         | Feature 13 |
+| `POST` | `/api/vehicle-logs` | Yes (`maintenance` or `admin`) | Create a vehicle service log | Feature 10 |
+| `GET` | `/api/vehicle-logs` | Yes (`maintenance` or `admin`) | List vehicle service logs | Feature 10 |
+| `GET` | `/api/vehicle-logs/owner-choices` | Yes (`maintenance` or `admin`) | Owner picker: `id`, `firstName`, `lastName` only | Feature 10 |
+| `GET` | `/api/vehicle-logs/:id` | Yes (`maintenance` or `admin`) | Read one vehicle service log | Feature 10 |
+| `PUT` | `/api/vehicle-logs/:id` | Yes (owner or `admin`) | Update a vehicle service log | Feature 10 |
+| `DELETE` | `/api/vehicle-logs/:id` | Yes (owner or `admin`) | Delete a vehicle service log | Feature 10 |
+| `POST` | `/api/vehicle-logs/:id/owners` | Yes (owner or `admin`) | Add an owner to a vehicle service log | Feature 10 |
 | `GET` | `/api/vehicles` | Yes | Vehicle choices for a request: `vehicleId`, `license`, `make`, `model`, plus `year`, `available`, and `inUse` (`true` while a request for the vehicle is in use now) for the Landing lists | Feature 8, Feature 12 |
 | `GET` | `/api/drivers` | Yes | Driver choices: `driverId`, `name` | Feature 8 |
 | `GET` | `/api/destinations` | Yes | Destination choices: `destId`, `name` | Feature 8 |
@@ -280,6 +287,33 @@ Delete success is **200** `{ "message": "Area deleted." }`.
 | Name already used                          | 409    | `Area name already in use!` |
 | A vehicle still references the area        | 409    | `Area is in use!`           |
 | Name or notice email missing               | 400    | `Area is incomplete!`       |
+
+### Vehicle service logs (`/api/vehicle-logs`)
+
+`maintenance` and `admin` may list and create logs. `user` and `driver` receive **403** `{ "message": "Forbidden" }`. Create and update body:
+
+```json
+{
+  "serviceDate": "2026-11-10",
+  "vin": "1HGCM82633A004352",
+  "description": "Replaced front brake pads",
+  "completed": true
+}
+```
+
+Success is **201** on create and **200** on read and update. `creatorId` and the first `ownerIds` entry are the signed-in user. `createdAt` and `updatedAt` are set on create and `updatedAt` changes on update. A log whose service date is more than 18 months ago is removed when logs are listed or read.
+
+Delete success is **200** `{ "message": "Vehicle log deleted." }`. Add owner body is `{ "userId": 9 }`.
+
+`GET /api/vehicle-logs/owner-choices` returns `[{ "id": 9, "firstName": "Grace", "lastName": "Hopper" }]`, ordered by `id`. The response has no email, role, password, or `googleSub`. `user` and `driver` receive **403** `{ "message": "Forbidden" }`.
+
+| Situation | Status | `message` |
+| --- | --- | --- |
+| Missing or expired token | 401 | `Unauthorized!` |
+| Role is `user` or `driver`, or the caller is not an owner and is not admin | 403 | `Forbidden` |
+| Unknown log id | 404 | `Vehicle log not found!` |
+| Unknown vehicle vin | 404 | `Vehicle not found!` |
+| A required field is missing | 400 | `Vehicle log is incomplete!` |
 
 ### Feature 9 — Note CRUD (`/vehicle-t3/notes` and `/api/vehicle-t3/notes`)
 

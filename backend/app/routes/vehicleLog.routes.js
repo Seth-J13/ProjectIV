@@ -5,6 +5,7 @@ import { authenticate, requireVehicleLogReader } from "../authorization/authoriz
 const router = Router();
 
 router.get("/", [authenticate, requireVehicleLogReader], vehicleLog.findAll);
+router.get("/owner-choices", [authenticate, requireVehicleLogReader], vehicleLog.ownerChoices);
 router.get("/:id", [authenticate, requireVehicleLogReader], vehicleLog.findOne);
 router.post("/", [authenticate, requireVehicleLogReader], vehicleLog.create);
 router.put("/:id", [authenticate, requireVehicleLogReader], vehicleLog.update);

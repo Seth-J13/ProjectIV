@@ -118,6 +118,16 @@ describe("Feature 10 — Vehicle Service Log", () => {
       expect(assigned.status).toBe(200);
       expect(assigned.body.ownerIds).toEqual(expect.arrayContaining([maintenance.user.id, other.user.id]));
 
+      const choices = await request(app).get(`${LOGS_PATH}/owner-choices`).set(maintenance.headers);
+
+      expect(choices.status).toBe(200);
+      expect(choices.body).toEqual(
+        expect.arrayContaining([
+          { id: other.user.id, firstName: "Ada", lastName: "other-owner" },
+        ])
+      );
+      expect(choices.body.some((user) => "email" in user || "password" in user || "role" in user)).toBe(false);
+
       const updated = await request(app)
         .put(`${LOGS_PATH}/${created.body.id}`)
         .set(other.headers)
