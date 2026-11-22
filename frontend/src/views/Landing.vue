@@ -3,7 +3,9 @@ import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import TripRequestForm from "../components/TripRequestForm.vue";
 import MaintenanceRequestForm from "../components/MaintenanceRequestForm.vue";
+import NotesList from "../components/NotesList.vue";
 import requestServices from "../services/requestServices.js";
+import apiClient from "../services/services.js";
 import Utils from "../config/utils.js";
 
 const router = useRouter();
@@ -36,6 +38,8 @@ function blankForm() {
 
 const tripForm = reactive(blankForm());
 const maintenanceForm = reactive(blankForm());
+const tripNotes = ref([]);
+const maintenanceNotes = ref([]);
 
 function messageFrom(error, fallback) {
   return error?.response?.data?.message || fallback;
@@ -183,14 +187,53 @@ function maintenancePayload() {
   };
 }
 
+async function saveDraftNotes(requestId, notes) {
+  let noteError = "";
+
+  for (const note of notes) {
+    try {
+      const createdNote = await apiClient.post("/vehicle-t3/notes/", {
+        reason: note.reason,
+        text: note.text,
+        request_id: requestId,
+        maintenance_request: note.maintenance_request === true,
+      });
+      const noteId = createdNote.data?.note_id ?? createdNote.data?.id;
+
+      for (const item of note.images || []) {
+        await apiClient.post("/vehicle-t3/noteimage/", {
+          image: item.image,
+          note_id: noteId,
+        });
+      }
+    } catch (error) {
+      noteError = messageFrom(error, "Unable to save a note.");
+    }
+  }
+
+  return noteError;
+}
+
 async function submit(type) {
   formError.value = "";
   successMessage.value = "";
+  const maintenance = type === "maintenance";
 
   try {
-    await requestServices.create(type === "maintenance" ? maintenancePayload() : tripPayload());
-    Object.assign(type === "maintenance" ? maintenanceForm : tripForm, blankForm());
+    const created = await requestServices.create(maintenance ? maintenancePayload() : tripPayload());
+    const notes = (maintenance ? maintenanceNotes.value : tripNotes.value).map((note) => ({ ...note }));
+    const noteError = await saveDraftNotes(created.data?.requestId, notes);
+
+    Object.assign(maintenance ? maintenanceForm : tripForm, blankForm());
+    if (maintenance) {
+      maintenanceNotes.value = [];
+    } else {
+      tripNotes.value = [];
+    }
     successMessage.value = "Request created.";
+    if (noteError) {
+      errorMessage.value = noteError;
+    }
     await load();
   } catch (error) {
     formError.value = messageFrom(error, "Unable to save the request.");
@@ -305,6 +348,14 @@ onMounted(load);
         </v-alert>
         <v-form v-if="isStaff && maintenanceMode" @submit.prevent="submit('maintenance')">
           <MaintenanceRequestForm :form="maintenanceForm" :vehicles="vehicles" :error="formError" />
+          <NotesList
+            v-model="maintenanceNotes"
+            class="mt-4"
+            mode="embed"
+            title=""
+            draft
+            :maintenance-request="true"
+          />
           <v-btn class="oc-cta mt-2" color="primary" variant="elevated" type="submit">Submit</v-btn>
         </v-form>
         <v-form v-else @submit.prevent="submit('trip')">
@@ -314,6 +365,13 @@ onMounted(load);
             :drivers="drivers"
             :destinations="destinations"
             :error="formError"
+          />
+          <NotesList
+            v-model="tripNotes"
+            class="mt-4"
+            mode="embed"
+            title=""
+            draft
           />
           <v-btn class="oc-cta mt-2" color="primary" variant="elevated" type="submit">Submit</v-btn>
         </v-form>

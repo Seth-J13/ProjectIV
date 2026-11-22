@@ -25,6 +25,7 @@ function maintenanceNoteFilter(item) {
   return item?.maintenance_request === true && ids.includes(Number(item.request_id));
 }
 const notes = ref([]);
+const maintenanceNotes = ref(null);
 const fuels = ref([]);
 const loading = ref(false);
 
@@ -1048,6 +1049,17 @@ async function removeFuel(fuel) {
       <v-col>
         <h1 class="text-h4">Maintenance Management</h1>
       </v-col>
+      <v-col cols="auto">
+        <v-btn
+          color="primary"
+          variant="elevated"
+          class="oc-cta"
+          type="button"
+          @click="maintenanceNotes?.openAdd()"
+        >
+          + New Note
+        </v-btn>
+      </v-col>
     </v-row>
 
     <v-alert v-if="pageAlert" :type="pageAlert.type" class="mb-4">{{ pageAlert.message }}</v-alert>
@@ -1155,9 +1167,11 @@ async function removeFuel(fuel) {
     </v-card>
 
     <NotesList
+      ref="maintenanceNotes"
       mode="embed"
       title="Vehicle Maintenance Notes"
       scope="maintenance"
+      :show-create="false"
       :maintenance-request="true"
       :vehicle-id="vin"
       :filter="maintenanceNoteFilter"

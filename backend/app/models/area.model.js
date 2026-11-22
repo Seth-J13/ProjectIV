@@ -13,7 +13,7 @@ export default (sequelize, Sequelize) => {
         unique: true,
       },
       logo: {
-        type: Sequelize.BLOB,
+        type: Sequelize.BLOB("medium"),
         allowNull: true,
       },
       noticeEmail: {

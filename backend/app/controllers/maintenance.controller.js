@@ -146,6 +146,7 @@ exports.updateNote = async (req, res) => {
 exports.deleteNote = async (req, res) => {
   try {
     const noteId = Number(req.params.note_id);
+    await db.noteImage.destroy({ where: { note_id: noteId } });
     const deleted = await db.note.destroy({ where: { note_id: noteId } });
     if (!deleted) {
       return res.status(404).send({ message: `Note with id=${noteId} not found.` });

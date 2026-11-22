@@ -213,6 +213,24 @@ describe("Feature 9 — Note CRUD", () => {
       expect(calledUrl(apiClient.get.mock.calls.at(-1))).toMatch(/\/vehicle-t3\/notes\/request\/6$/);
     });
 
+    it("clears draft notes on the form after the request is saved", async () => {
+      const Host = defineComponent({
+        components: { NotesList },
+        data: () => ({ notes: [note(1, { text: "Keep with the request" })] }),
+        template: `<NotesList v-model="notes" draft mode="embed" title="" />`,
+      });
+      const { wrapper } = await mountWithPlugins(Host, { attachTo: document.body });
+      activeWrapper = wrapper;
+      await flushPromises();
+
+      expect(pageText()).toContain("Keep with the request");
+      wrapper.vm.notes = [];
+      await flushPromises();
+
+      expect(pageText()).not.toContain("Keep with the request");
+      expect(apiClient.delete).not.toHaveBeenCalled();
+    });
+
     it("Vehicle Maintenance Note List Embed", async () => {
       apiClient.get.mockResolvedValue({
         status: 200,

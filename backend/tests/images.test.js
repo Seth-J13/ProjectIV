@@ -2,12 +2,17 @@
  * Feature 11 — Images CRUD
  * Spec: features/feature-11-images-crud.md
  */
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import request from "supertest";
 import jwt from "jsonwebtoken";
 import app from "../server.js";
 import db from "../app/models/index.js";
 import authConfig from "../app/config/auth.config.js";
 import { syncTestDatabase } from "./helpers.js";
+
+const imageDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../frontend/test images");
 
 const LOGIN_MESSAGE = "Please sign in. If you think this is a mistake, contact your system administrator";
 const MALFORMED_MESSAGE = "Malformed request. Please make sure everything in the form is properly formatted!";
@@ -24,45 +29,14 @@ const PARENT_KEY = {
 };
 
 let sequence = 1000;
-let largeBmp;
 
 function nextId() {
   sequence += 1;
   return sequence;
 }
 
-function bmpBytes(width, height) {
-  const rowSize = Math.ceil((width * 3) / 4) * 4;
-  const pixelSize = rowSize * height;
-  const bytes = Buffer.alloc(54 + pixelSize);
-  bytes.write("BM", 0);
-  bytes.writeUInt32LE(bytes.length, 2);
-  bytes.writeUInt32LE(54, 10);
-  bytes.writeUInt32LE(40, 14);
-  bytes.writeInt32LE(width, 18);
-  bytes.writeInt32LE(height, 22);
-  bytes.writeUInt16LE(1, 26);
-  bytes.writeUInt16LE(24, 28);
-  bytes.writeUInt32LE(pixelSize, 34);
-
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      const offset = 54 + y * rowSize + x * 3;
-      bytes[offset] = 20;
-      bytes[offset + 1] = 80;
-      bytes[offset + 2] = 140;
-    }
-  }
-
-  return bytes;
-}
-
-function uploadBytes() {
-  if (!largeBmp) {
-    largeBmp = bmpBytes(2000, 1750);
-  }
-
-  return largeBmp;
+function uploadBytes(name = "test image 1.png") {
+  return fs.readFileSync(path.join(imageDir, name));
 }
 
 async function authHeader(role) {
@@ -71,10 +45,9 @@ async function authHeader(role) {
   }
 
   const user = await db.user.create({
-    fName: "Ada",
-    lName: role,
+    firstName: "Ada",
+    lastName: role,
     email: `${role}-${nextId()}@example.com`,
-    username: `${role}-${sequence}`,
     password: "hashed-password",
     role,
   });
@@ -168,7 +141,7 @@ function storedBytes(body) {
   return asBuffer(body?.image) || asBuffer(body);
 }
 
-function postImage(type, auth, { parentId, bytes, filename = "photo.bmp", mime = "image/bmp" } = {}) {
+function postImage(type, auth, { parentId, bytes, filename = "test image 1.png", mime = "image/png" } = {}) {
   const call = request(app).post(collectionPath(type));
 
   if (auth) {
@@ -255,8 +228,12 @@ describe("Feature 11 — Images CRUD", () => {
   describe("US-11.2: Create VehicleImage on Vehicle listings", () => {
     it("Drag a valid image onto Vehicle Images", async () => {
       const vehicleId = nextId();
-      const bytes = uploadBytes();
-      const response = await postImage("vehicle", maintenance, { parentId: vehicleId, bytes });
+      const bytes = uploadBytes("test image 1 big.png");
+      const response = await postImage("vehicle", maintenance, {
+        parentId: vehicleId,
+        bytes,
+        filename: "test image 1 big.png",
+      });
 
       expect(response.status).toBe(201);
       expect(String(response.body?.message ?? response.text)).toMatch(/^New image created with id=\d+$/);
@@ -357,8 +334,12 @@ describe("Feature 11 — Images CRUD", () => {
   describe("US-11.5: Create NoteImage on Note details", () => {
     it("Drag a valid image onto a note", async () => {
       const noteId = await createNote(user, { maintenanceRequest: false, text: "Note that can hold an image" });
-      const bytes = uploadBytes();
-      const response = await postImage("note", user, { parentId: noteId, bytes });
+      const bytes = uploadBytes("test image 2 big.png");
+      const response = await postImage("note", user, {
+        parentId: noteId,
+        bytes,
+        filename: "test image 2 big.png",
+      });
 
       expect(response.status).toBe(201);
       expect(String(response.body?.message ?? response.text)).toMatch(/^New image created with id=\d+$/);
@@ -477,8 +458,12 @@ describe("Feature 11 — Images CRUD", () => {
   describe("US-11.9: Create AreaImage on Area listings", () => {
     it("Drag a valid image onto an area", async () => {
       const areaId = nextId();
-      const bytes = uploadBytes();
-      const response = await postImage("area", maintenance, { parentId: areaId, bytes });
+      const bytes = uploadBytes("test image 3 big.png");
+      const response = await postImage("area", maintenance, {
+        parentId: areaId,
+        bytes,
+        filename: "test image 3 big.png",
+      });
 
       expect(response.status).toBe(201);
       expect(String(response.body?.message ?? response.text)).toMatch(/^New image created with id=\d+$/);

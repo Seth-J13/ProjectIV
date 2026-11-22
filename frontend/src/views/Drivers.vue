@@ -292,9 +292,16 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <h1 class="text-h4 mb-4">Drivers</h1>
-
-    <v-btn class="oc-cta mb-4" color="primary" @click="openCreate">+ New driver</v-btn>
+    <v-row align="center" class="mb-4">
+      <v-col>
+        <h1 class="text-h4">Drivers</h1>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn color="primary" variant="elevated" class="oc-cta" type="button" @click="openCreate">
+          + New driver
+        </v-btn>
+      </v-col>
+    </v-row>
 
     <v-alert v-if="errorMessage" type="error" class="mb-4" density="compact">
       {{ errorMessage }}

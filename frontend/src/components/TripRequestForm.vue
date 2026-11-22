@@ -1,5 +1,6 @@
 <script setup>
 import { computed, reactive, ref, watch } from "vue";
+import ImagesBox from "./ImagesBox.vue";
 
 const props = defineProps({
   form: { type: Object, required: true },
@@ -173,6 +174,9 @@ function pickDestination(item) {
     </v-col>
     <v-col cols="12" md="6">
       <v-text-field v-model="form.numPeople" label="Number of people" type="number" />
+    </v-col>
+    <v-col v-if="form.vehicleId" cols="12">
+      <ImagesBox type="vehicle" :parent-id="form.vehicleId" />
     </v-col>
   </v-row>
 </template>

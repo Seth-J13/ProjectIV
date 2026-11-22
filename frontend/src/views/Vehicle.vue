@@ -1,8 +1,11 @@
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import vehicleServices from "../services/vehicleServices.js";
 import areaServices from "../services/areaServices.js";
+import ImagesTooltip from "../components/ImagesTooltip.vue";
+import ImagesContainer from "../components/ImagesContainer.vue";
+import ImagesBox from "../components/ImagesBox.vue";
 
 const FORM_ERROR = "An error occured processing your form.";
 // The modal has no tire type field (spec); the API requires one when creating maintenance info.
@@ -23,6 +26,7 @@ const isEditMode = ref(false);
 const form = ref(emptyForm());
 const formError = ref("");
 const saving = ref(false);
+const vehicleImages = ref(null);
 
 const showConfirmMaintenanceInfo = ref(false);
 const showConfirmFuelType = ref(false);
@@ -30,6 +34,20 @@ const needMaintenanceInfo = ref(false);
 const needFuelType = ref(false);
 
 const hoveredVin = ref(null);
+const hoverX = ref(null);
+const hoverTop = ref(null);
+let hoverHideTimer;
+
+function retainHover() {
+  clearTimeout(hoverHideTimer);
+}
+
+function releaseHover() {
+  clearTimeout(hoverHideTimer);
+  hoverHideTimer = setTimeout(() => {
+    hoveredVin.value = null;
+  }, 300);
+}
 
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: currentYear - 1899 }, (_, index) => currentYear - index);
@@ -101,6 +119,16 @@ const areaOptions = computed(() =>
     })
 );
 
+const selectedArea = computed(() => {
+  const id = resolveAreaId(form.value.area_id);
+
+  if (id == null) {
+    return null;
+  }
+
+  return areas.value.find((area) => Number(area.id) === id) ?? null;
+});
+
 const filteredVehicles = computed(() => {
   const f = filters.value;
   return vehicles.value.filter((vehicle) => {
@@ -121,17 +149,6 @@ const filteredVehicles = computed(() => {
 function areaName(vehicle) {
   return vehicle.area?.name ?? areas.value.find((area) => area.id === vehicle.area_id)?.name ?? "";
 }
-
-const hoveredImage = computed(() => {
-  const vehicle = vehicles.value.find((item) => item.vin === hoveredVin.value);
-  const image = vehicle?.image || vehicle?.images?.[0];
-  const src = image?.url ?? (typeof image === "string" ? image : null);
-  // Block file:// URLs — browsers reject them from http:// pages.
-  if (!src || String(src).startsWith("file:")) {
-    return null;
-  }
-  return src;
-});
 
 function apiMessage(error, fallback) {
   return error.response?.data?.message || fallback;
@@ -368,6 +385,7 @@ async function saveVehicle() {
     await vehicleServices.createVehicle(payload);
   }
 
+  await vehicleImages.value?.commit(payload.vin);
   closeAllDialogs();
   await loadVehicles();
 }
@@ -379,7 +397,6 @@ async function createAndSave() {
 
   showConfirmMaintenanceInfo.value = false;
   showConfirmFuelType.value = false;
-  showVehicleDialog.value = false;
   saving.value = true;
   errorMessage.value = "";
 
@@ -438,9 +455,24 @@ async function removeVehicle(vehicle) {
   }
 }
 
+function hoverVehicle(event, vehicle) {
+  retainHover();
+  hoveredVin.value = vehicle.vin;
+  hoverX.value = event.clientX;
+  hoverTop.value = event.currentTarget.getBoundingClientRect().top;
+}
+
+function moveVehicleHover(event) {
+  hoverX.value = event.clientX;
+}
+
 function openMaintenance(vehicle) {
   return router.push({ name: "maintenance", params: { vin: vehicle.vin } });
 }
+
+onBeforeUnmount(() => {
+  clearTimeout(hoverHideTimer);
+});
 
 watch(showVehicleDialog, (open) => {
   if (open) {
@@ -544,8 +576,9 @@ onMounted(() => {
         <tr
           v-for="vehicle in filteredVehicles"
           :key="vehicle.vin"
-          @mouseenter="hoveredVin = vehicle.vin"
-          @mouseleave="hoveredVin = null"
+          @mouseenter="hoverVehicle($event, vehicle)"
+          @mousemove="moveVehicleHover"
+          @mouseleave="releaseHover"
         >
           <td>{{ vehicle.license_plate_num || "No License Plate" }}</td>
           <td>{{ vehicle.make }}</td>
@@ -584,9 +617,16 @@ onMounted(() => {
       </tbody>
     </v-table>
 
-    <v-card v-if="hoveredImage" class="vehicle-image-preview" elevation="4">
-      <img :src="hoveredImage" alt="Vehicle" />
-    </v-card>
+    <ImagesTooltip
+      v-if="hoveredVin"
+      active
+      type="vehicle"
+      :parent-id="hoveredVin"
+      :pointer-x="hoverX"
+      :anchor-top="hoverTop"
+      @keep="retainHover"
+      @release="releaseHover"
+    />
 
     <v-dialog v-model="showVehicleDialog" max-width="720">
       <v-card v-if="showVehicleDialog" id="vehicle-dialog">
@@ -662,6 +702,19 @@ onMounted(() => {
                 control-variant="stacked"
                 label="Recommended Tire PSI"
               />
+            </v-col>
+            <v-col cols="12">
+              <div class="form-images">
+                <ImagesBox v-if="selectedArea" class="area-logo" :logo="selectedArea.logo || ''" />
+                <ImagesContainer
+                  ref="vehicleImages"
+                  class="vehicle-images"
+                  defer
+                  type="vehicle"
+                  :parent-id="String(form.vin || '').trim() || null"
+                  heading="Vehicle Images"
+                />
+              </div>
             </v-col>
           </v-row>
         </v-card-text>
@@ -740,6 +793,22 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.form-images {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.area-logo {
+  width: 220px;
+  flex: 0 0 220px;
+}
+
+.vehicle-images {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .vehicle-image-preview {
   position: fixed;
   right: 16px;
@@ -753,5 +822,12 @@ onMounted(() => {
   display: block;
   width: 100%;
   border-radius: 4px;
+}
+</style>
+
+<style>
+.v-overlay-container,
+.v-dialog > .v-overlay__content {
+  contain: none;
 }
 </style>

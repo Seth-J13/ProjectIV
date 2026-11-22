@@ -223,12 +223,20 @@ async function createRequest() {
 
     for (const note of notes) {
       try {
-        await apiClient.post("/vehicle-t3/notes/", {
+        const createdNote = await apiClient.post("/vehicle-t3/notes/", {
           reason: note.reason,
           text: note.text,
           request_id: requestId,
           maintenance_request: note.maintenance_request === true,
         });
+        const noteId = createdNote.data?.note_id ?? createdNote.data?.id;
+
+        for (const item of note.images || []) {
+          await apiClient.post("/vehicle-t3/noteimage/", {
+            image: item.image,
+            note_id: noteId,
+          });
+        }
       } catch (error) {
         noteError = messageFrom(error);
       }
@@ -286,8 +294,16 @@ onMounted(load);
 
 <template>
   <v-container>
-    <h1>Requests</h1>
-    <v-btn class="oc-cta" @click="openCreate">+ New request</v-btn>
+    <v-row align="center" class="mb-4">
+      <v-col>
+        <h1 class="text-h4">Requests</h1>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn color="primary" variant="elevated" class="oc-cta" type="button" @click="openCreate">
+          + New request
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-progress-linear v-if="loading" indeterminate />
     <v-alert v-if="errorMessage" type="error">{{ errorMessage }}</v-alert>
 
