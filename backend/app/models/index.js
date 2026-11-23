@@ -14,6 +14,7 @@ import contributorModel from "./contributor.model.js";
 import vehicleServiceLogModel from "./vehicleServiceLog.model.js";
 import vehicleLogModel from "./vehicleLog.model.js";
 import vehicleLogOwnerModel from "./vehicleLogOwner.model.js";
+import { defineImage } from "./image.model.js";
 
 const db = {};
 db.Sequelize = Sequelize;
@@ -33,6 +34,16 @@ db.contributor = contributorModel(sequelize, Sequelize);
 db.vehicleServiceLog = vehicleServiceLogModel(sequelize, Sequelize);
 db.vehicleLog = vehicleLogModel(sequelize, Sequelize);
 db.vehicleLogOwner = vehicleLogOwnerModel(sequelize, Sequelize);
+db.noteImage = defineImage(sequelize, Sequelize, "noteImage", "note_images", "note_id", Sequelize.INTEGER);
+db.vehicleImage = defineImage(
+  sequelize,
+  Sequelize,
+  "vehicleImage",
+  "vehicle_images",
+  "vehicle_id",
+  Sequelize.STRING(17)
+);
+db.areaImage = defineImage(sequelize, Sequelize, "areaImage", "area_images", "area_id", Sequelize.INTEGER);
 
 db.user.hasMany(db.session, { foreignKey: "userId" });
 db.session.belongsTo(db.user, { foreignKey: "userId" });
@@ -59,6 +70,12 @@ db.note.hasMany(db.contributor, { foreignKey: "note_id", constraints: false });
 db.contributor.belongsTo(db.note, { foreignKey: "note_id", constraints: false });
 db.user.hasMany(db.contributor, { foreignKey: "contributor_id", constraints: false });
 db.contributor.belongsTo(db.user, { foreignKey: "contributor_id", constraints: false });
+db.note.hasMany(db.noteImage, { foreignKey: "note_id", constraints: false });
+db.noteImage.belongsTo(db.note, { foreignKey: "note_id", constraints: false });
+db.vehicle.hasMany(db.vehicleImage, { foreignKey: "vehicle_id", sourceKey: "vin", constraints: false });
+db.vehicleImage.belongsTo(db.vehicle, { foreignKey: "vehicle_id", targetKey: "vin", constraints: false });
+db.area.hasMany(db.areaImage, { foreignKey: "area_id", constraints: false });
+db.areaImage.belongsTo(db.area, { foreignKey: "area_id", constraints: false });
 
 db.vehicleLog.belongsTo(db.user, { as: "creator", foreignKey: "creatorId" });
 db.user.hasMany(db.vehicleLog, { as: "createdVehicleLogs", foreignKey: "creatorId" });

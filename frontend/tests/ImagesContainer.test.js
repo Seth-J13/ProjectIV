@@ -155,8 +155,8 @@ describe("Feature 11 — Images CRUD", () => {
       await pressControl("From Cloud");
 
       expect(pageText()).toContain("Google Drive");
-      expect(pageText()).toContain("Dropbox");
-      expect(pageText()).toContain("OneDrive");
+      expect(pageText()).not.toContain("Dropbox");
+      expect(pageText()).not.toContain("OneDrive");
       await pressControl("Google Drive");
       const png = tinyPngBytes();
       const files = [asFile(png, "a.png", "image/png"), asFile(png, "b.png", "image/png")];
