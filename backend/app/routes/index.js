@@ -5,6 +5,7 @@ import vehicleRoutes from "./vehicle.routes.js";
 import driverRoutes from "./vehicle-t3.routes.js";
 import areaRoutes from "./area.routes.js";
 import requestRoutes from "./Request.routes.js";
+import vehicleLogRoutes from "./vehicleLog.routes.js";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use("/vehicle-t3", vehicleRoutes);
 router.use("/vehicle-t3", driverRoutes);
 router.use("/areas", areaRoutes);
 router.use("/", requestRoutes);
+router.use("/vehicle-logs", vehicleLogRoutes);
 
 export default router;

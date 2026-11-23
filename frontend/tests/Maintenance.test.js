@@ -26,6 +26,18 @@ const updateVehicle = vi.fn();
 const createVehicleServiceLog = vi.fn();
 const getVehicle = vi.fn();
 
+vi.mock("../src/services/vehicleLogServices.js", () => ({
+  default: {
+    listLogs: vi.fn().mockResolvedValue({ data: [] }),
+    listOwnerChoices: vi.fn().mockResolvedValue({ data: [] }),
+    createLog: vi.fn(),
+    updateLog: vi.fn(),
+    removeLog: vi.fn(),
+    addOwner: vi.fn(),
+    removeOwner: vi.fn(),
+  },
+}));
+
 vi.mock("../src/services/maintenanceServices.js", () => ({
   default: {
     getMaintenanceInfo: (...a) => getMaintenanceInfo(...a),
@@ -692,10 +704,9 @@ describe("Feature 5 — Maintenance Info CRUD", () => {
       await btn.trigger("click");
       await flush();
 
-      expect(pushSpy).toHaveBeenCalled();
-      expect(JSON.stringify(pushSpy.mock.calls[0][0])).toMatch(
-        /service.?log|vehicle_id|12345671234567123/i
-      );
+      expect(pushSpy).not.toHaveBeenCalled();
+      expect(wrapper.find("#service-logs-dialog").exists()).toBe(true);
+      expect(wrapper.text()).toContain("Vehicle Service Logs");
       expect(apiCallCount()).toBe(before);
     });
   });

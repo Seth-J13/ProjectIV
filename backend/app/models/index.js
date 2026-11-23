@@ -12,6 +12,8 @@ import requestModel from "./request.model.js";
 import noteModel from "./note.model.js";
 import contributorModel from "./contributor.model.js";
 import vehicleServiceLogModel from "./vehicleServiceLog.model.js";
+import vehicleLogModel from "./vehicleLog.model.js";
+import vehicleLogOwnerModel from "./vehicleLogOwner.model.js";
 import { defineImage } from "./image.model.js";
 
 const db = {};
@@ -30,6 +32,8 @@ db.request = requestModel(sequelize, Sequelize);
 db.note = noteModel(sequelize, Sequelize);
 db.contributor = contributorModel(sequelize, Sequelize);
 db.vehicleServiceLog = vehicleServiceLogModel(sequelize, Sequelize);
+db.vehicleLog = vehicleLogModel(sequelize, Sequelize);
+db.vehicleLogOwner = vehicleLogOwnerModel(sequelize, Sequelize);
 db.noteImage = defineImage(sequelize, Sequelize, "noteImage", "note_images", "note_id", Sequelize.INTEGER);
 db.vehicleImage = defineImage(
   sequelize,
@@ -72,5 +76,22 @@ db.vehicle.hasMany(db.vehicleImage, { foreignKey: "vehicle_id", sourceKey: "vin"
 db.vehicleImage.belongsTo(db.vehicle, { foreignKey: "vehicle_id", targetKey: "vin", constraints: false });
 db.area.hasMany(db.areaImage, { foreignKey: "area_id", constraints: false });
 db.areaImage.belongsTo(db.area, { foreignKey: "area_id", constraints: false });
+
+db.vehicleLog.belongsTo(db.user, { as: "creator", foreignKey: "creatorId" });
+db.user.hasMany(db.vehicleLog, { as: "createdVehicleLogs", foreignKey: "creatorId" });
+db.vehicleLog.belongsToMany(db.user, {
+  as: "owners",
+  through: db.vehicleLogOwner,
+  foreignKey: "vehicleLogId",
+  otherKey: "userId",
+});
+db.user.belongsToMany(db.vehicleLog, {
+  as: "ownedVehicleLogs",
+  through: db.vehicleLogOwner,
+  foreignKey: "userId",
+  otherKey: "vehicleLogId",
+});
+db.vehicleLog.belongsTo(db.vehicle, { foreignKey: "vin", targetKey: "vin" });
+db.vehicle.hasMany(db.vehicleLog, { foreignKey: "vin", sourceKey: "vin" });
 
 export default db;
