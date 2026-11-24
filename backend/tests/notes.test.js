@@ -1,0 +1,367 @@
+/**
+ * Feature 9 — Note CRUD
+ * Spec: features/feature-9-note-crud.md
+ */
+import request from "supertest";
+import app from "../server.js";
+import db from "../app/models/index.js";
+
+const NOTES = "/vehicle-t3/notes";
+const SERVICE_LOGS = "/api/vehicle-t3/vehicle-service-logs/";
+const MALFORMED = {
+  message: "Malformed request. Please make sure everything in the form is properly formatted!",
+};
+const LOGIN_MESSAGE =
+  "Please sign in. If you think this is a mistake, contact your system administrator";
+
+const validNote = {
+  reason: "test",
+  maintenance_request: false,
+  request_id: 5,
+  text: "Brake noise from the front pads",
+};
+
+const maintenanceNote = {
+  reason: "Check tires",
+  maintenance_request: true,
+  request_id: 5,
+  text: "Vehicle needs new tires",
+};
+
+function createdId(response) {
+  if (response.body?.note_id != null) {
+    return response.body.note_id;
+  }
+
+  if (response.body?.id != null) {
+    return response.body.id;
+  }
+
+  const text = typeof response.body === "string" ? response.body : response.body?.message;
+  const match = String(text ?? "").match(/id=(\d+)/);
+
+  if (!match) {
+    throw new Error(`Create response did not include an id. Status ${response.status}: ${response.text}`);
+  }
+
+  return match[1];
+}
+
+function expectToday(value) {
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/);
+  const now = new Date();
+
+  expect(match).not.toBeNull();
+  expect(Number(match[1])).toBe(now.getFullYear());
+  expect(Number(match[2])).toBe(now.getMonth() + 1);
+  expect(Number(match[3])).toBe(now.getDate());
+
+  const stamp = new Date(
+    Number(match[1]),
+    Number(match[2]) - 1,
+    Number(match[3]),
+    Number(match[4]),
+    Number(match[5]),
+    Number(match[6])
+  );
+  expect(Math.abs(stamp.getTime() - now.getTime())).toBeLessThan(2 * 60 * 1000);
+}
+
+function contributorKey(entry) {
+  return `${entry.contributor_id}|${entry.created_note}|${entry.date}`;
+}
+
+const FIXTURE_TEXT = [
+  validNote.text,
+  maintenanceNote.text,
+  "Pads are worn",
+  "well well well...",
+  "Updated description text.",
+  "Created by someone else",
+  "Updated by an admin",
+];
+
+describe("Feature 9 — Note CRUD", () => {
+  beforeEach(async () => {
+    const notes = await db.note.findAll({ where: { text: FIXTURE_TEXT } });
+    const ids = notes.map((note) => note.note_id);
+
+    if (ids.length) {
+      await db.contributor.destroy({ where: { note_id: ids } });
+      await db.note.destroy({ where: { note_id: ids } });
+    }
+  });
+
+  describe("US-9.2: Remove Notes", () => {
+    it("User confirms Delete", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer user-token")
+        .send(validNote);
+
+      expect(created.status).toBe(201);
+
+      const id = createdId(created);
+      const response = await request(app)
+        .delete(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer user-token");
+
+      expect(response.status).toBe(204);
+      expect(response.text).toBe("");
+
+      const details = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer user-token");
+
+      expect(details.status).toBe(404);
+      expect(details.body).toEqual({ message: `No note was found for id=${id}` });
+
+      const contributions = await request(app)
+        .get(`${NOTES}/contributors/note/${id}`)
+        .set("Authorization", "Bearer user-token");
+
+      expect(contributions.status).toBe(404);
+      expect(contributions.body).toEqual({ message: `This note ${id} doesn't have any contributions` });
+    });
+
+    it("Maintenance deletes from Maintenance Requests Notes List", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({
+          ...validNote,
+          maintenance_request: true,
+          text: "Pads are worn",
+        });
+
+      expect(created.status).toBe(201);
+
+      const id = createdId(created);
+      const response = await request(app)
+        .delete(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer maintenance-token");
+
+      expect(response.status).toBe(204);
+      expect(response.text).toBe("");
+
+      const details = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer maintenance-token");
+
+      expect(details.status).toBe(404);
+      expect(details.body).toEqual({ message: `No note was found for id=${id}` });
+    });
+
+    it("User clicks `confirm` button", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+
+      const logRes = await request(app)
+        .post(SERVICE_LOGS)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({
+          vehicle_id: "12345671234567123",
+          date: "2026-10-31",
+          type: "maintenance",
+          value: maintenanceNote.text,
+        });
+
+      expect(logRes.status).toBe(201);
+      expect(typeof logRes.body.message).toBe("string");
+      expect(logRes.body.message.length).toBeGreaterThan(0);
+
+      const deleteRes = await request(app)
+        .delete(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer maintenance-token");
+
+      expect(deleteRes.status).toBe(204);
+      expect(deleteRes.text).toBe("");
+    });
+  });
+
+  describe("US-9.3: Create Notes", () => {
+    it("Send add request with valid form data", async () => {
+      const response = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer user-token")
+        .send(validNote);
+
+      expect(response.status).toBe(201);
+
+      const message = typeof response.body === "string" ? response.body : response.body?.message;
+      expect(message).toMatch(/^New note created with id=\d+$/);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          note_id: createdId(response),
+          created_note: true,
+        }),
+      );
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
+
+      const details = await request(app)
+        .get(`${NOTES}/note/${createdId(response)}`)
+        .set("Authorization", "Bearer user-token");
+
+      expect(details.status).toBe(200);
+      expect(JSON.stringify(details.body)).toContain(validNote.text);
+
+      const creator = (details.body.contributors ?? []).find((entry) => entry.created_note === true);
+      expect(creator).toEqual(expect.objectContaining({ created_note: true }));
+      expect(creator.contributor_id).toBeDefined();
+      expectToday(creator.date);
+    });
+
+    it("Signed out user makes add request", async () => {
+      const response = await request(app).post(`${NOTES}/`).send(validNote);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({ message: LOGIN_MESSAGE });
+    });
+
+    it("User inputs valid input into the `Add Maintenance Note` modal", async () => {
+      const response = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          note_id: createdId(response),
+          created_note: true,
+        }),
+      );
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
+    });
+
+    it("User inputs invalid input into the `Add Maintenance Note` modal", async () => {
+      const response = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({ ...maintenanceNote, text: "" });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual(MALFORMED);
+    });
+  });
+
+  describe("US-9.4: Edit Notes", () => {
+    it("Send edit request with valid form data", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer user-token")
+        .send(validNote);
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+      const before = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer user-token");
+      const beforeKeys = new Set((before.body.contributors ?? []).map(contributorKey));
+
+      const response = await request(app)
+        .put(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer user-token")
+        .send({
+          ...validNote,
+          reason: "test3",
+          text: "well well well...",
+        });
+
+      expect(response.status).toBe(200);
+      expect(String(response.body.note_id)).toBe(String(id));
+      expect(response.body.created_note).toBe(false);
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
+
+      const after = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer user-token");
+      expect(JSON.stringify(after.body)).toContain("well well well...");
+
+      const added = (after.body.contributors ?? []).filter((entry) => !beforeKeys.has(contributorKey(entry)));
+      expect(added.length).toBeGreaterThan(0);
+      expect(added[0].contributor_id).toBeDefined();
+      expect(added[0].created_note).toBe(false);
+      expectToday(added[0].date);
+    });
+
+    it("Signed out user makes edit request", async () => {
+      const response = await request(app).put(`${NOTES}/note/1`).send(validNote);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({ message: LOGIN_MESSAGE });
+    });
+
+    it("User inputs valid input into the `Edit Maintenance Note` modal", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+
+      const response = await request(app)
+        .put(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({
+          ...maintenanceNote,
+          reason: "Updated subject",
+          text: "Updated description text.",
+        });
+
+      expect(response.status).toBe(200);
+      expect(String(response.body.note_id)).toBe(String(id));
+      expect(response.body.created_note).toBe(false);
+      expect(response.body.contributor_id).toBeDefined();
+      expectToday(response.body.date);
+    });
+
+    it("User inputs invalid input into the `Edit Maintenance Note` modal", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send(maintenanceNote);
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+
+      const response = await request(app)
+        .put(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer maintenance-token")
+        .send({ ...maintenanceNote, text: "" });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual(MALFORMED);
+    });
+  });
+
+  describe("US-9.5: Admin Notes Management", () => {
+    it("Admin super-permissions on any list", async () => {
+      const created = await request(app)
+        .post(`${NOTES}/`)
+        .set("Authorization", "Bearer user-token")
+        .send({ ...validNote, text: "Created by someone else" });
+
+      expect(created.status).toBe(201);
+      const id = createdId(created);
+
+      const updated = await request(app)
+        .put(`${NOTES}/note/${id}`)
+        .set("Authorization", "Bearer admin-token")
+        .send({ ...validNote, text: "Updated by an admin" });
+
+      expect(updated.status).toBe(200);
+      expect(String(updated.body.note_id)).toBe(String(id));
+      expect(updated.body.created_note).toBe(false);
+
+      const details = await request(app).get(`${NOTES}/note/${id}`).set("Authorization", "Bearer admin-token");
+      expect(JSON.stringify(details.body)).toContain("Updated by an admin");
+
+      const removed = await request(app).delete(`${NOTES}/note/${id}`).set("Authorization", "Bearer admin-token");
+
+      expect(removed.status).toBe(204);
+      expect(removed.text).toBe("");
+    });
+  });
+});

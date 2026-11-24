@@ -1,0 +1,449 @@
+/**
+ * Feature 8 — Request Management
+ * Spec: features/feature-8-Requests-Crud.md
+ */
+import request from "supertest";
+import jwt from "jsonwebtoken";
+import app from "../server.js";
+import db from "../app/models/index.js";
+import authConfig from "../app/config/auth.config.js";
+import { syncTestDatabase } from "./helpers.js";
+
+const REQUESTS_PATH = "/api/requests";
+
+const tripBody = {
+  requestType: "trip",
+  vehicleId: 12,
+  driverId: 3,
+  destId: 7,
+  startDate: "2026-11-10",
+  startTime: "09:00",
+  endDate: "2026-11-10",
+  endTime: "17:00",
+  numPeople: 6,
+};
+
+const maintenanceBody = {
+  requestType: "maintenance",
+  vehicleId: 12,
+  startDate: "2026-11-15",
+  startTime: "08:00",
+};
+
+async function authHeader(role, username = role) {
+  if (!db.user || !db.session) {
+    return { Authorization: `Bearer ${username}-token` };
+  }
+
+  const user = await db.user.create({
+    firstName: "Ada",
+    lastName: username,
+    email: `${username}@example.com`,
+    password: "hashed-password",
+    role,
+  });
+  const token = jwt.sign({ id: user.id }, authConfig.secret, { expiresIn: 86400 });
+
+  await db.session.create({
+    token,
+    email: user.email,
+    userId: user.id,
+    expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  });
+
+  return { Authorization: `Bearer ${token}` };
+}
+
+function requestIds(body) {
+  return (Array.isArray(body) ? body : []).map((row) => row.requestId);
+}
+
+async function seedCatalog() {
+  await db.area.create({
+    id: 1,
+    name: "Campus",
+    noticeEmail: "campus@example.com",
+  });
+  await db.vehicle.create({
+    vin: "12",
+    make: "Ford",
+    model: "Transit",
+    year: 2024,
+    purchased_date: "2024-01-01",
+    license_plate_num: "ABC-1234",
+    tag_exp_month: "2026-12-01",
+    area_id: 1,
+    available: true,
+  });
+  await db.driver.create({
+    driver_id: 3,
+    name: "Jane Doe",
+    license_status: "active",
+    license_exp_date: "08/2028",
+    availability: "available",
+  });
+  await db.destination.create({
+    id: 7,
+    zip: "68508",
+    city: "Lincoln",
+    state: "Nebraska",
+    addr_line_1: "1445 K Street",
+    dest_name: "State Capitol",
+  });
+}
+
+describe("Feature 8 — Request Management", () => {
+  describe("US-8.1 — Create a normal request", () => {
+    let user;
+
+    beforeEach(async () => {
+      await syncTestDatabase();
+      await seedCatalog();
+      user = await authHeader("worker", "requester");
+    });
+
+    it("User creates a trip request", async () => {
+      const response = await request(app).post(REQUESTS_PATH).set(user).send({
+        ...tripBody,
+        requesterId: 99999,
+      });
+
+      expect(response.status).toBe(201);
+      expect(response.body.requestId).toBeDefined();
+      expect(response.body.requesterId).not.toBe(99999);
+      expect(response.body).toMatchObject({
+        requestType: "trip",
+        startDate: "2026-11-10",
+        startTime: "09:00",
+        endDate: "2026-11-10",
+        endTime: "17:00",
+        numPeople: 6,
+      });
+      expect(response.body.vehicle).toEqual(
+        expect.objectContaining({ vehicleId: "12", license: "ABC-1234", make: "Ford", model: "Transit" })
+      );
+      expect(response.body.driver).toEqual(expect.objectContaining({ driverId: 3 }));
+      expect(response.body.destination).toEqual(expect.objectContaining({ destId: 7 }));
+    });
+
+    it("User creates a trip request with an end before the start", async () => {
+      const response = await request(app)
+        .post(REQUESTS_PATH)
+        .set(user)
+        .send({
+          ...tripBody,
+          startDate: "2026-11-10",
+          startTime: "09:00",
+          endDate: "2026-11-09",
+          endTime: "08:00",
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ message: "end must be after start." });
+    });
+
+    it("User creates a trip request with an invalid number of people", async () => {
+      const response = await request(app)
+        .post(REQUESTS_PATH)
+        .set(user)
+        .send({ ...tripBody, numPeople: 0 });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ message: "number of people must be at least 1." });
+    });
+
+    it("User creates a request referencing a nonexistent vehicle", async () => {
+      const response = await request(app)
+        .post(REQUESTS_PATH)
+        .set(user)
+        .send({ ...tripBody, vehicleId: 99999 });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ message: "vehicle does not exist." });
+    });
+  });
+
+  describe("US-8.2 — Create a maintenance request", () => {
+    beforeEach(async () => {
+      await syncTestDatabase();
+      await seedCatalog();
+    });
+
+    it("Admin creates a maintenance request", async () => {
+      const admin = await authHeader("admin", "admin");
+      const response = await request(app).post(REQUESTS_PATH).set(admin).send(maintenanceBody);
+
+      expect(response.status).toBe(201);
+      expect(response.body.requestType).toBe("maintenance");
+      expect(response.body.driverId ?? null).toBeNull();
+      expect(response.body.driver ?? null).toBeNull();
+      expect(response.body.destId ?? null).toBeNull();
+      expect(response.body.destination ?? null).toBeNull();
+      expect(response.body.numPeople ?? null).toBeNull();
+    });
+
+    it("Maintenance creates a maintenance request", async () => {
+      const maintenance = await authHeader("maintenance", "mechanic");
+      const response = await request(app).post(REQUESTS_PATH).set(maintenance).send(maintenanceBody);
+
+      expect(response.status).toBe(201);
+      expect(response.body.requestType).toBe("maintenance");
+      expect(response.body.requesterId).toBeDefined();
+    });
+
+    it("User or driver cannot create a maintenance request", async () => {
+      const worker = await authHeader("user", "worker");
+      const response = await request(app).post(REQUESTS_PATH).set(worker).send(maintenanceBody);
+
+      expect(response.status).toBe(403);
+      expect(response.body.message).toEqual(expect.stringMatching(/unauthor|forbidden|admin/i));
+    });
+  });
+
+  describe("US-8.3 — View requests", () => {
+    beforeEach(async () => {
+      await syncTestDatabase();
+      await seedCatalog();
+    });
+
+    it("Requests view loads with existing requests", async () => {
+      const owner = await authHeader("worker", "owner");
+      const first = await request(app).post(REQUESTS_PATH).set(owner).send(tripBody);
+      const second = await request(app)
+        .post(REQUESTS_PATH)
+        .set(owner)
+        .send({ ...tripBody, startDate: "2026-11-12", endDate: "2026-11-12" });
+
+      const response = await request(app).get(REQUESTS_PATH).set(owner);
+
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.body)).toBe(true);
+      expect(requestIds(response.body)).toEqual(
+        expect.arrayContaining([first.body.requestId, second.body.requestId])
+      );
+      for (const row of response.body) {
+        expect(row.requestType).toBeDefined();
+        expect(row.vehicle).toBeDefined();
+        expect(row.startDate).toBeDefined();
+      }
+    });
+
+    it("User does not see other users' requests", async () => {
+      const owner = await authHeader("worker", "owner");
+      const other = await authHeader("worker", "other");
+      const created = await request(app).post(REQUESTS_PATH).set(owner).send(tripBody);
+
+      const response = await request(app).get(REQUESTS_PATH).set(other);
+
+      expect(response.status).toBe(200);
+      expect(requestIds(response.body)).not.toContain(created.body.requestId);
+    });
+
+    it("Admin sees all requests", async () => {
+      const firstUser = await authHeader("worker", "ada");
+      const secondUser = await authHeader("worker", "ben");
+      const admin = await authHeader("admin", "admin");
+      const first = await request(app).post(REQUESTS_PATH).set(firstUser).send(tripBody);
+      const second = await request(app).post(REQUESTS_PATH).set(secondUser).send(tripBody);
+
+      const response = await request(app).get(REQUESTS_PATH).set(admin);
+
+      expect(response.status).toBe(200);
+      expect(requestIds(response.body)).toEqual(
+        expect.arrayContaining([first.body.requestId, second.body.requestId])
+      );
+    });
+  });
+
+  describe("US-8.5 — Edit and delete requests", () => {
+    beforeEach(async () => {
+      await syncTestDatabase();
+      await seedCatalog();
+    });
+
+    it("User edits a request", async () => {
+      const owner = await authHeader("worker", "owner");
+      const created = await request(app).post(REQUESTS_PATH).set(owner).send(tripBody);
+
+      const response = await request(app)
+        .put(`${REQUESTS_PATH}/${created.body.requestId}`)
+        .set(owner)
+        .send({ ...tripBody, numPeople: 4 });
+
+      expect(response.status).toBe(200);
+      expect(response.body.numPeople).toBe(4);
+      expect(response.body.requestType).toBe("trip");
+    });
+
+    it("User deletes a request", async () => {
+      const owner = await authHeader("worker", "owner");
+      const created = await request(app).post(REQUESTS_PATH).set(owner).send(tripBody);
+
+      const response = await request(app)
+        .delete(`${REQUESTS_PATH}/${created.body.requestId}`)
+        .set(owner);
+
+      expect(response.status).toBe(204);
+
+      const listed = await request(app).get(REQUESTS_PATH).set(owner);
+      expect(requestIds(listed.body)).not.toContain(created.body.requestId);
+    });
+
+    it("User cannot edit another user's request", async () => {
+      const owner = await authHeader("worker", "owner");
+      const other = await authHeader("worker", "other");
+      const created = await request(app).post(REQUESTS_PATH).set(owner).send(tripBody);
+
+      const response = await request(app)
+        .put(`${REQUESTS_PATH}/${created.body.requestId}`)
+        .set(other)
+        .send({ ...tripBody, numPeople: 4 });
+
+      expect(response.status).toBe(404);
+    });
+
+    it("User cannot delete another user's request", async () => {
+      const owner = await authHeader("worker", "owner");
+      const other = await authHeader("worker", "other");
+      const created = await request(app).post(REQUESTS_PATH).set(owner).send(tripBody);
+
+      const response = await request(app)
+        .delete(`${REQUESTS_PATH}/${created.body.requestId}`)
+        .set(other);
+
+      expect(response.status).toBe(404);
+    });
+
+    it("Admin edits any request", async () => {
+      const owner = await authHeader("worker", "owner");
+      const admin = await authHeader("admin", "admin");
+      const created = await request(app).post(REQUESTS_PATH).set(owner).send(tripBody);
+
+      const response = await request(app)
+        .put(`${REQUESTS_PATH}/${created.body.requestId}`)
+        .set(admin)
+        .send({ ...tripBody, numPeople: 4 });
+
+      expect(response.status).toBe(200);
+      expect(response.body.numPeople).toBe(4);
+    });
+  });
+
+  describe("US-8.6 — Filter requests", () => {
+    function dayOffset(offset) {
+      const date = new Date();
+      date.setDate(date.getDate() + offset);
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
+
+    function dayOf(date) {
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${date.getFullYear()}-${month}-${day}`;
+    }
+
+    function clockOf(date) {
+      return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    beforeEach(async () => {
+      await syncTestDatabase();
+      await seedCatalog();
+    });
+
+    it("Request activity follows the schedule", async () => {
+      const admin = await authHeader("admin", "admin");
+      const now = new Date();
+      const earlier = new Date(now.getTime() - 60 * 1000);
+      const later = new Date(now.getTime() + 60 * 1000);
+
+      async function create(body) {
+        const response = await request(app).post(REQUESTS_PATH).set(admin).send(body);
+        expect(response.status).toBe(201);
+        return response.body;
+      }
+
+      const openTrip = await create({
+        ...tripBody,
+        startDate: dayOffset(-1),
+        startTime: "23:30",
+        endDate: dayOffset(1),
+        endTime: "00:15",
+      });
+      const openMaintenance = await create({
+        ...maintenanceBody,
+        startDate: dayOffset(-1),
+        startTime: null,
+        endDate: null,
+        endTime: null,
+      });
+      const notStarted = await create({
+        ...tripBody,
+        startDate: dayOffset(1),
+        startTime: "00:00",
+        endDate: dayOffset(2),
+        endTime: "01:00",
+      });
+      const finished = await create({
+        ...tripBody,
+        startDate: dayOffset(-2),
+        startTime: "08:00",
+        endDate: dayOffset(-1),
+        endTime: "08:00",
+      });
+      const aroundNow = await create({
+        ...tripBody,
+        startDate: dayOf(earlier),
+        startTime: clockOf(earlier),
+        endDate: dayOf(later),
+        endTime: clockOf(later),
+      });
+      const startsLaterToday = await create({
+        ...tripBody,
+        startDate: dayOf(later),
+        startTime: clockOf(later),
+        endDate: dayOffset(1),
+        endTime: "23:00",
+      });
+      const missingStartTimeToday = await create({
+        ...maintenanceBody,
+        startDate: dayOffset(0),
+        startTime: null,
+        endDate: null,
+        endTime: null,
+      });
+
+      expect(openTrip.currentlyActive).toBe(true);
+      expect(openMaintenance.currentlyActive).toBe(true);
+      expect(notStarted.currentlyActive).toBe(false);
+      expect(finished.currentlyActive).toBe(false);
+      expect(aroundNow.currentlyActive).toBe(true);
+      expect(startsLaterToday.currentlyActive).toBe(false);
+      expect(missingStartTimeToday.currentlyActive).toBe(false);
+
+      await db.request.update(
+        { currentlyActive: false },
+        { where: { requestId: openTrip.requestId } }
+      );
+
+      const listed = await request(app).get(REQUESTS_PATH).set(admin);
+      const repaired = listed.body.find((row) => row.requestId === openTrip.requestId);
+      expect(repaired.currentlyActive).toBe(true);
+    });
+  });
+
+  describe("Authentication", () => {
+    it("Unauthenticated API request to requests", async () => {
+      const response = await request(app).get(REQUESTS_PATH);
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          message: expect.stringMatching(/unauthorized/i),
+        })
+      );
+    });
+  });
+});

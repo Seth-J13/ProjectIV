@@ -1,0 +1,99 @@
+import db from '../models/index.js';
+import logger from '../config/logger.js';
+
+export async function authenticate(req, res, next) {
+  try {
+    const header = req.headers.authorization || '';
+    const match = /^Bearer\s+(\S+)$/i.exec(header);
+
+    if (!match) {
+      return res.status(401).send({ message: 'Unauthorized!' });
+    }
+
+    const token = match[1];
+    const session = await db.session.findOne({
+      where: { token },
+      include: [db.user],
+    });
+
+    const expiresAt = session ? new Date(session.expirationDate).getTime() : 0;
+
+    if (!session?.user || expiresAt < Date.now()) {
+      return res.status(401).send({ message: 'Unauthorized!' });
+    }
+
+    req.user = {
+      id: session.user.id,
+      email: session.user.email,
+      role: session.user.role,
+    };
+    req.sessionToken = session.token;
+    return next();
+  } catch (error) {
+    logger.error(`Authentication failed: ${error.message}`);
+    return res.status(401).send({ message: 'Unauthorized!' });
+  }
+}
+
+export function requireAdmin(req, res, next) {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).send({ message: 'Admin access required.' });
+  }
+
+  return next();
+}
+
+export function requireAdminOrMaintenance(req, res, next) {
+  if (req.user?.role !== 'admin' && req.user?.role !== 'maintenance') {
+    return res.status(401).send({ message: 'Unauthorized user' });
+  }
+  return next();
+}
+
+export function requireVehicleLogReader(req, res, next) {
+  if (req.user?.role !== "admin" && req.user?.role !== "maintenance") {
+    return res.status(403).send({ message: "Forbidden" });
+  }
+
+  return next();
+}
+
+export function requireAreaAdmin(req, res, next) {
+  if (req.user?.role !== "admin") {
+    return res.status(403).send({ message: "Forbidden" });
+  }
+
+  return next();
+}
+
+export async function getAreaOrNull(areaId) {
+  const area = await db.area.findByPk(areaId);
+  return area ?? null;
+}
+
+export async function getAccessibleDriversOrNull(req, driverId) {
+  if (!req.user) {
+    return null;
+  }
+
+  const driver = await db.driver.findByPk(driverId);
+  return driver ?? null;
+}
+
+export async function getAccessibleRequestOrNull(req, requestId) {
+  if (!req.user) {
+    return null;
+  }
+
+  const request = await db.request.findByPk(requestId);
+
+  if (!request) {
+    return null;
+  }
+
+  if (req.user.role !== "admin" && request.requesterId !== req.user.id) {
+    return null;
+  }
+
+  return request;
+}
