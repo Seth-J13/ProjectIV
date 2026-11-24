@@ -1,0 +1,18 @@
+# Optional local/reference unit. CI deploy writes this file on the server
+# with WorkingDirectory = BACKEND_DEPLOY_TARGET and User = REMOTE_USER.
+# Replace the path below before using this file for a manual install.
+
+[Unit]
+Description=Vehicle T3 Backend API
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/vehicle-t3-backend
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
