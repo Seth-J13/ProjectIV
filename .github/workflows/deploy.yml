@@ -101,7 +101,26 @@ jobs:
           command: |
             cd ${{ secrets.BACKEND_DEPLOY_TARGET }}
             npm install --omit=dev
-            sudo systemctl stop vehicle-t3-backend
-            sudo cp todo-speckit-backend.service /lib/systemd/system/vehicle-t3-backend.service
+            NODE_BIN=$(command -v node)
+            cat > vehicle-t3-backend.service << UNIT
+            [Unit]
+            Description=Vehicle T3 Backend API
+            After=network.target
+
+            [Service]
+            Type=simple
+            User=${{ secrets.REMOTE_USER }}
+            WorkingDirectory=${{ secrets.BACKEND_DEPLOY_TARGET }}
+            ExecStart=$NODE_BIN server.js
+            Restart=on-failure
+            RestartSec=5
+
+            [Install]
+            WantedBy=multi-user.target
+            UNIT
+            sudo systemctl stop vehicle-t3-backend || true
+            sudo cp vehicle-t3-backend.service /lib/systemd/system/vehicle-t3-backend.service
             sudo systemctl daemon-reload
-            sudo systemctl start vehicle-t3-backend
+            sudo systemctl enable vehicle-t3-backend
+            sudo systemctl restart vehicle-t3-backend
+            sudo systemctl --no-pager --full status vehicle-t3-backend
