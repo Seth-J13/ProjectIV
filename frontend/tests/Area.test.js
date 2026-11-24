@@ -126,8 +126,10 @@ describe("Feature 13 — Area", () => {
 
       const { router } = await mountApp("/landing");
       await clickLabel("Areas");
-
-      expect(router.currentRoute.value.path).toBe("/areas");
+      // Wait for the Areas route (and beforeRouteEnter) to finish before asserting.
+      await vi.waitFor(() => {
+        expect(router.currentRoute.value.path).toBe("/areas");
+      });
       expect(wrapper.text()).toContain("Create area");
 
       await clickLabel("Create area");

@@ -93,7 +93,7 @@ async function logout() {
     </v-btn>
 
     <v-btn
-      v-if="['admin', 'maintenance'].includes(user?.role)"
+      v-if="user?.role === 'admin'"
       variant="text"
       type="button"
       @click="router.push({ name: 'areas' })"
