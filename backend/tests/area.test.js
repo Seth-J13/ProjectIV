@@ -94,40 +94,26 @@ describe("Feature 13 — Area", () => {
 
     it("Area still in use", async () => {
       const area = await createNorthCampus(admin);
-      const [tables] = await db.sequelize.query(
-        `SELECT TABLE_NAME AS tableName
-         FROM information_schema.tables
-         WHERE table_schema = DATABASE() AND table_name = 'vehicles'`
-      );
-      const createdTable = tables.length === 0;
-
-      if (createdTable) {
-        await db.sequelize.query(
-          "CREATE TABLE vehicles (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, area_id INT NOT NULL)"
-        );
-      }
-
-      try {
-        await db.sequelize.query("INSERT INTO vehicles (area_id) VALUES (:areaId)", {
-          replacements: { areaId: area.id },
-        });
-
-        const response = await request(app).delete(`${AREAS_PATH}/${area.id}`).set(admin);
-
-        expect(response.status).toBe(409);
-        expect(response.body).toEqual({ message: "Area is in use!" });
-
-        const listed = await request(app).get(AREAS_PATH).set(admin);
-        expect(listed.body.map((item) => item.name)).toContain("North Campus");
-      } finally {
-        await db.sequelize.query("DELETE FROM vehicles WHERE area_id = :areaId", {
-          replacements: { areaId: area.id },
-        });
-
-        if (createdTable) {
-          await db.sequelize.query("DROP TABLE vehicles");
-        }
-      }
+    
+      await db.vehicle.create({
+        vin: "1HGCM82633A004352",
+        make: "Honda",
+        model: "Accord",
+        year: 2014,
+        purchased_date: "2015-12-16",
+        license_plate_num: "ABC344",
+        tag_exp_month: "2026-05-25",
+        area_id: area.id,   // must be the area you just created
+        available: true,
+      });
+    
+      const response = await request(app).delete(`${AREAS_PATH}/${area.id}`).set(admin);
+    
+      expect(response.status).toBe(409);
+      expect(response.body).toEqual({ message: "Area is in use!" });
+    
+      const listed = await request(app).get(AREAS_PATH).set(admin);
+      expect(listed.body.map((item) => item.name)).toContain("North Campus");
     });
   });
 
